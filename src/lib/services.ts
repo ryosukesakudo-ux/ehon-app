@@ -7,11 +7,12 @@ import OpenAI from "openai";
 
 export const PHOTO_BUCKET = "photos";
 export const BOOK_BUCKET = "books";
+export const SAMPLE_BUCKET = "samples";
 
 let supabase: SupabaseClient | null | undefined;
 export function getSupabase(): SupabaseClient | null {
   if (supabase !== undefined) return supabase;
-  const url = process.env.SUPABASE_URL;
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL ?? process.env.SUPABASE_URL;
   const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
   supabase = url && key ? createClient(url, key, { auth: { persistSession: false } }) : null;
   return supabase;

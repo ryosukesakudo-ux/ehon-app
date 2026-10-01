@@ -48,11 +48,11 @@ export function OrderActions({ orderId, status, sceneCount }: { orderId: string;
             className="ghost"
             disabled={!!busy}
             onClick={() => {
-              if (confirm("制作完了にします。顔写真は削除され、絵の作り直しはできなくなります。よろしいですか？"))
+              if (confirm("制作完了にします。よろしいですか？"))
                 run("complete", () => call("complete"));
             }}
           >
-            制作完了にする（写真を削除）
+            制作完了にする
           </button>
         </>
       )}

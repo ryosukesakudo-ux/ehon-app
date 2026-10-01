@@ -1,10 +1,12 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { PREVIEW_SCENES, getStory, sceneText } from "@/lib/catalog";
+import { MEMBER_MONTHLY_PREVIEWS, PREVIEW_SCENES, getStory, sceneText } from "@/lib/catalog";
 import { Chevron } from "@/components/icons";
 import { useFlow } from "../flow";
+import { loginHref, useAccount } from "../account";
 import { NextButton, StepHeader, StepTitle } from "../step";
 
 export default function PreviewPage() {
@@ -13,6 +15,10 @@ export default function PreviewPage() {
   const [pos, setPos] = useState(0);
   const [loading, setLoading] = useState<Record<number, boolean>>({});
   const [error, setError] = useState<string | null>(null);
+  const [needLogin, setNeedLogin] = useState(false);
+  const [account, setAccount] = useAccount();
+  // 登録前のお試し（Supabase 設定済みで未ログイン）
+  const trial = !!account?.configured && !account.loggedIn;
   const inFlight = useRef(new Set<number>());
 
   const story = getStory(state.story)!;
@@ -26,7 +32,13 @@ export default function PreviewPage() {
     try {
       const res = await fetch(`/api/drafts/${encodeURIComponent(state.draftId)}/scenes/${index}`, { method: "POST" });
       const json = await res.json();
-      if (!res.ok) throw new Error(json.error ?? "絵の作成に失敗しました");
+      if (typeof json.remaining === "number") {
+        setAccount((a) => (a?.loggedIn ? { ...a, remaining: json.remaining } : a));
+      }
+      if (!res.ok) {
+        setNeedLogin(!!json.needLogin);
+        throw new Error(json.error ?? "絵の作成に失敗しました");
+      }
       setPreview(index, json.url);
     } catch (e) {
       setError(e instanceof Error ? e.message : "絵の作成に失敗しました");
@@ -86,13 +98,29 @@ export default function PreviewPage() {
             <Chevron dir="right" size={20} />
           </button>
         </div>
-        <button type="button" className="ghost" disabled={!!loading[scene]} onClick={() => generate(scene)}>
-          このページの絵を作り直す
-        </button>
+        {trial ? (
+          <Link href={loginHref("/create/preview")} className="ghost">
+            作り直しは無料会員登録で（月{MEMBER_MONTHLY_PREVIEWS}枚まで）
+          </Link>
+        ) : (
+          <button type="button" className="ghost" disabled={!!loading[scene] || (account?.loggedIn && account.remaining <= 0)} onClick={() => generate(scene)}>
+            このページの絵を作り直す
+          </button>
+        )}
+        {account?.loggedIn && (
+          <p className="step-lead" style={{ textAlign: "center", fontSize: 13 }}>今月のプレビュー残り：{account.remaining} / {account.limit}枚</p>
+        )}
         {error && <p className="error" role="alert">{error}</p>}
+        {needLogin && !trial && (
+          <Link href={loginHref("/create/preview")} className="ghost">無料会員登録・ログインへ</Link>
+        )}
         <p className="step-lead">ここでは一部のページを見本としてお見せしています。残りのページは、ご注文後に同じタッチで仕上げます。</p>
       </main>
-      <NextButton href="/create/size" disabled={!allDone}>この内容で進む</NextButton>
+      {trial ? (
+        <NextButton href={loginHref("/create/size")} disabled={!allDone}>無料会員登録して注文へ進む</NextButton>
+      ) : (
+        <NextButton href="/create/size" disabled={!allDone}>この内容で進む</NextButton>
+      )}
     </>
   );
 }

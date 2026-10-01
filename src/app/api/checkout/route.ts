@@ -1,10 +1,12 @@
 import { randomUUID } from "node:crypto";
 import { getSize, getStory, orderTotal, type SizeId } from "@/lib/catalog";
-import { isDemoId, loadDraft } from "@/lib/drafts";
+import { isDemoId, loadOwnedDraft } from "@/lib/drafts";
 import { getStripe, getSupabase, siteUrl } from "@/lib/services";
 
 // サイズ選択後に呼ぶ。金額はサーバー側で計算し、Stripe の決済画面へのURLを返す。
 // お届け先・電話番号・メールアドレスは Stripe の画面で入力してもらう。
+// 支払い方法（カード・Apple Pay・Google Pay・コンビニ・PayPay など）は Stripe のダッシュボードで選ぶ。
+// 注文は会員のみ（デモモードを除く）。
 export async function POST(request: Request) {
   const body = await request.json().catch(() => null);
   const draftId = String(body?.draftId ?? "");
@@ -12,8 +14,9 @@ export async function POST(request: Request) {
   const extraCopy = body?.extraCopy === true;
 
   const size = getSize(sizeId);
-  const draft = draftId ? await loadDraft(draftId) : null;
-  if (!size || !draft) return Response.json({ error: "注文内容を確認できませんでした" }, { status: 400 });
+  const owned = draftId ? await loadOwnedDraft(draftId) : null;
+  if (!size || !owned) return Response.json({ error: "注文内容を確認できませんでした" }, { status: 400 });
+  const { draft, user } = owned;
 
   const amount = orderTotal(size.id, extraCopy);
   const base = siteUrl(request);
@@ -25,9 +28,14 @@ export async function POST(request: Request) {
     return Response.json({ url: `${base}/create/done?order=DEMO`, demo: true });
   }
 
+  if (!user) {
+    return Response.json({ error: "ご注文には無料会員登録（ログイン）が必要です", needLogin: true }, { status: 401 });
+  }
+
   const orderId = randomUUID();
   const { error } = await db.from("orders").insert({
     id: orderId,
+    user_id: user.id,
     draft_id: draft.id,
     size: size.id,
     extra_copy: extraCopy,
@@ -68,6 +76,7 @@ export async function POST(request: Request) {
     shipping_address_collection: { allowed_countries: ["JP"] },
     phone_number_collection: { enabled: true },
     client_reference_id: orderId,
+    customer_email: user.email ?? undefined,
     metadata: { order_id: orderId },
     success_url: `${base}/create/done?order=${orderId}`,
     cancel_url: `${base}/create/size`,

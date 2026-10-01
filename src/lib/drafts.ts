@@ -3,9 +3,13 @@ import { toFile } from "openai";
 import { BOOK_BUCKET, PHOTO_BUCKET, getOpenAI, getSupabase } from "./services";
 import { illustrate, type Person, type Quality } from "./illustrate";
 import { getStory, getTaste, type StoryId, type TasteId } from "./catalog";
+import { currentUser, type Member } from "./auth";
+import { getAnonId } from "./anon";
 
 export type Draft = {
   id: string;
+  user_id: string | null;
+  anon_id: string | null;
   taste: TasteId;
   story: StoryId;
   child_name: string;
@@ -13,6 +17,8 @@ export type Draft = {
   mom_photo_path: string | null;
   generation_count: number;
   photos_deleted_at: string | null;
+  images_deleted_at: string | null;
+  created_at?: string;
 };
 
 export type { Quality };
@@ -32,6 +38,8 @@ function parseDemoId(id: string): Draft {
   const d = JSON.parse(Buffer.from(id.slice(DEMO_PREFIX.length), "base64url").toString());
   return {
     id,
+    user_id: null,
+    anon_id: null,
     taste: d.taste,
     story: d.story,
     child_name: String(d.childName ?? ""),
@@ -39,6 +47,7 @@ function parseDemoId(id: string): Draft {
     mom_photo_path: d.hasMom ? "demo" : null,
     generation_count: 0,
     photos_deleted_at: null,
+    images_deleted_at: null,
   };
 }
 
@@ -54,6 +63,17 @@ export async function loadDraft(id: string): Promise<Draft | null> {
   if (!db) return null;
   const { data } = await db.from("drafts").select("*").eq("id", id).maybeSingle();
   return (data as Draft) ?? null;
+}
+
+/** 会員本人の下書きか、登録前のお試しならそのブラウザの下書きかを確かめて読み込む。 */
+export async function loadOwnedDraft(id: string): Promise<{ draft: Draft; user: Member | null } | null> {
+  const draft = await loadDraft(id);
+  if (!draft) return null;
+  if (isDemoId(id)) return { draft, user: null };
+  const user = await currentUser();
+  if (draft.user_id) return user && user.id === draft.user_id ? { draft, user } : null;
+  const anonId = await getAnonId();
+  return anonId && draft.anon_id === anonId ? { draft, user } : null;
 }
 
 // --- 画像生成 ---
@@ -93,12 +113,49 @@ export async function generateScene(draft: Draft, sceneIndex: number, quality: Q
 
   const b64 = await illustrate({ taste: draft.taste, story: draft.story, sceneIndex, images, quality });
 
+  // 会員の写真は「最後に使った日」を更新する（1年使わなければ自動削除）
+  const used = [draft.child_photo_path, draft.mom_photo_path].filter((p): p is string => !!p);
+  if (draft.user_id && used.length) {
+    await db.from("user_photos").update({ last_used_at: new Date().toISOString() }).in("path", used);
+  }
+
   const path = pagePath(draft.id, quality, sceneIndex);
   const { error } = await db.storage
     .from(BOOK_BUCKET)
     .upload(path, Buffer.from(b64, "base64"), { contentType: "image/png", upsert: true });
   if (error) throw new Error(`画像の保存に失敗しました: ${error.message}`);
   return signedUrl(path);
+}
+
+/** 作成済みのプレビューの絵（場面番号→一時URL） */
+export async function previewUrls(draftId: string): Promise<Record<number, string>> {
+  const db = getSupabase();
+  if (!db || isDemoId(draftId)) return {};
+  const { data: files } = await db.storage.from(BOOK_BUCKET).list(`${draftId}/preview`);
+  const paths = (files ?? []).map((f) => `${draftId}/preview/${f.name}`);
+  if (!paths.length) return {};
+  const { data } = await db.storage.from(BOOK_BUCKET).createSignedUrls(paths, 60 * 60);
+  const out: Record<number, string> = {};
+  for (const u of data ?? []) {
+    const m = u.path?.match(/\/(\d+)\.png$/);
+    if (m && u.signedUrl) out[Number(m[1])] = u.signedUrl;
+  }
+  return out;
+}
+
+/** 下書きの絵（プレビューと本番）をすべて削除する。 */
+export async function deleteDraftImages(draftId: string) {
+  const db = getSupabase();
+  if (!db) return;
+  for (const quality of ["preview", "final"] as const) {
+    const { data: files } = await db.storage.from(BOOK_BUCKET).list(`${draftId}/${quality}`);
+    const paths = (files ?? []).map((f) => `${draftId}/${quality}/${f.name}`);
+    if (paths.length) {
+      const { error } = await db.storage.from(BOOK_BUCKET).remove(paths);
+      if (error) throw new Error(`絵の削除に失敗しました: ${error.message}`);
+    }
+  }
+  await db.from("drafts").update({ images_deleted_at: new Date().toISOString() }).eq("id", draftId);
 }
 
 export async function signedUrl(path: string) {
@@ -108,7 +165,7 @@ export async function signedUrl(path: string) {
   return data.signedUrl;
 }
 
-/** 完成後・放置時に顔写真を削除する。 */
+/** 登録前のお試しの顔写真を削除する（会員の写真は user_photos 側で管理する）。 */
 export async function deleteDraftPhotos(draft: Pick<Draft, "id" | "child_photo_path" | "mom_photo_path">) {
   const db = getSupabase();
   if (!db) return;

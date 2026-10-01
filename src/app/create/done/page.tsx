@@ -5,7 +5,11 @@ import { ClearFlow } from "./clear";
 export default async function DonePage({ searchParams }: PageProps<"/create/done">) {
   const { order } = await searchParams;
   const orderNo = typeof order === "string" ? order.slice(0, 8).toUpperCase() : "";
-  const steps = ["お支払い完了のメールが届きます", "絵本を印刷・製本します", "数日後に発送します"];
+  const steps = [
+    "ご注文確認のメールが届きます（コンビニ払いの方は、お支払い後に制作を始めます）",
+    "絵本を印刷・製本します",
+    "数日後に発送します",
+  ];
   return (
     <main className="step-body" style={{ paddingTop: 40 }}>
       <ClearFlow />
@@ -35,8 +39,9 @@ export default async function DonePage({ searchParams }: PageProps<"/create/done
         ))}
       </div>
       <p style={{ margin: 0, fontSize: 12, lineHeight: 1.7, color: "var(--sub)", textAlign: "center" }}>
-        アップロードいただいた写真は、絵本の完成後に自動で削除されます。
+        ご注文の状況と絵本の絵は、マイページでご確認いただけます。写真はマイページからいつでも削除できます。
       </p>
+      <Link href="/account" className="cta">マイページを見る</Link>
       <Link href="/" className="ghost" style={{ height: 56, borderColor: "var(--coral)", color: "var(--coral)", fontSize: 17 }}>
         トップへもどる
       </Link>

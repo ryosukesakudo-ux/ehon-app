@@ -1,11 +1,13 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { getSize, getStory, getTaste, orderTotal, yen, EXTRA_COPY_PRICE } from "@/lib/catalog";
 import { useFlow } from "../flow";
 import { NextButton, StepHeader, StepTitle } from "../step";
 
 export default function CheckoutPage() {
+  const router = useRouter();
   const { state } = useFlow();
   const [sending, setSending] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -21,6 +23,10 @@ export default function CheckoutPage() {
         body: JSON.stringify({ draftId: state.draftId, size: state.size, extraCopy: state.extraCopy }),
       });
       const json = await res.json();
+      if (json.needLogin) {
+        router.push(`/login?next=${encodeURIComponent("/create/checkout")}`);
+        return;
+      }
       if (!res.ok || !json.url) throw new Error(json.error ?? "決済画面を開けませんでした");
       window.location.href = json.url;
     } catch (e) {
@@ -54,7 +60,7 @@ export default function CheckoutPage() {
             <rect x="5" y="11" width="14" height="9" rx="2" />
             <path d="M8 11V8a4 4 0 0 1 8 0v3" />
           </svg>
-          <span>カード情報は決済サービス（Stripe）の安全な画面で入力します</span>
+          <span>カード・Apple Pay・Google Pay・コンビニ払い・PayPay に対応。決済サービス（Stripe）の安全な画面で入力します</span>
         </div>
         <p style={{ margin: 0, fontSize: 12, lineHeight: 1.7, color: "var(--sub)" }}>
           ご注文前に<a href="/legal" target="_blank">特定商取引法に基づく表記</a>と<a href="/privacy" target="_blank">プライバシーポリシー</a>をご確認ください。

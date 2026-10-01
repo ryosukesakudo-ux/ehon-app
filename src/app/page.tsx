@@ -1,7 +1,9 @@
 import Link from "next/link";
 import type { CSSProperties, ReactNode } from "react";
 import { Arrow, BookIcon, Sparkle, Star } from "@/components/icons";
-import { EXTRA_COPY_PRICE, SIZES, yen } from "@/lib/catalog";
+import { ANON_TRIAL_IMAGES, EXTRA_COPY_PRICE, SIZES, STORIES, TASTES, sceneText, yen } from "@/lib/catalog";
+import { SAMPLE_CHILD_NAME, SAMPLE_SCENES, sampleUrl } from "@/lib/samples";
+import { SampleImage } from "@/components/sample-image";
 import s from "./top.module.css";
 
 const NAVY = "#1E2F57";
@@ -61,7 +63,8 @@ const GIFTS = [
 ];
 
 const FAQ = [
-  { q: "写真はどう扱われますか？", a: "絵本の制作にだけ使い、完成後に自動で削除します。", color: "#2F5DA8" },
+  { q: "会員登録は必要ですか？", a: `登録なしでも1回だけ、見本${ANON_TRIAL_IMAGES}枚をお試しできます。作り直しやご注文は、無料会員登録（Google またはメールアドレス）のあとでご利用いただけます。`, color: "#F6C445" },
+  { q: "写真はどう扱われますか？", a: "絵本の制作にだけ使います。マイページからいつでも削除でき、1年使わなければ自動で削除します。", color: "#2F5DA8" },
   { q: "届くまでどのくらいかかりますか？", a: "ご注文から数日後に発送します。", color: "#F08A6C" },
   { q: "気に入らない絵があったら？", a: "見本のページは、ご注文前に絵を作り直せます。", color: "#7CC7A8" },
 ];
@@ -74,7 +77,10 @@ export default function Home() {
           <span className={s.logoMark}><BookIcon /></span>
           わたしの絵本
         </Link>
-        <Link href="/create/taste" className={`${s.headerCta} display`}>つくる</Link>
+        <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+          <Link href="/account" className={`${s.headerLink} display`}>マイページ</Link>
+          <Link href="/create/taste" className={`${s.headerCta} display`}>つくる</Link>
+        </div>
       </header>
 
       <section className={s.hero}>
@@ -97,7 +103,9 @@ export default function Home() {
           <Star size={22} color="#7CC7A8" className={s.deco} style={{ left: 18, top: 232 }} />
           <div className={s.bookBack} />
           <div className={s.book}>
-            <div className={s.bookArt}>[表紙の絵：お子さまが<br />森の入口で手をふる]</div>
+            <div className={s.bookArt}>
+              <SampleImage src={sampleUrl("watercolor", "forest", 0)} alt="" fallback={<>[表紙の絵：お子さまが<br />森の入口で手をふる]</>} />
+            </div>
             <div className={`${s.bookTitle} display`}>はるとと<br />もりのだいぼうけん</div>
           </div>
           <div className={`${s.sticker} display`}>
@@ -108,7 +116,7 @@ export default function Home() {
         </div>
         <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
           <Cta />
-          <div className={s.note}>お支払いは、見本を確認してから</div>
+          <div className={s.note}>登録なしで1回お試しOK・お支払いは見本を確認してから</div>
         </div>
       </section>
 
@@ -124,7 +132,7 @@ export default function Home() {
         </div>
         <div className={s.trustItem}>
           <div className={s.trustIcon} style={{ background: "#CDEEDD" }}>{icon(<><path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6z" /><path d="M9 12l2 2 4-4" /></>)}</div>
-          写真は完成後に<br />自動で削除
+          写真はいつでも<br />削除できる
         </div>
       </div>
 
@@ -161,26 +169,63 @@ export default function Home() {
         <div className={s.sample}>
           <div className={s.sampleBack} />
           <div className={s.sampleCard}>
-            <div className={s.sampleArt}>[見開きの見本：ママと手をつないで歩く場面]</div>
-            <p className={s.sampleText}>「ママ、みて！」はるとくんが ゆびさした さきには、ひかる きのみが なっていました。</p>
+            <div className={s.sampleArt}>
+              <SampleImage src={sampleUrl("watercolor", "forest", 3)} alt="ママと手をつないで、ひかる木の実を見つける場面" fallback="[見開きの見本：ママと手をつないで歩く場面]" />
+            </div>
+            <p className={s.sampleText}>{sceneText(STORIES[0].scenes[3], SAMPLE_CHILD_NAME)}</p>
           </div>
           <div className={`${s.sampleTag} display`}>名前が入る！</div>
         </div>
         <div className={s.tastes}>
           {[
-            { n: "水彩", bg: "#CFE3F0", bd: "#2F5DA8", c: "#43505C" },
-            { n: "クレヨン", bg: "#F8D9B8", bd: "#F08A6C", c: "#6A5440" },
-            { n: "ふんわりアニメ", bg: "#DCEBD3", bd: "#7CC7A8", c: "#44543F" },
+            { id: "watercolor", n: "水彩", bg: "#CFE3F0", bd: "#2F5DA8", c: "#43505C" },
+            { id: "crayon", n: "クレヨン", bg: "#F8D9B8", bd: "#F08A6C", c: "#6A5440" },
+            { id: "anime", n: "ふんわりアニメ", bg: "#DCEBD3", bd: "#7CC7A8", c: "#44543F" },
           ].map((t) => (
             <div key={t.n}>
-              <div className={s.tasteSwatch} style={{ background: t.bg, borderColor: t.bd, color: t.c }}>[見本]</div>
+              <div className={s.tasteSwatch} style={{ background: t.bg, borderColor: t.bd, color: t.c }}>
+                <SampleImage src={sampleUrl(t.id as (typeof TASTES)[number]["id"], "forest", 0)} alt={`${t.n}の見本`} fallback="[見本]" />
+              </div>
               <div className={`${s.tasteName} display`}>{t.n}</div>
             </div>
           ))}
         </div>
       </section>
 
-      <Wave from="#FFFFFF" to="#FFE9EE" />
+      <Wave from="#FFFFFF" to="#E6F3FB" />
+      <section className={s.section} style={{ background: "#E6F3FB" }}>
+        <Star size={20} className={s.deco} style={{ right: 24, top: 22, transform: "rotate(-8deg)" }} />
+        <Eyebrow color="#2F5DA8">3つのお話</Eyebrow>
+        <h2 className={`${s.h2} display`}>
+          <span className="nowrap">こんな絵本が</span>
+          <br />
+          <span className="nowrap">できあがります。</span>
+        </h2>
+        <div className={s.gallery}>
+          {STORIES.map((st) => (
+            <div key={st.id} className={s.galleryCard}>
+              <div className={s.galleryMain}>
+                <SampleImage src={sampleUrl("watercolor", st.id, SAMPLE_SCENES[0])} alt={`${st.name}の見本`} fallback={<span className={s.galleryFallback}>[見本の絵]</span>} />
+              </div>
+              <div className={s.galleryThumbs}>
+                {SAMPLE_SCENES.slice(1).map((sc) => (
+                  <div key={sc} className={s.galleryThumb}>
+                    <SampleImage src={sampleUrl("watercolor", st.id, sc)} alt="" fallback={null} />
+                  </div>
+                ))}
+              </div>
+              <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
+                <div className={`${s.galleryTitle} display`}>{st.name}</div>
+                <div className="tag">{st.ages}</div>
+              </div>
+              <div className={s.galleryDesc}>{st.description}</div>
+            </div>
+          ))}
+        </div>
+        <div className={s.note}>見本の絵は、架空の家族で作っています</div>
+      </section>
+
+      <Wave from="#E6F3FB" to="#FFE9EE" />
       <section className={s.section} style={{ background: "#FFE9EE" }}>
         <Sparkle size={20} color="#F08A6C" className={s.deco} style={{ right: 26, top: 24 }} />
         <Eyebrow color="#F08A6C">こんな日の贈りものに</Eyebrow>

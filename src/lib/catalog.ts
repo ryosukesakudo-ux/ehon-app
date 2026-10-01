@@ -136,8 +136,24 @@ export const EXTRA_COPY_PRICE = 4980;
 // 注文前のプレビューで生成する場面（表紙相当の1枚目＋数枚）
 export const PREVIEW_SCENES = [0, 3, 8];
 
-// 1つの下書きで注文前に生成できる画像の上限（作り直しを含む）。AI費用の歯止め。
-export const MAX_PREVIEW_GENERATIONS = 10;
+// 会員登録前のお試し：見本の場面を1回ずつ（作り直しなし）。ブラウザごと・IPアドレスごとに1回。
+export const ANON_TRIAL_IMAGES = PREVIEW_SCENES.length;
+export const ANON_TRIAL_IP_DAYS = 30;
+
+// 会員が1か月（日本時間の月初リセット）に作れるプレビューの枚数（作り直しを含む）。AI費用の歯止め。
+export const MEMBER_MONTHLY_PREVIEWS = 30;
+
+// 保管期間（日）
+export const RETENTION = {
+  /** 会員の顔写真：最後に使ってからこの日数で自動削除 */
+  photoIdleDays: 365,
+  /** 登録前のお試しの顔写真：会員登録されなければ削除 */
+  anonPhotoDays: 3,
+  /** 注文されなかった下書きの絵 */
+  unpaidImageDays: 30,
+  /** 支払い済みの注文の絵（支払い日から） */
+  paidImageDays: 100,
+};
 
 export function getTaste(id: string) {
   return TASTES.find((t) => t.id === id);

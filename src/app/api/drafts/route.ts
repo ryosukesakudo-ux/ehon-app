@@ -1,6 +1,8 @@
 import { randomUUID } from "node:crypto";
-import { getStory, getTaste, type StoryId, type TasteId } from "@/lib/catalog";
+import { ANON_TRIAL_IP_DAYS, getStory, getTaste, type StoryId, type TasteId } from "@/lib/catalog";
 import { demoDraftId } from "@/lib/drafts";
+import { currentUser } from "@/lib/auth";
+import { ensureAnonId, ipHash } from "@/lib/anon";
 import { PHOTO_BUCKET, getSupabase } from "@/lib/services";
 
 const MAX_PHOTO_BYTES = 10 * 1024 * 1024;
@@ -11,6 +13,8 @@ function bad(message: string) {
 }
 
 // 写真ページの「絵本をつくる」で呼ぶ。下書きを作り、顔写真を非公開ストレージに保存する。
+// 会員は保存済みの写真（childPhotoId / momPhotoId）も選べる。
+// 会員でない場合は、ブラウザごと・IPアドレスごとに1回だけお試しできる。
 export async function POST(request: Request) {
   const form = await request.formData();
   const taste = String(form.get("taste") ?? "");
@@ -19,19 +23,22 @@ export async function POST(request: Request) {
   const consent = form.get("consent") === "true";
   const childPhoto = form.get("childPhoto");
   const momPhoto = form.get("momPhoto");
+  const childPhotoId = String(form.get("childPhotoId") ?? "");
+  const momPhotoId = String(form.get("momPhotoId") ?? "");
 
   if (!getTaste(taste) || !getStory(story)) return bad("テイストとお話を選んでください");
   if (!childName || childName.length > 12) return bad("名前は12文字以内で入力してください");
-  if (!consent) return bad("写真の取り扱いへの同意が必要です");
-  if (!(childPhoto instanceof File)) return bad("お子さまの写真を選んでください");
   for (const f of [childPhoto, momPhoto]) {
     if (!(f instanceof File)) continue;
     if (!PHOTO_TYPES[f.type]) return bad("写真は JPEG・PNG・WebP でアップロードしてください");
     if (f.size > MAX_PHOTO_BYTES) return bad("写真は10MB以下にしてください");
   }
+  const newUpload = childPhoto instanceof File || momPhoto instanceof File;
+  if (newUpload && !consent) return bad("写真の取り扱いへの同意が必要です");
 
   const db = getSupabase();
   if (!db) {
+    if (!(childPhoto instanceof File)) return bad("お子さまの写真を選んでください");
     return Response.json({
       draftId: demoDraftId({
         taste: taste as TasteId,
@@ -43,21 +50,58 @@ export async function POST(request: Request) {
     });
   }
 
+  const user = await currentUser();
   const id = randomUUID();
+
   const upload = async (f: File, who: string) => {
-    const path = `${id}/${who}.${PHOTO_TYPES[f.type]}`;
+    const path = user
+      ? `users/${user.id}/${randomUUID()}.${PHOTO_TYPES[f.type]}`
+      : `anon/${id}/${who}.${PHOTO_TYPES[f.type]}`;
     const { error } = await db.storage
       .from(PHOTO_BUCKET)
       .upload(path, Buffer.from(await f.arrayBuffer()), { contentType: f.type });
     if (error) throw new Error(error.message);
+    if (user) {
+      const { error: rowError } = await db.from("user_photos").insert({ user_id: user.id, path });
+      if (rowError) throw new Error(rowError.message);
+    }
     return path;
   };
 
+  // 会員の保存済み写真（本人のものだけ）
+  const saved = async (photoId: string) => {
+    if (!user || !photoId) return null;
+    const { data } = await db.from("user_photos").select("path").eq("id", photoId).eq("user_id", user.id).maybeSingle();
+    return data?.path ?? null;
+  };
+
   try {
-    const childPath = await upload(childPhoto, "child");
-    const momPath = momPhoto instanceof File ? await upload(momPhoto, "mom") : null;
+    const childPath = childPhoto instanceof File ? await upload(childPhoto, "child") : await saved(childPhotoId);
+    if (!childPath) return bad("お子さまの写真を選んでください");
+
+    let anonId: string | null = null;
+    if (!user) {
+      anonId = await ensureAnonId();
+      const { data: allowed, error } = await db.rpc("claim_anon_trial", {
+        p_anon: anonId,
+        p_ip: ipHash(request),
+        p_ip_days: ANON_TRIAL_IP_DAYS,
+      });
+      if (error) throw new Error(error.message);
+      if (!allowed) {
+        await db.storage.from(PHOTO_BUCKET).remove([childPath]);
+        return Response.json(
+          { error: "登録なしのお試しは1回までです。続きは無料の会員登録でご利用いただけます。", needLogin: true },
+          { status: 403 },
+        );
+      }
+    }
+
+    const momPath = momPhoto instanceof File ? await upload(momPhoto, "mom") : await saved(momPhotoId);
     const { error } = await db.from("drafts").insert({
       id,
+      user_id: user?.id ?? null,
+      anon_id: anonId,
       taste,
       story,
       child_name: childName,
@@ -70,5 +114,5 @@ export async function POST(request: Request) {
     return Response.json({ error: "写真の保存に失敗しました。もう一度お試しください" }, { status: 500 });
   }
 
-  return Response.json({ draftId: id });
+  return Response.json({ draftId: id, member: !!user });
 }
