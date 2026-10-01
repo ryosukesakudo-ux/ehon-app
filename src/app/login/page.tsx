@@ -29,7 +29,13 @@ export default async function LoginPage({ searchParams }: PageProps<"/login">) {
             </div>
           ))}
         </div>
-        {error && <p className="error" role="alert">ログインできませんでした。もう一度お試しください。</p>}
+        {error && (
+          <p className="error" role="alert">
+            {error === "expired"
+              ? "ログイン用のリンクの有効期限が切れたか、すでに使われています。もう一度メールを送ってください。"
+              : "ログインできませんでした。もう一度メールを送り、メールを送ったのと同じブラウザでリンクを開いてください。"}
+          </p>
+        )}
         {authKeys() ? (
           <LoginForm next={nextPath} />
         ) : (

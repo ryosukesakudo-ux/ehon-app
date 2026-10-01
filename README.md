@@ -36,6 +36,7 @@ http://localhost:3000 を開きます。キーを何も設定しなければ「�
 
 1. **Supabase**：プロジェクトを作り、SQL Editor で `supabase/schema.sql` を実行。`NEXT_PUBLIC_SUPABASE_URL`・`NEXT_PUBLIC_SUPABASE_ANON_KEY`・`SUPABASE_SERVICE_ROLE_KEY` を設定。
    - Authentication > URL Configuration：Site URL にサイトのURL、Redirect URLs に `https://<サイトのURL>/auth/callback` を追加。
+   - Authentication > Emails（Email Templates）：**Confirm signup** と **Magic Link** の文面のリンク `{{ .ConfirmationURL }}` を `{{ .RedirectTo }}&token_hash={{ .TokenHash }}&type=email` に置き換える（メールを別のブラウザやメールアプリで開いてもログインできるようにするため）。
    - Authentication > Providers：Email は最初から有効。Google は Google Cloud で OAuth クライアントを作り、Client ID と Secret を入れて有効にする（承認済みのリダイレクトURIは Supabase の画面に表示される `https://<project>.supabase.co/auth/v1/callback`）。
 2. **OpenAI**：`OPENAI_API_KEY` を設定。モデルは `gpt-image-2`（`OPENAI_IMAGE_MODEL` で変更可）。
 3. **Stripe**：テストモードの `STRIPE_SECRET_KEY` を設定。Webhook の送信先を `https://<サイトのURL>/api/stripe/webhook`、イベントを `checkout.session.completed` と `checkout.session.async_payment_succeeded`（コンビニ払い用）にして、表示される署名シークレットを `STRIPE_WEBHOOK_SECRET` に設定。お客様への支払い完了メールは Stripe ダッシュボードの「メールによる領収書」を有効にする。
