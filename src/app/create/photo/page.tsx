@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { ANON_TRIAL_IMAGES, MEMBER_MONTHLY_PREVIEWS, RETENTION } from "@/lib/catalog";
 import { shrinkPhoto } from "@/lib/shrink-photo";
 import { useFlow } from "../flow";
+import { FacePicker } from "../face-picker";
 import { loginHref, useAccount } from "../account";
 import { NextButton, StepHeader, StepTitle } from "../step";
 
@@ -37,6 +38,8 @@ function PhotoSlot({
   const fileUrl = useMemo(() => (file ? URL.createObjectURL(file) : null), [file]);
   useEffect(() => () => { if (fileUrl) URL.revokeObjectURL(fileUrl); }, [fileUrl]);
   const url = fileUrl ?? saved.find((p) => p.id === savedId)?.url ?? null;
+  // 選んだばかりの写真（顔を囲んで選ぶ前）
+  const [picking, setPicking] = useState<File | null>(null);
 
   return (
     <div className="card">
@@ -70,8 +73,23 @@ function PhotoSlot({
         type="file"
         accept={ACCEPT}
         style={{ position: "absolute", width: 1, height: 1, opacity: 0 }}
-        onChange={(e) => onChange(e.target.files?.[0] ?? null)}
+        onChange={(e) => {
+          const f = e.target.files?.[0];
+          if (f) setPicking(f);
+          e.target.value = "";
+        }}
       />
+      {picking && (
+        <FacePicker
+          file={picking}
+          title={title.replace(/（.*）/, "")}
+          onDone={(cropped) => {
+            setPicking(null);
+            onChange(cropped);
+          }}
+          onCancel={() => setPicking(null)}
+        />
+      )}
       <div style={{ fontSize: 12, lineHeight: 1.6, color: "var(--sub)" }}>{note}</div>
       {saved.length > 0 && (
         <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>

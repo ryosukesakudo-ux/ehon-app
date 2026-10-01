@@ -2,7 +2,7 @@ import Link from "next/link";
 import type { CSSProperties, ReactNode } from "react";
 import { Arrow, BookIcon, Sparkle, Star } from "@/components/icons";
 import { ANON_TRIAL_IMAGES, EXTRA_COPY_PRICE, MEMBER_MONTHLY_PREVIEWS, SIZES, STORIES, TASTES, sceneText, yen } from "@/lib/catalog";
-import { SAMPLE_CHILD_NAME, SAMPLE_SCENES, sampleUrl } from "@/lib/samples";
+import { SAMPLE_CHILD_NAME, SAMPLE_SCENES, SHOWCASE, SHOWCASE_BOOK, SHOWCASE_PHOTO, samplePublicUrl, sampleUrl } from "@/lib/samples";
 import { SampleImage } from "@/components/sample-image";
 import s from "./top.module.css";
 
@@ -158,6 +158,32 @@ export default function Home() {
             </div>
           ))}
         </div>
+      </section>
+
+      <section className={s.section} style={{ background: CREAM, paddingTop: 8 }}>
+        <Eyebrow color="#7CC7A8">写真から絵本へ</Eyebrow>
+        <h2 className={`${s.h2} display`}>
+          <span className="nowrap">この写真から、</span>
+          <br />
+          <span className="nowrap">こんな1ページに。</span>
+        </h2>
+        <div className={s.showcase}>
+          <figure className={s.showcaseItem}>
+            <div className={s.showcasePhoto}>
+              <SampleImage src={samplePublicUrl(SHOWCASE_PHOTO)} alt="家族3人の写真（見本）" fallback={<span className={s.galleryFallback}>[家族の写真]</span>} />
+            </div>
+            <figcaption>アップする写真</figcaption>
+          </figure>
+          <div className={s.showcaseArrow} aria-hidden="true"><Arrow size={22} /></div>
+          <figure className={s.showcaseItem}>
+            <div className={s.showcaseBook}>
+              <SampleImage src={samplePublicUrl(SHOWCASE_BOOK)} alt="写真をもとに描いた絵本の1ページ（見本）" fallback={<span className={s.galleryFallback}>[絵本の1ページ]</span>} />
+            </div>
+            <figcaption>できあがる絵</figcaption>
+          </figure>
+        </div>
+        <p className={s.sampleText} style={{ padding: 0 }}>{sceneText(STORIES.find((st) => st.id === SHOWCASE.story)!.scenes[SHOWCASE.scene], SAMPLE_CHILD_NAME)}</p>
+        <div className={s.note}>見本は、AIで作った架空の家族です</div>
       </section>
 
       <section className={s.section} style={{ background: CREAM, paddingTop: 8 }}>

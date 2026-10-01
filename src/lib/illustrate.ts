@@ -99,3 +99,51 @@ export async function illustrateSample(opts: { taste: TasteId; story: StoryId; s
   if (!b64) throw new Error("画像が生成されませんでした");
   return b64;
 }
+
+// --- 「この写真から → この絵本に」の見本 ---
+
+/** 架空の家族の、スマホで撮ったような写真風の画像を作る。 */
+export async function makeShowcasePhoto() {
+  const ai = getOpenAI();
+  if (!ai) throw new Error("OPENAI_API_KEY が未設定です");
+  const result = await ai.images.generate({
+    model: process.env.OPENAI_IMAGE_MODEL ?? "gpt-image-2",
+    prompt: [
+      "A natural, candid smartphone photo of a fictional Japanese family of three in a sunny park.",
+      "In the center, a cheerful child of about five with short black hair and round cheeks.",
+      "On the left, the mother in her thirties with shoulder-length dark brown hair. On the right, the father in his thirties with short black hair and round glasses.",
+      "All three smile at the camera, faces clearly visible, soft daylight, realistic photo, no text.",
+    ].join(" "),
+    size: "1024x1024",
+    quality: "medium",
+    output_format: "png",
+  });
+  const b64 = result.data?.[0]?.b64_json;
+  if (!b64) throw new Error("画像が生成されませんでした");
+  return b64;
+}
+
+/** 写真風の画像から、絵本の1場面を作る（家族3人が1枚に写っている写真を参考にする）。 */
+export async function illustrateShowcase(opts: { taste: TasteId; story: StoryId; sceneIndex: number; photo: Uploadable }) {
+  const ai = getOpenAI();
+  if (!ai) throw new Error("OPENAI_API_KEY が未設定です");
+  const t = getTaste(opts.taste)!;
+  const scene = getStory(opts.story)!.scenes[opts.sceneIndex];
+  const result = await ai.images.edit({
+    model: process.env.OPENAI_IMAGE_MODEL ?? "gpt-image-2",
+    image: [opts.photo],
+    prompt: [
+      `${t.prompt}.`,
+      "The reference photo shows the family: the child (the main character) in the center, the mother on the left, the father on the right.",
+      "Keep each person's face, hairstyle and features recognizable, translated into the illustration style. Make them look friendly and natural, never caricatured.",
+      `Scene: ${scene.art}.`,
+      "Square composition with a calm area along the bottom for text. Do not draw any letters, words or text in the image.",
+    ].join(" "),
+    size: "1024x1024",
+    quality: "medium",
+    output_format: "png",
+  });
+  const b64 = result.data?.[0]?.b64_json;
+  if (!b64) throw new Error("画像が生成されませんでした");
+  return b64;
+}
