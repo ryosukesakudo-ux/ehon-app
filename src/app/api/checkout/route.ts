@@ -1,5 +1,15 @@
 import { randomUUID } from "node:crypto";
-import { getSize, getStory, orderTotal, type SizeId } from "@/lib/catalog";
+import {
+  DELIVERY_MAX_DAYS,
+  DELIVERY_MIN_DAYS,
+  DELIVERY_TIMES,
+  deliveryLabel,
+  getSize,
+  getStory,
+  jstDate,
+  orderTotal,
+  type SizeId,
+} from "@/lib/catalog";
 import { isDemoId, loadOwnedDraft } from "@/lib/drafts";
 import { getStripe, getSupabase, siteUrl } from "@/lib/services";
 
@@ -12,6 +22,14 @@ export async function POST(request: Request) {
   const draftId = String(body?.draftId ?? "");
   const sizeId = String(body?.size ?? "") as SizeId;
   const extraCopy = body?.extraCopy === true;
+  const deliveryDate = String(body?.deliveryDate ?? "") || null;
+  const deliveryTime = String(body?.deliveryTime ?? "") || null;
+  if (deliveryDate && (!/^\d{4}-\d{2}-\d{2}$/.test(deliveryDate) || deliveryDate < jstDate(DELIVERY_MIN_DAYS) || deliveryDate > jstDate(DELIVERY_MAX_DAYS))) {
+    return Response.json({ error: `お届け日は${DELIVERY_MIN_DAYS}日後から${DELIVERY_MAX_DAYS}日後までの日付を選んでください` }, { status: 400 });
+  }
+  if (deliveryTime && !DELIVERY_TIMES.some((t) => t.id === deliveryTime)) {
+    return Response.json({ error: "お届けの時間帯を選び直してください" }, { status: 400 });
+  }
 
   const size = getSize(sizeId);
   const owned = draftId ? await loadOwnedDraft(draftId) : null;
@@ -41,6 +59,8 @@ export async function POST(request: Request) {
     extra_copy: extraCopy,
     amount,
     status: "pending",
+    delivery_date: deliveryDate,
+    delivery_time: deliveryTime,
   });
   if (error) {
     console.error("order insert failed", error);
@@ -77,7 +97,8 @@ export async function POST(request: Request) {
     phone_number_collection: { enabled: true },
     client_reference_id: orderId,
     customer_email: user.email ?? undefined,
-    metadata: { order_id: orderId },
+    metadata: { order_id: orderId, delivery: deliveryLabel(deliveryDate, deliveryTime) },
+    custom_text: { submit: { message: `お届け希望：${deliveryLabel(deliveryDate, deliveryTime)}` } },
     success_url: `${base}/create/done?order=${orderId}`,
     cancel_url: `${base}/create/size`,
   });

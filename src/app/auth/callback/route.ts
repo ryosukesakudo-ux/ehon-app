@@ -1,10 +1,9 @@
 import { NextResponse } from "next/server";
 import type { EmailOtpType } from "@supabase/supabase-js";
 import { createAuthClient } from "@/lib/auth";
-import { getAnonId } from "@/lib/anon";
-import { getSupabase } from "@/lib/services";
+import { claimAnonData } from "@/lib/claim";
 
-// Google ログインやメールのリンクから戻ってくる場所。
+// Google ログインやメールのリンク（登録の確認・パスワードの再設定）から戻ってくる場所。
 // ログインを確定し、登録前に作ったお試しの下書きと写真を会員のものにする。
 export async function GET(request: Request) {
   const url = new URL(request.url);
@@ -36,22 +35,7 @@ export async function GET(request: Request) {
   }
   const user = data.user;
 
-  const db = getSupabase();
-  const anonId = await getAnonId();
-  if (db && anonId) {
-    const { data: drafts } = await db
-      .from("drafts")
-      .update({ user_id: user.id })
-      .eq("anon_id", anonId)
-      .is("user_id", null)
-      .select("child_photo_path, mom_photo_path, dad_photo_path");
-    const paths = (drafts ?? []).flatMap((d) => [d.child_photo_path, d.mom_photo_path, d.dad_photo_path]).filter((p): p is string => !!p);
-    if (paths.length) {
-      await db
-        .from("user_photos")
-        .upsert(paths.map((path) => ({ user_id: user.id, path })), { onConflict: "path", ignoreDuplicates: true });
-    }
-  }
+  await claimAnonData(user.id);
 
   return NextResponse.redirect(new URL(next, url.origin));
 }

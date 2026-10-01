@@ -156,6 +156,7 @@ export default function PhotoPage() {
     form.set("taste", state.taste);
     form.set("story", state.story);
     form.set("childName", state.childName);
+    if (state.childAge) form.set("childAge", String(state.childAge));
     form.set("consent", String(consent));
     try {
       if (photos.child) form.set("childPhoto", await shrinkPhoto(photos.child));

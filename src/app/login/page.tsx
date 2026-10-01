@@ -32,19 +32,32 @@ export default async function LoginPage({ searchParams }: PageProps<"/login">) {
         {error && (
           <p className="error" role="alert">
             {error === "expired"
-              ? "ログイン用のリンクの有効期限が切れたか、すでに使われています。もう一度メールを送ってください。"
-              : "ログインできませんでした。もう一度メールを送り、メールを送ったのと同じブラウザでリンクを開いてください。"}
+              ? "メールのリンクの有効期限が切れたか、すでに使われています。もう一度お試しください。"
+              : "ログインできませんでした。もう一度お試しください。メールのリンクは、メールを送ったのと同じブラウザで開いてください。"}
           </p>
         )}
         {authKeys() ? (
-          <LoginForm next={nextPath} />
+          <LoginForm next={nextPath} google={await googleEnabled()} />
         ) : (
           <p className="demo-note">デモモードで動いているため、ログインは使えません（Supabase の設定後に使えます）。</p>
         )}
         <p className="step-lead" style={{ fontSize: 12 }}>
-          はじめての方も、同じ手順で登録できます。登録すると<a href="/privacy">プライバシーポリシー</a>に同意したものとみなします。
+          登録すると<a href="/privacy">プライバシーポリシー</a>に同意したものとみなします。
         </p>
       </main>
     </div>
   );
+}
+
+// Supabase で Google ログインが有効になっているときだけボタンを出す（未設定のまま押すとエラー画面になるため）
+async function googleEnabled() {
+  const keys = authKeys();
+  if (!keys) return false;
+  try {
+    const res = await fetch(`${keys.url}/auth/v1/settings`, { headers: { apikey: keys.key }, next: { revalidate: 60 } });
+    const json = await res.json();
+    return json?.external?.google === true;
+  } catch {
+    return false;
+  }
 }

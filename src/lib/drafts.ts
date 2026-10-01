@@ -13,6 +13,7 @@ export type Draft = {
   taste: TasteId;
   story: StoryId;
   child_name: string;
+  child_age: number | null;
   child_photo_path: string | null;
   mom_photo_path: string | null;
   dad_photo_path: string | null;
@@ -31,7 +32,7 @@ export function isDemoId(id: string) {
   return id.startsWith(DEMO_PREFIX);
 }
 
-export function demoDraftId(d: { taste: TasteId; story: StoryId; childName: string; hasMom: boolean; hasDad: boolean }) {
+export function demoDraftId(d: { taste: TasteId; story: StoryId; childName: string; childAge: number | null; hasMom: boolean; hasDad: boolean }) {
   return DEMO_PREFIX + Buffer.from(JSON.stringify(d)).toString("base64url");
 }
 
@@ -44,6 +45,7 @@ function parseDemoId(id: string): Draft {
     taste: d.taste,
     story: d.story,
     child_name: String(d.childName ?? ""),
+    child_age: typeof d.childAge === "number" ? d.childAge : null,
     child_photo_path: null,
     mom_photo_path: d.hasMom ? "demo" : null,
     dad_photo_path: d.hasDad ? "demo" : null,
@@ -117,7 +119,7 @@ export async function generateScene(draft: Draft, sceneIndex: number, quality: Q
     images.push({ who, file: await toFile(data, path.split("/").pop() ?? "photo.jpg", { type: data.type || "image/jpeg" }) });
   }
 
-  const b64 = await illustrate({ taste: draft.taste, story: draft.story, sceneIndex, images, quality });
+  const b64 = await illustrate({ taste: draft.taste, story: draft.story, sceneIndex, images, quality, childAge: draft.child_age });
 
   // 会員の写真は「最後に使った日」を更新する（1年使わなければ自動削除）
   const used = [draft.child_photo_path, draft.mom_photo_path, draft.dad_photo_path].filter((p): p is string => !!p);

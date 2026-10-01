@@ -9,22 +9,30 @@ export type FlowState = {
   taste: TasteId;
   story: StoryId;
   childName: string;
+  childAge: number | null;
   draftId: string | null;
   demo: boolean;
   previews: Record<number, string>;
   size: SizeId;
   extraCopy: boolean;
+  /** お届け希望日（YYYY-MM-DD）。空は最短 */
+  deliveryDate: string;
+  /** お届け時間帯。空は指定なし */
+  deliveryTime: string;
 };
 
 const initial: FlowState = {
   taste: "watercolor",
   story: "forest",
   childName: "",
+  childAge: null,
   draftId: null,
   demo: false,
   previews: {},
   size: "M",
   extraCopy: false,
+  deliveryDate: "",
+  deliveryTime: "",
 };
 
 export type Photos = { child: File | null; mom: File | null; dad: File | null };
