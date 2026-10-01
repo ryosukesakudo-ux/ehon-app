@@ -14,6 +14,12 @@ export function sampleUrl(taste: TasteId, story: StoryId, scene: number) {
   return samplePublicUrl(samplePath(taste, story, scene));
 }
 
+// お話ごとのキャラクター設定画（登場人物の顔・体つき・服装を決めた1枚）。
+// そのお話の見本はすべてこの絵を参考に描き、テイストが違っても同じ人物・同じ服装にそろえる。
+export function characterSheetPath(story: StoryId) {
+  return `characters/${story}.png`;
+}
+
 // 「この写真から → この絵本に」の見本（架空の家族の写真風の画像と、それをもとにした絵）
 export const SHOWCASE = { story: "forest" as StoryId, scene: 10, taste: "watercolor" as TasteId };
 export const SHOWCASE_PHOTO = "showcase/photo.png";
