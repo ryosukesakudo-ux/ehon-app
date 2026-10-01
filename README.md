@@ -8,7 +8,7 @@
 
 - 見本プレビューでは、お話のうち3場面だけ絵を作ります。残りはご注文後に管理画面から作ります。
 - 会員登録なしでも、ブラウザごと・IPアドレスごとに1回だけ見本3枚を作れます（作り直しなし）。
-- 会員（Google またはメールアドレスでログイン）は、プレビューを月30枚まで作れます（作り直しを含む）。注文は会員のみ。
+- 会員（Google、またはメールアドレス＋パスワードでログイン）は、プレビューを月30枚まで作れます（作り直しを含む）。注文は会員のみ。
 - マイページ `/account` で、作った絵本の絵、注文状況、保存している写真の確認・削除ができます。
 - お届け先・電話・メール・カード情報は Stripe の決済画面で入力します。
 - 管理画面 `/admin`（ユーザー名 `admin`、パスワードは `ADMIN_PASSWORD`）で、支払い済みの注文の全ページ作成、制作完了、発送済みの記録ができます。
@@ -36,7 +36,9 @@ http://localhost:3000 を開きます。キーを何も設定しなければ「�
 
 1. **Supabase**：プロジェクトを作り、SQL Editor で `supabase/schema.sql` を実行。`NEXT_PUBLIC_SUPABASE_URL`・`NEXT_PUBLIC_SUPABASE_ANON_KEY`・`SUPABASE_SERVICE_ROLE_KEY` を設定。
    - Authentication > URL Configuration：Site URL にサイトのURL、Redirect URLs に `https://<サイトのURL>/auth/callback` を追加。
-   - Authentication > Providers：Email は最初から有効。Google は Google Cloud で OAuth クライアントを作り、Client ID と Secret を入れて有効にする（承認済みのリダイレクトURIは Supabase の画面に表示される `https://<project>.supabase.co/auth/v1/callback`）。
+   - Authentication > Emails（Email Templates）：**Confirm signup** の文面のリンク `{{ .ConfirmationURL }}` を `{{ .RedirectTo }}&token_hash={{ .TokenHash }}&type=email` に、**Reset Password** の文面のリンクを `{{ .RedirectTo }}&token_hash={{ .TokenHash }}&type=recovery` に置き換える（メールを別のブラウザやメールアプリで開いても使えるようにするため。変えなくても同じブラウザなら動く）。
+   - Authentication > Sign In / Providers > Email：**Confirm email** をオン、**Minimum password length** を 8 にする（`src/lib/password.ts` と合わせる）。ログインはメールアドレス＋パスワード。パスワードを忘れたときは再設定メールから `/account/password` で決め直す。
+   - Authentication > Providers：Email は最初から有効。Google は Google Cloud で OAuth クライアントを作り、Client ID と Secret を入れて有効にする（承認済みのリダイレクトURIは Supabase の画面に表示される `https://<project>.supabase.co/auth/v1/callback`）。ログイン画面の Google ボタンは、Supabase で Google が有効なときだけ表示される。
 2. **OpenAI**：`OPENAI_API_KEY` を設定。モデルは `gpt-image-2`（`OPENAI_IMAGE_MODEL` で変更可）。
 3. **Stripe**：テストモードの `STRIPE_SECRET_KEY` を設定。Webhook の送信先を `https://<サイトのURL>/api/stripe/webhook`、イベントを `checkout.session.completed` と `checkout.session.async_payment_succeeded`（コンビニ払い用）にして、表示される署名シークレットを `STRIPE_WEBHOOK_SECRET` に設定。お客様への支払い完了メールは Stripe ダッシュボードの「メールによる領収書」を有効にする。
 4. **支払い方法**：Stripe ダッシュボードの「設定 > 支払い方法」で、カード・Apple Pay・Google Pay・コンビニ決済・PayPay を有効にする（PayPay は申請が必要）。コードの変更は不要です。

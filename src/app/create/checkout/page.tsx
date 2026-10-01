@@ -2,13 +2,27 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { getSize, getStory, getTaste, orderTotal, yen, EXTRA_COPY_PRICE } from "@/lib/catalog";
+import {
+  DELIVERY_MAX_DAYS,
+  DELIVERY_MIN_DAYS,
+  DELIVERY_TIMES,
+  EXTRA_COPY_PRICE,
+  getSize,
+  getStory,
+  getTaste,
+  jstDate,
+  orderTotal,
+  yen,
+} from "@/lib/catalog";
 import { useFlow } from "../flow";
 import { NextButton, StepHeader, StepTitle } from "../step";
 
 export default function CheckoutPage() {
   const router = useRouter();
-  const { state } = useFlow();
+  const { state, update } = useFlow();
+  const minDate = jstDate(DELIVERY_MIN_DAYS);
+  const maxDate = jstDate(DELIVERY_MAX_DAYS);
+  const dateOk = !state.deliveryDate || (state.deliveryDate >= minDate && state.deliveryDate <= maxDate);
   const [sending, setSending] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const size = getSize(state.size)!;
@@ -20,7 +34,13 @@ export default function CheckoutPage() {
       const res = await fetch("/api/checkout", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ draftId: state.draftId, size: state.size, extraCopy: state.extraCopy }),
+        body: JSON.stringify({
+          draftId: state.draftId,
+          size: state.size,
+          extraCopy: state.extraCopy,
+          deliveryDate: state.deliveryDate,
+          deliveryTime: state.deliveryTime,
+        }),
       });
       const json = await res.json();
       if (json.needLogin) {
@@ -44,7 +64,7 @@ export default function CheckoutPage() {
           <div className="display" style={{ fontSize: 15, fontWeight: 800, color: "var(--navy)" }}>ご注文内容</div>
           <div className="sum-row"><span>お話</span><span>{getStory(state.story)?.name}</span></div>
           <div className="sum-row"><span>テイスト</span><span>{getTaste(state.taste)?.name}</span></div>
-          <div className="sum-row"><span>主人公</span><span>{state.childName}</span></div>
+          <div className="sum-row"><span>主人公</span><span>{state.childName}{state.childAge ? `（${state.childAge}さい）` : ""}</span></div>
           <div className="sum-row"><span>サイズ</span><span>{size.name}（{size.spec}）</span></div>
           <div className="divider" />
           <div className="sum-row"><span>絵本</span><span>{yen(size.price)}</span></div>
@@ -53,6 +73,38 @@ export default function CheckoutPage() {
           <div className="sum-total">
             <span className="display" style={{ fontSize: 15, fontWeight: 800 }}>合計（税込）</span>
             <span className="display" style={{ fontSize: 26, fontWeight: 900, color: "var(--coral)" }}>{yen(orderTotal(state.size, state.extraCopy))}</span>
+          </div>
+        </div>
+        <div className="card" style={{ padding: 18, gap: 12 }}>
+          <div className="display" style={{ fontSize: 15, fontWeight: 800, color: "var(--navy)" }}>お届け日時</div>
+          <div className="field">
+            <label htmlFor="delivery-date">お届け希望日</label>
+            <input
+              id="delivery-date"
+              type="date"
+              min={minDate}
+              max={maxDate}
+              value={state.deliveryDate}
+              onChange={(e) => update({ deliveryDate: e.target.value })}
+            />
+            <p style={{ margin: 0, fontSize: 12, lineHeight: 1.6, color: "var(--sub)" }}>
+              ご注文日から{DELIVERY_MIN_DAYS}日後以降の日付を選べます。空欄のときは、できあがり次第お届けします。
+            </p>
+            {state.deliveryDate && (
+              <button type="button" className="ghost" style={{ alignSelf: "flex-start", height: 36, padding: "0 14px", fontSize: 13 }} onClick={() => update({ deliveryDate: "" })}>
+                日付の指定をやめる
+              </button>
+            )}
+            {!dateOk && <p className="error" role="alert">{DELIVERY_MIN_DAYS}日後から{DELIVERY_MAX_DAYS}日後までの日付を選んでください</p>}
+          </div>
+          <div className="field">
+            <label htmlFor="delivery-time">時間帯</label>
+            <select id="delivery-time" value={state.deliveryTime} onChange={(e) => update({ deliveryTime: e.target.value })}>
+              <option value="">指定なし</option>
+              {DELIVERY_TIMES.map((t) => (
+                <option key={t.id} value={t.id}>{t.label}</option>
+              ))}
+            </select>
           </div>
         </div>
         <div style={{ display: "flex", gap: 8, alignItems: "center", justifyContent: "center", fontSize: 12, color: "var(--sub)" }}>
@@ -67,7 +119,7 @@ export default function CheckoutPage() {
         </p>
         {error && <p className="error" role="alert">{error}</p>}
       </main>
-      <NextButton onClick={pay} disabled={sending || !state.draftId}>
+      <NextButton onClick={pay} disabled={sending || !state.draftId || !dateOk}>
         {sending ? "決済画面を開いています…" : "お届け先とお支払いへ"}
       </NextButton>
     </>

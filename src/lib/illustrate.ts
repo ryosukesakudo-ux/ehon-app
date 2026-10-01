@@ -12,7 +12,18 @@ const LABEL: Record<Person, string> = {
   dad: "the child's father",
 };
 
-export function buildPrompt(taste: TasteId, story: StoryId, sceneIndex: number, people: Person[]) {
+// 年齢ごとの体つき（写真が顔だけでも、絵の中で年齢に合った背丈・頭身にするため）
+export function ageBody(age: number) {
+  const build =
+    age <= 1 ? "a baby who has just started to toddle, with a big head (about 1:4 head-to-body), chubby cheeks, short arms and legs and a round tummy"
+    : age <= 3 ? "a small toddler with a big head (about 1:4.5 head-to-body), chubby cheeks and short, sturdy limbs"
+    : age <= 6 ? "a preschooler with a fairly big head (about 1:5 head-to-body), soft round cheeks and a small body"
+    : age <= 8 ? "an early elementary school child (about 1:5.5 head-to-body) with longer arms and legs and a slimmer face"
+    : "an older elementary school child (about 1:6 head-to-body), taller and slimmer, with long arms and legs";
+  return `The child is ${age} year${age === 1 ? "" : "s"} old: draw them as ${build}, at a height that fits that age next to the adults.`;
+}
+
+export function buildPrompt(taste: TasteId, story: StoryId, sceneIndex: number, people: Person[], childAge?: number | null) {
   const t = getTaste(taste)!;
   const scene = getStory(story)!.scenes[sceneIndex];
   const refs = people.map((p, i) => `Reference image ${i + 1} is ${LABEL[p]}.`).join(" ");
@@ -28,6 +39,7 @@ export function buildPrompt(taste: TasteId, story: StoryId, sceneIndex: number, 
     `${t.prompt}.`,
     refs,
     "Keep each person's face, hairstyle and features recognizable, translated into the illustration style. Make them look friendly and natural, never caricatured.",
+    childAge ? ageBody(childAge) : "",
     `Scene: ${scene.art}.`,
     generic.length ? `${generic.join(" and ")} appear in this scene; draw them as gentle adults without a specific likeness.` : "",
     absent.length ? `Do not include ${absent.join(" or ")} in this scene.` : "",
@@ -44,13 +56,14 @@ export async function illustrate(opts: {
   sceneIndex: number;
   images: { who: Person; file: Uploadable }[];
   quality: Quality;
+  childAge?: number | null;
 }): Promise<string> {
   const ai = getOpenAI();
   if (!ai) throw new Error("OPENAI_API_KEY が未設定です");
   const result = await ai.images.edit({
     model: process.env.OPENAI_IMAGE_MODEL ?? "gpt-image-2",
     image: opts.images.map((i) => i.file),
-    prompt: buildPrompt(opts.taste, opts.story, opts.sceneIndex, opts.images.map((i) => i.who)),
+    prompt: buildPrompt(opts.taste, opts.story, opts.sceneIndex, opts.images.map((i) => i.who), opts.childAge),
     size: opts.quality === "final" ? (process.env.OPENAI_FINAL_SIZE ?? "2048x2048") : "1024x1024",
     quality: opts.quality === "final" ? "high" : "medium",
     output_format: "png",

@@ -10,6 +10,7 @@ create table if not exists drafts (
   taste text not null,
   story text not null,
   child_name text not null,
+  child_age int check (child_age between 1 and 10),
   child_photo_path text,
   mom_photo_path text,
   dad_photo_path text,
@@ -21,6 +22,7 @@ create table if not exists drafts (
 
 -- 既に作成済みのデータベース向け（パパの写真欄の追加）
 alter table drafts add column if not exists dad_photo_path text;
+alter table drafts add column if not exists child_age int check (child_age between 1 and 10);
 
 create index if not exists drafts_user_idx on drafts (user_id, created_at desc);
 create index if not exists drafts_anon_idx on drafts (anon_id) where user_id is null;
@@ -71,11 +73,18 @@ create table if not exists orders (
   email text,
   phone text,
   shipping jsonb,
+  -- お届け希望日（null は最短）と時間帯（am / 14-16 / 16-18 / 18-20 / 19-21、null は指定なし）
+  delivery_date date,
+  delivery_time text,
   created_at timestamptz not null default now(),
   paid_at timestamptz,
   generated_at timestamptz,
   shipped_at timestamptz
 );
+
+-- 既に作成済みのデータベース向け（お届け日時の指定の追加）
+alter table orders add column if not exists delivery_date date;
+alter table orders add column if not exists delivery_time text;
 
 create index if not exists orders_status_idx on orders (status, created_at desc);
 create index if not exists orders_user_idx on orders (user_id, created_at desc);

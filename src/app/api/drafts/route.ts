@@ -1,5 +1,5 @@
 import { randomUUID } from "node:crypto";
-import { ANON_TRIAL_IP_DAYS, getStory, getTaste, type StoryId, type TasteId } from "@/lib/catalog";
+import { ANON_TRIAL_IP_DAYS, CHILD_AGES, getStory, getTaste, type StoryId, type TasteId } from "@/lib/catalog";
 import { demoDraftId } from "@/lib/drafts";
 import { currentUser } from "@/lib/auth";
 import { ensureAnonId, ipHash } from "@/lib/anon";
@@ -20,6 +20,7 @@ export async function POST(request: Request) {
   const taste = String(form.get("taste") ?? "");
   const story = String(form.get("story") ?? "");
   const childName = String(form.get("childName") ?? "").trim();
+  const childAge = Number(form.get("childAge"));
   const consent = form.get("consent") === "true";
   const childPhoto = form.get("childPhoto");
   const momPhoto = form.get("momPhoto");
@@ -30,6 +31,7 @@ export async function POST(request: Request) {
 
   if (!getTaste(taste) || !getStory(story)) return bad("テイストとお話を選んでください");
   if (!childName || childName.length > 12) return bad("名前は12文字以内で入力してください");
+  if (!CHILD_AGES.includes(childAge)) return bad("お子さまの年齢を選んでください");
   for (const f of [childPhoto, momPhoto, dadPhoto]) {
     if (!(f instanceof File)) continue;
     if (!PHOTO_TYPES[f.type]) return bad("写真は JPEG・PNG・WebP でアップロードしてください");
@@ -46,6 +48,7 @@ export async function POST(request: Request) {
         taste: taste as TasteId,
         story: story as StoryId,
         childName,
+        childAge,
         hasMom: momPhoto instanceof File,
         hasDad: dadPhoto instanceof File,
       }),
@@ -109,6 +112,7 @@ export async function POST(request: Request) {
       taste,
       story,
       child_name: childName,
+      child_age: childAge,
       child_photo_path: childPath,
       mom_photo_path: momPath,
       dad_photo_path: dadPath,

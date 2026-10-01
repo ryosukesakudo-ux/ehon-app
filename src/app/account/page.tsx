@@ -141,6 +141,7 @@ export default async function AccountPage() {
         </section>
 
         <div style={{ fontSize: 13, color: "var(--sub)" }}>ログイン中：{user.email}</div>
+        <Link href="/account/password" className="ghost">パスワードを設定・変更する</Link>
         <form action="/auth/signout" method="post">
           <button type="submit" className="ghost" style={{ width: "100%" }}>ログアウト</button>
         </form>

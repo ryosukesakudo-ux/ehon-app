@@ -10,6 +10,7 @@ export async function GET(_request: Request, ctx: RouteContext<"/api/drafts/[id]
     taste: draft.taste,
     story: draft.story,
     childName: draft.child_name,
+    childAge: draft.child_age,
     previews: await previewUrls(draft.id),
   });
 }

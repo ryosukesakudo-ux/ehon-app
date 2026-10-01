@@ -1,6 +1,6 @@
 "use client";
 
-import { STORIES } from "@/lib/catalog";
+import { CHILD_AGES, STORIES } from "@/lib/catalog";
 import { Check } from "@/components/icons";
 import { SampleImage } from "@/components/sample-image";
 import { sampleUrl } from "@/lib/samples";
@@ -10,6 +10,7 @@ import { NextButton, StepHeader, StepTitle } from "../step";
 export default function StoryPage() {
   const { state, update } = useFlow();
   const nameOk = state.childName.trim().length > 0 && state.childName.trim().length <= 12;
+  const ageOk = !!state.childAge;
   return (
     <>
       <StepHeader step={2} back="/create/taste" />
@@ -47,8 +48,22 @@ export default function StoryPage() {
             onChange={(e) => update({ childName: e.target.value, previews: {}, draftId: null })}
           />
         </div>
+        <div className="field">
+          <label htmlFor="childage" className="display">主人公の年齢</label>
+          <select
+            id="childage"
+            value={state.childAge ?? ""}
+            onChange={(e) => update({ childAge: e.target.value ? Number(e.target.value) : null, previews: {}, draftId: null })}
+          >
+            <option value="">選んでください</option>
+            {CHILD_AGES.map((a) => (
+              <option key={a} value={a}>{a}さい</option>
+            ))}
+          </select>
+          <p style={{ margin: 0, fontSize: 12, lineHeight: 1.6, color: "var(--sub)" }}>絵の中の背丈や体つきを、年齢に合わせて描きます。</p>
+        </div>
       </main>
-      <NextButton href="/create/photo" disabled={!nameOk}>次へ：写真をえらぶ</NextButton>
+      <NextButton href="/create/photo" disabled={!nameOk || !ageOk}>次へ：写真をえらぶ</NextButton>
     </>
   );
 }

@@ -1,4 +1,4 @@
-import { getSize, getStory, getTaste, sceneText, yen } from "@/lib/catalog";
+import { deliveryLabel, getSize, getStory, getTaste, sceneText, yen } from "@/lib/catalog";
 import { BOOK_BUCKET, getSupabase } from "@/lib/services";
 import { OrderActions } from "./actions";
 
@@ -77,6 +77,8 @@ export default async function AdminPage() {
               {o.extra_copy ? "＋追加1冊" : ""}／{yen(o.amount)}
               <br />
               お届け先：{ship?.name} 〒{a?.postal_code} {a?.state}{a?.city}{a?.line1} {a?.line2}
+              <br />
+              お届け希望：<strong>{deliveryLabel(o.delivery_date, o.delivery_time)}</strong>
               <br />
               連絡先：{o.email} {o.phone}
               <br />

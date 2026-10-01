@@ -165,6 +165,35 @@ export function getSize(id: string) {
   return SIZES.find((s) => s.id === id);
 }
 
+// お届け日の指定：ご注文日から7日後〜60日後（日本時間）。指定しなければ最短でお届け。
+export const DELIVERY_MIN_DAYS = 7;
+export const DELIVERY_MAX_DAYS = 60;
+export const DELIVERY_TIMES = [
+  { id: "am", label: "午前中" },
+  { id: "14-16", label: "14〜16時" },
+  { id: "16-18", label: "16〜18時" },
+  { id: "18-20", label: "18〜20時" },
+  { id: "19-21", label: "19〜21時" },
+] as const;
+export type DeliveryTimeId = (typeof DELIVERY_TIMES)[number]["id"];
+
+/** 日本時間の今日から days 日後の日付（YYYY-MM-DD） */
+export function jstDate(days: number, now = new Date()) {
+  return new Date(now.getTime() + 9 * 3600_000 + days * 86400_000).toISOString().slice(0, 10);
+}
+
+/** お届け日・時間帯の表示（例：10月20日（月）午前中）。指定なしは「最短でお届け」 */
+export function deliveryLabel(date: string | null | undefined, time: string | null | undefined) {
+  const t = DELIVERY_TIMES.find((d) => d.id === time)?.label ?? "";
+  if (!date) return t ? `最短でお届け・${t}` : "最短でお届け";
+  const d = new Date(`${date}T00:00:00Z`);
+  const w = "日月火水木金土"[d.getUTCDay()];
+  return `${d.getUTCMonth() + 1}月${d.getUTCDate()}日（${w}）${t ? ` ${t}` : ""}`;
+}
+
+/** 主人公の年齢の選択肢（1〜10歳） */
+export const CHILD_AGES = Array.from({ length: 10 }, (_, i) => i + 1);
+
 export function sceneText(scene: Scene, childName: string) {
   return scene.text.replaceAll("{name}", childName);
 }
