@@ -53,11 +53,11 @@ function PhotoSlot({
       </div>
       <label
         htmlFor={id}
-        style={{ display: "flex", flexDirection: "column", gap: 8, alignItems: "center", justifyContent: "center", height: 160, borderRadius: 14, border: "2px dashed #B9C8E2", background: "#F3F6FB", color: "var(--blue)", fontSize: 14, cursor: "pointer", overflow: "hidden" }}
+        style={{ display: "flex", flexDirection: "column", gap: 8, alignItems: "center", justifyContent: "center", height: url ? 220 : 160, borderRadius: 14, border: "2px dashed #B9C8E2", background: "#F3F6FB", color: "var(--blue)", fontSize: 14, cursor: "pointer", overflow: "hidden" }}
       >
         {url ? (
           // eslint-disable-next-line @next/next/no-img-element -- 選んだ写真のその場プレビュー
-          <img src={url} alt={`${title}の写真`} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+          <img src={url} alt={`${title}の写真`} style={{ width: "100%", height: "100%", objectFit: "contain" }} />
         ) : (
           <>
             <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
