@@ -219,3 +219,29 @@ export async function illustrateShowcase(opts: { taste: TasteId; story: StoryId;
   if (!b64) throw new Error("画像が生成されませんでした");
   return b64;
 }
+
+/** 見本の絵を表紙にした、製本済みのハードカバー絵本の商品写真風の画像を作る（トップの一番上に出す）。 */
+export async function makeHeroBookPhoto(opts: { title: string; cover: Uploadable }) {
+  const ai = getOpenAI();
+  if (!ai) throw new Error("OPENAI_API_KEY が未設定です");
+  const result = await ai.images.edit({
+    model: process.env.OPENAI_IMAGE_MODEL ?? "gpt-image-2",
+    image: [opts.cover],
+    prompt: [
+      "A photorealistic professional product photograph of a finished, printed hardcover children's picture book, as sold in a bookshop.",
+      "The reference image is the front cover illustration: print it edge to edge on the cover with a soft matte laminated finish, keeping the illustration and characters exactly as they are.",
+      `Print the Japanese title 「${opts.title}」 near the top of the cover in large, rounded, friendly navy-blue lettering with a thin white outline. Use exactly these characters and no other text.`,
+      "The book is square, standing upright on a surface, turned about 25 degrees toward the camera so the front cover and the spine are both visible.",
+      "Show real hardcover details: thick rigid boards with slightly rounded corners, a rounded spine with a hinge groove, and the cream-colored page block visible along the top edge.",
+      "Soft natural daylight from the upper left, a gentle realistic contact shadow under the book, subtle sheen on the cover, high detail, shallow depth of field.",
+      "Plain seamless pale sky-blue studio backdrop (#bfe0f5) that fills the entire background and the surface, with no other objects.",
+      "The book is centered and fills about 65% of the frame, with generous empty space around it.",
+    ].join(" "),
+    size: "1024x1024",
+    quality: "high",
+    output_format: "png",
+  });
+  const b64 = result.data?.[0]?.b64_json;
+  if (!b64) throw new Error("画像が生成されませんでした");
+  return b64;
+}

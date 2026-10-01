@@ -25,6 +25,9 @@ export const SHOWCASE = { story: "forest" as StoryId, scene: 10, taste: "waterco
 export const SHOWCASE_PHOTO = "showcase/photo.png";
 export const SHOWCASE_BOOK = "showcase/book.png";
 
+// トップの一番上に出す、完成した絵本の商品写真風の画像（表紙は SHOWCASE と同じお話の1枚目の見本）
+export const HERO_BOOK_PHOTO = "showcase/hero-book.png";
+
 export function samplePublicUrl(path: string) {
   const base = process.env.NEXT_PUBLIC_SUPABASE_URL;
   return base ? `${base}/storage/v1/object/public/samples/${path}` : null;
