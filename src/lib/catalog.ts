@@ -42,8 +42,9 @@ export type Scene = {
   text: string;
   // 挿絵の内容（英語でAIに渡す）
   art: string;
-  // ママが登場する場面か
+  // ママ・パパが登場する場面か
   withMom?: boolean;
+  withDad?: boolean;
 };
 
 // お話の中身は試作用。本番前に文章を確定させる。
@@ -70,7 +71,7 @@ export const STORIES: {
       { text: "でも、{name}は ゆうきを だして すすみます。", art: "the child walking bravely through the tunnel holding a small lantern" },
       { text: "トンネルを ぬけると、おおきな おおきな きが ありました。", art: "a giant ancient tree in a sunny clearing, the child looking up in awe" },
       { text: "もりの なかまが みんなで おいわい。", art: "forest animals celebrating around the child under the giant tree" },
-      { text: "かえりみち、ママが ぎゅっと だきしめて くれました。", art: "the mother hugging the child warmly on the way home at sunset", withMom: true },
+      { text: "かえりみち、ママと パパが ぎゅっと だきしめて くれました。", art: "the mother and father hugging the child warmly on the way home at sunset", withMom: true, withDad: true },
       { text: "{name}の だいぼうけんは、まだまだ つづきます。", art: "the child sleeping peacefully, dreaming of the forest" },
     ],
   },
@@ -90,7 +91,7 @@ export const STORIES: {
       { text: "「あ、ながれぼし！」", art: "a bright shooting star crossing the sky, the child pointing excitedly" },
       { text: "{name}は めを とじて、そっと おねがいしました。", art: "the child with eyes closed making a wish, hands together" },
       { text: "ほしたちが きらきらと ひかって こたえます。", art: "stars sparkling all around the child like an answer" },
-      { text: "かえりは、ママの せなかで うとうと。", art: "the child dozing on the mother's back walking down from the sky", withMom: true },
+      { text: "かえりは、パパの せなかで うとうと。ママも となりで にっこり。", art: "the child dozing on the father's back walking down from the sky, the mother smiling beside them", withMom: true, withDad: true },
       { text: "おねがいごとは、ふたりだけの ひみつです。", art: "the child asleep in bed, a small star glowing on the windowsill" },
     ],
   },
@@ -107,7 +108,7 @@ export const STORIES: {
       { text: "まほうつかいの ねこが あんないしてくれます。", art: "a friendly cat wizard in a starry hat guiding the child" },
       { text: "パーティーの じゅんびを てつだいました。", art: "the child helping decorate a party hall with floating lanterns" },
       { text: "ふうせんに のって、そらの さんぽ。", art: "the child floating in the sky holding colorful balloons" },
-      { text: "ママも かけつけて くれました。", art: "the mother arriving at the magical party with a big smile", withMom: true },
+      { text: "ママと パパも かけつけて くれました。", art: "the mother and father arriving at the magical party with big smiles", withMom: true, withDad: true },
       { text: "おおきな ケーキに、ろうそくが ともります。", art: "a huge birthday cake with glowing candles, the child about to blow" },
       { text: "「おたんじょうび おめでとう！」", art: "everyone at the party cheering for the child, confetti" },
       { text: "まほうの プレゼントは、たからものの ほん。", art: "the child receiving a glowing storybook as a present", withMom: true },
