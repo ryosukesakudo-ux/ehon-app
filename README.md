@@ -1,36 +1,42 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# わたしの絵本
 
-## Getting Started
+子どもやママの写真から、その子が主人公の絵本を AI で作り、製本して届けるサービスの試作版です。
 
-First, run the development server:
+## 画面の流れ
+
+トップ → テイスト選択 → お話と名前 → 写真アップロード → 見本プレビュー → サイズと見積もり → 注文確認 → 決済（Stripe）→ 完了
+
+- 見本プレビューでは、お話のうち3場面だけ絵を作ります。残りはご注文後に管理画面から作ります。
+- お届け先・電話・メール・カード情報は Stripe の決済画面で入力します。
+- 管理画面 `/admin`（ユーザー名 `admin`、パスワードは `ADMIN_PASSWORD`）で、支払い済みの注文の全ページ作成、制作完了、発送済みの記録ができます。
+
+## 手元で動かす
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+http://localhost:3000 を開きます。キーを何も設定しなければ「デモモード」で動き、絵は仮の画像、決済はスキップされます。
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 本番の設定
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+`.env.example` を `.env.local` にコピーして値を入れます（Vercel では Environment Variables に同じ名前で設定）。
 
-## Learn More
+1. **Supabase**：プロジェクトを作り、SQL Editor で `supabase/schema.sql` を実行。`SUPABASE_URL` と `SUPABASE_SERVICE_ROLE_KEY` を設定。
+2. **OpenAI**：`OPENAI_API_KEY` を設定。モデルは `gpt-image-2`（`OPENAI_IMAGE_MODEL` で変更可）。
+3. **Stripe**：テストモードの `STRIPE_SECRET_KEY` を設定。Webhook の送信先を `https://<サイトのURL>/api/stripe/webhook`、イベントを `checkout.session.completed` にして、表示される署名シークレットを `STRIPE_WEBHOOK_SECRET` に設定。お客様への支払い完了メールは Stripe ダッシュボードの「メールによる領収書」を有効にする。
+4. **管理画面と自動削除**：`ADMIN_PASSWORD` と `CRON_SECRET` に長いランダムな文字列を設定。
 
-To learn more about Next.js, take a look at the following resources:
+## 顔写真の扱い
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- 写真は非公開のストレージに保存し、挿絵の作成にだけ使います。
+- 管理画面で「制作完了」にした時点で削除します。
+- 注文されなかった写真は、毎日の自動処理（`vercel.json` の Cron）でアップロードから3日後に削除します。
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 公開前に残っていること
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- `src/app/legal`（特定商取引法に基づく表記）と `src/app/privacy` の `[ ]` を実際の内容にする
+- お話の文章（`src/lib/catalog.ts`）を確定させる。L サイズ（32ページ）のページ構成を決める
+- 印刷用データ（本文入りの PDF）の作成。現在は挿絵の画像のみ作成
+- テイスト見本・トップの表紙など `[ ]` で示した画像を差し替える
