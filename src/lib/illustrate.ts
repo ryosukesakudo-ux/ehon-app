@@ -4,6 +4,11 @@ import { getStory, getTaste, type StoryId, type TasteId } from "./catalog";
 import { getOpenAI } from "./services";
 
 export type Person = "child" | "mom" | "dad";
+
+// 写真をもとに描くとき、写実的になりすぎないようにする指示（お客様の絵本と、トップの見本で共通）
+const PICTURE_BOOK_CHARACTERS =
+  "Turn everyone into hand-drawn picture-book characters, not realistic portraits: simplified rounded faces, small simple eyes, a tiny nose, soft rosy cheeks, simplified hands and clothing folds, " +
+  "no photographic skin texture, lighting or detail. Keep only the traits that make each person recognizable, such as hairstyle, hair color, glasses and overall look.";
 export type Quality = "preview" | "final";
 
 const LABEL: Record<Person, string> = {
@@ -38,7 +43,8 @@ export function buildPrompt(taste: TasteId, story: StoryId, sceneIndex: number, 
   return [
     `${t.prompt}.`,
     refs,
-    "Keep each person's face, hairstyle and features recognizable, translated into the illustration style. Make them look friendly and natural, never caricatured.",
+    PICTURE_BOOK_CHARACTERS,
+    "Make them look friendly and natural, never caricatured.",
     childAge ? ageBody(childAge) : "",
     `Scene: ${scene.art}.`,
     generic.length ? `${generic.join(" and ")} appear in this scene; draw them as gentle adults without a specific likeness.` : "",
@@ -74,35 +80,86 @@ export async function illustrate(opts: {
 }
 
 // --- 作例（トップページなどに載せる見本の絵）---
-// 実在しない家族で描く。写真は使わない。
+// 実在しない家族で描く。お話ごとに「キャラクター設定画」を1枚作り、そのお話の見本はすべて
+// それを参考に描く（テイストが違っても、顔・体つき・服装は同じにする）。
 const SAMPLE_CAST: Record<Person, string> = {
-  child: "the main character is a cheerful Japanese child of about five with short black hair, round cheeks and a bright smile",
-  mom: "the mother is a gentle Japanese woman in her thirties with shoulder-length dark brown hair",
-  dad: "the father is a kind Japanese man in his thirties with short black hair and round glasses",
+  child: "a cheerful five-year-old Japanese boy with short black hair with a small cowlick, round cheeks and a bright smile",
+  mom: "a gentle Japanese woman in her thirties with shoulder-length dark brown hair",
+  dad: "a kind Japanese man in his thirties with short black hair and round black glasses",
 };
+
+// お話ごとの服装（同じお話の中では変えない）
+const SAMPLE_OUTFITS: Record<StoryId, Record<Person, string>> = {
+  forest: {
+    child: "a mustard-yellow hooded jacket, navy shorts, white socks, red sneakers and a small green backpack",
+    mom: "a light-green cardigan over a white T-shirt, beige wide pants and white sneakers",
+    dad: "a navy-and-white checked shirt, khaki pants and brown walking boots",
+  },
+  star: {
+    child: "light-blue pajamas with small yellow stars and bare feet",
+    mom: "a cream knit cardigan over a long navy dress",
+    dad: "a grey hoodie and dark blue sweatpants",
+  },
+  birthday: {
+    child: "a white shirt with a red bow tie, navy shorts with suspenders and a striped paper party hat",
+    mom: "a coral dress with a small white collar",
+    dad: "a light-blue shirt with rolled-up sleeves and beige chinos",
+  },
+};
+
+function sampleCast(story: StoryId, people: Person[]) {
+  const role: Record<Person, string> = { child: "The main character", mom: "The mother", dad: "The father" };
+  return people.map((p) => `${role[p]}: ${SAMPLE_CAST[p]}, wearing ${SAMPLE_OUTFITS[story][p]}.`).join(" ");
+}
+
+/** お話ごとのキャラクター設定画を作る（家族3人の全身・正面、白い背景）。 */
+export async function makeCharacterSheet(story: StoryId) {
+  const ai = getOpenAI();
+  if (!ai) throw new Error("OPENAI_API_KEY が未設定です");
+  const result = await ai.images.generate({
+    model: process.env.OPENAI_IMAGE_MODEL ?? "gpt-image-2",
+    prompt: [
+      "Character reference sheet for a children's picture book about a fictional Japanese family.",
+      sampleCast(story, ["child", "mom", "dad"]),
+      "Show the three characters standing side by side, full body, front view, on a plain white background, at heights that fit their ages.",
+      "Simple, warm picture-book character design with clear shapes and flat colors so the faces, hairstyles and outfits are easy to copy.",
+      "Do not draw any letters, words or text.",
+    ].join(" "),
+    size: "1024x1024",
+    quality: "medium",
+    output_format: "png",
+  });
+  const b64 = result.data?.[0]?.b64_json;
+  if (!b64) throw new Error("画像が生成されませんでした");
+  return b64;
+}
 
 export function buildSamplePrompt(taste: TasteId, story: StoryId, sceneIndex: number) {
   const t = getTaste(taste)!;
   const scene = getStory(story)!.scenes[sceneIndex];
-  const cast = [SAMPLE_CAST.child, scene.withMom ? SAMPLE_CAST.mom : null, scene.withDad ? SAMPLE_CAST.dad : null].filter(Boolean);
+  const people: Person[] = ["child", ...(scene.withMom ? (["mom"] as const) : []), ...(scene.withDad ? (["dad"] as const) : [])];
   return [
     `${t.prompt}.`,
-    `Characters (fictional, keep them consistent): ${cast.join("; ")}.`,
+    "The reference image is the character sheet for this story.",
+    "Draw exactly the same characters: the same faces, hairstyles, body proportions, outfits and outfit colors. Only the drawing style changes.",
+    sampleCast(story, people),
     `Scene: ${scene.art}.`,
     scene.withMom ? "" : "Do not include the mother in this scene.",
     scene.withDad ? "" : "Do not include the father in this scene.",
+    "Do not copy the white background or the side-by-side layout of the character sheet.",
     "Square composition with a calm area along the bottom for text. Do not draw any letters, words or text in the image.",
   ]
     .filter(Boolean)
     .join(" ");
 }
 
-/** 写真なしで作例の1場面を作り、PNG の base64 を返す。 */
-export async function illustrateSample(opts: { taste: TasteId; story: StoryId; sceneIndex: number; quality: Quality }) {
+/** キャラクター設定画をもとに作例の1場面を作り、PNG の base64 を返す。 */
+export async function illustrateSample(opts: { taste: TasteId; story: StoryId; sceneIndex: number; quality: Quality; sheet: Uploadable }) {
   const ai = getOpenAI();
   if (!ai) throw new Error("OPENAI_API_KEY が未設定です");
-  const result = await ai.images.generate({
+  const result = await ai.images.edit({
     model: process.env.OPENAI_IMAGE_MODEL ?? "gpt-image-2",
+    image: [opts.sheet],
     prompt: buildSamplePrompt(opts.taste, opts.story, opts.sceneIndex),
     size: "1024x1024",
     quality: opts.quality === "final" ? "high" : "medium",
@@ -148,7 +205,8 @@ export async function illustrateShowcase(opts: { taste: TasteId; story: StoryId;
     prompt: [
       `${t.prompt}.`,
       "The reference photo shows the family: the child (the main character) in the center, the mother on the left, the father on the right.",
-      "Keep each person's face, hairstyle and features recognizable, translated into the illustration style. Make them look friendly and natural, never caricatured.",
+      PICTURE_BOOK_CHARACTERS,
+      "Make them look friendly and natural, never caricatured. The result must clearly look like a page from a children's picture book, not a filtered photo.",
       `Scene: ${scene.art}.`,
       "Square composition with a calm area along the bottom for text. Do not draw any letters, words or text in the image.",
     ].join(" "),

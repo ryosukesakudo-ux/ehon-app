@@ -2,11 +2,20 @@
 
 import { useState } from "react";
 import { STORIES, TASTES, sceneText, type StoryId, type TasteId } from "@/lib/catalog";
-import { SAMPLE_CHILD_NAME, SAMPLE_SCENES, SHOWCASE_BOOK, SHOWCASE_PHOTO, samplePublicUrl, sampleUrl } from "@/lib/samples";
+import {
+  SAMPLE_CHILD_NAME,
+  SAMPLE_SCENES,
+  SHOWCASE_BOOK,
+  SHOWCASE_PHOTO,
+  characterSheetPath,
+  samplePublicUrl,
+  sampleUrl,
+} from "@/lib/samples";
 import { SampleImage } from "@/components/sample-image";
 
 // 作例スタジオ：実在しない家族で、トップページ・テイスト選択・お話選択に載せる見本の絵を作る。
-// 3テイスト × 3話 × 見本の3場面 = 27枚。中画質で約400円、高画質で約800〜1,000円（目安）。
+// お話ごとにまずキャラクター設定画を作り（3枚）、それをもとに 3テイスト × 3話 × 見本の3場面 = 27枚 を作る。
+// 中画質で約450円、高画質で約850〜1,050円（目安）。
 
 const PARALLEL = 3;
 type Key = `${TasteId}/${StoryId}/${number}`;
@@ -37,9 +46,45 @@ export default function SamplesPage() {
     }
   }
 
+  const [sheetBusy, setSheetBusy] = useState<Partial<Record<StoryId, boolean>>>({});
+  const [sheetErrors, setSheetErrors] = useState<Partial<Record<StoryId, string>>>({});
+  const [sheetVersion, setSheetVersion] = useState<Partial<Record<StoryId, number>>>({});
+
+  async function makeSheet(story: StoryId) {
+    setSheetBusy((b) => ({ ...b, [story]: true }));
+    setSheetErrors((e) => ({ ...e, [story]: "" }));
+    try {
+      const res = await fetch("/api/admin/samples", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ kind: "character", story }),
+      });
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.error ?? "作成に失敗しました");
+      setSheetVersion((v) => ({ ...v, [story]: Date.now() }));
+      return true;
+    } catch (e) {
+      setSheetErrors((x) => ({ ...x, [story]: e instanceof Error ? e.message : "作成に失敗しました" }));
+      return false;
+    } finally {
+      setSheetBusy((b) => ({ ...b, [story]: false }));
+    }
+  }
+
+  // まだ設定画の無いお話だけ、先に設定画を作る
+  async function ensureSheet(story: StoryId) {
+    const url = samplePublicUrl(characterSheetPath(story));
+    const exists = url ? await fetch(url, { method: "HEAD", cache: "no-store" }).then((r) => r.ok).catch(() => false) : false;
+    return exists || makeSheet(story);
+  }
+
   async function makeAll() {
-    if (!confirm(`27枚まとめて作ります（${quality === "final" ? "高画質" : "中画質"}）。よろしいですか？`)) return;
-    const jobs = TASTES.flatMap((t) => STORIES.flatMap((s) => SAMPLE_SCENES.map((sc) => () => make(t.id, s.id, sc))));
+    if (!confirm(`キャラクター設定画（未作成のお話のみ）と見本27枚をまとめて作ります（${quality === "final" ? "高画質" : "中画質"}）。よろしいですか？`)) return;
+    const ready = await Promise.all(STORIES.map((s) => ensureSheet(s.id)));
+    const okStories = new Set(STORIES.filter((_, i) => ready[i]).map((s) => s.id));
+    const jobs = TASTES.flatMap((t) =>
+      STORIES.filter((s) => okStories.has(s.id)).flatMap((s) => SAMPLE_SCENES.map((sc) => () => make(t.id, s.id, sc))),
+    );
     const run = async () => {
       for (let job = jobs.shift(); job; job = jobs.shift()) await job();
     };
@@ -69,7 +114,7 @@ export default function SamplesPage() {
     }
   }
 
-  const anyBusy = Object.values(busy).some(Boolean);
+  const anyBusy = Object.values(busy).some(Boolean) || Object.values(sheetBusy).some(Boolean);
 
   return (
     <main style={{ maxWidth: 1100, margin: "0 auto", padding: "24px 16px 64px", display: "flex", flexDirection: "column", gap: 20 }}>
@@ -87,7 +132,7 @@ export default function SamplesPage() {
           </select>
         </label>
         <button type="button" className="cta" style={{ width: "auto", height: 48, padding: "0 24px", fontSize: 16 }} disabled={anyBusy} onClick={makeAll}>
-          27枚まとめて作る
+          まとめて作る（設定画＋見本27枚）
         </button>
       </div>
       <section className="card" style={{ gap: 14 }}>
@@ -121,6 +166,28 @@ export default function SamplesPage() {
       {STORIES.map((s) => (
         <section key={s.id} className="card" style={{ gap: 14 }}>
           <h2 className="display" style={{ margin: 0, fontSize: 18, color: "var(--navy)" }}>{s.name}</h2>
+          <div style={{ display: "flex", gap: 14, alignItems: "flex-start", flexWrap: "wrap" }}>
+            <div style={{ width: 200, aspectRatio: "1 / 1", borderRadius: 10, overflow: "hidden", background: "#eee", display: "flex", alignItems: "center", justifyContent: "center" }}>
+              {sheetBusy[s.id] ? (
+                <div className="spinner" />
+              ) : (
+                <SampleImage
+                  key={sheetVersion[s.id] ?? 0}
+                  src={samplePublicUrl(characterSheetPath(s.id)) && `${samplePublicUrl(characterSheetPath(s.id))}?v=${sheetVersion[s.id] ?? 0}`}
+                  alt={`${s.name}のキャラクター設定画`}
+                  fallback={<span style={{ color: "#888" }}>未作成</span>}
+                />
+              )}
+            </div>
+            <div style={{ display: "flex", flexDirection: "column", gap: 8, flex: "1 1 260px", fontSize: 13, lineHeight: 1.7 }}>
+              <strong>キャラクター設定画</strong>
+              <span>このお話の登場人物の顔・体つき・服装を決める1枚です。下の見本はすべてこの絵をもとに描くので、テイストが違っても同じ人物・同じ服装になります。作り直したら、下の見本も作り直してください。</span>
+              <button type="button" className="ghost" style={{ height: 40, alignSelf: "flex-start" }} disabled={anyBusy} onClick={() => makeSheet(s.id)}>
+                キャラクター設定画を作る／作り直す
+              </button>
+              {sheetErrors[s.id] && <span className="error">{sheetErrors[s.id]}</span>}
+            </div>
+          </div>
           {TASTES.map((t) => (
             <div key={t.id} style={{ display: "flex", flexDirection: "column", gap: 8 }}>
               <strong style={{ fontSize: 14 }}>{t.name}</strong>
