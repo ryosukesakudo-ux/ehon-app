@@ -101,12 +101,21 @@ export default function Home() {
           <Sparkle size={22} className={s.deco} style={{ left: 262, top: 210 }} />
           <Star size={30} color="#F08A6C" className={s.deco} style={{ left: 250, top: 14, transform: "rotate(12deg)" }} />
           <Star size={22} color="#7CC7A8" className={s.deco} style={{ left: 18, top: 232 }} />
-          <div className={s.bookBack} />
+          <div className={s.bookShadow} />
           <div className={s.book}>
-            <div className={s.bookArt}>
-              <SampleImage src={sampleUrl("watercolor", "forest", 0)} alt="" fallback={<>[表紙の絵：お子さまが<br />森の入口で手をふる]</>} />
+            <div className={s.pages} />
+            <div className={s.cover}>
+              <div className={s.coverArt}>
+                <SampleImage src={sampleUrl("watercolor", "forest", 0)} alt="" fallback={<>[表紙の絵：お子さまが<br />森の入口で手をふる]</>} />
+              </div>
+              <div className={s.coverTitle}>
+                <div className={`${s.coverName} display`}>はるとと</div>
+                <div className={`${s.coverMain} display`}>もりのだいぼうけん</div>
+              </div>
+              <div className={s.coverAuthor}>わたしの絵本</div>
+              <div className={s.hinge} />
+              <div className={s.gloss} />
             </div>
-            <div className={`${s.bookTitle} display`}>はるとと<br />もりのだいぼうけん</div>
           </div>
           <div className={`${s.sticker} display`}>
             <div style={{ fontSize: 12 }}>世界に</div>
