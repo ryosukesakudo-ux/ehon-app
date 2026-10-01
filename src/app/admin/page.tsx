@@ -23,6 +23,7 @@ export default async function AdminPage() {
       <main style={{ padding: 24 }}>
         <h1>注文管理</h1>
         <p>Supabase が未設定のため、注文はありません（デモモード）。</p>
+        <p><a href="/admin/trial">試作スタジオ（写真から絵本を試しに作る）</a></p>
       </main>
     );
   }
@@ -58,6 +59,7 @@ export default async function AdminPage() {
   return (
     <main style={{ maxWidth: 960, margin: "0 auto", padding: "24px 16px 64px", display: "flex", flexDirection: "column", gap: 20 }}>
       <h1 className="display" style={{ margin: 0, color: "var(--navy)" }}>注文管理</h1>
+      <a href="/admin/trial">試作スタジオ（写真から絵本を試しに作る）</a>
       {rows.length === 0 && <p>まだ注文はありません。</p>}
       {rows.map(({ order: o, story, pages }) => {
         const ship = o.shipping as Shipping;
