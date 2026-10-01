@@ -2,7 +2,7 @@ import Link from "next/link";
 import type { CSSProperties, ReactNode } from "react";
 import { Arrow, BookIcon, Sparkle, Star } from "@/components/icons";
 import { ANON_TRIAL_IMAGES, EXTRA_COPY_PRICE, MEMBER_MONTHLY_PREVIEWS, SIZES, STORIES, TASTES, sceneText, yen } from "@/lib/catalog";
-import { SAMPLE_CHILD_NAME, SAMPLE_SCENES, SHOWCASE, SHOWCASE_BOOK, SHOWCASE_PHOTO, samplePublicUrl, sampleUrl } from "@/lib/samples";
+import { HERO_BOOK_PHOTO, SAMPLE_CHILD_NAME, SAMPLE_SCENES, SHOWCASE, SHOWCASE_BOOK, SHOWCASE_PHOTO, samplePublicUrl, sampleUrl } from "@/lib/samples";
 import { SampleImage } from "@/components/sample-image";
 import s from "./top.module.css";
 
@@ -96,18 +96,37 @@ export default function Home() {
         </h1>
         <p className={s.lead}>写真を1枚えらぶだけ。お子さまやママ・パパが登場する絵本を、AIがその子のためだけに描きます。</p>
         <div className={s.bookStage} aria-hidden="true">
-          <div className={s.sun} />
+          {/* 完成した絵本の写真（作例スタジオで作る）。まだ無いときは画面上で描いた絵本を出す */}
+          <SampleImage
+            src={samplePublicUrl(HERO_BOOK_PHOTO)}
+            alt=""
+            style={{ position: "absolute", left: -24, top: -24, width: "calc(100% + 48px)", height: "calc(100% + 48px)", maskImage: "radial-gradient(closest-side, #000 88%, transparent)" }}
+            fallback={
+              <>
+                <div className={s.sun} />
+                <div className={s.bookShadow} />
+                <div className={s.book}>
+                  <div className={s.pages} />
+                  <div className={s.cover}>
+                    <div className={s.coverArt}>
+                      <SampleImage src={sampleUrl("watercolor", "forest", 0)} alt="" fallback={<>[表紙の絵：お子さまが<br />森の入口で手をふる]</>} />
+                    </div>
+                    <div className={s.coverTitle}>
+                      <div className={`${s.coverName} display`}>はるとと</div>
+                      <div className={`${s.coverMain} display`}>もりのだいぼうけん</div>
+                    </div>
+                    <div className={s.coverAuthor}>わたしの絵本</div>
+                    <div className={s.hinge} />
+                    <div className={s.gloss} />
+                  </div>
+                </div>
+              </>
+            }
+          />
           <Sparkle size={26} className={s.deco} style={{ left: 8, top: 30 }} />
           <Sparkle size={22} className={s.deco} style={{ left: 262, top: 210 }} />
           <Star size={30} color="#F08A6C" className={s.deco} style={{ left: 250, top: 14, transform: "rotate(12deg)" }} />
           <Star size={22} color="#7CC7A8" className={s.deco} style={{ left: 18, top: 232 }} />
-          <div className={s.bookBack} />
-          <div className={s.book}>
-            <div className={s.bookArt}>
-              <SampleImage src={sampleUrl("watercolor", "forest", 0)} alt="" fallback={<>[表紙の絵：お子さまが<br />森の入口で手をふる]</>} />
-            </div>
-            <div className={`${s.bookTitle} display`}>はるとと<br />もりのだいぼうけん</div>
-          </div>
           <div className={`${s.sticker} display`}>
             <div style={{ fontSize: 12 }}>世界に</div>
             <div style={{ fontSize: 22 }}>1冊</div>

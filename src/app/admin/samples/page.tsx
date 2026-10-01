@@ -5,6 +5,7 @@ import { STORIES, TASTES, sceneText, type StoryId, type TasteId } from "@/lib/ca
 import {
   SAMPLE_CHILD_NAME,
   SAMPLE_SCENES,
+  HERO_BOOK_PHOTO,
   SHOWCASE_BOOK,
   SHOWCASE_PHOTO,
   characterSheetPath,
@@ -91,11 +92,11 @@ export default function SamplesPage() {
     await Promise.all(Array.from({ length: PARALLEL }, run));
   }
 
-  const [showcaseBusy, setShowcaseBusy] = useState<"photo" | "book" | null>(null);
+  const [showcaseBusy, setShowcaseBusy] = useState<"photo" | "book" | "hero" | null>(null);
   const [showcaseError, setShowcaseError] = useState<string | null>(null);
   const [showcaseVersion, setShowcaseVersion] = useState(0);
 
-  async function makeShowcase(step: "photo" | "book") {
+  async function makeShowcase(step: "photo" | "book" | "hero") {
     setShowcaseBusy(step);
     setShowcaseError(null);
     try {
@@ -135,6 +136,30 @@ export default function SamplesPage() {
           まとめて作る（設定画＋見本27枚）
         </button>
       </div>
+      <section className="card" style={{ gap: 14 }}>
+        <h2 className="display" style={{ margin: 0, fontSize: 18, color: "var(--navy)" }}>トップの一番上の絵本の写真</h2>
+        <p style={{ margin: 0, fontSize: 13, lineHeight: 1.7 }}>
+          「もりのだいぼうけん」の水彩の1枚目を表紙にした、製本済みの絵本の写真風の画像を作ります（1枚 約40円）。表紙の文字が崩れたときは作り直してください。まだ無いときは、画面上で描いた絵本が表示されます。
+        </p>
+        <div style={{ display: "flex", flexDirection: "column", gap: 6, maxWidth: 320 }}>
+          <div style={{ aspectRatio: "1 / 1", borderRadius: 10, overflow: "hidden", background: "#eee", display: "flex", alignItems: "center", justifyContent: "center" }}>
+            {showcaseBusy === "hero" ? (
+              <div className="spinner" />
+            ) : (
+              <SampleImage
+                key={showcaseVersion}
+                src={samplePublicUrl(HERO_BOOK_PHOTO) && `${samplePublicUrl(HERO_BOOK_PHOTO)}?v=${showcaseVersion}`}
+                alt="トップの絵本の写真"
+                fallback={<span style={{ color: "#888" }}>未作成</span>}
+              />
+            )}
+          </div>
+          <button type="button" className="ghost" style={{ height: 40 }} disabled={!!showcaseBusy} onClick={() => makeShowcase("hero")}>
+            絵本の写真を作る／作り直す
+          </button>
+        </div>
+        {showcaseError && <span className="error">{showcaseError}</span>}
+      </section>
       <section className="card" style={{ gap: 14 }}>
         <h2 className="display" style={{ margin: 0, fontSize: 18, color: "var(--navy)" }}>トップの「この写真から → この絵本に」</h2>
         <p style={{ margin: 0, fontSize: 13, lineHeight: 1.7 }}>
