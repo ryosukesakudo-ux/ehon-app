@@ -2,6 +2,8 @@
 
 import { TASTES } from "@/lib/catalog";
 import { Check } from "@/components/icons";
+import { SampleImage } from "@/components/sample-image";
+import { sampleUrl } from "@/lib/samples";
 import { useFlow } from "../flow";
 import { NextButton, StepHeader, StepTitle } from "../step";
 
@@ -21,9 +23,9 @@ export default function TastePage() {
             onClick={() => update({ taste: t.id, previews: {}, draftId: null })}
           >
             <div
-              style={{ flexShrink: 0, width: 96, height: 96, borderRadius: 12, background: t.swatch, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 11, color: "var(--sub)" }}
+              style={{ flexShrink: 0, width: 96, height: 96, borderRadius: 12, overflow: "hidden", background: t.swatch, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 11, color: "var(--sub)" }}
             >
-              [見本画像]
+              <SampleImage src={sampleUrl(t.id, state.story, 0)} alt={`${t.name}の見本`} fallback="[見本画像]" />
             </div>
             <div style={{ display: "flex", flexDirection: "column", gap: 6, flexGrow: 1 }}>
               <div className="choice-title display" style={{ fontSize: 18 }}>{t.name}</div>

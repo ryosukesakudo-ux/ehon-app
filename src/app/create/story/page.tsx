@@ -2,6 +2,8 @@
 
 import { STORIES } from "@/lib/catalog";
 import { Check } from "@/components/icons";
+import { SampleImage } from "@/components/sample-image";
+import { sampleUrl } from "@/lib/samples";
 import { useFlow } from "../flow";
 import { NextButton, StepHeader, StepTitle } from "../step";
 
@@ -21,8 +23,11 @@ export default function StoryPage() {
             aria-pressed={state.story === s.id}
             onClick={() => update({ story: s.id, previews: {}, draftId: null })}
           >
+            <div style={{ flexShrink: 0, width: 72, height: 72, borderRadius: 12, overflow: "hidden", background: "#E6EEF9", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 10, color: "var(--sub)" }}>
+              <SampleImage src={sampleUrl(state.taste, s.id, 0)} alt={`${s.name}の見本`} fallback="[見本]" />
+            </div>
             <div style={{ display: "flex", flexDirection: "column", gap: 6, flexGrow: 1 }}>
-              <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+              <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
                 <div className="choice-title display">{s.name}</div>
                 <div className="tag">{s.ages}</div>
               </div>
