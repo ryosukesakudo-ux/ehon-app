@@ -25,7 +25,7 @@ export async function GET(request: Request) {
   // 1. 登録前のお試しの写真
   const { data: anon } = await db
     .from("drafts")
-    .select("id, child_photo_path, mom_photo_path")
+    .select("id, child_photo_path, mom_photo_path, dad_photo_path")
     .is("user_id", null)
     .is("photos_deleted_at", null)
     .lt("created_at", ago(RETENTION.anonPhotoDays))

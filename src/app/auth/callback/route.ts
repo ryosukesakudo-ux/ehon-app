@@ -26,8 +26,8 @@ export async function GET(request: Request) {
       .update({ user_id: data.user.id })
       .eq("anon_id", anonId)
       .is("user_id", null)
-      .select("child_photo_path, mom_photo_path");
-    const paths = (drafts ?? []).flatMap((d) => [d.child_photo_path, d.mom_photo_path]).filter((p): p is string => !!p);
+      .select("child_photo_path, mom_photo_path, dad_photo_path");
+    const paths = (drafts ?? []).flatMap((d) => [d.child_photo_path, d.mom_photo_path, d.dad_photo_path]).filter((p): p is string => !!p);
     if (paths.length) {
       await db
         .from("user_photos")

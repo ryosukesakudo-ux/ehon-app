@@ -15,6 +15,7 @@ export type Draft = {
   child_name: string;
   child_photo_path: string | null;
   mom_photo_path: string | null;
+  dad_photo_path: string | null;
   generation_count: number;
   photos_deleted_at: string | null;
   images_deleted_at: string | null;
@@ -30,7 +31,7 @@ export function isDemoId(id: string) {
   return id.startsWith(DEMO_PREFIX);
 }
 
-export function demoDraftId(d: { taste: TasteId; story: StoryId; childName: string; hasMom: boolean }) {
+export function demoDraftId(d: { taste: TasteId; story: StoryId; childName: string; hasMom: boolean; hasDad: boolean }) {
   return DEMO_PREFIX + Buffer.from(JSON.stringify(d)).toString("base64url");
 }
 
@@ -45,6 +46,7 @@ function parseDemoId(id: string): Draft {
     child_name: String(d.childName ?? ""),
     child_photo_path: null,
     mom_photo_path: d.hasMom ? "demo" : null,
+    dad_photo_path: d.hasDad ? "demo" : null,
     generation_count: 0,
     photos_deleted_at: null,
     images_deleted_at: null,
@@ -104,7 +106,11 @@ export async function generateScene(draft: Draft, sceneIndex: number, quality: Q
   }
 
   const images: { who: Person; file: Awaited<ReturnType<typeof toFile>> }[] = [];
-  for (const [who, path] of [["child", draft.child_photo_path], ["mom", draft.mom_photo_path]] as const) {
+  for (const [who, path] of [
+    ["child", draft.child_photo_path],
+    ["mom", draft.mom_photo_path],
+    ["dad", draft.dad_photo_path],
+  ] as const) {
     if (!path) continue;
     const { data, error } = await db.storage.from(PHOTO_BUCKET).download(path);
     if (error || !data) throw new Error(`写真の読み込みに失敗しました: ${error?.message}`);
@@ -114,7 +120,7 @@ export async function generateScene(draft: Draft, sceneIndex: number, quality: Q
   const b64 = await illustrate({ taste: draft.taste, story: draft.story, sceneIndex, images, quality });
 
   // 会員の写真は「最後に使った日」を更新する（1年使わなければ自動削除）
-  const used = [draft.child_photo_path, draft.mom_photo_path].filter((p): p is string => !!p);
+  const used = [draft.child_photo_path, draft.mom_photo_path, draft.dad_photo_path].filter((p): p is string => !!p);
   if (draft.user_id && used.length) {
     await db.from("user_photos").update({ last_used_at: new Date().toISOString() }).in("path", used);
   }
@@ -166,16 +172,16 @@ export async function signedUrl(path: string) {
 }
 
 /** 登録前のお試しの顔写真を削除する（会員の写真は user_photos 側で管理する）。 */
-export async function deleteDraftPhotos(draft: Pick<Draft, "id" | "child_photo_path" | "mom_photo_path">) {
+export async function deleteDraftPhotos(draft: Pick<Draft, "id" | "child_photo_path" | "mom_photo_path" | "dad_photo_path">) {
   const db = getSupabase();
   if (!db) return;
-  const paths = [draft.child_photo_path, draft.mom_photo_path].filter((p): p is string => !!p);
+  const paths = [draft.child_photo_path, draft.mom_photo_path, draft.dad_photo_path].filter((p): p is string => !!p);
   if (paths.length) {
     const { error } = await db.storage.from(PHOTO_BUCKET).remove(paths);
     if (error) throw new Error(`写真の削除に失敗しました: ${error.message}`);
   }
   await db
     .from("drafts")
-    .update({ child_photo_path: null, mom_photo_path: null, photos_deleted_at: new Date().toISOString() })
+    .update({ child_photo_path: null, mom_photo_path: null, dad_photo_path: null, photos_deleted_at: new Date().toISOString() })
     .eq("id", draft.id);
 }

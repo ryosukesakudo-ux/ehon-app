@@ -27,7 +27,7 @@ const initial: FlowState = {
   extraCopy: false,
 };
 
-export type Photos = { child: File | null; mom: File | null };
+export type Photos = { child: File | null; mom: File | null; dad: File | null };
 
 type Ctx = {
   state: FlowState;
@@ -43,7 +43,7 @@ const KEY = "ehon-flow";
 
 export function FlowProvider({ children }: { children: ReactNode }) {
   const [state, setState] = useState<FlowState>(initial);
-  const [photos, setPhotos] = useState<Photos>({ child: null, mom: null });
+  const [photos, setPhotos] = useState<Photos>({ child: null, mom: null, dad: null });
   const [ready, setReady] = useState(false);
 
   useEffect(() => {

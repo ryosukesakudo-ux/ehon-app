@@ -11,6 +11,15 @@ export function samplePath(taste: TasteId, story: StoryId, scene: number) {
 }
 
 export function sampleUrl(taste: TasteId, story: StoryId, scene: number) {
+  return samplePublicUrl(samplePath(taste, story, scene));
+}
+
+// 「この写真から → この絵本に」の見本（架空の家族の写真風の画像と、それをもとにした絵）
+export const SHOWCASE = { story: "forest" as StoryId, scene: 10, taste: "watercolor" as TasteId };
+export const SHOWCASE_PHOTO = "showcase/photo.png";
+export const SHOWCASE_BOOK = "showcase/book.png";
+
+export function samplePublicUrl(path: string) {
   const base = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  return base ? `${base}/storage/v1/object/public/samples/${samplePath(taste, story, scene)}` : null;
+  return base ? `${base}/storage/v1/object/public/samples/${path}` : null;
 }

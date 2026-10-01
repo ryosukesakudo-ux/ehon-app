@@ -12,11 +12,15 @@ create table if not exists drafts (
   child_name text not null,
   child_photo_path text,
   mom_photo_path text,
+  dad_photo_path text,
   generation_count int not null default 0,
   photos_deleted_at timestamptz,
   images_deleted_at timestamptz,
   created_at timestamptz not null default now()
 );
+
+-- 既に作成済みのデータベース向け（パパの写真欄の追加）
+alter table drafts add column if not exists dad_photo_path text;
 
 create index if not exists drafts_user_idx on drafts (user_id, created_at desc);
 create index if not exists drafts_anon_idx on drafts (anon_id) where user_id is null;

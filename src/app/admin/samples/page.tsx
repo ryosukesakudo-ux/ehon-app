@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { STORIES, TASTES, sceneText, type StoryId, type TasteId } from "@/lib/catalog";
-import { SAMPLE_CHILD_NAME, SAMPLE_SCENES, sampleUrl } from "@/lib/samples";
+import { SAMPLE_CHILD_NAME, SAMPLE_SCENES, SHOWCASE_BOOK, SHOWCASE_PHOTO, samplePublicUrl, sampleUrl } from "@/lib/samples";
 import { SampleImage } from "@/components/sample-image";
 
 // 作例スタジオ：実在しない家族で、トップページ・テイスト選択・お話選択に載せる見本の絵を作る。
@@ -46,6 +46,29 @@ export default function SamplesPage() {
     await Promise.all(Array.from({ length: PARALLEL }, run));
   }
 
+  const [showcaseBusy, setShowcaseBusy] = useState<"photo" | "book" | null>(null);
+  const [showcaseError, setShowcaseError] = useState<string | null>(null);
+  const [showcaseVersion, setShowcaseVersion] = useState(0);
+
+  async function makeShowcase(step: "photo" | "book") {
+    setShowcaseBusy(step);
+    setShowcaseError(null);
+    try {
+      const res = await fetch("/api/admin/samples/showcase", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ step }),
+      });
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.error ?? "作成に失敗しました");
+      setShowcaseVersion(Date.now());
+    } catch (e) {
+      setShowcaseError(e instanceof Error ? e.message : "作成に失敗しました");
+    } finally {
+      setShowcaseBusy(null);
+    }
+  }
+
   const anyBusy = Object.values(busy).some(Boolean);
 
   return (
@@ -67,6 +90,34 @@ export default function SamplesPage() {
           27枚まとめて作る
         </button>
       </div>
+      <section className="card" style={{ gap: 14 }}>
+        <h2 className="display" style={{ margin: 0, fontSize: 18, color: "var(--navy)" }}>トップの「この写真から → この絵本に」</h2>
+        <p style={{ margin: 0, fontSize: 13, lineHeight: 1.7 }}>
+          ① 架空の家族（子ども・ママ・パパ）の写真風の画像を作る → ② その画像から絵本の1場面を作る、の順に押してください。①を作り直したら②も作り直します。
+        </p>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))", gap: 12 }}>
+          {([["photo", SHOWCASE_PHOTO, "① 写真風の画像を作る"], ["book", SHOWCASE_BOOK, "② この画像から絵本の絵を作る"]] as const).map(([step, path, label]) => (
+            <div key={step} style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+              <div style={{ aspectRatio: "1 / 1", borderRadius: 10, overflow: "hidden", background: "#eee", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                {showcaseBusy === step ? (
+                  <div className="spinner" />
+                ) : (
+                  <SampleImage
+                    key={showcaseVersion}
+                    src={samplePublicUrl(path) && `${samplePublicUrl(path)}?v=${showcaseVersion}`}
+                    alt={label}
+                    fallback={<span style={{ color: "#888" }}>未作成</span>}
+                  />
+                )}
+              </div>
+              <button type="button" className="ghost" style={{ height: 40 }} disabled={!!showcaseBusy} onClick={() => makeShowcase(step)}>
+                {label}
+              </button>
+            </div>
+          ))}
+        </div>
+        {showcaseError && <span className="error">{showcaseError}</span>}
+      </section>
       {STORIES.map((s) => (
         <section key={s.id} className="card" style={{ gap: 14 }}>
           <h2 className="display" style={{ margin: 0, fontSize: 18, color: "var(--navy)" }}>{s.name}</h2>
