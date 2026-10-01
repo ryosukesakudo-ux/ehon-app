@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createBrowserClient } from "@supabase/ssr";
+import { createClient } from "@supabase/supabase-js";
 import { PASSWORD_MIN } from "@/lib/password";
 
 function client() {
@@ -79,7 +80,12 @@ export function LoginForm({ next, google }: { next: string; google: boolean }) {
         }
         setSent({ kind: "signup", email });
       } else {
-        const { error } = await auth.resetPasswordForEmail(email, { redirectTo: callback("/account/password") });
+        // 再設定メールは、受け取ったスマホのメールアプリなど別のブラウザで開かれることが多い。
+        // ふつうの方式（PKCE）は申し込んだのと同じブラウザでしか開けないため、ここだけ別の方式で送る。
+        const implicit = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!, {
+          auth: { flowType: "implicit", persistSession: false, autoRefreshToken: false, detectSessionInUrl: false },
+        });
+        const { error } = await implicit.auth.resetPasswordForEmail(email, { redirectTo: callback("/reset-password") });
         if (error) throw message(error, "メールを送れませんでした。アドレスを確認してもう一度お試しください");
         setSent({ kind: "reset", email });
       }

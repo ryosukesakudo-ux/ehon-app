@@ -6,7 +6,7 @@ import { Check } from "@/components/icons";
 import { LoginForm } from "./form";
 
 export default async function LoginPage({ searchParams }: PageProps<"/login">) {
-  const { next, error } = await searchParams;
+  const { next, error, reason } = await searchParams;
   const nextPath = typeof next === "string" && next.startsWith("/") && !next.startsWith("//") ? next : "/account";
   if (await currentUser()) redirect(nextPath);
 
@@ -33,7 +33,9 @@ export default async function LoginPage({ searchParams }: PageProps<"/login">) {
           <p className="error" role="alert">
             {error === "expired"
               ? "メールのリンクの有効期限が切れたか、すでに使われています。もう一度お試しください。"
-              : "ログインできませんでした。もう一度お試しください。メールのリンクは、メールを送ったのと同じブラウザで開いてください。"}
+              : error === "provider"
+                ? `Google でログインできませんでした。時間をおいてもう一度お試しください。（${typeof reason === "string" ? reason : "理由不明"}）`
+                : "ログインできませんでした。登録の確認メールのリンクから来た場合、登録は済んでいます。メールアドレスとパスワードでログインしてください。"}
           </p>
         )}
         {authKeys() ? (
