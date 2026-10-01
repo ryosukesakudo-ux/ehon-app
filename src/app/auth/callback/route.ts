@@ -23,6 +23,9 @@ export async function GET(request: Request) {
   const tokenHash = params.get("token_hash");
   const type = params.get("type") as EmailOtpType | null;
   const code = params.get("code");
+  // パスワード再設定メール：ログイン情報は URL の # 以降に付いてきてサーバーには届かない。
+  // # 以降はリダイレクト先にも引き継がれるので、そのまま再設定の画面へ渡す。
+  if (!tokenHash && !code && next === "/reset-password") return NextResponse.redirect(new URL(next, url.origin));
   const { data, error } = tokenHash && type
     ? await client.auth.verifyOtp({ token_hash: tokenHash, type })
     : code

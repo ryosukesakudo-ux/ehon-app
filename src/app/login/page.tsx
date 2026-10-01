@@ -33,7 +33,7 @@ export default async function LoginPage({ searchParams }: PageProps<"/login">) {
           <p className="error" role="alert">
             {error === "expired"
               ? "メールのリンクの有効期限が切れたか、すでに使われています。もう一度お試しください。"
-              : "ログインできませんでした。もう一度お試しください。メールのリンクは、メールを送ったのと同じブラウザで開いてください。"}
+              : "ログインできませんでした。登録の確認メールのリンクから来た場合、登録は済んでいます。メールアドレスとパスワードでログインしてください。"}
           </p>
         )}
         {authKeys() ? (

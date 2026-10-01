@@ -36,7 +36,7 @@ http://localhost:3000 を開きます。キーを何も設定しなければ「�
 
 1. **Supabase**：プロジェクトを作り、SQL Editor で `supabase/schema.sql` を実行。`NEXT_PUBLIC_SUPABASE_URL`・`NEXT_PUBLIC_SUPABASE_ANON_KEY`・`SUPABASE_SERVICE_ROLE_KEY` を設定。
    - Authentication > URL Configuration：Site URL にサイトのURL、Redirect URLs に `https://<サイトのURL>/auth/callback` を追加。
-   - Authentication > Emails（Email Templates）：**Confirm signup** の文面のリンク `{{ .ConfirmationURL }}` を `{{ .RedirectTo }}&token_hash={{ .TokenHash }}&type=email` に、**Reset Password** の文面のリンクを `{{ .RedirectTo }}&token_hash={{ .TokenHash }}&type=recovery` に置き換える（メールを別のブラウザやメールアプリで開いても使えるようにするため。変えなくても同じブラウザなら動く）。
+   - Authentication > Emails（Email Templates）：`docs/email-templates.md` の日本語の文面に置き換える。パスワード再設定は別のブラウザで開いても使えるよう implicit 方式で送り、`/auth/callback` → `/reset-password` で受け取る。
    - Authentication > Sign In / Providers > Email：**Confirm email** をオン、**Minimum password length** を 8 にする（`src/lib/password.ts` と合わせる）。ログインはメールアドレス＋パスワード。パスワードを忘れたときは再設定メールから `/account/password` で決め直す。
    - Authentication > Providers：Email は最初から有効。Google は Google Cloud で OAuth クライアントを作り、Client ID と Secret を入れて有効にする（承認済みのリダイレクトURIは Supabase の画面に表示される `https://<project>.supabase.co/auth/v1/callback`）。ログイン画面の Google ボタンは、Supabase で Google が有効なときだけ表示される。
 2. **OpenAI**：`OPENAI_API_KEY` を設定。モデルは `gpt-image-2`（`OPENAI_IMAGE_MODEL` で変更可）。
