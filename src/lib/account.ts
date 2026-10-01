@@ -53,11 +53,12 @@ export async function deletePhoto(userId: string | null, photoId: string): Promi
   const { data: photo } = await q.maybeSingle();
   if (!photo) return { error: "写真が見つかりません" };
 
-  const [{ data: asChild }, { data: asMom }] = await Promise.all([
-    db.from("drafts").select("id").eq("child_photo_path", photo.path),
-    db.from("drafts").select("id").eq("mom_photo_path", photo.path),
-  ]);
-  const draftIds = [...(asChild ?? []), ...(asMom ?? [])].map((d) => d.id);
+  const found = await Promise.all(
+    (["child_photo_path", "mom_photo_path", "dad_photo_path"] as const).map((col) =>
+      db.from("drafts").select("id").eq(col, photo.path),
+    ),
+  );
+  const draftIds = found.flatMap((r) => r.data ?? []).map((d) => d.id);
   if (draftIds.length) {
     const { data: busy } = await db.from("orders").select("id").in("draft_id", draftIds).eq("status", "paid").limit(1);
     if (busy?.length) return { error: "制作中の絵本で使っているため、完成後に削除できます" };
@@ -69,5 +70,6 @@ export async function deletePhoto(userId: string | null, photoId: string): Promi
   const now = new Date().toISOString();
   await db.from("drafts").update({ child_photo_path: null, photos_deleted_at: now }).eq("child_photo_path", photo.path);
   await db.from("drafts").update({ mom_photo_path: null }).eq("mom_photo_path", photo.path);
+  await db.from("drafts").update({ dad_photo_path: null }).eq("dad_photo_path", photo.path);
   return { ok: true };
 }

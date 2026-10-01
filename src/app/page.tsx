@@ -1,7 +1,7 @@
 import Link from "next/link";
 import type { CSSProperties, ReactNode } from "react";
 import { Arrow, BookIcon, Sparkle, Star } from "@/components/icons";
-import { ANON_TRIAL_IMAGES, EXTRA_COPY_PRICE, SIZES, STORIES, TASTES, sceneText, yen } from "@/lib/catalog";
+import { ANON_TRIAL_IMAGES, EXTRA_COPY_PRICE, MEMBER_MONTHLY_PREVIEWS, SIZES, STORIES, TASTES, sceneText, yen } from "@/lib/catalog";
 import { SAMPLE_CHILD_NAME, SAMPLE_SCENES, sampleUrl } from "@/lib/samples";
 import { SampleImage } from "@/components/sample-image";
 import s from "./top.module.css";
@@ -50,7 +50,7 @@ const icon = (d: ReactNode, size = 26) => (
 
 const STEPS = [
   { color: "#2F5DA8", shadow: "#D5DDEB", title: "タッチとお話をえらぶ", desc: "水彩・クレヨン・アニメ風から、お子さまに合うものを。" },
-  { color: "#F08A6C", shadow: "#F2D3C8", title: "写真をアップロード", desc: "お子さまの写真1枚から。ママも一緒に登場できます。" },
+  { color: "#F08A6C", shadow: "#F2D3C8", title: "写真をアップロード", desc: "お子さまの写真1枚から。ママやパパも一緒に登場できます。" },
   { color: "#7CC7A8", shadow: "#CFE7DC", title: "できあがりを見て注文", desc: "見本のページを確認してから。数日後に発送します。" },
 ];
 
@@ -78,7 +78,7 @@ export default function Home() {
           わたしの絵本
         </Link>
         <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
-          <Link href="/account" className={`${s.headerLink} display`}>マイページ</Link>
+          <Link href="/login?next=/account" className={`${s.headerLink} display`}>ログイン</Link>
           <Link href="/create/taste" className={`${s.headerCta} display`}>つくる</Link>
         </div>
       </header>
@@ -94,7 +94,7 @@ export default function Home() {
           <br />
           <span className="nowrap">絵本、つくりませんか。</span>
         </h1>
-        <p className={s.lead}>写真を1枚えらぶだけ。お子さまやママが登場する絵本を、AIがその子のためだけに描きます。</p>
+        <p className={s.lead}>写真を1枚えらぶだけ。お子さまやママ・パパが登場する絵本を、AIがその子のためだけに描きます。</p>
         <div className={s.bookStage} aria-hidden="true">
           <div className={s.sun} />
           <Sparkle size={26} className={s.deco} style={{ left: 8, top: 30 }} />
@@ -116,6 +116,9 @@ export default function Home() {
         </div>
         <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
           <Cta />
+          <Link href="/login?next=/create/taste" className="ghost" style={{ height: 52, fontSize: 16, borderColor: "var(--navy)", color: "var(--navy)" }}>
+            無料会員登録・ログイン
+          </Link>
           <div className={s.note}>登録なしで1回お試しOK・お支払いは見本を確認してから</div>
         </div>
       </section>
@@ -154,6 +157,23 @@ export default function Home() {
               </div>
             </div>
           ))}
+        </div>
+      </section>
+
+      <section className={s.section} style={{ background: CREAM, paddingTop: 8 }}>
+        <div className={s.member}>
+          <Sparkle size={18} color="#F6C445" className={s.deco} style={{ right: 18, top: 16 }} />
+          <div className={`${s.memberTitle} display`}>無料会員になると</div>
+          <ul className={s.memberList}>
+            <li>見本の絵を月{MEMBER_MONTHLY_PREVIEWS}枚まで作れる（作り直しもOK）</li>
+            <li>写真を保存して、次の絵本にも使える</li>
+            <li>作った絵本をマイページで見返せる</li>
+          </ul>
+          <Link href="/login?next=/create/taste" className="cta yellow" style={{ height: 54, fontSize: 17 }}>
+            無料で会員登録する
+            <Arrow />
+          </Link>
+          <div style={{ fontSize: 12, textAlign: "center" }}>Google アカウントかメールアドレスで、すぐに登録できます</div>
         </div>
       </section>
 

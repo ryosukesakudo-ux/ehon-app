@@ -107,7 +107,7 @@ export default function PhotoPage() {
   const { state, update, photos, setPhotos } = useFlow();
   const [account] = useAccount();
   const [saved, setSaved] = useState<Saved[]>([]);
-  const [savedIds, setSavedIds] = useState<{ child: string | null; mom: string | null }>({ child: null, mom: null });
+  const [savedIds, setSavedIds] = useState<{ child: string | null; mom: string | null; dad: string | null }>({ child: null, mom: null, dad: null });
   const [consent, setConsent] = useState(false);
   const [sending, setSending] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -123,7 +123,7 @@ export default function PhotoPage() {
   }, [member]);
 
   const pickedChild = !!photos.child || !!savedIds.child;
-  const newUpload = !!photos.child || !!photos.mom;
+  const newUpload = !!photos.child || !!photos.mom || !!photos.dad;
   // 写真が選び直されていなければ、前回作った下書きをそのまま使う
   const reuse = !!state.draftId && !pickedChild;
   const canSubmit = reuse || (pickedChild && (!newUpload || consent));
@@ -144,6 +144,8 @@ export default function PhotoPage() {
       else if (savedIds.child) form.set("childPhotoId", savedIds.child);
       if (photos.mom) form.set("momPhoto", await shrinkPhoto(photos.mom));
       else if (savedIds.mom) form.set("momPhotoId", savedIds.mom);
+      if (photos.dad) form.set("dadPhoto", await shrinkPhoto(photos.dad));
+      else if (savedIds.dad) form.set("dadPhotoId", savedIds.dad);
       const res = await fetch("/api/drafts", { method: "POST", body: form });
       const json = await res.json();
       if (!res.ok) {
@@ -151,8 +153,8 @@ export default function PhotoPage() {
         throw new Error(json.error ?? "送信に失敗しました");
       }
       update({ draftId: json.draftId, demo: !!json.demo, previews: {} });
-      setPhotos({ child: null, mom: null });
-      setSavedIds({ child: null, mom: null });
+      setPhotos({ child: null, mom: null, dad: null });
+      setSavedIds({ child: null, mom: null, dad: null });
       router.push("/create/preview");
     } catch (e) {
       setError(e instanceof Error ? e.message : "送信に失敗しました");
@@ -195,6 +197,17 @@ export default function PhotoPage() {
           saved={saved}
           savedId={savedIds.mom}
           onPickSaved={(id) => { setSavedIds((s) => ({ ...s, mom: id })); if (id) setPhotos({ ...photos, mom: null }); }}
+        />
+        <PhotoSlot
+          id="dad-photo"
+          title="パパ"
+          note="パパを登場させたい場合にえらんでください。"
+          required={false}
+          file={photos.dad}
+          onChange={(f) => { setPhotos({ ...photos, dad: f }); if (f) setSavedIds((s) => ({ ...s, dad: null })); }}
+          saved={saved}
+          savedId={savedIds.dad}
+          onPickSaved={(id) => { setSavedIds((s) => ({ ...s, dad: id })); if (id) setPhotos({ ...photos, dad: null }); }}
         />
         {reuse ? (
           <p className="demo-note">写真は受け取り済みです。選び直す場合は、もう一度写真をえらんでください。</p>

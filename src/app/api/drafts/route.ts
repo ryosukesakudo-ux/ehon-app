@@ -13,7 +13,7 @@ function bad(message: string) {
 }
 
 // 写真ページの「絵本をつくる」で呼ぶ。下書きを作り、顔写真を非公開ストレージに保存する。
-// 会員は保存済みの写真（childPhotoId / momPhotoId）も選べる。
+// 会員は保存済みの写真（childPhotoId / momPhotoId / dadPhotoId）も選べる。
 // 会員でない場合は、ブラウザごと・IPアドレスごとに1回だけお試しできる。
 export async function POST(request: Request) {
   const form = await request.formData();
@@ -23,17 +23,19 @@ export async function POST(request: Request) {
   const consent = form.get("consent") === "true";
   const childPhoto = form.get("childPhoto");
   const momPhoto = form.get("momPhoto");
+  const dadPhoto = form.get("dadPhoto");
   const childPhotoId = String(form.get("childPhotoId") ?? "");
   const momPhotoId = String(form.get("momPhotoId") ?? "");
+  const dadPhotoId = String(form.get("dadPhotoId") ?? "");
 
   if (!getTaste(taste) || !getStory(story)) return bad("テイストとお話を選んでください");
   if (!childName || childName.length > 12) return bad("名前は12文字以内で入力してください");
-  for (const f of [childPhoto, momPhoto]) {
+  for (const f of [childPhoto, momPhoto, dadPhoto]) {
     if (!(f instanceof File)) continue;
     if (!PHOTO_TYPES[f.type]) return bad("写真は JPEG・PNG・WebP でアップロードしてください");
     if (f.size > MAX_PHOTO_BYTES) return bad("写真は10MB以下にしてください");
   }
-  const newUpload = childPhoto instanceof File || momPhoto instanceof File;
+  const newUpload = [childPhoto, momPhoto, dadPhoto].some((f) => f instanceof File);
   if (newUpload && !consent) return bad("写真の取り扱いへの同意が必要です");
 
   const db = getSupabase();
@@ -45,6 +47,7 @@ export async function POST(request: Request) {
         story: story as StoryId,
         childName,
         hasMom: momPhoto instanceof File,
+        hasDad: dadPhoto instanceof File,
       }),
       demo: true,
     });
@@ -98,6 +101,7 @@ export async function POST(request: Request) {
     }
 
     const momPath = momPhoto instanceof File ? await upload(momPhoto, "mom") : await saved(momPhotoId);
+    const dadPath = dadPhoto instanceof File ? await upload(dadPhoto, "dad") : await saved(dadPhotoId);
     const { error } = await db.from("drafts").insert({
       id,
       user_id: user?.id ?? null,
@@ -107,6 +111,7 @@ export async function POST(request: Request) {
       child_name: childName,
       child_photo_path: childPath,
       mom_photo_path: momPath,
+      dad_photo_path: dadPath,
     });
     if (error) throw new Error(error.message);
   } catch (e) {
