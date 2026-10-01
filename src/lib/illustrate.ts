@@ -7,8 +7,9 @@ export type Person = "child" | "mom" | "dad";
 
 // 写真をもとに描くとき、写実的になりすぎないようにする指示（お客様の絵本と、トップの見本で共通）
 const PICTURE_BOOK_CHARACTERS =
-  "Turn everyone into hand-drawn picture-book characters, not realistic portraits: simplified rounded faces, small simple eyes, a tiny nose, soft rosy cheeks, simplified hands and clothing folds, " +
-  "no photographic skin texture, lighting or detail. Keep only the traits that make each person recognizable, such as hairstyle, hair color, glasses and overall look.";
+  "Turn everyone into hand-drawn picture-book characters, not realistic portraits: simplified rounded faces, soft rosy cheeks, a small simple nose, simplified hands and clothing folds, " +
+  "no photographic skin texture, lighting or detail. Keep only the traits that make each person recognizable, such as hairstyle, hair color, glasses and overall look. " +
+  "Draw expressive picture-book eyes with a visible colored iris, a dark pupil and a small white highlight, gently shaped eyelids and lashes where fitting. Never draw the eyes as plain black dots or simple lines.";
 export type Quality = "preview" | "final";
 
 const LABEL: Record<Person, string> = {
