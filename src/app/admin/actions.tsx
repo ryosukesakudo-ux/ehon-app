@@ -7,11 +7,14 @@ export function OrderActions({
   orderId,
   status,
   sceneCount,
+  doneScenes,
   printSizes,
 }: {
   orderId: string;
   status: string;
   sceneCount: number;
+  /** 本番の絵ができている場面（作り直さずに飛ばす） */
+  doneScenes: number[];
   /** 入稿用PDFを作るサイズ（注文のサイズと、2冊目があればM） */
   printSizes: string[];
 }) {
@@ -34,16 +37,19 @@ export function OrderActions({
       router.refresh();
     } catch (e) {
       setError(e instanceof Error ? e.message : "失敗しました");
+      // 途中まで作れた絵を一覧に出す
+      router.refresh();
     } finally {
       setBusy(null);
     }
   }
 
-  // 1場面ずつ順番に作る（1枚あたり1分前後かかる）
+  // まだ無い場面を1つずつ順番に作る（1枚あたり1分前後かかる）。途中で止まっても、押し直せば続きから作る
+  const todo = Array.from({ length: sceneCount }, (_, i) => i).filter((i) => !doneScenes.includes(i));
   const generateAll = () =>
     run("generate", async () => {
-      for (let i = 0; i < sceneCount; i++) {
-        setBusy(`generate:${i + 1}/${sceneCount}`);
+      for (const [n, i] of todo.entries()) {
+        setBusy(`generate:${doneScenes.length + n + 1}/${sceneCount}`);
         await call(`scenes/${i}`);
       }
     });
@@ -65,8 +71,14 @@ export function OrderActions({
     <div style={{ display: "flex", flexWrap: "wrap", gap: 8, alignItems: "center" }}>
       {status === "paid" && (
         <>
-          <button type="button" className="ghost" disabled={!!busy} onClick={generateAll}>
-            {busy?.startsWith("generate") ? `作成中 ${busy.split(":")[1] ?? ""}` : "全ページの絵を作る（印刷用）"}
+          <button type="button" className="ghost" disabled={!!busy || todo.length === 0} onClick={generateAll}>
+            {busy?.startsWith("generate")
+              ? `作成中 ${busy.split(":")[1] ?? ""}`
+              : todo.length === 0
+                ? "全ページの絵ができています"
+                : doneScenes.length
+                  ? `続きの絵を作る（残り${todo.length}枚）`
+                  : "全ページの絵を作る（印刷用）"}
           </button>
           <button
             type="button"
