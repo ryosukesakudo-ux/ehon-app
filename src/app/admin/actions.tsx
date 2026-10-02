@@ -3,10 +3,22 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
-export function OrderActions({ orderId, status, sceneCount }: { orderId: string; status: string; sceneCount: number }) {
+export function OrderActions({
+  orderId,
+  status,
+  sceneCount,
+  printSizes,
+}: {
+  orderId: string;
+  status: string;
+  sceneCount: number;
+  /** 入稿用PDFを作るサイズ（注文のサイズと、2冊目があればM） */
+  printSizes: string[];
+}) {
   const router = useRouter();
   const [busy, setBusy] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [pdfs, setPdfs] = useState<Record<string, { body: string; cover: string }>>({});
 
   async function call(path: string) {
     const res = await fetch(`/api/admin/orders/${orderId}/${path}`, { method: "POST" });
@@ -36,6 +48,19 @@ export function OrderActions({ orderId, status, sceneCount }: { orderId: string;
       }
     });
 
+  // 入稿用PDF（本文・表紙）を作って、ダウンロードのリンクを出す（リンクは1時間有効）
+  const makePdf = (size: string) =>
+    run(`pdf:${size}`, async () => {
+      const res = await fetch(`/api/admin/orders/${orderId}/print`, {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ size }),
+      });
+      const json = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(json.error ?? `失敗しました (${res.status})`);
+      setPdfs((p) => ({ ...p, [size]: json.urls }));
+    });
+
   return (
     <div style={{ display: "flex", flexWrap: "wrap", gap: 8, alignItems: "center" }}>
       {status === "paid" && (
@@ -61,6 +86,20 @@ export function OrderActions({ orderId, status, sceneCount }: { orderId: string;
           発送済みにする
         </button>
       )}
+      {status !== "pending" &&
+        printSizes.map((size) => (
+          <span key={size} style={{ display: "inline-flex", gap: 8, alignItems: "center" }}>
+            <button type="button" className="ghost" disabled={!!busy} onClick={() => makePdf(size)}>
+              {busy === `pdf:${size}` ? "PDFを作成中…" : `入稿用PDFを作る（${size}サイズ）`}
+            </button>
+            {pdfs[size] && (
+              <>
+                <a href={pdfs[size].body}>本文PDF</a>
+                <a href={pdfs[size].cover}>表紙PDF</a>
+              </>
+            )}
+          </span>
+        ))}
       {error && <p className="error" role="alert" style={{ width: "100%" }}>{error}</p>}
     </div>
   );

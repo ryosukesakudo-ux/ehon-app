@@ -122,12 +122,14 @@ export const SIZES: {
   name: string;
   spec: string;
   pages: number;
+  /** 印刷の仕上がりサイズ（正方形の1辺、mm） */
+  trimMm: number;
   price: number;
   popular?: boolean;
 }[] = [
-  { id: "S", name: "S", spec: "約18cm角・24ページ・ソフトカバー", pages: 24, price: 3980 },
-  { id: "M", name: "M", spec: "約21cm角・24ページ・ハードカバー", pages: 24, price: 5980, popular: true },
-  { id: "L", name: "L", spec: "約25cm角・32ページ・ハードカバー・ギフト箱入り", pages: 32, price: 8980 },
+  { id: "S", name: "S", spec: "約18cm角・24ページ・ソフトカバー", pages: 24, trimMm: 180, price: 3980 },
+  { id: "M", name: "M", spec: "約21cm角・24ページ・ハードカバー", pages: 24, trimMm: 210, price: 5980, popular: true },
+  { id: "L", name: "L", spec: "約25cm角・32ページ・ハードカバー・ギフト箱入り", pages: 32, trimMm: 250, price: 8980 },
 ];
 
 // 祖父母用の2冊目（Mサイズ・同梱）

@@ -84,7 +84,7 @@ export default async function AdminPage() {
               <br />
               写真：{o.drafts.photos_deleted_at ? "削除済み" : "保管中"}
             </div>
-            <OrderActions orderId={o.id} status={o.status} sceneCount={story.scenes.length} />
+            <OrderActions orderId={o.id} status={o.status} sceneCount={story.scenes.length} printSizes={o.extra_copy && o.size !== "M" ? [o.size, "M"] : [o.size]} />
             <details>
               <summary>ページ一覧（{pages.filter((p) => p.url).length}/{pages.length} 枚作成済み）</summary>
               <ol style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(160px, 1fr))", gap: 12, padding: 0, listStyle: "none" }}>
