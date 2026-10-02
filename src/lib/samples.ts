@@ -1,9 +1,9 @@
-import { PREVIEW_SCENES, type StoryId, type TasteId } from "./catalog";
+import type { StoryId, TasteId } from "./catalog";
 
 // 作例（実在しない家族で描いた見本の絵）。Supabase の公開ストレージ samples に置き、
 // トップページ・テイスト選択・お話選択で表示する。まだ無いときは各画面の仮の見た目のまま。
 
-export const SAMPLE_SCENES = PREVIEW_SCENES;
+export const SAMPLE_SCENES = [0, 3, 8];
 export const SAMPLE_CHILD_NAME = "はると";
 
 export function samplePath(taste: TasteId, story: StoryId, scene: number) {

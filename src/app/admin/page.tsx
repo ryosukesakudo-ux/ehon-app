@@ -1,4 +1,4 @@
-import { deliveryLabel, getSize, getStory, getTaste, sceneText, yen } from "@/lib/catalog";
+import { COVER_SCENE, bookScenes, deliveryLabel, getSize, getStory, getTaste, sceneText, yen } from "@/lib/catalog";
 import { BOOK_BUCKET, getSupabase } from "@/lib/services";
 import { OrderActions } from "./actions";
 
@@ -49,8 +49,10 @@ export default async function AdminPage() {
       return {
         order: o,
         story,
-        pages: story.scenes.map((sc, i) => ({
-          text: sceneText(sc, o.drafts.child_name),
+        // 表紙＋全場面
+        pages: bookScenes(story.id).map((i) => ({
+          index: i,
+          text: i === COVER_SCENE ? "表紙" : sceneText(story.scenes[i], o.drafts.child_name),
           url: urls?.find((u) => u.path?.endsWith(`/${String(i).padStart(2, "0")}.png`))?.signedUrl ?? null,
         })),
       };
@@ -84,7 +86,7 @@ export default async function AdminPage() {
               <br />
               写真：{o.drafts.photos_deleted_at ? "削除済み" : "保管中"}
             </div>
-            <OrderActions orderId={o.id} status={o.status} sceneCount={story.scenes.length} doneScenes={pages.flatMap((p, i) => (p.url ? [i] : []))} printSizes={o.extra_copy && o.size !== "M" ? [o.size, "M"] : [o.size]} />
+            <OrderActions orderId={o.id} status={o.status} scenes={pages.map((p) => p.index)} doneScenes={pages.flatMap((p) => (p.url ? [p.index] : []))} printSizes={o.extra_copy && o.size !== "M" ? [o.size, "M"] : [o.size]} />
             <details>
               <summary>ページ一覧（{pages.filter((p) => p.url).length}/{pages.length} 枚作成済み）</summary>
               <ol style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(160px, 1fr))", gap: 12, padding: 0, listStyle: "none" }}>
@@ -93,12 +95,12 @@ export default async function AdminPage() {
                     {p.url ? (
                       <a href={p.url} target="_blank" rel="noreferrer">
                         {/* eslint-disable-next-line @next/next/no-img-element -- 署名付きURLの一時画像 */}
-                        <img src={p.url} alt={`場面${i + 1}`} style={{ width: "100%", aspectRatio: "1 / 1", objectFit: "cover", borderRadius: 8 }} />
+                        <img src={p.url} alt={p.text} style={{ width: "100%", aspectRatio: p.index === COVER_SCENE ? "3 / 2" : "1 / 1", objectFit: "cover", borderRadius: 8 }} />
                       </a>
                     ) : (
                       <div style={{ aspectRatio: "1 / 1", borderRadius: 8, background: "#eee", display: "flex", alignItems: "center", justifyContent: "center" }}>未作成</div>
                     )}
-                    {i + 1}. {p.text}
+                    {p.index === COVER_SCENE ? "" : `${i}. `}{p.text}
                   </li>
                 ))}
               </ol>

@@ -2,7 +2,7 @@ import "server-only";
 import { toFile } from "openai";
 import { BOOK_BUCKET, PHOTO_BUCKET, getOpenAI, getSupabase } from "./services";
 import { illustrate, type Person, type Quality } from "./illustrate";
-import { getStory, getTaste, type StoryId, type TasteId } from "./catalog";
+import { COVER_SCENE, getStory, getTaste, previewScenes, type StoryId, type TasteId } from "./catalog";
 import { currentUser, type Member } from "./auth";
 import { getAnonId } from "./anon";
 
@@ -82,10 +82,18 @@ export async function loadOwnedDraft(id: string): Promise<{ draft: Draft; user: 
 
 // --- 画像生成 ---
 
+/** この下書きのプレビューで作る絵の番号（表紙・ママ・パパ） */
+export function draftPreviewScenes(draft: Draft) {
+  return previewScenes(draft.story, { hasMom: !!draft.mom_photo_path, hasDad: !!draft.dad_photo_path, seed: draft.id });
+}
+
 function demoImage(draft: Draft, sceneIndex: number) {
   const taste = getTaste(draft.taste)!;
-  const scene = getStory(draft.story)!.scenes[sceneIndex];
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024"><rect width="1024" height="1024" fill="${taste.swatch}"/><circle cx="820" cy="190" r="90" fill="#F6C445"/><path d="M0 760 C 260 640 520 820 1024 700 L1024 1024 L0 1024Z" fill="#ffffff" opacity="0.55"/><text x="512" y="480" font-size="40" text-anchor="middle" fill="#43505C" font-family="sans-serif">[デモ画像] 場面 ${sceneIndex + 1}</text><text x="512" y="540" font-size="26" text-anchor="middle" fill="#43505C" font-family="sans-serif">${escapeXml(scene.art.slice(0, 60))}</text></svg>`;
+  const story = getStory(draft.story)!;
+  const cover = sceneIndex === COVER_SCENE;
+  const scene = cover ? { art: story.cover } : story.scenes[sceneIndex];
+  const h = cover ? 683 : 1024;
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 ${h}"><rect width="1024" height="${h}" fill="${taste.swatch}"/><circle cx="820" cy="190" r="90" fill="#F6C445"/><path d="M0 760 C 260 640 520 820 1024 700 L1024 1024 L0 1024Z" fill="#ffffff" opacity="0.55"/><text x="512" y="480" font-size="40" text-anchor="middle" fill="#43505C" font-family="sans-serif">[デモ画像] ${cover ? "表紙" : `場面 ${sceneIndex + 1}`}</text><text x="512" y="540" font-size="26" text-anchor="middle" fill="#43505C" font-family="sans-serif">${escapeXml(scene.art.slice(0, 60))}</text></svg>`;
   return `data:image/svg+xml;base64,${Buffer.from(svg).toString("base64")}`;
 }
 

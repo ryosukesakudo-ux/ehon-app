@@ -3,7 +3,8 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { MEMBER_MONTHLY_PREVIEWS, PREVIEW_SCENES, getStory, sceneText } from "@/lib/catalog";
+import { COVER_SCENE, MEMBER_MONTHLY_PREVIEWS, bookTitle, getStory, sceneText } from "@/lib/catalog";
+import { BookCover } from "@/components/book-cover";
 import { Chevron } from "@/components/icons";
 import { useFlow } from "../flow";
 import { loginHref, useAccount } from "../account";
@@ -11,7 +12,7 @@ import { NextButton, StepHeader, StepTitle } from "../step";
 
 export default function PreviewPage() {
   const router = useRouter();
-  const { state, setPreview, ready } = useFlow();
+  const { state, setPreview, update, ready } = useFlow();
   const [pos, setPos] = useState(0);
   const [loading, setLoading] = useState<Record<number, boolean>>({});
   const [error, setError] = useState<string | null>(null);
@@ -22,7 +23,10 @@ export default function PreviewPage() {
   const inFlight = useRef(new Set<number>());
 
   const story = getStory(state.story)!;
-  const scene = PREVIEW_SCENES[pos];
+  const scenes = state.previewScenes;
+  const scene = scenes[pos];
+  const isCover = scene === COVER_SCENE;
+  const title = bookTitle(state.story, state.childName);
 
   async function generate(index: number) {
     if (!state.draftId || inFlight.current.has(index)) return;
@@ -54,14 +58,32 @@ export default function PreviewPage() {
       router.replace("/create/photo");
       return;
     }
+    // 以前の画面で作った下書きなど、プレビューの場面が分からないときはサーバーに聞く
+    if (!scenes.length) {
+      fetch(`/api/drafts/${encodeURIComponent(state.draftId)}`)
+        .then((r) => (r.ok ? r.json() : null))
+        .then((json) => json?.previewScenes && update({ previewScenes: json.previewScenes }))
+        .catch(() => {});
+      return;
+    }
     // 足りない見本の絵の作成をサーバーに依頼する（読み込み中の表示もここで切り替わる）
     // eslint-disable-next-line react-hooks/set-state-in-effect
-    for (const i of PREVIEW_SCENES) if (!state.previews[i]) generate(i);
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- 画面を開いたときに一度だけ作る
-  }, [ready, state.draftId]);
+    for (const i of scenes) if (!state.previews[i]) generate(i);
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 画面を開いたとき（と場面が分かったとき）に一度だけ作る
+  }, [ready, state.draftId, scenes.length]);
 
-  const url = state.previews[scene];
-  const allDone = PREVIEW_SCENES.every((i) => state.previews[i]);
+  const url = scene === undefined ? undefined : state.previews[scene];
+  const allDone = scenes.length > 0 && scenes.every((i) => state.previews[i]);
+  const picture =
+    url && !loading[scene] ? (
+      // eslint-disable-next-line @next/next/no-img-element -- 署名付きURLの一時画像
+      <img src={url} alt={isCover ? "表紙の絵" : `${pos + 1}枚目の挿絵`} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+    ) : (
+      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 12, color: "var(--sub)", fontSize: 13 }}>
+        <div className="spinner" />
+        <span>絵をかいています…（1分ほどかかります）</span>
+      </div>
+    );
 
   return (
     <>
@@ -72,19 +94,13 @@ export default function PreviewPage() {
           <p className="demo-note">デモモードで動いています。実際の絵の代わりに仮の画像を表示しています。</p>
         )}
         <div style={{ display: "flex", flexDirection: "column", borderRadius: 18, overflow: "hidden", background: "#fff", border: "1px solid var(--line)" }}>
-          <div style={{ aspectRatio: "1 / 1", background: "#E6EEF9", display: "flex", alignItems: "center", justifyContent: "center" }}>
-            {url && !loading[scene] ? (
-              // eslint-disable-next-line @next/next/no-img-element -- 署名付きURLの一時画像
-              <img src={url} alt={`${pos + 1}枚目の挿絵`} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-            ) : (
-              <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 12, color: "var(--sub)", fontSize: 13 }}>
-                <div className="spinner" />
-                <span>絵をかいています…（1分ほどかかります）</span>
-              </div>
-            )}
-          </div>
+          {isCover ? (
+            <BookCover lead={title.lead} title={title.main} art={picture} />
+          ) : (
+            <div style={{ aspectRatio: "1 / 1", background: "#E6EEF9", display: "flex", alignItems: "center", justifyContent: "center" }}>{picture}</div>
+          )}
           <p style={{ margin: 0, padding: 18, fontSize: 16, lineHeight: 1.9 }}>
-            {sceneText(story.scenes[scene], state.childName)}
+            {scene === undefined ? "" : isCover ? "表紙" : sceneText(story.scenes[scene], state.childName)}
           </p>
         </div>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
@@ -92,9 +108,9 @@ export default function PreviewPage() {
             <Chevron dir="left" size={20} />
           </button>
           <div style={{ fontSize: 14, color: "var(--sub)" }}>
-            見本 {pos + 1} / {PREVIEW_SCENES.length}
+            見本 {pos + 1} / {scenes.length || 3}
           </div>
-          <button type="button" className="ghost" aria-label="次のページ" style={{ width: 44, height: 44, padding: 0, borderRadius: 22 }} disabled={pos === PREVIEW_SCENES.length - 1} onClick={() => setPos(pos + 1)}>
+          <button type="button" className="ghost" aria-label="次のページ" style={{ width: 44, height: 44, padding: 0, borderRadius: 22 }} disabled={pos >= scenes.length - 1} onClick={() => setPos(pos + 1)}>
             <Chevron dir="right" size={20} />
           </button>
         </div>
@@ -103,8 +119,8 @@ export default function PreviewPage() {
             作り直しは無料会員登録で（月{MEMBER_MONTHLY_PREVIEWS}枚まで）
           </Link>
         ) : (
-          <button type="button" className="ghost" disabled={!!loading[scene] || (account?.loggedIn && account.remaining <= 0)} onClick={() => generate(scene)}>
-            このページの絵を作り直す
+          <button type="button" className="ghost" disabled={scene === undefined || !!loading[scene] || (account?.loggedIn && account.remaining <= 0)} onClick={() => generate(scene)}>
+            {isCover ? "表紙の絵を作り直す" : "このページの絵を作り直す"}
           </button>
         )}
         {account?.loggedIn && (
@@ -114,7 +130,7 @@ export default function PreviewPage() {
         {needLogin && !trial && (
           <Link href={loginHref("/create/preview")} className="ghost">無料会員登録・ログインへ</Link>
         )}
-        <p className="step-lead">ここでは一部のページを見本としてお見せしています。残りのページは、ご注文後に同じタッチで仕上げます。</p>
+        <p className="step-lead">ここでは表紙と一部のページを見本としてお見せしています。残りのページは、ご注文後に同じタッチで仕上げます。</p>
       </main>
       {trial ? (
         <NextButton href={loginHref("/create/size")} disabled={!allDone}>無料会員登録して注文へ進む</NextButton>

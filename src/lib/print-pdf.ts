@@ -8,7 +8,8 @@ import sharp from "sharp";
 // 印刷会社に渡す入稿用PDF。
 // - 本文：左に文章・右に絵の見開きを12場面。左綴じなので1ページ目は右ページになる。
 //   1 扉 / 2〜25 見開き×12 / 26 おしまい / 27 白 / 28 奥付 の28ページ（4の倍数）。
-// - 表紙：1枚目の絵にタイトルを重ねた、おもて表紙1ページ（背と裏は印刷会社の仕様に合わせて別途）。
+// - 表紙：上1/3にタイトルの帯、下2/3に表紙専用の横長（3:2）の絵を置いた、おもて表紙1ページ。
+//   文字と絵は重ねない（顔に文字が被らないように）。背と裏は印刷会社の仕様に合わせて別途。
 // どちらも仕上がりサイズの四方に塗り足し3mmをつける。色はRGB。
 
 const BLEED_MM = 3;
@@ -29,6 +30,7 @@ export type BookPdfInput = {
   childName: string;
   texts: string[]; // 場面ごとの文章（12）
   images: Buffer[]; // 場面ごとの絵（12、正方形）
+  coverImage: Buffer; // 表紙の絵（横長 3:2）
   trimMm: number; // 仕上がりの1辺
   issuedAt: Date;
 };
@@ -39,7 +41,8 @@ export async function buildBookPdfs(input: BookPdfInput) {
     readFile(path.join(FONT_DIR, "MPLUSRounded1c-ExtraBold.ttf")),
   ]);
   // 印刷用の大きなJPEGに変換しておく（PNGのままだとPDFが重くなりすぎる）
-  const jpegs = await Promise.all(input.images.map((img) => sharp(img).flatten({ background: "#ffffff" }).jpeg({ quality: 92 }).toBuffer()));
+  const toJpeg = (img: Buffer) => sharp(img).flatten({ background: "#ffffff" }).jpeg({ quality: 92 }).toBuffer();
+  const [coverJpeg, ...jpegs] = await Promise.all([input.coverImage, ...input.images].map(toJpeg));
 
   const size = mm(input.trimMm + BLEED_MM * 2);
   const scale = input.trimMm / 210; // 21cm角を基準に文字の大きさをそろえる
@@ -108,15 +111,22 @@ export async function buildBookPdfs(input: BookPdfInput) {
   const cover = await newDoc();
   {
     const page = cover.doc.addPage([size, size]);
-    const image = await cover.doc.embedJpg(jpegs[0]);
-    page.drawImage(image, { x: 0, y: 0, width: size, height: size });
-    // タイトルの帯（上から仕上がりの約3割）
-    const bandHeight = mm(BLEED_MM + input.trimMm * 0.3);
-    page.drawRectangle({ x: 0, y: size - bandHeight, width: size, height: bandHeight, color: CREAM, opacity: 0.88 });
-    const top = size - mm(BLEED_MM + SAFE_MM);
-    drawCentered(page, title, cover.bold, 20 * scale, CORAL, top - 20 * scale);
+    page.drawRectangle({ x: 0, y: 0, width: size, height: size, color: CREAM });
+    // 下2/3に表紙の絵（横幅いっぱい、3:2に切りそろえる）
+    const artHeight = (size * 2) / 3;
+    const { width: w = 1536 } = await sharp(coverJpeg).metadata();
+    const art = await sharp(coverJpeg).resize(w, Math.round((w * 2) / 3), { fit: "cover" }).jpeg({ quality: 92 }).toBuffer();
+    const image = await cover.doc.embedJpg(art);
+    page.drawImage(image, { x: 0, y: 0, width: size, height: artHeight });
+    // 上1/3の帯にタイトル（絵とは重ねない）
+    const bandBottom = artHeight;
+    const bandTop = size - mm(BLEED_MM);
+    const leadSize = 20 * scale;
     const titleSize = fitSize(input.storyName, cover.bold, 34 * scale, mm(input.trimMm - SAFE_MM * 2));
-    drawCentered(page, input.storyName, cover.bold, titleSize, NAVY, top - 20 * scale - titleSize * 1.5);
+    const blockHeight = leadSize + titleSize * 1.4;
+    const blockTop = (bandTop + bandBottom) / 2 + blockHeight / 2;
+    drawCentered(page, title, cover.bold, leadSize, CORAL, blockTop - leadSize);
+    drawCentered(page, input.storyName, cover.bold, titleSize, NAVY, blockTop - leadSize - titleSize * 1.4);
   }
   const coverPdf = await cover.doc.save();
 

@@ -1,4 +1,4 @@
-import { getSize, getStory, sceneText, type SizeId } from "@/lib/catalog";
+import { COVER_SCENE, getSize, getStory, sceneText, type SizeId } from "@/lib/catalog";
 import { buildBookPdfs } from "@/lib/print-pdf";
 import { BOOK_BUCKET, getSupabase } from "@/lib/services";
 
@@ -19,6 +19,10 @@ export async function POST(request: Request, ctx: RouteContext<"/api/admin/order
   const story = getStory(order.drafts.story);
   if (!size || !story) return Response.json({ error: "注文の内容を読み込めません" }, { status: 400 });
 
+  const { data: coverData } = await db.storage.from(BOOK_BUCKET).download(`${order.draft_id}/final/${COVER_SCENE}.png`);
+  if (!coverData) return Response.json({ error: "表紙の本番の絵がまだありません。先に「全ページの絵を作る」を押してください" }, { status: 400 });
+  const coverImage = Buffer.from(await coverData.arrayBuffer());
+
   const images: Buffer[] = [];
   for (let i = 0; i < story.scenes.length; i++) {
     const { data } = await db.storage.from(BOOK_BUCKET).download(`${order.draft_id}/final/${String(i).padStart(2, "0")}.png`);
@@ -32,6 +36,7 @@ export async function POST(request: Request, ctx: RouteContext<"/api/admin/order
       childName: order.drafts.child_name,
       texts: story.scenes.map((sc) => sceneText(sc, order.drafts.child_name)),
       images,
+      coverImage,
       trimMm: size.trimMm,
       issuedAt: new Date(),
     });

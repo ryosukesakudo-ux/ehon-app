@@ -1,4 +1,4 @@
-import { loadOwnedDraft, previewUrls } from "@/lib/drafts";
+import { draftPreviewScenes, loadOwnedDraft, previewUrls } from "@/lib/drafts";
 
 // 会員ページの「つづきから」で呼ぶ。下書きの内容と作成済みのプレビューを返す。
 export async function GET(_request: Request, ctx: RouteContext<"/api/drafts/[id]">) {
@@ -12,5 +12,6 @@ export async function GET(_request: Request, ctx: RouteContext<"/api/drafts/[id]
     childName: draft.child_name,
     childAge: draft.child_age,
     previews: await previewUrls(draft.id),
+    previewScenes: draftPreviewScenes(draft),
   });
 }

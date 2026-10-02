@@ -1,4 +1,4 @@
-import { getStory } from "@/lib/catalog";
+import { bookScenes, getStory } from "@/lib/catalog";
 import { generateScene, loadDraft } from "@/lib/drafts";
 import { getSupabase } from "@/lib/services";
 
@@ -17,7 +17,7 @@ export async function POST(_request: Request, ctx: RouteContext<"/api/admin/orde
   const draft = await loadDraft(order.draft_id);
   const sceneIndex = Number(scene);
   const story = draft && getStory(draft.story);
-  if (!draft || !story || !Number.isInteger(sceneIndex) || !story.scenes[sceneIndex]) {
+  if (!draft || !story || !bookScenes(story.id).includes(sceneIndex)) {
     return Response.json({ error: "場面が見つかりません" }, { status: 400 });
   }
 

@@ -1,5 +1,5 @@
 import { randomUUID } from "node:crypto";
-import { ANON_TRIAL_IP_DAYS, CHILD_AGES, getStory, getTaste, type StoryId, type TasteId } from "@/lib/catalog";
+import { ANON_TRIAL_IP_DAYS, CHILD_AGES, getStory, getTaste, previewScenes, type StoryId, type TasteId } from "@/lib/catalog";
 import { demoDraftId } from "@/lib/drafts";
 import { currentUser } from "@/lib/auth";
 import { ensureAnonId, ipHash } from "@/lib/anon";
@@ -43,16 +43,18 @@ export async function POST(request: Request) {
   const db = getSupabase();
   if (!db) {
     if (!(childPhoto instanceof File)) return bad("お子さまの写真を選んでください");
+    const demoId = demoDraftId({
+      taste: taste as TasteId,
+      story: story as StoryId,
+      childName,
+      childAge,
+      hasMom: momPhoto instanceof File,
+      hasDad: dadPhoto instanceof File,
+    });
     return Response.json({
-      draftId: demoDraftId({
-        taste: taste as TasteId,
-        story: story as StoryId,
-        childName,
-        childAge,
-        hasMom: momPhoto instanceof File,
-        hasDad: dadPhoto instanceof File,
-      }),
+      draftId: demoId,
       demo: true,
+      previewScenes: previewScenes(story as StoryId, { hasMom: momPhoto instanceof File, hasDad: dadPhoto instanceof File, seed: demoId }),
     });
   }
 
@@ -81,6 +83,8 @@ export async function POST(request: Request) {
     return data?.path ?? null;
   };
 
+  let hasMom = false;
+  let hasDad = false;
   try {
     const childPath = childPhoto instanceof File ? await upload(childPhoto, "child") : await saved(childPhotoId);
     if (!childPath) return bad("お子さまの写真を選んでください");
@@ -105,6 +109,8 @@ export async function POST(request: Request) {
 
     const momPath = momPhoto instanceof File ? await upload(momPhoto, "mom") : await saved(momPhotoId);
     const dadPath = dadPhoto instanceof File ? await upload(dadPhoto, "dad") : await saved(dadPhotoId);
+    hasMom = !!momPath;
+    hasDad = !!dadPath;
     const { error } = await db.from("drafts").insert({
       id,
       user_id: user?.id ?? null,
@@ -123,5 +129,9 @@ export async function POST(request: Request) {
     return Response.json({ error: "写真の保存に失敗しました。もう一度お試しください" }, { status: 500 });
   }
 
-  return Response.json({ draftId: id, member: !!user });
+  return Response.json({
+    draftId: id,
+    member: !!user,
+    previewScenes: previewScenes(story as StoryId, { hasMom, hasDad, seed: id }),
+  });
 }

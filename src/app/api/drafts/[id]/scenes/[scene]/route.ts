@@ -1,5 +1,5 @@
-import { ANON_TRIAL_IMAGES, MEMBER_MONTHLY_PREVIEWS, PREVIEW_SCENES, getStory } from "@/lib/catalog";
-import { generateScene, isDemoId, loadOwnedDraft } from "@/lib/drafts";
+import { ANON_TRIAL_IMAGES, MEMBER_MONTHLY_PREVIEWS, getStory } from "@/lib/catalog";
+import { draftPreviewScenes, generateScene, isDemoId, loadOwnedDraft } from "@/lib/drafts";
 import { getSupabase } from "@/lib/services";
 
 export const maxDuration = 120;
@@ -9,14 +9,14 @@ export const maxDuration = 120;
 export async function POST(_request: Request, ctx: RouteContext<"/api/drafts/[id]/scenes/[scene]">) {
   const { id, scene } = await ctx.params;
   const sceneIndex = Number(scene);
-  if (!PREVIEW_SCENES.includes(sceneIndex)) {
-    return Response.json({ error: "この場面はプレビューできません" }, { status: 400 });
-  }
   const owned = await loadOwnedDraft(id);
   if (!owned || !getStory(owned.draft.story)) {
     return Response.json({ error: "下書きが見つかりません" }, { status: 404 });
   }
   const { draft, user } = owned;
+  if (!draftPreviewScenes(draft).includes(sceneIndex)) {
+    return Response.json({ error: "この場面はプレビューできません" }, { status: 400 });
+  }
 
   const db = getSupabase();
   let remaining: number | null = null;
