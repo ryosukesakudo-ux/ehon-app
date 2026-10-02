@@ -150,7 +150,7 @@ export default function Home() {
         </div>
         <div className={s.trustItem}>
           <div className={s.trustIcon} style={{ background: "#FFD4C7" }}>{icon(<><rect x="4" y="3" width="16" height="18" rx="2" /><path d="M8 7h8M8 11h8M8 15h5" /></>)}</div>
-          しっかりした<br />ハードカバー
+          しっかりした<br />製本
         </div>
         <div className={s.trustItem}>
           <div className={s.trustIcon} style={{ background: "#CDEEDD" }}>{icon(<><path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6z" /><path d="M9 12l2 2 4-4" /></>)}</div>
@@ -317,7 +317,7 @@ export default function Home() {
             <div key={p.id} className={`${s.price} ${p.popular ? s.priceHot : ""}`}>
               {p.popular && <div className={`${s.priceRibbon} display`}>いちばん人気</div>}
               <div className={`${s.priceSize} display`}>{p.name}</div>
-              <div className={s.priceSpec}>{p.spec.replace("・ハードカバー", "")}</div>
+              <div className={s.priceSpec}>{p.spec}</div>
               <div className={`${s.priceYen} display`}>{yen(p.price)}</div>
             </div>
           ))}
@@ -328,7 +328,7 @@ export default function Home() {
             おじいちゃん・おばあちゃん用の2冊目は <span className="display" style={{ fontWeight: 900 }}>{yen(EXTRA_COPY_PRICE)}</span>（Mサイズ・同梱）
           </div>
         </div>
-        <div style={{ fontSize: 12, color: "var(--sub)" }}>すべてハードカバー・税込</div>
+        <div style={{ fontSize: 12, color: "var(--sub)" }}>税込</div>
       </section>
 
       <section className={s.section} style={{ background: CREAM, paddingTop: 8, paddingBottom: 48 }}>
