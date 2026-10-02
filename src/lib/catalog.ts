@@ -125,13 +125,13 @@ export const SIZES: {
   price: number;
   popular?: boolean;
 }[] = [
-  { id: "S", name: "S", spec: "約18cm角・24ページ・ハードカバー", pages: 24, price: 5980 },
-  { id: "M", name: "M", spec: "約21cm角・24ページ・ハードカバー", pages: 24, price: 7980, popular: true },
-  { id: "L", name: "L", spec: "約25cm角・32ページ・ハードカバー", pages: 32, price: 9980 },
+  { id: "S", name: "S", spec: "約18cm角・24ページ・ソフトカバー", pages: 24, price: 3980 },
+  { id: "M", name: "M", spec: "約21cm角・24ページ・ハードカバー", pages: 24, price: 5980, popular: true },
+  { id: "L", name: "L", spec: "約25cm角・32ページ・ハードカバー・ギフト箱入り", pages: 32, price: 8980 },
 ];
 
 // 祖父母用の2冊目（Mサイズ・同梱）
-export const EXTRA_COPY_PRICE = 4980;
+export const EXTRA_COPY_PRICE = 2980;
 
 // 注文前のプレビューで生成する場面（表紙相当の1枚目＋数枚）
 export const PREVIEW_SCENES = [0, 3, 8];
