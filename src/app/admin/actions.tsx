@@ -6,13 +6,14 @@ import { useRouter } from "next/navigation";
 export function OrderActions({
   orderId,
   status,
-  sceneCount,
+  scenes,
   doneScenes,
   printSizes,
 }: {
   orderId: string;
   status: string;
-  sceneCount: number;
+  /** 本番で作る絵の番号（表紙＋全場面） */
+  scenes: number[];
   /** 本番の絵ができている場面（作り直さずに飛ばす） */
   doneScenes: number[];
   /** 入稿用PDFを作るサイズ（注文のサイズと、2冊目があればM） */
@@ -45,11 +46,11 @@ export function OrderActions({
   }
 
   // まだ無い場面を1つずつ順番に作る（1枚あたり1分前後かかる）。途中で止まっても、押し直せば続きから作る
-  const todo = Array.from({ length: sceneCount }, (_, i) => i).filter((i) => !doneScenes.includes(i));
+  const todo = scenes.filter((i) => !doneScenes.includes(i));
   const generateAll = () =>
     run("generate", async () => {
       for (const [n, i] of todo.entries()) {
-        setBusy(`generate:${doneScenes.length + n + 1}/${sceneCount}`);
+        setBusy(`generate:${doneScenes.length + n + 1}/${scenes.length}`);
         await call(`scenes/${i}`);
       }
     });

@@ -1,6 +1,6 @@
 import "server-only";
 import type { Uploadable } from "openai/uploads";
-import { getStory, getTaste, type StoryId, type TasteId } from "./catalog";
+import { COVER_SCENE, COVER_SIZE, getStory, getTaste, type Scene, type StoryId, type TasteId } from "./catalog";
 import { getOpenAI } from "./services";
 
 export type Person = "child" | "mom" | "dad";
@@ -31,7 +31,9 @@ export function ageBody(age: number) {
 
 export function buildPrompt(taste: TasteId, story: StoryId, sceneIndex: number, people: Person[], childAge?: number | null) {
   const t = getTaste(taste)!;
-  const scene = getStory(story)!.scenes[sceneIndex];
+  const isCover = sceneIndex === COVER_SCENE;
+  const s = getStory(story)!;
+  const scene: Scene = isCover ? { text: "", art: s.cover } : s.scenes[sceneIndex];
   const refs = people.map((p, i) => `Reference image ${i + 1} is ${LABEL[p]}.`).join(" ");
   const generic = [
     scene.withMom && !people.includes("mom") ? "the mother" : null,
@@ -50,7 +52,9 @@ export function buildPrompt(taste: TasteId, story: StoryId, sceneIndex: number, 
     `Scene: ${scene.art}.`,
     generic.length ? `${generic.join(" and ")} appear in this scene; draw them as gentle adults without a specific likeness.` : "",
     absent.length ? `Do not include ${absent.join(" or ")} in this scene.` : "",
-    "Square composition with a calm area along the bottom for text. Do not draw any letters, words or text in the image.",
+    isCover
+      ? "This is the front cover of the picture book: a wide landscape composition with the child large and clearly visible near the center, the scene filling the whole frame. Do not draw any letters, words, title or text in the image."
+      : "Square composition with a calm area along the bottom for text. Do not draw any letters, words or text in the image.",
   ]
     .filter(Boolean)
     .join(" ");
@@ -71,7 +75,8 @@ export async function illustrate(opts: {
     model: process.env.OPENAI_IMAGE_MODEL ?? "gpt-image-2",
     image: opts.images.map((i) => i.file),
     prompt: buildPrompt(opts.taste, opts.story, opts.sceneIndex, opts.images.map((i) => i.who), opts.childAge),
-    size: opts.quality === "final" ? (process.env.OPENAI_FINAL_SIZE ?? "2048x2048") : "1024x1024",
+    // 表紙は横長（タイトルは絵の上の帯に置くので、絵に文字の場所はいらない）
+    size: opts.sceneIndex === COVER_SCENE ? COVER_SIZE : opts.quality === "final" ? (process.env.OPENAI_FINAL_SIZE ?? "2048x2048") : "1024x1024",
     quality: opts.quality === "final" ? "high" : "medium",
     output_format: "png",
   });

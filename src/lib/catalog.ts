@@ -53,6 +53,8 @@ export const STORIES: {
   name: string;
   description: string;
   ages: string;
+  /** 表紙の絵の内容（英語でAIに渡す。主人公だけを描く） */
+  cover: string;
   scenes: Scene[];
 }[] = [
   {
@@ -60,6 +62,7 @@ export const STORIES: {
     name: "もりのだいぼうけん",
     description: "森のなかまと出会い、勇気を出して大きな木をめざすお話",
     ages: "1〜5歳",
+    cover: "the child smiling and waving at the entrance of a magical sunny forest, friendly squirrels and rabbits peeking out around them",
     scenes: [
       { text: "{name}は、もりの いりぐちで おおきく いきを すいこみました。", art: "the child standing at the entrance of a friendly forest, morning light, waving" },
       { text: "「よし、いってみよう！」", art: "the child stepping onto a mossy path between tall trees, determined smile" },
@@ -80,6 +83,7 @@ export const STORIES: {
     name: "ママとおほしさまのくに",
     description: "ママといっしょに夜空を旅して、流れ星にお願いするお話",
     ages: "3〜8歳",
+    cover: "the child floating happily among sparkling stars and soft clouds under a smiling crescent moon",
     scenes: [
       { text: "ねむれない よる、{name}は まどの そとを みていました。", art: "the child at a bedroom window looking at a starry night sky" },
       { text: "「いっしょに いってみる？」ママが ほほえみます。", art: "the mother smiling and holding out her hand to the child at night", withMom: true },
@@ -100,6 +104,7 @@ export const STORIES: {
     name: "たんじょうびのまほう",
     description: "誕生日の朝、ふしぎな招待状が届くお話",
     ages: "5〜10歳",
+    cover: "the child in a party hat standing before a glowing magical door, colorful balloons and floating lanterns around them",
     scenes: [
       { text: "たんじょうびの あさ、まくらもとに ふしぎな てがみ。", art: "the child waking up and finding a sparkling letter by the pillow" },
       { text: "「{name}さま、まほうの パーティーへ ごしょうたい」", art: "the child reading a magical invitation with wide eyes" },
@@ -135,11 +140,44 @@ export const SIZES: {
 // 祖父母用の2冊目（Mサイズ・同梱）
 export const EXTRA_COPY_PRICE = 2980;
 
-// 注文前のプレビューで生成する場面（表紙相当の1枚目＋数枚）
-export const PREVIEW_SCENES = [0, 3, 8];
+// 表紙の絵の番号（場面とは別の1枚。保存先は 99.png）。表紙は横長（3:2）で描き、タイトルは絵の上の帯に置く
+export const COVER_SCENE = 99;
+export const COVER_SIZE = "1536x1024";
+
+/** 本番で作る絵の番号（表紙＋全場面） */
+export function bookScenes(storyId: StoryId) {
+  return [COVER_SCENE, ...(getStory(storyId)?.scenes.map((_, i) => i) ?? [])];
+}
+
+/** 本の題名（表紙・扉に使う） */
+export function bookTitle(storyId: StoryId, childName: string) {
+  return { lead: `${childName}の`, main: getStory(storyId)?.name ?? "" };
+}
+
+// 注文前のプレビューで作る3枚：表紙、ママが出てくる場面、パパが出てくる場面。
+// ママ（パパ）の写真がないときは、その1枚をママ・パパの出てこない場面からランダムに選ぶ（下書きごとに固定）。
+export const PREVIEW_COUNT = 3;
+
+export function previewScenes(storyId: StoryId, opts: { hasMom: boolean; hasDad: boolean; seed: string }) {
+  const scenes = getStory(storyId)?.scenes ?? [];
+  const idx = scenes.map((_, i) => i);
+  const picked: number[] = [COVER_SCENE];
+  let seed = [...opts.seed].reduce((h, c) => (h * 31 + c.charCodeAt(0)) >>> 0, 7);
+  const random = () => {
+    const solo = idx.filter((i) => !scenes[i].withMom && !scenes[i].withDad && !picked.includes(i));
+    seed = (seed * 1103515245 + 12345) >>> 0;
+    return solo[seed % solo.length];
+  };
+  const momOnly = idx.find((i) => scenes[i].withMom && !scenes[i].withDad);
+  const mom = opts.hasMom ? (momOnly ?? idx.find((i) => scenes[i].withMom)) : undefined;
+  picked.push(mom ?? random());
+  const dad = opts.hasDad ? idx.find((i) => scenes[i].withDad && !picked.includes(i)) : undefined;
+  picked.push(dad ?? random());
+  return picked;
+}
 
 // 会員登録前のお試し：見本の場面を1回ずつ（作り直しなし）。ブラウザごと・IPアドレスごとに1回。
-export const ANON_TRIAL_IMAGES = PREVIEW_SCENES.length;
+export const ANON_TRIAL_IMAGES = PREVIEW_COUNT;
 export const ANON_TRIAL_IP_DAYS = 30;
 
 // 会員が1か月（日本時間の月初リセット）に作れるプレビューの枚数（作り直しを含む）。AI費用の歯止め。

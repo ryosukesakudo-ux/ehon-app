@@ -13,6 +13,8 @@ export type FlowState = {
   draftId: string | null;
   demo: boolean;
   previews: Record<number, string>;
+  /** プレビューで作る絵の番号（表紙・ママ・パパ）。下書きを作ったときにサーバーが決める */
+  previewScenes: number[];
   size: SizeId;
   extraCopy: boolean;
   /** お届け希望日（YYYY-MM-DD）。空は最短 */
@@ -29,6 +31,7 @@ const initial: FlowState = {
   draftId: null,
   demo: false,
   previews: {},
+  previewScenes: [],
   size: "M",
   extraCopy: false,
   deliveryDate: "",

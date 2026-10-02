@@ -171,7 +171,7 @@ export default function PhotoPage() {
         setNeedLogin(!!json.needLogin);
         throw new Error(json.error ?? "送信に失敗しました");
       }
-      update({ draftId: json.draftId, demo: !!json.demo, previews: {} });
+      update({ draftId: json.draftId, demo: !!json.demo, previews: {}, previewScenes: json.previewScenes ?? [] });
       setPhotos({ child: null, mom: null, dad: null });
       setSavedIds({ child: null, mom: null, dad: null });
       router.push("/create/preview");

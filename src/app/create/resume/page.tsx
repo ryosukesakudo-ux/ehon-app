@@ -18,7 +18,7 @@ function Resume() {
       .then(async (res) => {
         const json = await res.json();
         if (!res.ok) throw new Error(json.error ?? "読み込めませんでした");
-        update({ taste: json.taste, story: json.story, childName: json.childName, childAge: json.childAge ?? null, draftId, demo: false, previews: json.previews });
+        update({ taste: json.taste, story: json.story, childName: json.childName, childAge: json.childAge ?? null, draftId, demo: false, previews: json.previews, previewScenes: json.previewScenes ?? [] });
         router.replace("/create/preview");
       })
       .catch((e) => setError(e instanceof Error ? e.message : "読み込めませんでした"));
