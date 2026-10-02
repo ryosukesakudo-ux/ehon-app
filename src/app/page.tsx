@@ -367,6 +367,7 @@ export default function Home() {
       <footer className={s.footer}>
         <Link href="/legal">特定商取引法に基づく表記</Link>
         <Link href="/privacy">プライバシーポリシー</Link>
+        <Link href="/terms">利用規約</Link>
       </footer>
     </div>
   );

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { RETENTION } from "@/lib/catalog";
+import { SELLER } from "@/lib/seller";
 
 export default function PrivacyPage() {
   const items: [string, string][] = [
@@ -9,7 +10,7 @@ export default function PrivacyPage() {
     ["お写真の保管と削除", `会員の方のお写真は、次の絵本でも使えるよう保管します。マイページからいつでも削除でき、最後に使ってから${RETENTION.photoIdleDays === 365 ? "1年" : `${RETENTION.photoIdleDays}日`}たったお写真は自動で削除します。会員登録前のお試しでアップロードされたお写真は、${RETENTION.anonPhotoDays}日以内に会員登録されなければ自動で削除します。`],
     ["作成した絵の保管", `ご注文いただいた絵本の絵は、お支払いから${RETENTION.paidImageDays}日間保管し、マイページでご覧いただけます。ご注文に至らなかった絵は、作成から${RETENTION.unpaidImageDays}日後に削除します。`],
     ["お試し回数の確認", "会員登録前のお試しを1回に限るため、ブラウザに識別用の情報（Cookie）を保存し、IPアドレスを復元できない形（ハッシュ値）で記録します。"],
-    ["お問い合わせ", "[メールアドレス]"],
+    ["お問い合わせ", `${SELLER.name}（${SELLER.email}）`],
   ];
   return (
     <main className="shell" style={{ padding: "32px 20px 48px", gap: 20 }}>
