@@ -2,7 +2,7 @@
 
 export type TasteId = "watercolor" | "crayon" | "anime";
 export type StoryId = "forest" | "star" | "birthday";
-export type SizeId = "S" | "M" | "L";
+export type SizeId = "S" | "M";
 
 export const TASTES: {
   id: TasteId;
@@ -134,7 +134,6 @@ export const SIZES: {
 }[] = [
   { id: "S", name: "S", spec: "約18cm角・24ページ・ソフトカバー", pages: 24, trimMm: 180, price: 3980 },
   { id: "M", name: "M", spec: "約21cm角・24ページ・ハードカバー", pages: 24, trimMm: 210, price: 5980, popular: true },
-  { id: "L", name: "L", spec: "約25cm角・32ページ・ハードカバー・ギフト箱入り", pages: 32, trimMm: 250, price: 8980 },
 ];
 
 // 祖父母用の2冊目（Mサイズ・同梱）
