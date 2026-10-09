@@ -132,7 +132,7 @@ export const SIZES: {
   price: number;
   popular?: boolean;
 }[] = [
-  { id: "S", name: "S", spec: "約18cm角・24ページ・ソフトカバー", pages: 24, trimMm: 180, price: 3980 },
+  { id: "S", name: "S", spec: "約18cm角・24ページ・ソフトカバー", pages: 24, trimMm: 182, price: 3980 },
   { id: "M", name: "M", spec: "約21cm角・24ページ・ハードカバー", pages: 24, trimMm: 210, price: 5980, popular: true },
 ];
 
