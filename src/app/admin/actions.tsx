@@ -16,7 +16,7 @@ export function OrderActions({
   scenes: number[];
   /** 本番の絵ができている場面（作り直さずに飛ばす） */
   doneScenes: number[];
-  /** 入稿用PDFを作るサイズ（注文のサイズと、2冊目があればM） */
+  /** 入稿用PDFを作るサイズ（注文と違うサイズで刷ることもあるので全サイズ） */
   printSizes: string[];
 }) {
   const router = useRouter();
