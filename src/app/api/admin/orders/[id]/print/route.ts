@@ -1,11 +1,16 @@
 import { COVER_SCENE, getSize, getStory, sceneText, type SizeId } from "@/lib/catalog";
+import { buildCoverSpread } from "@/lib/cover-spread";
 import { buildBookPdfs } from "@/lib/print-pdf";
 import { BOOK_BUCKET, getSupabase } from "@/lib/services";
 
 export const maxDuration = 300;
 
-// 印刷会社に渡す入稿用PDF（本文・おもて表紙）を作って保存し、ダウンロード用の一時URLを返す。
-// 全場面の本番の絵ができている注文だけ作れる。size を省くと注文のサイズで作る（2冊目はMサイズ）。
+// 28ページ・コート紙マット厚め（0.14mm）なら 14枚×0.14mm ≒ 2mm
+const DEFAULT_SPINE_MM = 2;
+
+// 印刷会社に渡す入稿用PDF（本文・おもて表紙）と、製本直送.com用の見開き表紙画像（裏・背・おもて）を
+// 作って保存し、ダウンロード用の一時URLを返す。全場面の本番の絵ができている注文だけ作れる。
+// size を省くと注文のサイズで作る（2冊目はMサイズ）。spineMm は背幅（製本直送.comの表紙サイズ計算で確認した値）。
 export async function POST(request: Request, ctx: RouteContext<"/api/admin/orders/[id]/print">) {
   const { id } = await ctx.params;
   const db = getSupabase();
@@ -18,6 +23,8 @@ export async function POST(request: Request, ctx: RouteContext<"/api/admin/order
   const size = getSize((body?.size as SizeId | undefined) ?? order.size);
   const story = getStory(order.drafts.story);
   if (!size || !story) return Response.json({ error: "注文の内容を読み込めません" }, { status: 400 });
+  const spineMm = Number(body?.spineMm ?? DEFAULT_SPINE_MM);
+  if (!Number.isFinite(spineMm) || spineMm < 0 || spineMm > 30) return Response.json({ error: "背幅は0〜30mmで入れてください" }, { status: 400 });
 
   const { data: coverData } = await db.storage.from(BOOK_BUCKET).download(`${order.draft_id}/final/${COVER_SCENE}.png`);
   if (!coverData) return Response.json({ error: "表紙の本番の絵がまだありません。先に「全ページの絵を作る」を押してください" }, { status: 400 });
@@ -40,13 +47,24 @@ export async function POST(request: Request, ctx: RouteContext<"/api/admin/order
       trimMm: size.trimMm,
       issuedAt: new Date(),
     });
-    const files = { body: pdfs.body, cover: pdfs.cover };
+    const spread = await buildCoverSpread({
+      storyName: story.name,
+      childName: order.drafts.child_name,
+      coverImage,
+      trimMm: size.trimMm,
+      spineMm,
+    });
+    const files = {
+      body: { bytes: pdfs.body, ext: "pdf", type: "application/pdf", label: "本文" },
+      cover: { bytes: pdfs.cover, ext: "pdf", type: "application/pdf", label: "表紙" },
+      spread: { bytes: spread, ext: "jpg", type: "image/jpeg", label: `表紙画像_背${spineMm}mm` },
+    };
     const urls: Record<string, string> = {};
-    for (const [kind, bytes] of Object.entries(files)) {
-      const path = `${order.draft_id}/print/${size.id}-${kind}.pdf`;
-      const { error } = await db.storage.from(BOOK_BUCKET).upload(path, bytes, { contentType: "application/pdf", upsert: true });
+    for (const [kind, file] of Object.entries(files)) {
+      const path = `${order.draft_id}/print/${size.id}-${kind}.${file.ext}`;
+      const { error } = await db.storage.from(BOOK_BUCKET).upload(path, file.bytes, { contentType: file.type, upsert: true });
       if (error) throw new Error(error.message);
-      const name = `${order.id.slice(0, 8).toUpperCase()}_${size.id}_${kind === "body" ? "本文" : "表紙"}.pdf`;
+      const name = `${order.id.slice(0, 8).toUpperCase()}_${size.id}_${file.label}.${file.ext}`;
       const { data } = await db.storage.from(BOOK_BUCKET).createSignedUrl(path, 60 * 60, { download: name });
       if (!data) throw new Error("ダウンロード用のURLを作れませんでした");
       urls[kind] = data.signedUrl;

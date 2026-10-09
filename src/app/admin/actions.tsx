@@ -22,7 +22,9 @@ export function OrderActions({
   const router = useRouter();
   const [busy, setBusy] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [pdfs, setPdfs] = useState<Record<string, { body: string; cover: string }>>({});
+  const [pdfs, setPdfs] = useState<Record<string, { body: string; cover: string; spread: string }>>({});
+  // 製本直送.comの表紙画像の背幅（mm）。表紙アップロード画面の「表紙サイズが不明な方は、こちら」で確認した値を入れる
+  const [spineMm, setSpineMm] = useState("2");
 
   async function call(path: string) {
     const res = await fetch(`/api/admin/orders/${orderId}/${path}`, { method: "POST" });
@@ -55,13 +57,13 @@ export function OrderActions({
       }
     });
 
-  // 入稿用PDF（本文・表紙）を作って、ダウンロードのリンクを出す（リンクは1時間有効）
+  // 入稿用PDF（本文・表紙）と見開き表紙画像を作って、ダウンロードのリンクを出す（リンクは1時間有効）
   const makePdf = (size: string) =>
     run(`pdf:${size}`, async () => {
       const res = await fetch(`/api/admin/orders/${orderId}/print`, {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ size }),
+        body: JSON.stringify({ size, spineMm: Number(spineMm) }),
       });
       const json = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(json.error ?? `失敗しました (${res.status})`);
@@ -99,6 +101,13 @@ export function OrderActions({
           発送済みにする
         </button>
       )}
+      {status !== "pending" && (
+        <label style={{ display: "inline-flex", gap: 4, alignItems: "center" }}>
+          背幅
+          <input type="number" min={0} max={30} step={0.1} value={spineMm} onChange={(e) => setSpineMm(e.target.value)} style={{ width: 64 }} />
+          mm
+        </label>
+      )}
       {status !== "pending" &&
         printSizes.map((size) => (
           <span key={size} style={{ display: "inline-flex", gap: 8, alignItems: "center" }}>
@@ -109,6 +118,7 @@ export function OrderActions({
               <>
                 <a href={pdfs[size].body}>本文PDF</a>
                 <a href={pdfs[size].cover}>表紙PDF</a>
+                <a href={pdfs[size].spread}>表紙画像（製本直送用）</a>
               </>
             )}
           </span>
