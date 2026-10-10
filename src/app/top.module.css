@@ -53,7 +53,8 @@
 
 .section { position: relative; display: flex; flex-direction: column; gap: 18px; padding: 24px 20px 44px; }
 .eyebrow { align-self: flex-start; padding: 5px 14px; border-radius: 16px; color: #fff; font-size: 13px; font-weight: 800; }
-.h2 { margin: 0; font-size: 26px; font-weight: 900; line-height: 1.45; color: var(--ink); }
+.h2 { margin: 0; font-size: 26px; font-weight: 900; line-height: 1.5; color: #2f5da8; -webkit-text-stroke: 6px #fff; paint-order: stroke fill; filter: drop-shadow(0 3px 0 rgba(47, 93, 168, 0.18)); }
+.pop { display: inline-block; font-size: 1.15em; }
 
 .steps { display: flex; flex-direction: column; gap: 16px; }
 .stepCard { display: flex; gap: 14px; align-items: center; padding: 16px; border-radius: 22px; background: #fff; }
@@ -73,7 +74,8 @@
 .tasteName { font-size: 14px; font-weight: 800; text-align: center; margin-top: 8px; }
 
 .chips { display: flex; flex-wrap: wrap; gap: 10px; }
-.chip { display: flex; align-items: center; gap: 6px; padding: 10px 14px; border-radius: 22px; background: #fff; font-size: 14px; font-weight: 700; }
+.chip { display: flex; align-items: center; gap: 8px; padding: 6px 14px 6px 6px; border-radius: 26px; background: #fff; box-shadow: 0 3px 0 rgba(240, 138, 108, 0.25); font-size: 14px; font-weight: 800; color: var(--navy); }
+.chipArt { width: 42px; height: 42px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
 
 .prices { display: flex; flex-direction: column; gap: 14px; padding-top: 6px; }
 .price { position: relative; display: flex; align-items: center; gap: 14px; padding: 14px 16px; border-radius: 20px; background: #fff; border: 2px solid var(--line); }
@@ -94,6 +96,7 @@
 .final { position: relative; display: flex; flex-direction: column; gap: 16px; padding: 40px 20px 52px; background: var(--navy); color: #fff; text-align: center; }
 .final > * { position: relative; }
 .finalH2 { margin: 0; font-size: 27px; font-weight: 900; line-height: 1.5; }
+.finalH2 .pop { filter: drop-shadow(0 2px 0 rgba(0, 0, 0, 0.25)); }
 .moon { position: absolute !important; right: 28px; top: 18px; width: 54px; height: 54px; border-radius: 50%; background: var(--yellow); }
 .moonCut { position: absolute !important; right: 16px; top: 10px; width: 50px; height: 50px; border-radius: 50%; background: var(--navy); }
 
