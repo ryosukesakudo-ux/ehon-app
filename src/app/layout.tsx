@@ -24,7 +24,7 @@ const body = Zen_Maru_Gothic({
 });
 
 export const metadata: Metadata = {
-  title: "絵本 Only Yours | わが子が主人公の絵本をつくろう",
+  title: "えほん Only Yours | わが子が主人公の絵本をつくろう",
   description:
     "写真を1枚えらぶだけ。お子さまやママが登場する絵本を、AIがその子のためだけに描きます。製本してご自宅にお届けします。",
 };
