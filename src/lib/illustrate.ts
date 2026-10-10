@@ -13,6 +13,13 @@ const PICTURE_BOOK_CHARACTERS =
   "Draw expressive picture-book eyes with a visible colored iris, a dark pupil and a small white highlight, gently shaped eyelids and lashes where fitting. Never draw the eyes as plain black dots or simple lines.";
 export type Quality = "preview" | "final";
 
+// 本文の絵の構図。文章は左ページ（別ページ）に置くので、絵の中に文字用の空きは作らない。
+// 以前は「下に文字用の空き」を指示していて、人物の足元が空白に溶けて切れることがあった。
+const SQUARE_FRAMING =
+  "Square composition that fills the whole frame with the scene, edge to edge. Frame the shot so every character's whole body, including the legs and feet, " +
+  "fits inside the picture with a little ground visible below their feet; never crop, fade out or hide any part of their bodies at the edges. " +
+  "Do not leave an empty or blank band anywhere. Do not draw any letters, words or text in the image.";
+
 /** 印刷用の本文の絵の大きさ（1辺のpx）。OPENAI_FINAL_SIZE（例 2048x2048）で変えられる */
 const FINAL_PX = Number((process.env.OPENAI_FINAL_SIZE ?? "2048x2048").split("x")[0]) || 2048;
 
@@ -64,7 +71,7 @@ export function buildPrompt(taste: TasteId, story: StoryId, sceneIndex: number, 
     absent.length ? `Do not include ${absent.join(" or ")} in this scene.` : "",
     isCover
       ? "This is the front cover of the picture book: a wide landscape composition with the child large and clearly visible near the center, the scene filling the whole frame. Do not draw any letters, words, title or text in the image."
-      : "Square composition with a calm area along the bottom for text. Do not draw any letters, words or text in the image.",
+      : SQUARE_FRAMING,
   ]
     .filter(Boolean)
     .join(" ");
@@ -170,7 +177,7 @@ export function buildSamplePrompt(taste: TasteId, story: StoryId, sceneIndex: nu
     scene.withMom ? "" : "Do not include the mother in this scene.",
     scene.withDad ? "" : "Do not include the father in this scene.",
     "Do not copy the white background or the side-by-side layout of the character sheet.",
-    "Square composition with a calm area along the bottom for text. Do not draw any letters, words or text in the image.",
+    SQUARE_FRAMING,
   ]
     .filter(Boolean)
     .join(" ");
@@ -232,7 +239,7 @@ export async function illustrateShowcase(opts: { taste: TasteId; story: StoryId;
       PICTURE_BOOK_CHARACTERS,
       "Make them look friendly and natural, never caricatured. The result must clearly look like a page from a children's picture book, not a filtered photo.",
       `Scene: ${scene.art}.`,
-      "Square composition with a calm area along the bottom for text. Do not draw any letters, words or text in the image.",
+      SQUARE_FRAMING,
     ].join(" "),
     size: "1024x1024",
     quality: "medium",
