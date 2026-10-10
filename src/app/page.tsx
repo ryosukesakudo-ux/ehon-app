@@ -97,12 +97,9 @@ export default function Home() {
         </h1>
         <p className={s.lead}>写真を1枚えらぶだけ。お子さまやママ・パパが登場する絵本を、AIがその子のためだけに描きます。</p>
         <div className={s.bookStage} aria-hidden="true">
-          {/* 完成した絵本の表紙（作道さんが用意した画像、2026-10-10 差し替え）。背の折り目・薄いページの厚み・影はCSSで足す */}
+          {/* 完成した絵本の表紙（作道さんが用意した画像、2026-10-10 差し替え）。影も画像に含まれているので加工はしない */}
           <div className={s.sun} />
-          <div className={s.bookShadow} />
-          <div className={s.heroBook}>
-            <Image src="/hero-book-yui.webp" alt="" width={800} height={781} priority sizes="220px" style={{ display: "block", width: "100%", height: "auto" }} />
-          </div>
+          <Image src="/hero-book-yui-v2.webp" alt="" width={800} height={793} priority sizes="250px" className={s.heroBook} />
           <Sparkle size={26} className={s.deco} style={{ left: 8, top: 30 }} />
           <Sparkle size={22} className={s.deco} style={{ left: 262, top: 210 }} />
           <Star size={30} color="#F08A6C" className={s.deco} style={{ left: 250, top: 14, transform: "rotate(12deg)" }} />
