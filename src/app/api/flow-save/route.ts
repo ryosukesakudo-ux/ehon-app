@@ -1,6 +1,6 @@
 import { getFlowSave, parseFlowSave, putFlowSave } from "@/lib/flow-save";
 
-// 作成途中の下書き（会員のみ）。作成画面の「保存してマイページへ」と、マイページの「つづきから」で使う。
+// 作成途中の下書き（会員のみ）。作成画面の「保存して中断」と、マイページの「つづきから」で使う。
 export async function GET() {
   return Response.json({ save: await getFlowSave() });
 }

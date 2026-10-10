@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { createBrowserClient } from "@supabase/ssr";
 import { createClient } from "@supabase/supabase-js";
 import { PASSWORD_MIN } from "@/lib/password";
+import { hasProgress, readLocalFlow } from "../create/flow-storage";
 
 function client() {
   return createBrowserClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!);
@@ -64,7 +65,14 @@ export function LoginForm({ next, google }: { next: string; google: boolean }) {
       }
       if (mode === "signup") {
         if (password.length < PASSWORD_MIN) throw `パスワードは${PASSWORD_MIN}文字以上にしてください`;
-        const { data, error } = await auth.signUp({ email, password, options: { emailRedirectTo: callback() } });
+        // 作りかけの内容をアカウントに引き継ぐ（確認メールを別のブラウザで開いても続きから作れるように）
+        const local = readLocalFlow();
+        const flowSave = hasProgress(local) ? { ...local, savedAt: new Date().toISOString() } : undefined;
+        const { data, error } = await auth.signUp({
+          email,
+          password,
+          options: { emailRedirectTo: callback(), data: flowSave ? { flow_save: flowSave } : undefined },
+        });
         if (error) throw message(error, "登録できませんでした。もう一度お試しください");
         // すでに登録済みのアドレスは、identities が空で返ってくる
         if (data.user && data.user.identities?.length === 0) {

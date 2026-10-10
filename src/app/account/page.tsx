@@ -9,6 +9,7 @@ import { PageHeader } from "@/components/page-header";
 import { FLOW_STEPS, getFlowSave } from "@/lib/flow-save";
 import { DeletePhotoButton } from "./delete-photo";
 import { DeleteSaveButton } from "./delete-save";
+import { SyncLocalFlow } from "./local-flow";
 
 export const dynamic = "force-dynamic";
 
@@ -74,6 +75,7 @@ export default async function AccountPage({ searchParams }: PageProps<"/account"
     <div className="shell">
       <PageHeader title="マイページ" />
       <main className="step-body">
+        <SyncLocalFlow savedAt={save?.savedAt ?? null} />
         {justSaved === "1" && save && <p className="info-note" role="status">下書きを保存しました。「つづきから」で再開できます。</p>}
         {save && (
           <section className="card" style={{ gap: 10, border: "2px solid var(--coral)" }}>

@@ -145,6 +145,21 @@ button, input { font-family: inherit; }
   border-radius: 22px;
   transition: transform 0.1s ease;
 }
+.back-link {
+  display: flex;
+  align-items: center;
+  gap: 1px;
+  height: 34px;
+  padding: 0 12px 0 6px;
+  border-radius: 17px;
+  background: rgba(255, 255, 255, 0.75);
+  color: var(--navy);
+  font-size: 13px;
+  font-weight: 800;
+  white-space: nowrap;
+  text-decoration: none;
+}
+.back-link:active { transform: scale(0.95); }
 .header-pill {
   height: 34px;
   padding: 0 12px;
