@@ -1,10 +1,11 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { CSSProperties, ReactNode } from "react";
-import { Arrow, BookIcon, Sparkle, Star } from "@/components/icons";
+import { Arrow, Sparkle, Star } from "@/components/icons";
 import { ANON_TRIAL_IMAGES, EXTRA_COPY_PRICE, MEMBER_MONTHLY_PREVIEWS, SIZES, STORIES, TASTES, sceneText, yen } from "@/lib/catalog";
 import { SAMPLE_CHILD_NAME, SAMPLE_SCENES, SHOWCASE, SHOWCASE_BOOK, SHOWCASE_PHOTO, samplePublicUrl, sampleUrl } from "@/lib/samples";
 import { SampleImage } from "@/components/sample-image";
+import { Brand } from "@/components/brand";
 import { Lottie } from "@/components/lottie";
 import s from "./top.module.css";
 
@@ -75,9 +76,8 @@ export default function Home() {
   return (
     <div className={s.page}>
       <header className={s.header}>
-        <Link href="/" className={`${s.logo} display`}>
-          <span className={s.logoMark}><BookIcon /></span>
-          わたしの絵本
+        <Link href="/" className={s.logo}>
+          <Brand size={36} />
         </Link>
         <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
           <Link href="/login?next=/account" className={`${s.headerLink} display`}>ログイン</Link>

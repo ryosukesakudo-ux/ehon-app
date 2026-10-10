@@ -6,6 +6,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { Arrow, Chevron, Sparkle, Star } from "@/components/icons";
 import { useFlow } from "./flow";
 import { useAccount } from "./account";
+import { Brand } from "@/components/brand";
 
 export const TOTAL_STEPS = 6;
 
@@ -24,9 +25,7 @@ export function StepHeader({ step, back }: { step: number; back?: string }) {
             <Chevron />
           </Link>
         )}
-        <div className="display" style={{ fontSize: 16, fontWeight: 900, color: "var(--navy)" }}>
-          わたしの絵本
-        </div>
+        <Brand size={30} mark={false} />
         <SaveAndExit />
       </div>
       <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
