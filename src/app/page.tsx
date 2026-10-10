@@ -121,10 +121,12 @@ export default function Home() {
         </h1>
         <p className={s.lead}>
           <span className={`${s.leadKey} display`}>写真を1枚えらぶだけ。</span>
-          <br />
-          <span className="nowrap">お子さまはもちろん、ママやパパも絵本の中へ。</span>
-          <br />
-          世界に1冊だけの物語を、製本してお届けします。
+          <span className={s.leadBody}>
+            お子さまはもちろん、<span className="nowrap">ママやパパも絵本の中へ。</span>
+            <br />
+            <span className="nowrap">世界に1冊だけの物語を、</span>
+            <span className="nowrap">製本してお届けします。</span>
+          </span>
         </p>
         <div className={s.bookStage} aria-hidden="true">
           {/* 完成した絵本の表紙（作道さんが用意した画像、2026-10-10 差し替え）。影も画像に含まれているので加工はしない */}
