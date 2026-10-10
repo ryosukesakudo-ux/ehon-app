@@ -20,6 +20,13 @@ export default async function LoginPage({ searchParams }: PageProps<"/login">) {
     <div className="shell">
       <PageHeader title="ログイン・無料会員登録" />
       <main className="step-body">
+        {nextPath.startsWith("/create") && (
+          <p className="info-note">
+            {nextPath.startsWith("/create/taste")
+              ? "ログイン・登録が終わると、そのまま絵本づくり（絵のテイスト選び）に進みます。"
+              : "ログイン・登録が終わると、つくりかけの絵本の画面に戻ります。"}
+          </p>
+        )}
         <div className="card" style={{ gap: 12, padding: 18 }}>
           <div className="display" style={{ fontSize: 15, fontWeight: 800, color: "var(--navy)" }}>会員になるとできること</div>
           {perks.map((p) => (

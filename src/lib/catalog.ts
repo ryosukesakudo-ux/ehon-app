@@ -8,6 +8,8 @@ export const TASTES: {
   id: TasteId;
   name: string;
   description: string;
+  /** 違いが一目で分かるよう、選択画面とトップに出す特徴（短い言葉を3つ） */
+  points: string[];
   swatch: string;
   prompt: string;
 }[] = [
@@ -15,6 +17,7 @@ export const TASTES: {
     id: "watercolor",
     name: "水彩",
     description: "にじむ色合いの、やさしい手描き風",
+    points: ["にじむ色", "紙の質感", "おだやか"],
     swatch: "#CFE3F0",
     prompt:
       "soft watercolor children's picture book illustration, gentle bleeding colors, visible paper texture, warm and calm",
@@ -23,6 +26,7 @@ export const TASTES: {
     id: "crayon",
     name: "クレヨン",
     description: "子どもの落書きのような、あたたかいタッチ",
+    points: ["ざらっとした線", "手描き感", "にぎやか"],
     swatch: "#F8D9B8",
     prompt:
       "crayon and colored pencil children's picture book illustration, waxy textured strokes, playful and warm",
@@ -31,6 +35,7 @@ export const TASTES: {
     id: "anime",
     name: "ふんわりアニメ",
     description: "まるい線と明るい色の、親しみやすい絵",
+    points: ["くっきり線", "明るい色", "キャラ風"],
     swatch: "#DCEBD3",
     prompt:
       "soft modern anime-style children's picture book illustration, rounded clean lines, bright pastel colors",
