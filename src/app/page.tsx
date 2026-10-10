@@ -57,12 +57,70 @@ const STEPS = [
   { color: "#7CC7A8", shadow: "#CFE7DC", title: "できあがりを見て注文", desc: "見本のページを確認してから。数日後に発送します。" },
 ];
 
-const GIFTS = [
-  { label: "お誕生日", d: <path d="M4 21h16M5 21v-8h14v8M12 13V9M12 6a1 1 0 0 0 0-3" /> },
-  { label: "クリスマス", d: <path d="M12 3l6 9H6zM12 9l7 9H5zM12 18v3" /> },
-  { label: "入園・入学", d: <path d="M3 9l9-4 9 4-9 4zM7 11v5c3 2 7 2 10 0v-5" /> },
-  { label: "卒園の記念", d: <><circle cx="12" cy="9" r="5" /><path d="M9 13l-2 8 5-3 5 3-2-8" /></> },
-  { label: "祖父母へのプレゼント", d: <path d="M20 12v9H4v-9M2 7h20v5H2zM12 21V7" /> },
+// 贈りものの場面。カラフルな小さいイラストで華やかに
+const GIFTS: { label: string; bg: string; art: ReactNode }[] = [
+  {
+    label: "お誕生日",
+    bg: "#FFE0E6",
+    art: (
+      <>
+        <rect x="4" y="13" width="16" height="8" rx="2" fill="#F07FA0" />
+        <path d="M4 16c2 1.5 4 1.5 5.3 0 1.4 1.5 4 1.5 5.4 0 1.3 1.5 3.3 1.5 5.3 0v-1c0-1.1-.9-2-2-2H6c-1.1 0-2 .9-2 2z" fill="#fff" />
+        <rect x="11" y="8" width="2" height="5" rx="1" fill="#7CC7A8" />
+        <path d="M12 3c1.6 1.8 1.6 3.4 0 4.2-1.6-.8-1.6-2.4 0-4.2z" fill="#F6A93B" />
+      </>
+    ),
+  },
+  {
+    label: "クリスマス",
+    bg: "#DDF3E8",
+    art: (
+      <>
+        <path d="M12 4l5 7h-2.5l4 6H5.5l4-6H7z" fill="#5CBF8F" />
+        <rect x="10.8" y="17" width="2.4" height="4" rx="1" fill="#B5835A" />
+        <path d="M12 1.5l.9 1.9 2 .3-1.5 1.4.4 2-1.8-1-1.8 1 .4-2-1.5-1.4 2-.3z" fill="#F6C445" />
+        <circle cx="10" cy="11" r="1" fill="#F08A6C" />
+        <circle cx="14" cy="14.5" r="1" fill="#F6C445" />
+        <circle cx="9" cy="15.5" r="1" fill="#3E8EE0" />
+      </>
+    ),
+  },
+  {
+    label: "入園・入学",
+    bg: "#FFF1CC",
+    art: (
+      <>
+        <rect x="5" y="7" width="14" height="14" rx="4" fill="#E9575B" />
+        <path d="M5 11c0-2.2 1.8-4 4-4h6c2.2 0 4 1.8 4 4v1H5z" fill="#C93F45" />
+        <rect x="10.5" y="13" width="3" height="3" rx="1" fill="#F6C445" />
+        <path d="M9 7V5.5C9 4.1 10.3 3 12 3s3 1.1 3 2.5V7" stroke="#C93F45" strokeWidth="1.6" fill="none" />
+      </>
+    ),
+  },
+  {
+    label: "卒園の記念",
+    bg: "#DCEBFB",
+    art: (
+      <>
+        <path d="M8 13l-2 8 6-3 6 3-2-8z" fill="#3E8EE0" />
+        <circle cx="12" cy="9" r="6" fill="#F6C445" />
+        <circle cx="12" cy="9" r="4" fill="#FCD96B" />
+        <path d="M12 6.3l.8 1.6 1.7.2-1.3 1.2.3 1.7-1.5-.8-1.5.8.3-1.7-1.3-1.2 1.7-.2z" fill="#E59E1B" />
+      </>
+    ),
+  },
+  {
+    label: "祖父母へのプレゼント",
+    bg: "#FDE3D9",
+    art: (
+      <>
+        <rect x="4" y="11" width="16" height="10" rx="2" fill="#F08A6C" />
+        <rect x="3" y="8" width="18" height="4" rx="1.5" fill="#F4A48C" />
+        <rect x="10.8" y="8" width="2.4" height="13" fill="#F6C445" />
+        <path d="M12 8c-2-3.5-5.5-3-4.5-1S11 8 12 8zm0 0c2-3.5 5.5-3 4.5-1S13 8 12 8z" fill="#F6C445" />
+      </>
+    ),
+  },
 ];
 
 const FAQ = [
@@ -91,6 +149,19 @@ function BouncyLine({ text, offset, big = [] }: { text: string; offset: number; 
           </span>
         );
       })}
+    </span>
+  );
+}
+
+/** 見出しの中の強調語。トップの見出しと同じく1文字ずつ少し傾ける */
+function Pop({ children, color }: { children: string; color: string }) {
+  return (
+    <span className={s.pop} style={{ color }}>
+      {[...children].map((c, i) => (
+        <span key={i} className={s.bounce} style={{ transform: `rotate(${BOUNCE_TILT[i % BOUNCE_TILT.length]}deg) translateY(${i % 2 ? -2 : 2}px)` }}>
+          {c}
+        </span>
+      ))}
     </span>
   );
 }
@@ -174,7 +245,7 @@ export default function Home() {
         <h2 className={`${s.h2} display`}>
           <span className="nowrap">スマホだけで、</span>
           <br />
-          <span className="nowrap">かんたんに作れます。</span>
+          <span className="nowrap"><Pop color="#F08A6C">かんたん</Pop>に作れます。</span>
         </h2>
         <div className={s.steps}>
           {STEPS.map((st, i) => (
@@ -194,7 +265,7 @@ export default function Home() {
         <h2 className={`${s.h2} display`}>
           <span className="nowrap">この写真から、</span>
           <br />
-          <span className="nowrap">こんな1ページに。</span>
+          <span className="nowrap">こんな<Pop color="#5CBF8F">1ページ</Pop>に。</span>
         </h2>
         <div className={s.showcase}>
           <figure className={s.showcaseItem}>
@@ -239,7 +310,7 @@ export default function Home() {
         <h2 className={`${s.h2} display`}>
           <span className="nowrap">名前も、顔も、</span>
           <br />
-          <span className="nowrap">その子だけの物語。</span>
+          <span className="nowrap"><Pop color="#F07FA0">その子だけ</Pop>の物語。</span>
         </h2>
         <div className={s.sample}>
           <div className={s.sampleBack} />
@@ -278,7 +349,7 @@ export default function Home() {
         <h2 className={`${s.h2} display`}>
           <span className="nowrap">こんな絵本が</span>
           <br />
-          <span className="nowrap">できあがります。</span>
+          <span className="nowrap"><Pop color="#F6A93B">できあがり</Pop>ます。</span>
         </h2>
         <div className={s.gallery}>
           {STORIES.map((st) => (
@@ -311,11 +382,16 @@ export default function Home() {
         <h2 className={`${s.h2} display`}>
           <span className="nowrap">何年たっても、</span>
           <br />
-          <span className="nowrap">読み返したくなる1冊を。</span>
+          <span className="nowrap">読み返したくなる<Pop color="#F08A6C">1冊</Pop>を。</span>
         </h2>
         <div className={s.chips}>
           {GIFTS.map((g) => (
-            <div key={g.label} className={s.chip}>{icon(g.d, 18)}{g.label}</div>
+            <div key={g.label} className={`${s.chip} display`}>
+              <span className={s.chipArt} style={{ background: g.bg }}>
+                <svg width="30" height="30" viewBox="0 0 24 24" aria-hidden="true">{g.art}</svg>
+              </span>
+              {g.label}
+            </div>
           ))}
         </div>
       </section>
@@ -324,7 +400,7 @@ export default function Home() {
       <section className={s.section} style={{ background: CREAM }}>
         <Eyebrow color="#2F5DA8">料金</Eyebrow>
         <h2 className={`${s.h2} display`}>
-          <span className="nowrap">送料込み、</span><span className="nowrap">追加料金なし。</span>
+          <span className="nowrap"><Pop color="#5CBF8F">送料込み</Pop>、</span><span className="nowrap">追加料金なし。</span>
         </h2>
         <div className={s.prices}>
           {SIZES.map((p) => (
@@ -372,7 +448,7 @@ export default function Home() {
         <h2 className={`${s.finalH2} display`}>
           <span className="nowrap">その子の「いま」を、</span>
           <br />
-          <span className="nowrap">絵本にのこそう。</span>
+          <span className="nowrap"><Pop color="#F6C445">絵本</Pop>にのこそう。</span>
         </h2>
         <p style={{ margin: 0, fontSize: 14, lineHeight: 1.8 }}>お支払いは、見本を確認してから。</p>
         <Cta yellow />
