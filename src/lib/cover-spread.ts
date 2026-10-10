@@ -63,7 +63,7 @@ export async function buildCoverSpread(input: CoverSpreadInput) {
     textPath(font, title, leadSize, frontCenter, blockTop + leadSize, CORAL),
     textPath(font, input.storyName, titleSize, frontCenter, blockTop + leadSize + titleSize * 1.4, NAVY),
     // 裏表紙：下の方にサービス名
-    textPath(font, "わたしの絵本", pt(10 * scale), backCenter, height - px(BLEED_MM + SAFE_MM), CORAL),
+    textPath(font, "絵本 Only Yours", pt(10 * scale), backCenter, height - px(BLEED_MM + SAFE_MM), CORAL),
   ];
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}">${texts.join("")}</svg>`;
 

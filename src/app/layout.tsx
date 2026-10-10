@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { M_PLUS_Rounded_1c, Zen_Maru_Gothic } from "next/font/google";
+import { M_PLUS_Rounded_1c, Pacifico, Zen_Maru_Gothic } from "next/font/google";
 import "./globals.css";
 
 const display = M_PLUS_Rounded_1c({
@@ -7,6 +7,13 @@ const display = M_PLUS_Rounded_1c({
   subsets: ["latin"],
   variable: "--font-display",
   preload: false,
+});
+
+// ロゴの「Only Yours」
+const script = Pacifico({
+  weight: "400",
+  subsets: ["latin"],
+  variable: "--font-script",
 });
 
 const body = Zen_Maru_Gothic({
@@ -17,7 +24,7 @@ const body = Zen_Maru_Gothic({
 });
 
 export const metadata: Metadata = {
-  title: "わたしの絵本 | わが子が主人公の絵本をつくろう",
+  title: "絵本 Only Yours | わが子が主人公の絵本をつくろう",
   description:
     "写真を1枚えらぶだけ。お子さまやママが登場する絵本を、AIがその子のためだけに描きます。製本してご自宅にお届けします。",
 };
@@ -28,7 +35,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="ja" className={`${display.variable} ${body.variable}`}>
+    <html lang="ja" className={`${display.variable} ${script.variable} ${body.variable}`}>
       <body>{children}</body>
     </html>
   );

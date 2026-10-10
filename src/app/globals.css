@@ -32,6 +32,7 @@ a:hover { color: var(--blue-dark); }
 button, input { font-family: inherit; }
 
 .display { font-family: var(--font-display), "Hiragino Maru Gothic ProN", sans-serif; }
+.script { font-family: var(--font-script), cursive; font-weight: 400; }
 
 .nowrap { white-space: nowrap; }
 
