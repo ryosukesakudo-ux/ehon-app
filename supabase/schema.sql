@@ -85,6 +85,8 @@ create table if not exists orders (
 -- 既に作成済みのデータベース向け（お届け日時の指定の追加）
 alter table orders add column if not exists delivery_date date;
 alter table orders add column if not exists delivery_time text;
+-- 部数（2026-10-10 追加。extra_copy は以前の「2冊目あり」）
+alter table orders add column if not exists copies int not null default 1 check (copies between 1 and 5);
 
 create index if not exists orders_status_idx on orders (status, created_at desc);
 create index if not exists orders_user_idx on orders (user_id, created_at desc);

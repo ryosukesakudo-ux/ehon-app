@@ -143,12 +143,26 @@ export const SIZES: {
   price: number;
   popular?: boolean;
 }[] = [
-  { id: "S", name: "S", spec: "約18cm角・24ページ・ソフトカバー", pages: 24, trimMm: 182, price: 3980 },
-  { id: "M", name: "M", spec: "約21cm角・24ページ・ハードカバー", pages: 24, trimMm: 210, price: 5980, popular: true },
+  { id: "S", name: "S", spec: "約18cm角・24ページ・ソフトカバー", pages: 24, trimMm: 182, price: 2980 },
+  { id: "M", name: "M", spec: "約21cm角・24ページ・ハードカバー", pages: 24, trimMm: 210, price: 3980, popular: true },
 ];
 
-// 祖父母用の2冊目（Mサイズ・同梱）
-export const EXTRA_COPY_PRICE = 2980;
+// 部数：同じ絵本を何冊でも同梱。2冊目からは1冊ごとに本体価格から1,000円引き（2026-10-10 作道さん決定）
+export const EXTRA_COPY_DISCOUNT = 1000;
+export const MAX_COPIES = 5;
+
+/** 2冊目以降の1冊あたりの価格 */
+export function extraCopyPrice(sizeId: SizeId) {
+  const size = getSize(sizeId);
+  if (!size) throw new Error(`unknown size: ${sizeId}`);
+  return size.price - EXTRA_COPY_DISCOUNT;
+}
+
+/** 部数を1〜MAX_COPIESの整数にそろえる */
+export function clampCopies(n: unknown) {
+  const v = Math.floor(Number(n));
+  return Number.isFinite(v) ? Math.min(MAX_COPIES, Math.max(1, v)) : 1;
+}
 
 // 表紙の絵の番号（場面とは別の1枚。保存先は 99.png）。表紙は横長（3:2）で描き、タイトルは絵の上の帯に置く
 export const COVER_SCENE = 99;
@@ -248,10 +262,10 @@ export function sceneText(scene: Scene, childName: string) {
   return scene.text.replaceAll("{name}", childName);
 }
 
-export function orderTotal(sizeId: SizeId, extraCopy: boolean) {
+export function orderTotal(sizeId: SizeId, copies: number) {
   const size = getSize(sizeId);
   if (!size) throw new Error(`unknown size: ${sizeId}`);
-  return size.price + (extraCopy ? EXTRA_COPY_PRICE : 0);
+  return size.price + (clampCopies(copies) - 1) * extraCopyPrice(sizeId);
 }
 
 export function yen(n: number) {

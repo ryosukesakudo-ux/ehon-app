@@ -166,8 +166,9 @@ button, input { font-family: inherit; }
 .progress > span.on { background: var(--coral); }
 
 .step-body { display: flex; flex-direction: column; gap: 20px; padding: 24px 20px 28px; }
-.step-title { margin: 0; font-size: 25px; font-weight: 900; line-height: 1.4; color: var(--navy); }
-.step-lead { margin: 0; font-size: 14px; line-height: 1.7; color: var(--sub); }
+/* トップページの見出しとそろえる（明るい青＋白ふち＋影） */
+.step-title { margin: 0; font-size: 25px; font-weight: 900; line-height: 1.45; color: #2f5da8; -webkit-text-stroke: 6px #fff; paint-order: stroke fill; filter: drop-shadow(0 3px 0 rgba(47, 93, 168, 0.18)); }
+.step-lead { margin: 0; font-size: 14px; font-weight: 700; line-height: 1.7; color: #4f6f9f; }
 
 .step-footer {
   position: sticky;
@@ -320,3 +321,10 @@ button, input { font-family: inherit; }
   text-decoration: underline;
   cursor: pointer;
 }
+
+/* 部数などの −／＋ */
+.stepper { display: flex; align-items: center; gap: 4px; padding: 4px; border-radius: 24px; background: #f3f6fb; }
+.stepper-btn { width: 38px; height: 38px; border: none; border-radius: 50%; background: #fff; color: var(--blue); font-size: 22px; font-weight: 900; line-height: 1; cursor: pointer; box-shadow: 0 3px 0 #d5ddeb; }
+.stepper-btn:active:not(:disabled) { transform: translateY(3px); box-shadow: none; }
+.stepper-btn:disabled { opacity: 0.35; cursor: default; }
+.stepper-value { min-width: 48px; text-align: center; font-size: 18px; font-weight: 900; color: var(--navy); }

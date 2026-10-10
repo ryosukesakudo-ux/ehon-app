@@ -3,6 +3,8 @@ import {
   DELIVERY_MAX_DAYS,
   DELIVERY_MIN_DAYS,
   DELIVERY_TIMES,
+  clampCopies,
+  extraCopyPrice,
   deliveryLabel,
   getSize,
   getStory,
@@ -21,7 +23,7 @@ export async function POST(request: Request) {
   const body = await request.json().catch(() => null);
   const draftId = String(body?.draftId ?? "");
   const sizeId = String(body?.size ?? "") as SizeId;
-  const extraCopy = body?.extraCopy === true;
+  const copies = clampCopies(body?.copies);
   const deliveryDate = String(body?.deliveryDate ?? "") || null;
   const deliveryTime = String(body?.deliveryTime ?? "") || null;
   if (deliveryDate && (!/^\d{4}-\d{2}-\d{2}$/.test(deliveryDate) || deliveryDate < jstDate(DELIVERY_MIN_DAYS) || deliveryDate > jstDate(DELIVERY_MAX_DAYS))) {
@@ -36,7 +38,7 @@ export async function POST(request: Request) {
   if (!size || !owned) return Response.json({ error: "注文内容を確認できませんでした" }, { status: 400 });
   const { draft, user } = owned;
 
-  const amount = orderTotal(size.id, extraCopy);
+  const amount = orderTotal(size.id, copies);
   const base = siteUrl(request);
   const db = getSupabase();
   const stripe = getStripe();
@@ -51,17 +53,25 @@ export async function POST(request: Request) {
   }
 
   const orderId = randomUUID();
-  const { error } = await db.from("orders").insert({
+  const row = {
     id: orderId,
     user_id: user.id,
     draft_id: draft.id,
     size: size.id,
-    extra_copy: extraCopy,
+    extra_copy: copies > 1,
+    copies,
     amount,
     status: "pending",
     delivery_date: deliveryDate,
     delivery_time: deliveryTime,
-  });
+  };
+  let { error } = await db.from("orders").insert(row);
+  if (error?.code === "42703") {
+    // schema.sql の再実行前で copies 列がまだない場合（部数は extra_copy と金額から分かる）
+    const withoutCopies: Partial<typeof row> = { ...row };
+    delete withoutCopies.copies;
+    ({ error } = await db.from("orders").insert(withoutCopies));
+  }
   if (error) {
     console.error("order insert failed", error);
     return Response.json({ error: "注文の作成に失敗しました" }, { status: 500 });
@@ -78,13 +88,13 @@ export async function POST(request: Request) {
       },
     },
   ];
-  if (extraCopy) {
+  if (copies > 1) {
     lineItems.push({
-      quantity: 1,
+      quantity: copies - 1,
       price_data: {
         currency: "jpy",
-        unit_amount: amount - size.price,
-        product_data: { name: "追加の1冊（Mサイズ・同梱）" },
+        unit_amount: extraCopyPrice(size.id),
+        product_data: { name: `追加の1冊（${size.name}サイズ・同梱）` },
       },
     });
   }
