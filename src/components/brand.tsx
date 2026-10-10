@@ -22,7 +22,7 @@ export function Brand({ size = 34, mark = true }: { size?: number; mark?: boolea
     <span style={{ display: "flex", alignItems: "center", gap: size * 0.26 }} aria-label={SITE_NAME}>
       {mark && <BrandMark size={size} />}
       <span aria-hidden="true" style={{ display: "flex", alignItems: "baseline", gap: size * 0.16, lineHeight: 1, whiteSpace: "nowrap" }}>
-        <span className="display" style={{ fontSize: size * 0.5, fontWeight: 900, color: "var(--navy)" }}>絵本</span>
+        <span className="display" style={{ fontSize: size * 0.62, fontWeight: 900, color: "var(--coral)" }}>絵本</span>
         <span className="script" style={{ fontSize: size * 0.62, color: "var(--coral)" }}>Only Yours</span>
       </span>
     </span>
