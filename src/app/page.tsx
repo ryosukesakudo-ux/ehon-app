@@ -5,7 +5,7 @@ import { Arrow, Sparkle, Star } from "@/components/icons";
 import { ANON_TRIAL_IMAGES, EXTRA_COPY_DISCOUNT, MEMBER_MONTHLY_PREVIEWS, PREVIEW_PACK, SIZES, STORIES, TASTES, sceneText, yen } from "@/lib/catalog";
 import { SAMPLE_CHILD_NAME, SAMPLE_SCENES, SHOWCASE, SHOWCASE_BOOK, SHOWCASE_PHOTO, samplePublicUrl, sampleUrl } from "@/lib/samples";
 import { SampleImage } from "@/components/sample-image";
-import { Brand } from "@/components/brand";
+import { Brand, SITE_NAME } from "@/components/brand";
 import { Lottie } from "@/components/lottie";
 import s from "./top.module.css";
 
@@ -454,6 +454,8 @@ export default function Home() {
         <Link href="/legal">特定商取引法に基づく表記</Link>
         <Link href="/privacy">プライバシーポリシー</Link>
         <Link href="/terms">利用規約</Link>
+        {/* Google ログイン画面のブランド確認で、登録したアプリ名とトップページの表記を照らし合わせるため、文字でも出す */}
+        <span style={{ width: "100%", textAlign: "center", fontSize: 12, color: "#d5dcea" }}>© 2026 {SITE_NAME}</span>
       </footer>
     </div>
   );
