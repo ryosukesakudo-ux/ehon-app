@@ -16,7 +16,7 @@
 .h1 { margin: 0; font-size: 31px; font-weight: 900; line-height: 1.5; -webkit-text-stroke: 7px #fff; paint-order: stroke fill; filter: drop-shadow(0 3px 0 rgba(47, 93, 168, 0.25)); }
 .bounce { display: inline-block; }
 .lead { margin: 0; font-size: 15px; line-height: 1.85; color: #34507a; }
-.leadKey { font-size: 18px; font-weight: 900; color: var(--coral); background: linear-gradient(transparent 62%, rgba(255, 255, 255, 0.85) 62%); }
+.leadKey { font-size: 18px; font-weight: 900; color: var(--coral); -webkit-text-stroke: 4px #fff; paint-order: stroke fill; }
 .note { text-align: center; font-size: 13px; font-weight: 700; color: #2e3a4f; }
 
 .deco { position: absolute !important; pointer-events: none; }
