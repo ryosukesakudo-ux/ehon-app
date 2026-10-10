@@ -25,7 +25,7 @@ export default function TastePage() {
             <div
               style={{ flexShrink: 0, width: 96, height: 96, borderRadius: 12, overflow: "hidden", background: t.swatch, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 11, color: "var(--sub)" }}
             >
-              <SampleImage src={sampleUrl(t.id, state.story, 0)} alt={`${t.name}の見本`} fallback="[見本画像]" />
+              <SampleImage src={sampleUrl(t.id, state.story, 0)} alt={`${t.name}の見本`} fallback="[見本画像]" sizes="96px" />
             </div>
             <div style={{ display: "flex", flexDirection: "column", gap: 6, flexGrow: 1 }}>
               <div className="choice-title display" style={{ fontSize: 18 }}>{t.name}</div>
