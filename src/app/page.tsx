@@ -180,11 +180,7 @@ export default function Home() {
         <Cloud style={{ right: -40, top: 250, width: 170 }} />
         <Star size={18} className={s.deco} style={{ right: 22, top: 12, transform: "rotate(10deg)" }} />
         <Sparkle size={16} className={s.deco} style={{ left: 160, top: 8 }} />
-        <div className={`${s.badge} display`}>
-          <Star size={14} color="#F6C445" />
-          1〜10歳の子どもへの贈りもの
-          <Star size={14} color="#F6C445" />
-        </div>
+        <div className={`${s.badge} display`}>1〜10歳の子どもへの贈りもの</div>
         <h1 className={`${s.h1} display`} aria-label="わが子が主人公の絵本、つくりませんか">
           <BouncyLine text="わが子が主人公の" big={[4, 5, 6]} offset={0} />
           <br />
