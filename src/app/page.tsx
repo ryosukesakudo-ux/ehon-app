@@ -72,6 +72,29 @@ const FAQ = [
   { q: "気に入らない絵があったら？", a: "見本のページは、ご注文前に絵を作り直せます。", color: "#7CC7A8" },
 ];
 
+// 見出しの1文字ずつの色と傾き（はずむカラフル文字、2026-10-10 作道さん選択）
+const BOUNCE_COLORS = ["#F08A6C", "#F6A93B", "#5CBF8F", "#3E8EE0", "#F07FA0"];
+const BOUNCE_TILT = [-6, 4, -3, 5, -4, 3];
+
+function BouncyLine({ text, offset, big = [] }: { text: string; offset: number; big?: number[] }) {
+  return (
+    <span className="nowrap" aria-hidden="true">
+      {[...text].map((c, n) => {
+        const i = offset + n;
+        return (
+          <span
+            key={n}
+            className={s.bounce}
+            style={{ color: BOUNCE_COLORS[i % BOUNCE_COLORS.length], transform: `rotate(${BOUNCE_TILT[i % BOUNCE_TILT.length]}deg) translateY(${i % 2 ? -2 : 2}px)`, fontSize: big.includes(n) ? "1.2em" : undefined }}
+          >
+            {c}
+          </span>
+        );
+      })}
+    </span>
+  );
+}
+
 export default function Home() {
   return (
     <div className={s.page}>
@@ -91,12 +114,18 @@ export default function Home() {
         <Star size={18} className={s.deco} style={{ right: 22, top: 12, transform: "rotate(10deg)" }} />
         <Sparkle size={16} className={s.deco} style={{ left: 160, top: 8 }} />
         <div className={`${s.badge} display`}>1〜10歳の子どもへの贈りもの</div>
-        <h1 className={`${s.h1} display`}>
-          <span className="nowrap">わが子が主人公の</span>
+        <h1 className={`${s.h1} display`} aria-label="わが子が主人公の絵本、つくりませんか">
+          <BouncyLine text="わが子が主人公の" big={[4, 5, 6]} offset={0} />
           <br />
-          <span className="nowrap">絵本、つくりませんか。</span>
+          <BouncyLine text="絵本、つくりませんか" offset={8} />
         </h1>
-        <p className={s.lead}>写真を1枚えらぶだけ。お子さまやママ・パパが登場する絵本を、AIがその子のためだけに描きます。</p>
+        <p className={s.lead}>
+          <span className={`${s.leadKey} display`}>写真を1枚えらぶだけ。</span>
+          <br />
+          <span className="nowrap">お子さまはもちろん、ママやパパも絵本の中へ。</span>
+          <br />
+          世界に1冊だけの物語を、製本してお届けします。
+        </p>
         <div className={s.bookStage} aria-hidden="true">
           {/* 完成した絵本の表紙（作道さんが用意した画像、2026-10-10 差し替え）。影も画像に含まれているので加工はしない */}
           <div className={s.sun} />
