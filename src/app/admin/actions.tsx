@@ -9,6 +9,8 @@ export function OrderActions({
   scenes,
   doneScenes,
   printSizes,
+  amount,
+  refunded,
 }: {
   orderId: string;
   status: string;
@@ -18,6 +20,9 @@ export function OrderActions({
   doneScenes: number[];
   /** 入稿用PDFを作るサイズ（注文と違うサイズで刷ることもあるので全サイズ） */
   printSizes: string[];
+  /** お支払い額と返金済みの額（円） */
+  amount: number;
+  refunded: number;
 }) {
   const router = useRouter();
   const [busy, setBusy] = useState<string | null>(null);
@@ -25,6 +30,26 @@ export function OrderActions({
   const [pdfs, setPdfs] = useState<Record<string, { body: string; cover: string; spread: string }>>({});
   // 製本直送.comの表紙画像の背幅（mm）。表紙アップロード画面の「表紙サイズが不明な方は、こちら」で確認した値を入れる
   const [spineMm, setSpineMm] = useState("2");
+  const refundable = amount - refunded;
+  const [refundAmount, setRefundAmount] = useState(String(refundable));
+
+  const refund = () => {
+    const yenAmount = Math.floor(Number(refundAmount));
+    if (!(yenAmount >= 1 && yenAmount <= refundable)) {
+      setError(`返金できるのは1円〜${refundable}円です`);
+      return;
+    }
+    if (!confirm(`${yenAmount.toLocaleString()}円を返金します。取り消せません。よろしいですか？`)) return;
+    run("refund", async () => {
+      const res = await fetch(`/api/admin/orders/${orderId}/refund`, {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ amount: yenAmount }),
+      });
+      const json = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(json.error ?? `失敗しました (${res.status})`);
+    });
+  };
 
   async function call(path: string) {
     const res = await fetch(`/api/admin/orders/${orderId}/${path}`, { method: "POST" });
@@ -123,6 +148,16 @@ export function OrderActions({
             )}
           </span>
         ))}
+      {status !== "pending" && refundable > 0 && (
+        <span style={{ display: "inline-flex", gap: 6, alignItems: "center" }}>
+          返金
+          <input type="number" min={1} max={refundable} value={refundAmount} onChange={(e) => setRefundAmount(e.target.value)} style={{ width: 90 }} aria-label="返金する金額" />
+          円
+          <button type="button" className="ghost" disabled={!!busy} onClick={refund}>
+            {busy === "refund" ? "返金中…" : refundAmount === String(refundable) ? "全額返金する" : "一部返金する"}
+          </button>
+        </span>
+      )}
       {error && <p className="error" role="alert" style={{ width: "100%" }}>{error}</p>}
     </div>
   );

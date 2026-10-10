@@ -40,7 +40,7 @@ http://localhost:3000 を開きます。キーを何も設定しなければ「�
    - Authentication > Sign In / Providers > Email：**Confirm email** をオン、**Minimum password length** を 8 にする（`src/lib/password.ts` と合わせる）。ログインはメールアドレス＋パスワード。パスワードを忘れたときは再設定メールから `/account/password` で決め直す。
    - Authentication > Providers：Email は最初から有効。Google は Google Cloud で OAuth クライアントを作り、Client ID と Secret を入れて有効にする（承認済みのリダイレクトURIは Supabase の画面に表示される `https://<project>.supabase.co/auth/v1/callback`）。ログイン画面の Google ボタンは、Supabase で Google が有効なときだけ表示される。
 2. **OpenAI**：`OPENAI_API_KEY` を設定。モデルは `gpt-image-2`（`OPENAI_IMAGE_MODEL` で変更可）。
-3. **Stripe**：テストモードの `STRIPE_SECRET_KEY` を設定。Webhook の送信先を `https://<サイトのURL>/api/stripe/webhook`、イベントを `checkout.session.completed` と `checkout.session.async_payment_succeeded`（コンビニ払い用）にして、表示される署名シークレットを `STRIPE_WEBHOOK_SECRET` に設定。お客様への支払い完了メールは Stripe ダッシュボードの「メールによる領収書」を有効にする。
+3. **Stripe**：テストモードの `STRIPE_SECRET_KEY` を設定。Webhook の送信先を `https://<サイトのURL>/api/stripe/webhook`、イベントを `checkout.session.completed` と `checkout.session.async_payment_succeeded`（コンビニ払い用）と `charge.refunded`（返金の記録用）にして、表示される署名シークレットを `STRIPE_WEBHOOK_SECRET` に設定。お客様への支払い完了メールは Stripe ダッシュボードの「メールによる領収書」を有効にする。
 4. **支払い方法**：Stripe ダッシュボードの「設定 > 支払い方法」で、カード・Apple Pay・Google Pay・コンビニ決済・PayPay を有効にする（PayPay は申請が必要）。コードの変更は不要です。
 5. **管理画面と自動削除**：`ADMIN_PASSWORD` と `CRON_SECRET` に長いランダムな文字列を設定。
 

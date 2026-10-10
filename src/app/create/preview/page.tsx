@@ -1,24 +1,34 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { Suspense, useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { COVER_SCENE, MEMBER_MONTHLY_PREVIEWS, bookTitle, getStory, sceneText } from "@/lib/catalog";
 import { BookCover } from "@/components/book-cover";
 import { Chevron } from "@/components/icons";
 import { Lottie } from "@/components/lottie";
+import { BuyPreviewsButton } from "@/components/buy-previews";
 import { useFlow } from "../flow";
 import { loginHref, useAccount } from "../account";
 import { NextButton, StepHeader, StepTitle } from "../step";
 
 export default function PreviewPage() {
+  return (
+    <Suspense>
+      <Preview />
+    </Suspense>
+  );
+}
+
+function Preview() {
   const router = useRouter();
   const { state, setPreview, update, ready } = useFlow();
   const [pos, setPos] = useState(0);
   const [loading, setLoading] = useState<Record<number, boolean>>({});
   const [error, setError] = useState<string | null>(null);
   const [needLogin, setNeedLogin] = useState(false);
-  const [account, setAccount] = useAccount();
+  const [account, setAccount, refreshAccount] = useAccount();
+  const boughtCredits = useSearchParams().get("credits") === "done";
   // 登録前のお試し（Supabase 設定済みで未ログイン）
   const trial = !!account?.configured && !account.loggedIn;
   const inFlight = useRef(new Set<number>());
@@ -39,6 +49,7 @@ export default function PreviewPage() {
       const json = await res.json();
       if (typeof json.remaining === "number") {
         setAccount((a) => (a?.loggedIn ? { ...a, remaining: json.remaining } : a));
+        refreshAccount();
       }
       if (!res.ok) {
         setNeedLogin(!!json.needLogin);
@@ -125,8 +136,13 @@ export default function PreviewPage() {
           </button>
         )}
         {account?.loggedIn && (
-          <p className="step-lead" style={{ textAlign: "center", fontSize: 13 }}>今月のプレビュー残り：{account.remaining} / {account.limit}枚</p>
+          <p className="step-lead" style={{ textAlign: "center", fontSize: 13 }}>
+            プレビュー残り：{account.remaining}枚
+            {typeof account.free === "number" && `（今月の無料 ${account.free} / ${account.limit}枚${account.credits ? `＋追加 ${account.credits}枚` : ""}）`}
+          </p>
         )}
+        {boughtCredits && <p className="info-note" role="status">ご購入ありがとうございます。反映まで少しかかる場合は、画面を再読み込みしてください。</p>}
+        {account?.loggedIn && account.remaining <= 0 && <BuyPreviewsButton returnTo="/create/preview" />}
         {error && <p className="error" role="alert">{error}</p>}
         {needLogin && !trial && (
           <Link href={loginHref("/create/preview")} className="ghost">無料会員登録・ログインへ</Link>

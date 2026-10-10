@@ -2,7 +2,8 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { MEMBER_MONTHLY_PREVIEWS, RETENTION, getSize, getStory, getTaste, yen } from "@/lib/catalog";
 import { currentUser } from "@/lib/auth";
-import { listPhotos, remainingPreviews } from "@/lib/account";
+import { listPhotos, previewQuota } from "@/lib/account";
+import { BuyPreviewsButton } from "@/components/buy-previews";
 import { BOOK_BUCKET, getSupabase } from "@/lib/services";
 import { PageHeader } from "@/components/page-header";
 import { FLOW_STEPS, getFlowSave } from "@/lib/flow-save";
@@ -20,26 +21,26 @@ const ORDER_STATUS: Record<string, string> = {
   shipped: "発送済み",
 };
 
-type OrderRow = { id: string; status: string; size: string; amount: number; paid_at: string | null; checkout_completed_at: string | null };
+type OrderRow = { id: string; status: string; size: string; amount: number; paid_at: string | null; checkout_completed_at: string | null; refunded_amount?: number | null };
 
 function date(d: Date | string) {
   return new Date(d).toLocaleDateString("ja-JP", { timeZone: "Asia/Tokyo", month: "numeric", day: "numeric" });
 }
 
 export default async function AccountPage({ searchParams }: PageProps<"/account">) {
-  const { saved: justSaved } = await searchParams;
+  const { saved: justSaved, credits: creditsParam } = await searchParams;
   const user = await currentUser();
   if (!user) redirect("/login?next=/account");
   const db = getSupabase();
 
-  const [save, remaining, photos, { data: drafts }] = await Promise.all([
+  const [save, quota, photos, { data: drafts }] = await Promise.all([
     getFlowSave(),
-    remainingPreviews(user.id),
+    previewQuota(user.id),
     listPhotos(user.id),
     db
       ? db
           .from("drafts")
-          .select("id, taste, story, child_name, created_at, child_photo_path, images_deleted_at, orders(id, status, size, amount, paid_at, checkout_completed_at)")
+          .select("id, taste, story, child_name, created_at, child_photo_path, images_deleted_at, orders(*)")
           .eq("user_id", user.id)
           .order("created_at", { ascending: false })
           .limit(30)
@@ -95,16 +96,24 @@ export default async function AccountPage({ searchParams }: PageProps<"/account"
             <DeleteSaveButton />
           </section>
         )}
-        <div className="card" style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", padding: 18 }}>
-          <div>
-            <div style={{ fontSize: 13, color: "var(--sub)" }}>今月のプレビュー残り</div>
-            <div className="display" style={{ fontSize: 28, fontWeight: 900, color: "var(--coral)" }}>
-              {remaining}<span style={{ fontSize: 15, color: "var(--sub)" }}> / {MEMBER_MONTHLY_PREVIEWS}枚</span>
+        {creditsParam === "done" && <p className="info-note" role="status">ご購入ありがとうございます。反映まで少しかかる場合は、画面を再読み込みしてください。</p>}
+        <div className="card" style={{ padding: 18, gap: 12 }}>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12 }}>
+            <div>
+              <div style={{ fontSize: 13, color: "var(--sub)" }}>プレビュー残り</div>
+              <div className="display" style={{ fontSize: 28, fontWeight: 900, color: "var(--coral)" }}>
+                {quota.remaining}<span style={{ fontSize: 15, color: "var(--sub)" }}>枚</span>
+              </div>
+              <div style={{ fontSize: 12, color: "var(--sub)" }}>
+                今月の無料 {quota.free} / {MEMBER_MONTHLY_PREVIEWS}枚{quota.credits > 0 ? `＋追加 ${quota.credits}枚` : ""}
+              </div>
             </div>
+            <Link href="/create/taste" className="cta" style={{ width: "auto", height: 48, padding: "0 20px", fontSize: 15 }}>
+              新しくつくる
+            </Link>
           </div>
-          <Link href="/create/taste" className="cta" style={{ width: "auto", height: 48, padding: "0 20px", fontSize: 15 }}>
-            新しくつくる
-          </Link>
+          <BuyPreviewsButton returnTo="/account" />
+          <p className="step-lead" style={{ fontSize: 12, margin: 0 }}>無料分は毎月1日に{MEMBER_MONTHLY_PREVIEWS}枚に戻ります。追加分は使い切るまで有効です。</p>
         </div>
 
         <section style={{ display: "flex", flexDirection: "column", gap: 12 }}>
@@ -137,6 +146,7 @@ export default async function AccountPage({ searchParams }: PageProps<"/account"
                 <div key={o.id} style={{ fontSize: 13, color: "var(--sub)" }}>
                   ご注文：{getSize(o.size)?.name}サイズ／{yen(o.amount)}
                   {o.paid_at ? `／${date(o.paid_at)} お支払い` : ""}
+                  {o.refunded_amount ? `／${yen(o.refunded_amount)} 返金済み` : ""}
                 </div>
               ))}
               {!d.images_deleted_at && urls.length > 0 && (
