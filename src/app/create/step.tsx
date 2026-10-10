@@ -1,15 +1,18 @@
 "use client";
 
 import Link from "next/link";
-import type { ReactNode } from "react";
+import { useState, type ReactNode } from "react";
+import { usePathname, useRouter } from "next/navigation";
 import { Arrow, Chevron, Sparkle, Star } from "@/components/icons";
+import { useFlow } from "./flow";
+import { useAccount } from "./account";
 
 export const TOTAL_STEPS = 6;
 
 export function StepHeader({ step, back }: { step: number; back?: string }) {
   return (
     <header className="step-header">
-      <Star size={14} style={{ position: "absolute", right: 70, top: 8 }} />
+      <Star size={14} style={{ position: "absolute", left: "58%", top: 6 }} />
       <Sparkle size={12} style={{ position: "absolute", left: 90, top: 40 }} />
       <div className="step-header-row">
         {back ? (
@@ -24,16 +27,51 @@ export function StepHeader({ step, back }: { step: number; back?: string }) {
         <div className="display" style={{ fontSize: 16, fontWeight: 900, color: "var(--navy)" }}>
           わたしの絵本
         </div>
-        <div className="display" style={{ width: 44, textAlign: "right", fontSize: 13, fontWeight: 800, color: "var(--navy)" }}>
+        <SaveAndExit />
+      </div>
+      <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+        <div className="progress" style={{ flex: 1 }} role="progressbar" aria-valuemin={1} aria-valuemax={TOTAL_STEPS} aria-valuenow={step} aria-label="進み具合">
+          {Array.from({ length: TOTAL_STEPS }, (_, i) => (
+            <span key={i} className={i < step ? "on" : ""} />
+          ))}
+        </div>
+        <div className="display" style={{ fontSize: 13, fontWeight: 800, color: "var(--navy)" }}>
           {step}/{TOTAL_STEPS}
         </div>
       </div>
-      <div className="progress" role="progressbar" aria-valuemin={1} aria-valuemax={TOTAL_STEPS} aria-valuenow={step} aria-label="進み具合">
-        {Array.from({ length: TOTAL_STEPS }, (_, i) => (
-          <span key={i} className={i < step ? "on" : ""} />
-        ))}
-      </div>
     </header>
+  );
+}
+
+/** 会員だけに出す「保存してマイページへ」。入力途中の内容をアカウントに保存してから移動する。 */
+function SaveAndExit() {
+  const [account] = useAccount();
+  const { state } = useFlow();
+  const pathname = usePathname();
+  const router = useRouter();
+  const [busy, setBusy] = useState(false);
+  if (!account?.loggedIn) return <div style={{ width: 44 }} />;
+
+  async function save() {
+    setBusy(true);
+    try {
+      const res = await fetch("/api/flow-save", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ ...state, path: pathname }),
+      });
+      if (!res.ok) throw new Error((await res.json().catch(() => null))?.error ?? "下書きを保存できませんでした");
+      router.push("/account?saved=1");
+    } catch (e) {
+      setBusy(false);
+      alert(e instanceof Error ? e.message : "下書きを保存できませんでした");
+    }
+  }
+
+  return (
+    <button type="button" className="header-pill display" onClick={save} disabled={busy}>
+      {busy ? "保存中…" : "保存してマイページへ"}
+    </button>
   );
 }
 
