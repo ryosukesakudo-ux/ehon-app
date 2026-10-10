@@ -74,6 +74,8 @@ export async function illustrate(opts: {
   images: { who: Person; file: Uploadable }[];
   quality: Quality;
   childAge?: number | null;
+  /** 出力サイズを指定するとき（画質くらべ用）。省略時は品質と場面から決める */
+  size?: "1024x1024" | "2048x2048";
 }): Promise<string> {
   const ai = getOpenAI();
   if (!ai) throw new Error("OPENAI_API_KEY が未設定です");
@@ -82,7 +84,7 @@ export async function illustrate(opts: {
     image: opts.images.map((i) => i.file),
     prompt: buildPrompt(opts.taste, opts.story, opts.sceneIndex, opts.images.map((i) => i.who), opts.childAge),
     // 表紙は横長（タイトルは絵の上の帯に置くので、絵に文字の場所はいらない）
-    size: opts.sceneIndex === COVER_SCENE ? COVER_SIZE : opts.quality === "final" ? (process.env.OPENAI_FINAL_SIZE ?? "2048x2048") : "1024x1024",
+    size: opts.size ?? (opts.sceneIndex === COVER_SCENE ? COVER_SIZE : opts.quality === "final" ? (process.env.OPENAI_FINAL_SIZE ?? "2048x2048") : "1024x1024"),
     quality: opts.quality === "final" ? "high" : "medium",
     output_format: "png",
   });
