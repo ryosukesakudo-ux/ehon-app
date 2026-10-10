@@ -5,7 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useFlow } from "../flow";
 
 // 会員ページの「つづきから」。保存されている下書きを読み込んで、プレビュー画面へ進む。
-// ?saved=1 のときは、作成画面の「保存してマイページへ」で保存した途中の内容から、保存した画面へ戻る。
+// ?saved=1 のときは、作成画面の「保存して中断」で保存した途中の内容から、保存した画面へ戻る。
 function Resume() {
   const router = useRouter();
   const params = useSearchParams();

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState, type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { Arrow, Chevron, Sparkle, Star } from "@/components/icons";
 import { useFlow } from "./flow";
@@ -11,21 +11,30 @@ import { Brand } from "@/components/brand";
 export const TOTAL_STEPS = 6;
 
 export function StepHeader({ step, back }: { step: number; back?: string }) {
+  const { update, ready } = useFlow();
+  const pathname = usePathname();
+  // 最後に開いていた画面を覚えておく（ログイン後やマイページから、この画面に戻れるように）
+  useEffect(() => {
+    if (ready) update({ path: pathname });
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 画面が変わったときだけ記録する
+  }, [ready, pathname]);
   return (
     <header className="step-header">
       <Star size={14} style={{ position: "absolute", left: "58%", top: 6 }} />
       <Sparkle size={12} style={{ position: "absolute", left: 90, top: 40 }} />
       <div className="step-header-row">
         {back ? (
-          <Link href={back} className="icon-link" aria-label="戻る">
-            <Chevron />
+          <Link href={back} className="back-link display">
+            <Chevron size={18} />
+            戻る
           </Link>
         ) : (
-          <Link href="/" className="icon-link" aria-label="トップへ">
-            <Chevron />
+          <Link href="/" className="back-link display">
+            <Chevron size={18} />
+            トップ
           </Link>
         )}
-        <Brand size={30} mark={false} />
+        <Brand size={26} mark={false} />
         <SaveAndExit />
       </div>
       <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
@@ -42,7 +51,7 @@ export function StepHeader({ step, back }: { step: number; back?: string }) {
   );
 }
 
-/** 会員だけに出す「保存してマイページへ」。入力途中の内容をアカウントに保存してから移動する。 */
+/** 会員だけに出す「保存して中断」。入力途中の内容をアカウントに保存してから移動する。 */
 function SaveAndExit() {
   const [account] = useAccount();
   const { state } = useFlow();
@@ -69,7 +78,7 @@ function SaveAndExit() {
 
   return (
     <button type="button" className="header-pill display" onClick={save} disabled={busy}>
-      {busy ? "保存中…" : "保存してマイページへ"}
+      {busy ? "保存中…" : "保存して中断"}
     </button>
   );
 }

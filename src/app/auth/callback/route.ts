@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import type { EmailOtpType } from "@supabase/supabase-js";
 import { createAuthClient } from "@/lib/auth";
 import { claimAnonData } from "@/lib/claim";
+import { getAnonId } from "@/lib/anon";
+import { parseFlowSave } from "@/lib/flow-save";
 
 // Google ログインやメールのリンク（登録の確認・パスワードの再設定）から戻ってくる場所。
 // ログインを確定し、登録前に作ったお試しの下書きと写真を会員のものにする。
@@ -46,8 +48,16 @@ export async function GET(request: Request) {
   }
   const user = data.user;
 
-  await claimAnonData(user.id);
+  // 登録時にアカウントへ引き継いだ作りかけの内容
+  const flow = parseFlowSave(user.user_metadata?.flow_save);
+  const sameBrowser = !!(await getAnonId());
+  await claimAnonData(user.id, flow?.draftId);
 
+  // 確認メールを別のブラウザ（メールアプリなど）で開いたときは、このブラウザに途中の内容が無いので、
+  // アカウントに引き継いだ内容から作成画面に戻る
+  if (flow && !sameBrowser && next.startsWith("/create")) {
+    return NextResponse.redirect(new URL("/create/resume?saved=1", url.origin));
+  }
   return NextResponse.redirect(new URL(next, url.origin));
 }
 

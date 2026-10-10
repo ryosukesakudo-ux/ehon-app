@@ -2,7 +2,7 @@ import "server-only";
 import { CHILD_AGES, clampCopies, getSize, getStory, getTaste, type SizeId, type StoryId, type TasteId } from "./catalog";
 import { createAuthClient } from "./auth";
 
-// 作成途中の内容（下書き）。会員が作成画面から「保存してマイページへ」を押したときに、
+// 作成途中の内容（下書き）。会員が作成画面から「保存して中断」を押したときに、
 // アカウント（Supabase Auth のユーザー情報）に1件だけ保存し、別の端末でも「つづきから」再開できるようにする。
 // 選んだだけでまだ送っていない写真は保存しない（会員は保存済みの写真から選び直せる）。
 
