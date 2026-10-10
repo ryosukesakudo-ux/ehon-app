@@ -1,9 +1,11 @@
 import type Stripe from "stripe";
-import { getStripe, getSupabase } from "@/lib/services";
+import { getStripe, getSupabase, siteUrl } from "@/lib/services";
+import { sendOrderConfirmation } from "@/lib/order-mail";
 
 // Stripe からの通知。
 // - checkout.session.completed：お届け先を保存。カードなどその場で払えた場合（クーポンで0円の場合も）は「支払い済み」にする。
 // - checkout.session.async_payment_succeeded：コンビニ払いなど、後から支払いが済んだとき「支払い済み」にする。
+// 支払い済みになったら、会員登録のメールアドレスに「ご注文完了」メールを送る。
 // - charge.refunded：返金額を注文に記録する（管理画面からの返金も、Stripe のダッシュボードからの返金も）。
 // プレビューの追加枠の購入（metadata.kind = "credits"）は、支払い済みになったら枠を足す。
 export async function POST(request: Request) {
@@ -39,7 +41,7 @@ export async function POST(request: Request) {
 
     const orderId = session.metadata?.order_id;
     if (orderId) {
-      const { error } = await db
+      const { data: updated, error } = await db
         .from("orders")
         .update({
           checkout_completed_at: new Date(event.created * 1000).toISOString(),
@@ -51,10 +53,15 @@ export async function POST(request: Request) {
           ...(paid ? { status: "paid", paid_at: new Date().toISOString() } : {}),
         })
         .eq("id", orderId)
-        .eq("status", "pending");
+        .eq("status", "pending")
+        .select("id");
       if (error) {
         console.error("order update failed", error);
         return new Response("db error", { status: 500 });
+      }
+      // 支払い済みになった通知のときだけ（同じ注文で二重に送らない）、ご注文完了メールを送る
+      if (paid && updated?.length) {
+        await sendOrderConfirmation(orderId, siteUrl(request)).catch((e) => console.error("order mail failed", e));
       }
     }
   }

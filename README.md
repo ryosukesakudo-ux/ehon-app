@@ -43,6 +43,7 @@ http://localhost:3000 を開きます。キーを何も設定しなければ「�
 3. **Stripe**：テストモードの `STRIPE_SECRET_KEY` を設定。Webhook の送信先を `https://<サイトのURL>/api/stripe/webhook`、イベントを `checkout.session.completed` と `checkout.session.async_payment_succeeded`（コンビニ払い用）と `charge.refunded`（返金の記録用）にして、表示される署名シークレットを `STRIPE_WEBHOOK_SECRET` に設定。お客様への支払い完了メールは Stripe ダッシュボードの「メールによる領収書」を有効にする。
 4. **支払い方法**：Stripe ダッシュボードの「設定 > 支払い方法」で、カード・Apple Pay・Google Pay・コンビニ決済・PayPay を有効にする（PayPay は申請が必要）。コードの変更は不要です。
 5. **管理画面と自動削除**：`ADMIN_PASSWORD` と `CRON_SECRET` に長いランダムな文字列を設定。
+6. **ご注文完了メール**：支払い済みになると、会員登録のメールアドレスにサイトからメールを送る。`SMTP_USER`・`SMTP_PASS`（Gmail のアプリ パスワード）を設定。Resend などほかの SMTP は `SMTP_HOST`・`SMTP_PORT`・`MAIL_FROM` も設定。未設定なら送らない。
 
 ## 写真と絵の保管期間
 
