@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Check, Star } from "@/components/icons";
 import { ClearFlow } from "./clear";
+import { Lottie } from "@/components/lottie";
 
 export default async function DonePage({ searchParams }: PageProps<"/create/done">) {
   const { order } = await searchParams;
@@ -11,8 +12,9 @@ export default async function DonePage({ searchParams }: PageProps<"/create/done
     "数日後に発送します",
   ];
   return (
-    <main className="step-body" style={{ paddingTop: 40 }}>
+    <main className="step-body" style={{ paddingTop: 40, position: "relative" }}>
       <ClearFlow />
+      <Lottie name="confetti" loop={false} style={{ position: "absolute", left: "50%", top: 0, width: 360, height: 400, transform: "translateX(-50%)", zIndex: 1 }} />
       <div style={{ display: "flex", justifyContent: "center", alignItems: "flex-end", gap: 18, height: 56 }}>
         <Star size={22} style={{ transform: "rotate(-10deg)" }} />
         <Star size={16} color="#7CC7A8" />

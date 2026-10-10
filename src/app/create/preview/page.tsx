@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { COVER_SCENE, MEMBER_MONTHLY_PREVIEWS, bookTitle, getStory, sceneText } from "@/lib/catalog";
 import { BookCover } from "@/components/book-cover";
 import { Chevron } from "@/components/icons";
+import { Lottie } from "@/components/lottie";
 import { useFlow } from "../flow";
 import { loginHref, useAccount } from "../account";
 import { NextButton, StepHeader, StepTitle } from "../step";
@@ -80,7 +81,7 @@ export default function PreviewPage() {
       <img src={url} alt={isCover ? "表紙の絵" : `${pos + 1}枚目の挿絵`} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
     ) : (
       <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 12, color: "var(--sub)", fontSize: 13 }}>
-        <div className="spinner" />
+        <Lottie name="drawing" style={{ width: 200, height: 150 }} />
         <span>絵をかいています…（1分ほどかかります）</span>
       </div>
     );
