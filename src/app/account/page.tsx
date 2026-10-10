@@ -5,7 +5,9 @@ import { currentUser } from "@/lib/auth";
 import { listPhotos, remainingPreviews } from "@/lib/account";
 import { BOOK_BUCKET, getSupabase } from "@/lib/services";
 import { PageHeader } from "@/components/page-header";
+import { FLOW_STEPS, getFlowSave } from "@/lib/flow-save";
 import { DeletePhotoButton } from "./delete-photo";
+import { DeleteSaveButton } from "./delete-save";
 
 export const dynamic = "force-dynamic";
 
@@ -24,12 +26,14 @@ function date(d: Date | string) {
   return new Date(d).toLocaleDateString("ja-JP", { timeZone: "Asia/Tokyo", month: "numeric", day: "numeric" });
 }
 
-export default async function AccountPage() {
+export default async function AccountPage({ searchParams }: PageProps<"/account">) {
+  const { saved: justSaved } = await searchParams;
   const user = await currentUser();
   if (!user) redirect("/login?next=/account");
   const db = getSupabase();
 
-  const [remaining, photos, { data: drafts }] = await Promise.all([
+  const [save, remaining, photos, { data: drafts }] = await Promise.all([
+    getFlowSave(),
     remainingPreviews(user.id),
     listPhotos(user.id),
     db
@@ -69,6 +73,28 @@ export default async function AccountPage() {
     <div className="shell">
       <PageHeader title="マイページ" />
       <main className="step-body">
+        {justSaved === "1" && save && <p className="info-note" role="status">下書きを保存しました。「つづきから」で再開できます。</p>}
+        {save && (
+          <section className="card" style={{ gap: 10, border: "2px solid var(--coral)" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", gap: 8, alignItems: "flex-start" }}>
+              <div>
+                <div className="display" style={{ fontSize: 16, fontWeight: 800, color: "var(--navy)" }}>つくりかけの絵本</div>
+                <div style={{ fontSize: 12, color: "var(--sub)", lineHeight: 1.7 }}>
+                  {getStory(save.story)?.name}／{getTaste(save.taste)?.name}
+                  {save.childName ? `／主人公「${save.childName}」` : ""}
+                  <br />
+                  {FLOW_STEPS[save.path]}の画面で保存（{date(save.savedAt)}）
+                </div>
+              </div>
+              <span className="tag" style={{ flexShrink: 0 }}>下書き</span>
+            </div>
+            {!save.draftId && save.path !== "/create/taste" && save.path !== "/create/story" && (
+              <p className="step-lead" style={{ fontSize: 12 }}>写真はもう一度えらんでください（保存済みの写真からも選べます）。</p>
+            )}
+            <Link href="/create/resume?saved=1" className="cta" style={{ height: 50, fontSize: 16 }}>つづきから</Link>
+            <DeleteSaveButton />
+          </section>
+        )}
         <div className="card" style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", padding: 18 }}>
           <div>
             <div style={{ fontSize: 13, color: "var(--sub)" }}>今月のプレビュー残り</div>

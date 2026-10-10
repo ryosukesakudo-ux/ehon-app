@@ -1,10 +1,13 @@
 .page { max-width: 480px; margin: 0 auto; background: var(--cream); overflow: hidden; }
+@media (min-width: 600px) { .page { box-shadow: 0 0 0 1px rgba(30, 47, 87, 0.06), 0 10px 40px rgba(30, 47, 87, 0.12); } }
 
 .header { display: flex; align-items: center; justify-content: space-between; padding: 12px 20px; background: var(--sky); }
 .logo { display: flex; align-items: center; gap: 8px; color: var(--navy); font-size: 18px; font-weight: 900; text-decoration: none; }
 .logoMark { width: 34px; height: 34px; border-radius: 10px; background: var(--blue); display: flex; align-items: center; justify-content: center; }
 .headerCta { display: flex; align-items: center; height: 44px; padding: 0 18px; border-radius: 22px; background: var(--coral); color: #fff; font-size: 14px; font-weight: 800; text-decoration: none; }
+.headerCta { box-shadow: 0 3px 0 var(--coral-shadow); background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.22), rgba(255, 255, 255, 0) 55%); transition: transform 0.1s ease, box-shadow 0.1s ease; }
 .headerCta:hover { color: #fff; }
+.headerCta:active { transform: translateY(3px); box-shadow: 0 0 0 var(--coral-shadow); }
 .headerLink { display: flex; align-items: center; height: 44px; padding: 0 6px; color: var(--navy); font-size: 13px; font-weight: 800; text-decoration: none; }
 
 .hero { position: relative; display: flex; flex-direction: column; gap: 18px; padding: 26px 20px 30px; background: var(--sky); }
@@ -60,7 +63,8 @@
 .sampleText { margin: 0; padding: 16px; font-size: 15px; line-height: 1.9; }
 .sampleTag { position: absolute; right: 8px; top: -6px; padding: 6px 12px; border-radius: 14px; background: var(--coral); color: #fff; font-size: 13px; font-weight: 800; transform: rotate(6deg); }
 .tastes { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
-.tasteSwatch { height: 100px; overflow: hidden; border-radius: 16px; border: 2px solid; display: flex; align-items: center; justify-content: center; font-size: 10px; }
+.tasteSwatch { height: 120px; overflow: hidden; border-radius: 16px; border: 2px solid; display: flex; align-items: center; justify-content: center; font-size: 10px; }
+.tastePoints { margin-top: 2px; font-size: 11px; line-height: 1.5; text-align: center; color: var(--sub); }
 .tasteName { font-size: 14px; font-weight: 800; text-align: center; margin-top: 8px; }
 
 .chips { display: flex; flex-wrap: wrap; gap: 10px; }
@@ -111,3 +115,14 @@
 .showcasePhoto { background: #e9e4dc; border: 4px solid #fff; box-shadow: 0 4px 10px rgba(30, 47, 87, 0.15); transform: rotate(-3deg); }
 .showcaseBook { background: #cfe3f0; border: 2px solid var(--navy); transform: rotate(2deg); }
 .showcaseArrow { width: 34px; height: 34px; border-radius: 50%; background: var(--coral); display: flex; align-items: center; justify-content: center; }
+
+/* 星や雲がゆっくり揺れて、絵本の世界らしい動きを出す（動きを減らす設定の人には止める） */
+@keyframes floaty { 50% { translate: 0 -6px; } }
+@keyframes drift { 50% { translate: 10px 0; } }
+.deco { animation: floaty 4.5s ease-in-out infinite; }
+.deco:nth-of-type(2n) { animation-duration: 5.5s; animation-delay: -1.5s; }
+.cloud { animation: drift 9s ease-in-out infinite; }
+.sticker { animation: floaty 5s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) {
+  .deco, .cloud, .sticker { animation: none; }
+}

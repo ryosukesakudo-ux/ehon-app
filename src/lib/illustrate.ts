@@ -12,6 +12,11 @@ const PICTURE_BOOK_CHARACTERS =
   "Draw expressive picture-book eyes with a visible colored iris, a dark pupil and a small white highlight, gently shaped eyelids and lashes where fitting. Never draw the eyes as plain black dots or simple lines.";
 export type Quality = "preview" | "final";
 
+// 参考画像（写真や設定画）の絵柄に引っぱられて、テイストの違いが消えないようにする指示
+const STYLE_ONLY_FROM_TEXT =
+  "Use the reference images only to know who the people are (faces, hairstyles, outfits). Ignore their drawing style, rendering, texture and color palette, " +
+  "and render the whole image strictly in the ART STYLE described above. The style must be unmistakable at a glance.";
+
 const LABEL: Record<Person, string> = {
   child: "the child (the main character)",
   mom: "the child's mother",
@@ -46,6 +51,7 @@ export function buildPrompt(taste: TasteId, story: StoryId, sceneIndex: number, 
   return [
     `${t.prompt}.`,
     refs,
+    STYLE_ONLY_FROM_TEXT,
     PICTURE_BOOK_CHARACTERS,
     "Make them look friendly and natural, never caricatured.",
     childAge ? ageBody(childAge) : "",
@@ -148,6 +154,7 @@ export function buildSamplePrompt(taste: TasteId, story: StoryId, sceneIndex: nu
     `${t.prompt}.`,
     "The reference image is the character sheet for this story.",
     "Draw exactly the same characters: the same faces, hairstyles, body proportions, outfits and outfit colors. Only the drawing style changes.",
+    STYLE_ONLY_FROM_TEXT,
     sampleCast(story, people),
     `Scene: ${scene.art}.`,
     scene.withMom ? "" : "Do not include the mother in this scene.",
@@ -211,6 +218,7 @@ export async function illustrateShowcase(opts: { taste: TasteId; story: StoryId;
     prompt: [
       `${t.prompt}.`,
       "The reference photo shows the family: the child (the main character) in the center, the mother on the left, the father on the right.",
+      STYLE_ONLY_FROM_TEXT,
       PICTURE_BOOK_CHARACTERS,
       "Make them look friendly and natural, never caricatured. The result must clearly look like a page from a children's picture book, not a filtered photo.",
       `Scene: ${scene.art}.`,

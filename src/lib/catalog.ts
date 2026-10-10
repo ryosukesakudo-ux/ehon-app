@@ -8,6 +8,8 @@ export const TASTES: {
   id: TasteId;
   name: string;
   description: string;
+  /** 違いが一目で分かるよう、選択画面とトップに出す特徴（短い言葉を3つ） */
+  points: string[];
   swatch: string;
   prompt: string;
 }[] = [
@@ -15,25 +17,34 @@ export const TASTES: {
     id: "watercolor",
     name: "水彩",
     description: "にじむ色合いの、やさしい手描き風",
+    points: ["にじむ色", "紙の質感", "おだやか"],
     swatch: "#CFE3F0",
     prompt:
-      "soft watercolor children's picture book illustration, gentle bleeding colors, visible paper texture, warm and calm",
+      "ART STYLE: a traditional transparent watercolor painting on textured cold-press paper. Wet-on-wet washes with soft blooms and colors bleeding into each other, " +
+      "uneven pigment granulation, white paper showing through the highlights, no dark outlines (shapes are defined by color only), " +
+      "a soft muted pastel palette, warm and calm like a classic children's picture book",
   },
   {
     id: "crayon",
     name: "クレヨン",
     description: "子どもの落書きのような、あたたかいタッチ",
+    points: ["ざらっとした線", "手描き感", "にぎやか"],
     swatch: "#F8D9B8",
     prompt:
-      "crayon and colored pencil children's picture book illustration, waxy textured strokes, playful and warm",
+      "ART STYLE: drawn entirely with wax crayons and colored pencils on rough off-white drawing paper, like a heartfelt hand-made picture book. " +
+      "Thick visible waxy strokes and directional hatching, the paper grain showing through every stroke, slightly wobbly naive outlines, " +
+      "simple flat perspective, rich warm saturated colors, no smooth gradients and no painterly blending",
   },
   {
     id: "anime",
     name: "ふんわりアニメ",
     description: "まるい線と明るい色の、親しみやすい絵",
+    points: ["くっきり線", "明るい色", "キャラ風"],
     swatch: "#DCEBD3",
     prompt:
-      "soft modern anime-style children's picture book illustration, rounded clean lines, bright pastel colors",
+      "ART STYLE: a clean modern Japanese anime-style children's illustration. Crisp, even, dark-brown outlines, flat cel shading with one hard-edged shadow tone, " +
+      "smooth digital coloring with no paper or brush texture, bright clear pastel colors, soft glowing light, " +
+      "rounded friendly shapes and expressive anime-style eyes",
   },
 ];
 

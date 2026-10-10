@@ -35,6 +35,18 @@ button, input { font-family: inherit; }
 
 .nowrap { white-space: nowrap; }
 
+/* PC など広い画面では、スマホ幅の本体の外側を星空の背景にする */
+@media (min-width: 600px) {
+  body {
+    background:
+      radial-gradient(circle, rgba(255, 255, 255, 0.9) 1.5px, transparent 2px) 0 0 / 34px 34px,
+      radial-gradient(circle, rgba(246, 196, 69, 0.55) 2px, transparent 2.5px) 17px 17px / 68px 68px,
+      linear-gradient(180deg, var(--sky), #e6f3fb 60%, var(--cream));
+    background-attachment: fixed;
+  }
+  .shell { box-shadow: 0 0 0 1px rgba(30, 47, 87, 0.06), 0 10px 40px rgba(30, 47, 87, 0.12); }
+}
+
 /* 画面幅いっぱいでも読みやすい幅に収める */
 .shell {
   max-width: 480px;
@@ -61,14 +73,18 @@ button, input { font-family: inherit; }
   font-size: 18px;
   font-weight: 900;
   text-decoration: none;
-  box-shadow: 0 5px 0 var(--coral-shadow);
+  /* 上が少し明るいグラデーション＋下の厚みで、押せるボタンに見せる */
+  --press-shadow: var(--coral-shadow);
+  background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.22), rgba(255, 255, 255, 0) 55%);
+  box-shadow: 0 5px 0 var(--press-shadow);
   cursor: pointer;
-  transition: transform 0.08s ease, box-shadow 0.08s ease;
+  transition: transform 0.1s ease, box-shadow 0.1s ease, filter 0.15s ease;
+  -webkit-tap-highlight-color: transparent;
 }
 .cta:hover { color: #fff; }
-.cta:active { transform: translateY(3px); box-shadow: 0 2px 0 var(--coral-shadow); }
+.cta.yellow { --press-shadow: #c99a22; background-color: var(--yellow); color: var(--ink); box-shadow: 0 5px 0 #c99a22; }
+.cta.yellow:hover { color: var(--ink); }
 .cta[aria-disabled="true"], .cta:disabled { opacity: 0.5; cursor: not-allowed; }
-.cta.yellow { background: var(--yellow); color: var(--ink); box-shadow: 0 5px 0 #c99a22; }
 
 .ghost {
   display: flex;
@@ -85,8 +101,26 @@ button, input { font-family: inherit; }
   font-weight: 800;
   text-decoration: none;
   cursor: pointer;
+  box-shadow: 0 4px 0 rgba(30, 47, 87, 0.16);
+  transition: transform 0.1s ease, box-shadow 0.1s ease, background-color 0.15s ease;
+  -webkit-tap-highlight-color: transparent;
 }
 .ghost:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* --- ボタンを押したときの沈み込み（押せる部品で共通） --- */
+@media (hover: hover) {
+  .cta:not(:disabled):not([aria-disabled="true"]):hover { transform: translateY(-1px); box-shadow: 0 6px 0 var(--press-shadow); filter: brightness(1.04); }
+  .ghost:not(:disabled):hover { background-color: #f6f9ff; transform: translateY(-1px); box-shadow: 0 5px 0 rgba(30, 47, 87, 0.16); }
+  .choice:hover { transform: translateY(-1px); box-shadow: 0 5px 0 var(--card-shadow); }
+}
+.cta:not(:disabled):not([aria-disabled="true"]):active { transform: translateY(4px); box-shadow: 0 1px 0 var(--press-shadow); filter: brightness(0.97); }
+.ghost:not(:disabled):active { transform: translateY(3px); box-shadow: 0 1px 0 rgba(30, 47, 87, 0.16); background-color: #eef3fb; }
+.choice:active { transform: translateY(3px); box-shadow: 0 1px 0 var(--card-shadow); }
+.icon-link:active { transform: scale(0.9); }
+:focus-visible { outline: 3px solid var(--blue); outline-offset: 3px; }
+@media (prefers-reduced-motion: reduce) {
+  .cta, .ghost, .choice { transition: none; }
+}
 
 /* --- 注文フローの共通部品 --- */
 .step-header {
@@ -107,7 +141,25 @@ button, input { font-family: inherit; }
   width: 44px;
   height: 44px;
   color: var(--navy);
+  border-radius: 22px;
+  transition: transform 0.1s ease;
 }
+.header-pill {
+  height: 34px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 17px;
+  background: #fff;
+  color: var(--navy);
+  font-size: 12px;
+  font-weight: 800;
+  white-space: nowrap;
+  cursor: pointer;
+  box-shadow: 0 3px 0 rgba(30, 47, 87, 0.18);
+  transition: transform 0.1s ease, box-shadow 0.1s ease;
+}
+.header-pill:active { transform: translateY(3px); box-shadow: 0 0 0 rgba(30, 47, 87, 0.18); }
+.header-pill:disabled { opacity: 0.6; cursor: default; }
 .progress { display: flex; gap: 6px; }
 .progress > span { flex: 1; height: 6px; border-radius: 3px; background: #fff; }
 .progress > span.on { background: var(--coral); }
@@ -140,8 +192,14 @@ button, input { font-family: inherit; }
   border: 1px solid var(--line);
   margin: 2px;
   box-shadow: 0 4px 0 var(--card-shadow);
+  transition: transform 0.1s ease, box-shadow 0.1s ease;
+  -webkit-tap-highlight-color: transparent;
 }
 .choice[aria-pressed="true"] { border: 3px solid var(--coral); margin: 0; }
+.taste-choice { flex-direction: column; align-items: stretch; gap: 12px; padding: 12px; }
+.taste-art { position: relative; height: 190px; border-radius: 14px; overflow: hidden; display: flex; align-items: center; justify-content: center; font-size: 11px; color: var(--sub); }
+.taste-check { position: absolute; top: 10px; right: 10px; width: 32px; height: 32px; border-radius: 16px; box-shadow: 0 0 0 3px #fff; }
+.point { font-size: 12px; font-weight: 700; padding: 3px 10px; border-radius: 12px; background: #f3eee4; color: var(--sub); }
 .choice-title { font-size: 17px; font-weight: 800; color: var(--navy); }
 .choice-desc { font-size: 13px; line-height: 1.6; color: var(--sub); }
 .check {
@@ -192,6 +250,7 @@ button, input { font-family: inherit; }
 .consent input { width: 22px; height: 22px; margin: 2px 0 0; flex-shrink: 0; }
 
 .error { margin: 0; padding: 12px 14px; border-radius: 12px; background: #fde7e3; color: #8f2214; font-size: 14px; }
+.info-note { margin: 0; padding: 12px 14px; border-radius: 12px; background: #e6f3fb; color: var(--navy); font-size: 14px; font-weight: 700; line-height: 1.6; }
 .demo-note { margin: 0; padding: 10px 14px; border-radius: 12px; background: #fff1c9; font-size: 12px; line-height: 1.6; }
 
 .sum-row { display: flex; justify-content: space-between; font-size: 14px; color: var(--sub); }

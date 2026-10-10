@@ -136,9 +136,9 @@ export default function Home() {
         <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
           <Cta />
           <Link href="/login?next=/create/taste" className="ghost" style={{ height: 52, fontSize: 16, borderColor: "var(--navy)", color: "var(--navy)" }}>
-            無料会員登録・ログイン
+            無料会員登録・ログインしてつくる
           </Link>
-          <div className={s.note}>登録なしで1回お試しOK・お支払いは見本を確認してから</div>
+          <div className={s.note}>登録なしでも1回お試しOK・お支払いは見本を確認してから</div>
         </div>
       </section>
 
@@ -215,10 +215,10 @@ export default function Home() {
             <li>作った絵本をマイページで見返せる</li>
           </ul>
           <Link href="/login?next=/create/taste" className="cta yellow" style={{ height: 54, fontSize: 17 }}>
-            無料で会員登録する
+            無料で会員登録してつくる
             <Arrow />
           </Link>
-          <div style={{ fontSize: 12, textAlign: "center" }}>Google アカウントかメールアドレスで、すぐに登録できます</div>
+          <div style={{ fontSize: 12, textAlign: "center" }}>Google アカウントかメールアドレスで、すぐに登録できます。登録後はそのまま絵本づくりに進みます</div>
         </div>
       </section>
 
@@ -243,17 +243,21 @@ export default function Home() {
         </div>
         <div className={s.tastes}>
           {[
-            { id: "watercolor", n: "水彩", bg: "#CFE3F0", bd: "#2F5DA8", c: "#43505C" },
-            { id: "crayon", n: "クレヨン", bg: "#F8D9B8", bd: "#F08A6C", c: "#6A5440" },
-            { id: "anime", n: "ふんわりアニメ", bg: "#DCEBD3", bd: "#7CC7A8", c: "#44543F" },
-          ].map((t) => (
-            <div key={t.n}>
-              <div className={s.tasteSwatch} style={{ background: t.bg, borderColor: t.bd, color: t.c }}>
-                <SampleImage src={sampleUrl(t.id as (typeof TASTES)[number]["id"], "forest", 0)} alt={`${t.n}の見本`} fallback="[見本]" sizes="(max-width: 640px) 33vw, 200px" />
+            { id: "watercolor", bg: "#CFE3F0", bd: "#2F5DA8", c: "#43505C" },
+            { id: "crayon", bg: "#F8D9B8", bd: "#F08A6C", c: "#6A5440" },
+            { id: "anime", bg: "#DCEBD3", bd: "#7CC7A8", c: "#44543F" },
+          ].map((v) => {
+            const t = TASTES.find((x) => x.id === v.id)!;
+            return (
+              <div key={t.id}>
+                <div className={s.tasteSwatch} style={{ background: v.bg, borderColor: v.bd, color: v.c }}>
+                  <SampleImage src={sampleUrl(t.id, "forest", 0)} alt={`${t.name}の見本`} fallback="[見本]" sizes="(max-width: 640px) 33vw, 200px" />
+                </div>
+                <div className={`${s.tasteName} display`}>{t.name}</div>
+                <div className={s.tastePoints}>{t.points.slice(0, 2).join("・")}</div>
               </div>
-              <div className={`${s.tasteName} display`}>{t.n}</div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </section>
 
