@@ -26,10 +26,25 @@ export default function ComparePage() {
   const [story, setStory] = useState<StoryId>("forest");
   const [scene, setScene] = useState(0);
   const [results, setResults] = useState<Partial<Record<(typeof MODES)[number]["id"], Result>>>({});
-  const running = Object.values(results).some((r) => r?.status === "working");
+  const [preparing, setPreparing] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const running = preparing || Object.values(results).some((r) => r?.status === "working");
   const scenes = STORIES.find((s) => s.id === story)!.scenes;
 
   async function start() {
+    // 押したことがすぐ分かるよう、写真の準備中から「作成中」にする
+    setPreparing(true);
+    setError(null);
+    try {
+      await run();
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "写真を読み込めませんでした。別の写真をお試しください");
+    } finally {
+      setPreparing(false);
+    }
+  }
+
+  async function run() {
     const form = new FormData();
     form.set("taste", taste);
     form.set("story", story);
@@ -97,6 +112,8 @@ export default function ComparePage() {
         <button type="button" className="cta" disabled={!photos.child || running} onClick={start} style={{ maxWidth: 360 }}>
           {running ? "作成中…（1〜2分）" : "2枚つくって比べる"}
         </button>
+        {!photos.child && <p className="step-lead">子どもの写真を選ぶと押せるようになります。</p>}
+        {error && <p className="error" role="alert">{error}</p>}
       </section>
 
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: 16 }}>
