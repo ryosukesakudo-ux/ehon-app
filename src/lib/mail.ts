@@ -6,7 +6,7 @@ import { SITE_NAME } from "@/components/brand";
 // SMTP_USER・SMTP_PASS が未設定ならメールは送らない（デモモード）。
 // - SMTP_HOST：既定は smtp.gmail.com（Resend なら smtp.resend.com）
 // - SMTP_PORT：既定は 465
-// - MAIL_FROM：差出人。既定は「絵本 Only Yours <SMTP_USER>」（Resend のときは noreply@ドメイン などを入れる）
+// - MAIL_FROM：差出人。既定は「えほん Only Yours <SMTP_USER>」（Resend のときは noreply@ドメイン などを入れる）
 
 let transporter: Transporter | null | undefined;
 function getTransporter() {

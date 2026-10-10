@@ -55,7 +55,7 @@ export async function buildBookPdfs(input: BookPdfInput) {
     const body = await doc.embedFont(bodyFontBytes, { subset: false });
     const bold = await doc.embedFont(titleFontBytes, { subset: false });
     doc.setTitle(`${title}${input.storyName}`);
-    doc.setCreator("絵本 Only Yours");
+    doc.setCreator("えほん Only Yours");
     return { doc, body, bold };
   }
 
@@ -72,7 +72,7 @@ export async function buildBookPdfs(input: BookPdfInput) {
     const page = blank();
     drawCentered(page, title, bold, 18 * scale, NAVY, size / 2 + 26 * scale);
     drawCentered(page, input.storyName, bold, 30 * scale, NAVY, size / 2 - 12 * scale);
-    drawCentered(page, "絵本 Only Yours", body, 10 * scale, CORAL, mm(BLEED_MM + SAFE_MM));
+    drawCentered(page, "えほん Only Yours", body, 10 * scale, CORAL, mm(BLEED_MM + SAFE_MM));
   }
 
   // 2〜25 見開き（左：文章 / 右：絵）
@@ -96,7 +96,7 @@ export async function buildBookPdfs(input: BookPdfInput) {
     const lines = [
       `${title}${input.storyName}`,
       `しゅじんこう：${input.childName}`,
-      "え・ぶん：絵本 Only Yours（AIでえがきました）",
+      "え・ぶん：えほん Only Yours（AIでえがきました）",
       `${d.getFullYear()}年${d.getMonth() + 1}月${d.getDate()}日 発行`,
     ];
     const fontSize = 9 * scale;

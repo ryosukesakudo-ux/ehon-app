@@ -1,5 +1,5 @@
-/** サイトのロゴ（2026-10-10 決定のA案：コーラルの「絵」マーク＋「絵本 / Only Yours」） */
-export const SITE_NAME = "絵本 Only Yours";
+/** サイトのロゴ（2026-10-10 決定のA案：コーラルの「絵」マーク＋「えほん Only Yours」） */
+export const SITE_NAME = "えほん Only Yours";
 
 export function BrandMark({ size = 34 }: { size?: number }) {
   return (
