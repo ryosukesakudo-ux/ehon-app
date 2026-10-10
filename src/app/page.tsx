@@ -5,6 +5,7 @@ import { Arrow, BookIcon, Sparkle, Star } from "@/components/icons";
 import { ANON_TRIAL_IMAGES, EXTRA_COPY_PRICE, MEMBER_MONTHLY_PREVIEWS, SIZES, STORIES, TASTES, sceneText, yen } from "@/lib/catalog";
 import { SAMPLE_CHILD_NAME, SAMPLE_SCENES, SHOWCASE, SHOWCASE_BOOK, SHOWCASE_PHOTO, samplePublicUrl, sampleUrl } from "@/lib/samples";
 import { SampleImage } from "@/components/sample-image";
+import { Lottie } from "@/components/lottie";
 import s from "./top.module.css";
 
 const NAVY = "#1E2F57";
@@ -100,6 +101,7 @@ export default function Home() {
           {/* 完成した絵本の表紙（作道さんが用意した画像、2026-10-10 差し替え）。影も画像に含まれているので加工はしない */}
           <div className={s.sun} />
           <Image src="/hero-book-yui-v2.webp" alt="" width={800} height={793} priority sizes="250px" className={s.heroBook} />
+          <Lottie name="sparkles" style={{ position: "absolute", inset: 0 }} />
           <Sparkle size={26} className={s.deco} style={{ left: 8, top: 30 }} />
           <Sparkle size={22} className={s.deco} style={{ left: 262, top: 210 }} />
           <Star size={30} color="#F08A6C" className={s.deco} style={{ left: 250, top: 14, transform: "rotate(12deg)" }} />
