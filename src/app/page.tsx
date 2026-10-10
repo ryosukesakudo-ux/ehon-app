@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import type { CSSProperties, ReactNode } from "react";
 import { Arrow, Sparkle, Star } from "@/components/icons";
-import { ANON_TRIAL_IMAGES, EXTRA_COPY_PRICE, MEMBER_MONTHLY_PREVIEWS, SIZES, STORIES, TASTES, sceneText, yen } from "@/lib/catalog";
+import { ANON_TRIAL_IMAGES, EXTRA_COPY_DISCOUNT, MEMBER_MONTHLY_PREVIEWS, SIZES, STORIES, TASTES, sceneText, yen } from "@/lib/catalog";
 import { SAMPLE_CHILD_NAME, SAMPLE_SCENES, SHOWCASE, SHOWCASE_BOOK, SHOWCASE_PHOTO, samplePublicUrl, sampleUrl } from "@/lib/samples";
 import { SampleImage } from "@/components/sample-image";
 import { Brand } from "@/components/brand";
@@ -167,7 +167,7 @@ export default function Home() {
     <div className={s.page}>
       <header className={s.header}>
         <Link href="/" className={s.logo}>
-          <Brand size={36} />
+          <Brand size={31} />
         </Link>
         <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
           <Link href="/login?next=/account" className={`${s.headerLink} display`}>ログイン</Link>
@@ -411,7 +411,7 @@ export default function Home() {
         <div className={s.extra}>
           {icon(<path d="M20 12v9H4v-9M2 7h20v5H2zM12 21V7" />, 18)}
           <div>
-            おじいちゃん・おばあちゃん用の2冊目は <span className="display" style={{ fontWeight: 900 }}>{yen(EXTRA_COPY_PRICE)}</span>（Mサイズ・同梱）
+            おじいちゃん・おばあちゃん用などの2冊目からは、1冊 <span className="display" style={{ fontWeight: 900 }}>{yen(EXTRA_COPY_DISCOUNT)}引き</span>（同じ箱でお届け）
           </div>
         </div>
         <div style={{ fontSize: 12, color: "var(--sub)" }}>税込</div>

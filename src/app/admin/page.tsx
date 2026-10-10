@@ -78,7 +78,7 @@ export default async function AdminPage() {
             </div>
             <div style={{ fontSize: 14, lineHeight: 1.8 }}>
               {story.name}／{getTaste(o.drafts.taste)?.name}／主人公「{o.drafts.child_name}」／{getSize(o.size)?.name}サイズ
-              {o.extra_copy ? "＋追加1冊" : ""}／{yen(o.amount)}
+              {copiesOf(o) > 1 ? `×${copiesOf(o)}冊` : ""}／{yen(o.amount)}
               <br />
               お届け先：{ship?.name} 〒{a?.postal_code} {a?.state}{a?.city}{a?.line1} {a?.line2}
               <br />
@@ -112,4 +112,9 @@ export default async function AdminPage() {
       })}
     </main>
   );
+}
+
+/** 部数（copies 列がない古い注文は「2冊目あり」から読む） */
+function copiesOf(o: { copies?: number | null; extra_copy?: boolean | null }) {
+  return o.copies ?? (o.extra_copy ? 2 : 1);
 }

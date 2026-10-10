@@ -1,5 +1,5 @@
 import "server-only";
-import { CHILD_AGES, getSize, getStory, getTaste, type SizeId, type StoryId, type TasteId } from "./catalog";
+import { CHILD_AGES, clampCopies, getSize, getStory, getTaste, type SizeId, type StoryId, type TasteId } from "./catalog";
 import { createAuthClient } from "./auth";
 
 // 作成途中の内容（下書き）。会員が作成画面から「保存してマイページへ」を押したときに、
@@ -26,7 +26,7 @@ export type FlowSave = {
   childAge: number | null;
   draftId: string | null;
   size: SizeId;
-  extraCopy: boolean;
+  copies: number;
   deliveryDate: string;
   deliveryTime: string;
 };
@@ -56,7 +56,8 @@ export function parseFlowSave(input: unknown): FlowSave | null {
     // デモ用の下書き（id に中身を埋め込んだもの）は保存しない
     draftId: draftId && !draftId.startsWith("demo.") ? draftId : null,
     size: getSize(size) ? (size as SizeId) : "M",
-    extraCopy: v.extraCopy === true,
+    // 以前の保存（2冊目のチェック）は2部として読む
+    copies: clampCopies(v.copies ?? (v.extraCopy === true ? 2 : 1)),
     deliveryDate: /^\d{4}-\d{2}-\d{2}$/.test(str(v.deliveryDate, 10)) ? str(v.deliveryDate, 10) : "",
     deliveryTime: str(v.deliveryTime, 20),
   };

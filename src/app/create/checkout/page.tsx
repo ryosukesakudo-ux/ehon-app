@@ -6,7 +6,7 @@ import {
   DELIVERY_MAX_DAYS,
   DELIVERY_MIN_DAYS,
   DELIVERY_TIMES,
-  EXTRA_COPY_PRICE,
+  extraCopyPrice,
   getSize,
   getStory,
   getTaste,
@@ -37,7 +37,7 @@ export default function CheckoutPage() {
         body: JSON.stringify({
           draftId: state.draftId,
           size: state.size,
-          extraCopy: state.extraCopy,
+          copies: state.copies,
           deliveryDate: state.deliveryDate,
           deliveryTime: state.deliveryTime,
         }),
@@ -68,11 +68,11 @@ export default function CheckoutPage() {
           <div className="sum-row"><span>サイズ</span><span>{size.name}（{size.spec}）</span></div>
           <div className="divider" />
           <div className="sum-row"><span>絵本</span><span>{yen(size.price)}</span></div>
-          {state.extraCopy && <div className="sum-row"><span>追加の1冊</span><span>{yen(EXTRA_COPY_PRICE)}</span></div>}
+          {state.copies > 1 && <div className="sum-row"><span>追加の{state.copies - 1}冊</span><span>{yen(extraCopyPrice(state.size) * (state.copies - 1))}</span></div>}
           <div className="sum-row"><span>送料</span><span>0円</span></div>
           <div className="sum-total">
             <span className="display" style={{ fontSize: 15, fontWeight: 800 }}>合計（税込）</span>
-            <span className="display" style={{ fontSize: 26, fontWeight: 900, color: "var(--coral)" }}>{yen(orderTotal(state.size, state.extraCopy))}</span>
+            <span className="display" style={{ fontSize: 26, fontWeight: 900, color: "var(--coral)" }}>{yen(orderTotal(state.size, state.copies))}</span>
           </div>
         </div>
         <div className="card" style={{ padding: 18, gap: 12 }}>

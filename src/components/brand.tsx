@@ -16,14 +16,14 @@ export function BrandMark({ size = 34 }: { size?: number }) {
   );
 }
 
-/** マーク＋2段の名前。mark=false で文字だけ（注文フローの上部など） */
+/** マーク＋1行の名前（「絵本」＋大きめの筆記体「Only Yours」）。mark=false で文字だけ（注文フローの上部など） */
 export function Brand({ size = 34, mark = true }: { size?: number; mark?: boolean }) {
   return (
     <span style={{ display: "flex", alignItems: "center", gap: size * 0.26 }} aria-label={SITE_NAME}>
       {mark && <BrandMark size={size} />}
-      <span aria-hidden="true" style={{ display: "flex", flexDirection: "column", lineHeight: 1 }}>
+      <span aria-hidden="true" style={{ display: "flex", alignItems: "baseline", gap: size * 0.16, lineHeight: 1, whiteSpace: "nowrap" }}>
         <span className="display" style={{ fontSize: size * 0.5, fontWeight: 900, color: "var(--navy)" }}>絵本</span>
-        <span className="script" style={{ fontSize: size * 0.4, color: "var(--coral)", marginTop: size * 0.04 }}>Only Yours</span>
+        <span className="script" style={{ fontSize: size * 0.62, color: "var(--coral)" }}>Only Yours</span>
       </span>
     </span>
   );

@@ -32,7 +32,7 @@ function Resume() {
         previews: {},
         previewScenes: [],
         size: save.size,
-        extraCopy: save.extraCopy,
+        copies: save.copies,
         deliveryDate: save.deliveryDate,
         deliveryTime: save.deliveryTime,
       };
