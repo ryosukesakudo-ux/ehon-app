@@ -195,7 +195,7 @@ export default function PhotoPage() {
             <span>会員登録なしでも、1回だけ見本{ANON_TRIAL_IMAGES}枚をお試しできます。</span>
             <span>
               <Link href={loginHref("/create/photo")}>無料会員登録</Link>
-              すると、月{MEMBER_MONTHLY_PREVIEWS}枚まで作り直しができ、写真も保存できます。
+              すると、毎月{MEMBER_MONTHLY_PREVIEWS}枚まで無料で作り直しができ、写真も保存できます。
             </span>
           </div>
         )}

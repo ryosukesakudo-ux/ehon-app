@@ -66,6 +66,7 @@ export default async function AdminPage() {
       <a href="/admin/trial">試作スタジオ（写真から絵本を試しに作る）</a>
       <a href="/admin/samples">作例スタジオ（トップページなどの見本の絵を作る）</a>
       <a href="/admin/compare">画質くらべ（以前の方式と今のA方式を1枚ずつ作って比べる）</a>
+      <a href="/admin/coupons">クーポン管理（コードの発行・停止、使われた回数）</a>
       {rows.length === 0 && <p>まだ注文はありません。</p>}
       {rows.map(({ order: o, story, pages }) => {
         const ship = o.shipping as Shipping;
@@ -74,11 +75,15 @@ export default async function AdminPage() {
           <section key={o.id} className="card" style={{ gap: 12 }}>
             <div style={{ display: "flex", flexWrap: "wrap", gap: 8, justifyContent: "space-between" }}>
               <strong>注文 {o.id.slice(0, 8).toUpperCase()}</strong>
-              <span className="tag">{STATUS[o.status] ?? o.status}</span>
+              <span style={{ display: "flex", gap: 6 }}>
+                {o.refunded_amount > 0 && <span className="tag" style={{ background: "#fde7e3", color: "#8f2214" }}>{o.refunded_amount >= o.amount ? "全額返金済み" : `${yen(o.refunded_amount)} 返金済み`}</span>}
+                <span className="tag">{STATUS[o.status] ?? o.status}</span>
+              </span>
             </div>
             <div style={{ fontSize: 14, lineHeight: 1.8 }}>
               {story.name}／{getTaste(o.drafts.taste)?.name}／主人公「{o.drafts.child_name}」／{getSize(o.size)?.name}サイズ
               {copiesOf(o) > 1 ? `×${copiesOf(o)}冊` : ""}／{yen(o.amount)}
+              {o.coupon_code ? `（クーポン ${o.coupon_code}：${yen(o.discount ?? 0)}引き）` : ""}
               <br />
               お届け先：{ship?.name} 〒{a?.postal_code} {a?.state}{a?.city}{a?.line1} {a?.line2}
               <br />
@@ -88,7 +93,7 @@ export default async function AdminPage() {
               <br />
               写真：{o.drafts.photos_deleted_at ? "削除済み" : "保管中"}
             </div>
-            <OrderActions orderId={o.id} status={o.status} scenes={pages.map((p) => p.index)} doneScenes={pages.flatMap((p) => (p.url ? [p.index] : []))} printSizes={SIZES.map((s) => s.id)} />
+            <OrderActions orderId={o.id} status={o.status} scenes={pages.map((p) => p.index)} doneScenes={pages.flatMap((p) => (p.url ? [p.index] : []))} printSizes={SIZES.map((s) => s.id)} amount={o.amount} refunded={o.refunded_amount ?? 0} />
             <details>
               <summary>ページ一覧（{pages.filter((p) => p.url).length}/{pages.length} 枚作成済み）</summary>
               <ol style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(160px, 1fr))", gap: 12, padding: 0, listStyle: "none" }}>

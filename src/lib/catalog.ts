@@ -149,7 +149,7 @@ export const SIZES: {
 
 // 部数：同じ絵本を何冊でも同梱。2冊目からは1冊ごとに本体価格から1,000円引き（2026-10-10 作道さん決定）
 export const EXTRA_COPY_DISCOUNT = 1000;
-export const MAX_COPIES = 5;
+export const MAX_COPIES = 10;
 
 /** 2冊目以降の1冊あたりの価格 */
 export function extraCopyPrice(sizeId: SizeId) {
@@ -204,8 +204,11 @@ export function previewScenes(storyId: StoryId, opts: { hasMom: boolean; hasDad:
 export const ANON_TRIAL_IMAGES = PREVIEW_COUNT;
 export const ANON_TRIAL_IP_DAYS = 30;
 
-// 会員が1か月（日本時間の月初リセット）に作れるプレビューの枚数（作り直しを含む）。AI費用の歯止め。
-export const MEMBER_MONTHLY_PREVIEWS = 30;
+// 会員が1か月（日本時間の月初リセット）に無料で作れるプレビューの枚数（作り直しを含む）。AI費用の歯止め。
+export const MEMBER_MONTHLY_PREVIEWS = 10;
+
+// 無料枠を使い切ったあとの追加枠：500円で10枚。使い切るまで有効（月をまたいでも残る）
+export const PREVIEW_PACK = { credits: 10, price: 500 };
 
 // 保管期間（日）
 export const RETENTION = {
@@ -262,10 +265,12 @@ export function sceneText(scene: Scene, childName: string) {
   return scene.text.replaceAll("{name}", childName);
 }
 
-export function orderTotal(sizeId: SizeId, copies: number) {
+/** 合計金額。クーポンがあれば1冊目をクーポンの値段（bookPrice）にする。2冊目以降は通常の値段 */
+export function orderTotal(sizeId: SizeId, copies: number, bookPrice?: number | null) {
   const size = getSize(sizeId);
   if (!size) throw new Error(`unknown size: ${sizeId}`);
-  return size.price + (clampCopies(copies) - 1) * extraCopyPrice(sizeId);
+  const first = bookPrice == null ? size.price : Math.min(bookPrice, size.price);
+  return first + (clampCopies(copies) - 1) * extraCopyPrice(sizeId);
 }
 
 export function yen(n: number) {

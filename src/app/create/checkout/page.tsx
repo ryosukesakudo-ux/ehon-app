@@ -14,6 +14,7 @@ import {
   orderTotal,
   yen,
 } from "@/lib/catalog";
+import type { Coupon } from "@/lib/coupons";
 import { useFlow } from "../flow";
 import { NextButton, StepHeader, StepTitle } from "../step";
 
@@ -26,6 +27,26 @@ export default function CheckoutPage() {
   const [sending, setSending] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const size = getSize(state.size)!;
+  const [couponInput, setCouponInput] = useState("");
+  const [coupon, setCoupon] = useState<Coupon | null>(null);
+  const [couponError, setCouponError] = useState<string | null>(null);
+  const [checking, setChecking] = useState(false);
+  const firstPrice = coupon ? Math.min(coupon.bookPrice, size.price) : size.price;
+
+  async function applyCoupon() {
+    setChecking(true);
+    setCouponError(null);
+    try {
+      const res = await fetch(`/api/coupons?code=${encodeURIComponent(couponInput)}`);
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.error ?? "クーポンを確認できませんでした");
+      setCoupon(json);
+    } catch (e) {
+      setCouponError(e instanceof Error ? e.message : "クーポンを確認できませんでした");
+    } finally {
+      setChecking(false);
+    }
+  }
 
   async function pay() {
     setSending(true);
@@ -38,6 +59,7 @@ export default function CheckoutPage() {
           draftId: state.draftId,
           size: state.size,
           copies: state.copies,
+          coupon: coupon?.code ?? "",
           deliveryDate: state.deliveryDate,
           deliveryTime: state.deliveryTime,
         }),
@@ -68,12 +90,50 @@ export default function CheckoutPage() {
           <div className="sum-row"><span>サイズ</span><span>{size.name}（{size.spec}）</span></div>
           <div className="divider" />
           <div className="sum-row"><span>絵本</span><span>{yen(size.price)}</span></div>
+          {coupon && <div className="sum-row" style={{ color: "var(--coral)" }}><span>クーポン（{coupon.label}）</span><span>−{yen(size.price - firstPrice)}</span></div>}
           {state.copies > 1 && <div className="sum-row"><span>追加の{state.copies - 1}冊</span><span>{yen(extraCopyPrice(state.size) * (state.copies - 1))}</span></div>}
           <div className="sum-row"><span>送料</span><span>0円</span></div>
           <div className="sum-total">
             <span className="display" style={{ fontSize: 15, fontWeight: 800 }}>合計（税込）</span>
-            <span className="display" style={{ fontSize: 26, fontWeight: 900, color: "var(--coral)" }}>{yen(orderTotal(state.size, state.copies))}</span>
+            <span className="display" style={{ fontSize: 26, fontWeight: 900, color: "var(--coral)" }}>{yen(orderTotal(state.size, state.copies, firstPrice))}</span>
           </div>
+        </div>
+        <div className="card" style={{ padding: 18, gap: 10 }}>
+          <div className="display" style={{ fontSize: 15, fontWeight: 800, color: "var(--navy)" }}>クーポンコード</div>
+          {coupon ? (
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
+              <span style={{ fontSize: 14 }}>「{coupon.code}」を使います（{coupon.label}）</span>
+              <button type="button" className="ghost" style={{ height: 36, padding: "0 14px", fontSize: 13, flexShrink: 0 }} onClick={() => setCoupon(null)}>
+                取り消す
+              </button>
+            </div>
+          ) : (
+            <form
+              className="field"
+              style={{ flexDirection: "row", gap: 8 }}
+              onSubmit={(e) => {
+                e.preventDefault();
+                applyCoupon();
+              }}
+            >
+              <input
+                type="text"
+                aria-label="クーポンコード"
+                placeholder="お持ちの方のみ"
+                autoCapitalize="characters"
+                value={couponInput}
+                onChange={(e) => setCouponInput(e.target.value)}
+                style={{ flexGrow: 1, minWidth: 0 }}
+              />
+              <button type="submit" className="ghost" style={{ height: 48, padding: "0 18px", flexShrink: 0 }} disabled={checking || !couponInput.trim()}>
+                {checking ? "確認中…" : "使う"}
+              </button>
+            </form>
+          )}
+          {couponError && <p className="error" role="alert">{couponError}</p>}
+          {coupon && state.copies > 1 && (
+            <p style={{ margin: 0, fontSize: 12, color: "var(--sub)" }}>クーポンは1冊目に使えます。追加の冊数は通常の値段です。</p>
+          )}
         </div>
         <div className="card" style={{ padding: 18, gap: 12 }}>
           <div className="display" style={{ fontSize: 15, fontWeight: 800, color: "var(--navy)" }}>お届け日時</div>

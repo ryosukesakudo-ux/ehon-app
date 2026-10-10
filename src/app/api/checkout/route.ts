@@ -12,13 +12,14 @@ import {
   orderTotal,
   type SizeId,
 } from "@/lib/catalog";
+import { findCoupon, normalizeCouponCode, type Coupon } from "@/lib/coupons";
 import { isDemoId, loadOwnedDraft } from "@/lib/drafts";
 import { getStripe, getSupabase, siteUrl } from "@/lib/services";
 
 // サイズ選択後に呼ぶ。金額はサーバー側で計算し、Stripe の決済画面へのURLを返す。
 // お届け先・電話番号・メールアドレスは Stripe の画面で入力してもらう。
 // 支払い方法（カード・Apple Pay・Google Pay・コンビニ・PayPay など）は Stripe のダッシュボードで選ぶ。
-// 注文は会員のみ（デモモードを除く）。
+// 注文は会員のみ（デモモードを除く）。クーポンは1冊目の値段を変える（2冊目以降は通常の値段）。
 export async function POST(request: Request) {
   const body = await request.json().catch(() => null);
   const draftId = String(body?.draftId ?? "");
@@ -38,7 +39,7 @@ export async function POST(request: Request) {
   if (!size || !owned) return Response.json({ error: "注文内容を確認できませんでした" }, { status: 400 });
   const { draft, user } = owned;
 
-  const amount = orderTotal(size.id, copies);
+  const couponCode = normalizeCouponCode(body?.coupon);
   const base = siteUrl(request);
   const db = getSupabase();
   const stripe = getStripe();
@@ -52,6 +53,15 @@ export async function POST(request: Request) {
     return Response.json({ error: "ご注文には無料会員登録（ログイン）が必要です", needLogin: true }, { status: 401 });
   }
 
+  let coupon: Coupon | null = null;
+  if (couponCode) {
+    const found = await findCoupon(couponCode, user.id);
+    if ("error" in found) return Response.json({ error: found.error }, { status: 400 });
+    coupon = found.coupon;
+  }
+  const firstPrice = coupon ? Math.min(coupon.bookPrice, size.price) : size.price;
+  const amount = orderTotal(size.id, copies, firstPrice);
+
   const orderId = randomUUID();
   const row = {
     id: orderId,
@@ -64,13 +74,18 @@ export async function POST(request: Request) {
     status: "pending",
     delivery_date: deliveryDate,
     delivery_time: deliveryTime,
+    coupon_code: coupon?.code ?? null,
+    discount: size.price - firstPrice,
   };
   let { error } = await db.from("orders").insert(row);
   if (error?.code === "42703") {
-    // schema.sql の再実行前で copies 列がまだない場合（部数は extra_copy と金額から分かる）
-    const withoutCopies: Partial<typeof row> = { ...row };
-    delete withoutCopies.copies;
-    ({ error } = await db.from("orders").insert(withoutCopies));
+    // schema.sql の再実行前で copies・クーポンの列がまだない場合（部数は extra_copy と金額から分かる）
+    if (coupon) return Response.json({ error: "クーポンの準備がまだできていません" }, { status: 503 });
+    const oldColumns: Partial<typeof row> = { ...row };
+    delete oldColumns.copies;
+    delete oldColumns.coupon_code;
+    delete oldColumns.discount;
+    ({ error } = await db.from("orders").insert(oldColumns));
   }
   if (error) {
     console.error("order insert failed", error);
@@ -83,8 +98,10 @@ export async function POST(request: Request) {
       quantity: 1,
       price_data: {
         currency: "jpy",
-        unit_amount: size.price,
-        product_data: { name: `絵本「${story.name}」${size.name}サイズ（${size.spec}）` },
+        unit_amount: firstPrice,
+        product_data: {
+          name: `絵本「${story.name}」${size.name}サイズ（${size.spec}）${coupon ? `・クーポン「${coupon.label}」適用` : ""}`,
+        },
       },
     },
   ];

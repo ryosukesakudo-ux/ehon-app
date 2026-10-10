@@ -1,4 +1,4 @@
-import { ANON_TRIAL_IMAGES, MEMBER_MONTHLY_PREVIEWS, getStory } from "@/lib/catalog";
+import { ANON_TRIAL_IMAGES, MEMBER_MONTHLY_PREVIEWS, PREVIEW_PACK, getStory } from "@/lib/catalog";
 import { draftPreviewScenes, generateScene, isDemoId, loadOwnedDraft } from "@/lib/drafts";
 import { getSupabase } from "@/lib/services";
 
@@ -33,7 +33,11 @@ export async function POST(_request: Request, ctx: RouteContext<"/api/drafts/[id
       if (error) return failed(error);
       if (data < 0) {
         return Response.json(
-          { error: `今月のプレビュー（${MEMBER_MONTHLY_PREVIEWS}枚）を使い切りました。来月1日にまた作れます。`, remaining: 0 },
+          {
+            error: `今月の無料プレビュー（${MEMBER_MONTHLY_PREVIEWS}枚）を使い切りました。${PREVIEW_PACK.price}円で${PREVIEW_PACK.credits}枚追加するか、来月1日までお待ちください。`,
+            remaining: 0,
+            needCredits: true,
+          },
           { status: 429 },
         );
       }

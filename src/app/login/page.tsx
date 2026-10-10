@@ -11,7 +11,7 @@ export default async function LoginPage({ searchParams }: PageProps<"/login">) {
   if (await currentUser()) redirect(nextPath);
 
   const perks = [
-    `プレビューを月${MEMBER_MONTHLY_PREVIEWS}枚まで作れる（作り直しもOK）`,
+    `プレビューを毎月${MEMBER_MONTHLY_PREVIEWS}枚まで無料で作れる（作り直しもOK）`,
     "写真を保存して、次の絵本にも使える",
     `作った絵本の絵を見返せる（ご注文後${RETENTION.paidImageDays}日間）`,
   ];

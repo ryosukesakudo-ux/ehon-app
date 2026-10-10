@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import type { CSSProperties, ReactNode } from "react";
 import { Arrow, Sparkle, Star } from "@/components/icons";
-import { ANON_TRIAL_IMAGES, EXTRA_COPY_DISCOUNT, MEMBER_MONTHLY_PREVIEWS, SIZES, STORIES, TASTES, sceneText, yen } from "@/lib/catalog";
+import { ANON_TRIAL_IMAGES, EXTRA_COPY_DISCOUNT, MEMBER_MONTHLY_PREVIEWS, PREVIEW_PACK, SIZES, STORIES, TASTES, sceneText, yen } from "@/lib/catalog";
 import { SAMPLE_CHILD_NAME, SAMPLE_SCENES, SHOWCASE, SHOWCASE_BOOK, SHOWCASE_PHOTO, samplePublicUrl, sampleUrl } from "@/lib/samples";
 import { SampleImage } from "@/components/sample-image";
 import { Brand } from "@/components/brand";
@@ -287,7 +287,7 @@ export default function Home() {
           <Sparkle size={18} color="#F6C445" className={s.deco} style={{ right: 18, top: 16 }} />
           <div className={`${s.memberTitle} display`}>無料会員になると</div>
           <ul className={s.memberList}>
-            <li>見本の絵を月{MEMBER_MONTHLY_PREVIEWS}枚まで作れる（作り直しもOK）</li>
+            <li>見本の絵を毎月{MEMBER_MONTHLY_PREVIEWS}枚まで無料で作れる（作り直しもOK。足りなければ{PREVIEW_PACK.credits}枚{yen(PREVIEW_PACK.price)}で追加）</li>
             <li>写真を保存して、次の絵本にも使える</li>
             <li>作った絵本をマイページで見返せる</li>
           </ul>

@@ -47,6 +47,36 @@ create table if not exists generations (
 );
 
 create index if not exists generations_user_idx on generations (user_id, created_at);
+-- 追加枠（500円で購入）から使った1枚は paid = true（月の無料枠には数えない）
+alter table generations add column if not exists paid boolean not null default false;
+
+-- プレビューの追加枠の残り（使い切るまで有効、月をまたいでも残る）
+create table if not exists preview_credits (
+  user_id uuid primary key references auth.users(id) on delete cascade,
+  balance int not null default 0 check (balance >= 0),
+  updated_at timestamptz not null default now()
+);
+
+-- 追加枠の購入（Stripe の決済1回ごと）
+create table if not exists credit_purchases (
+  id uuid primary key,
+  user_id uuid references auth.users(id) on delete set null,
+  credits int not null,
+  amount int not null,
+  status text not null default 'pending' check (status in ('pending', 'paid')),
+  stripe_session_id text,
+  created_at timestamptz not null default now(),
+  paid_at timestamptz
+);
+
+-- クーポン：book_price は1冊目の値段（0 なら無料）。2冊目以降は通常の値段。1人1回まで
+create table if not exists coupons (
+  code text primary key,
+  label text not null,
+  book_price int not null check (book_price >= 0),
+  active boolean not null default true,
+  created_at timestamptz not null default now()
+);
 
 -- 登録前のお試し（ブラウザごと・IPアドレスごとに1回）。IPはハッシュにして保存する。
 create table if not exists anon_trials (
@@ -86,7 +116,16 @@ create table if not exists orders (
 alter table orders add column if not exists delivery_date date;
 alter table orders add column if not exists delivery_time text;
 -- 部数（2026-10-10 追加。extra_copy は以前の「2冊目あり」）
-alter table orders add column if not exists copies int not null default 1 check (copies between 1 and 5);
+alter table orders add column if not exists copies int not null default 1;
+alter table orders drop constraint if exists orders_copies_check;
+alter table orders add constraint orders_copies_check check (copies between 1 and 10);
+-- クーポン・返金（2026-10-10 追加）
+alter table orders add column if not exists coupon_code text;
+alter table orders add column if not exists discount int not null default 0;
+alter table orders add column if not exists stripe_payment_intent text;
+alter table orders add column if not exists refunded_amount int not null default 0;
+alter table orders add column if not exists refunded_at timestamptz;
+create index if not exists orders_coupon_idx on orders (coupon_code, user_id);
 
 create index if not exists orders_status_idx on orders (status, created_at desc);
 create index if not exists orders_user_idx on orders (user_id, created_at desc);
@@ -96,6 +135,9 @@ alter table user_photos enable row level security;
 alter table generations enable row level security;
 alter table anon_trials enable row level security;
 alter table orders enable row level security;
+alter table preview_credits enable row level security;
+alter table credit_purchases enable row level security;
+alter table coupons enable row level security;
 
 -- 下書きごとのプレビュー回数の確認と加算を一度に行う（登録前のお試し用）
 create or replace function claim_generation(p_id uuid, p_max int) returns boolean
@@ -111,31 +153,64 @@ language sql as $$
   update drafts set generation_count = greatest(generation_count - 1, 0) where id = p_id;
 $$;
 
--- 会員の今月（日本時間）のプレビュー枚数を確認し、上限内なら1枚分を記録する。
--- 記録後の残り枚数を返す。上限に達していれば -1。
+-- 会員のプレビュー1枚分を確保する。今月（日本時間）の無料枠（p_max 枚）が残っていればそれを使い、
+-- 使い切っていれば追加枠（preview_credits）から1枚使う。
+-- 確保後の残り枚数（無料枠＋追加枠）を返す。どちらも残っていなければ -1。
 create or replace function claim_member_generation(p_user uuid, p_draft uuid, p_max int) returns int
 language plpgsql as $$
 declare
   used int;
+  bal int;
 begin
   perform pg_advisory_xact_lock(hashtext(p_user::text));
   select count(*) into used from generations
-  where user_id = p_user
+  where user_id = p_user and not paid
     and created_at >= (date_trunc('month', now() at time zone 'Asia/Tokyo') at time zone 'Asia/Tokyo');
-  if used >= p_max then
-    return -1;
+  select coalesce((select balance from preview_credits where user_id = p_user), 0) into bal;
+  if used < p_max then
+    insert into generations (user_id, draft_id) values (p_user, p_draft);
+    return p_max - used - 1 + bal;
   end if;
-  insert into generations (user_id, draft_id) values (p_user, p_draft);
-  return p_max - used - 1;
+  if bal > 0 then
+    update preview_credits set balance = balance - 1, updated_at = now() where user_id = p_user;
+    insert into generations (user_id, draft_id, paid) values (p_user, p_draft, true);
+    return bal - 1;
+  end if;
+  return -1;
 end $$;
 
--- 生成に失敗したときに1枚分を戻す
-create or replace function refund_member_generation(p_user uuid, p_draft uuid) returns void
-language sql as $$
+-- 生成に失敗したときに1枚分を戻す（追加枠から使っていたら追加枠に戻す）
+drop function if exists refund_member_generation(uuid, uuid);
+create function refund_member_generation(p_user uuid, p_draft uuid) returns void
+language plpgsql as $$
+declare
+  was_paid boolean;
+begin
   delete from generations where id = (
     select id from generations where user_id = p_user and draft_id = p_draft order by id desc limit 1
-  );
-$$;
+  ) returning paid into was_paid;
+  if was_paid then
+    update preview_credits set balance = balance + 1, updated_at = now() where user_id = p_user;
+  end if;
+end $$;
+
+-- 追加枠の購入が支払い済みになったら枠を足す（同じ購入で二重に足さない）
+create or replace function add_preview_credits(p_purchase uuid) returns boolean
+language plpgsql as $$
+declare
+  u uuid;
+  n int;
+begin
+  update credit_purchases set status = 'paid', paid_at = now()
+  where id = p_purchase and status = 'pending'
+  returning user_id, credits into u, n;
+  if not found or u is null then
+    return false;
+  end if;
+  insert into preview_credits (user_id, balance) values (u, n)
+  on conflict (user_id) do update set balance = preview_credits.balance + excluded.balance, updated_at = now();
+  return true;
+end $$;
 
 -- 登録前のお試しを使えるか確認し、使えるならその場で記録する
 create or replace function claim_anon_trial(p_anon text, p_ip text, p_ip_days int) returns boolean
@@ -157,6 +232,7 @@ revoke execute on function refund_generation(uuid) from public, anon, authentica
 revoke execute on function claim_member_generation(uuid, uuid, int) from public, anon, authenticated;
 revoke execute on function refund_member_generation(uuid, uuid) from public, anon, authenticated;
 revoke execute on function claim_anon_trial(text, text, int) from public, anon, authenticated;
+revoke execute on function add_preview_credits(uuid) from public, anon, authenticated;
 
 -- ストレージ：顔写真と生成した絵は非公開、トップページなどの作例だけ公開
 insert into storage.buckets (id, name, public) values ('photos', 'photos', false) on conflict do nothing;

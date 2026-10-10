@@ -8,16 +8,33 @@ export function monthStartJst(now = new Date()) {
   return new Date(Date.UTC(jst.getUTCFullYear(), jst.getUTCMonth(), 1) - 9 * 60 * 60 * 1000);
 }
 
-/** 今月あと何枚プレビューを作れるか */
-export async function remainingPreviews(userId: string) {
+export type PreviewQuota = {
+  /** 今月の無料枠の残り */
+  free: number;
+  /** 追加購入した枠の残り（月をまたいでも残る） */
+  credits: number;
+  /** 合計で、あと何枚プレビューを作れるか */
+  remaining: number;
+};
+
+/** あと何枚プレビューを作れるか（今月の無料枠＋追加枠） */
+export async function previewQuota(userId: string): Promise<PreviewQuota> {
   const db = getSupabase();
-  if (!db) return MEMBER_MONTHLY_PREVIEWS;
-  const { count } = await db
+  if (!db) return { free: MEMBER_MONTHLY_PREVIEWS, credits: 0, remaining: MEMBER_MONTHLY_PREVIEWS };
+  const used = await db
     .from("generations")
     .select("id", { count: "exact", head: true })
     .eq("user_id", userId)
+    .eq("paid", false)
     .gte("created_at", monthStartJst().toISOString());
-  return Math.max(0, MEMBER_MONTHLY_PREVIEWS - (count ?? 0));
+  // paid 列がまだ無い（SQL 未実行）ときは、今月の全件を無料枠として数える
+  const { count } = used.error
+    ? await db.from("generations").select("id", { count: "exact", head: true }).eq("user_id", userId).gte("created_at", monthStartJst().toISOString())
+    : used;
+  const { data: row } = await db.from("preview_credits").select("balance").eq("user_id", userId).maybeSingle();
+  const free = Math.max(0, MEMBER_MONTHLY_PREVIEWS - (count ?? 0));
+  const credits = row?.balance ?? 0;
+  return { free, credits, remaining: free + credits };
 }
 
 export type SavedPhoto = { id: string; url: string; createdAt: string; lastUsedAt: string };

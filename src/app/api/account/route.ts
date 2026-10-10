@@ -1,8 +1,8 @@
 import { MEMBER_MONTHLY_PREVIEWS } from "@/lib/catalog";
 import { authKeys, currentUser } from "@/lib/auth";
-import { remainingPreviews } from "@/lib/account";
+import { previewQuota } from "@/lib/account";
 
-// 画面側でログイン状態と今月の残り枚数を知るために呼ぶ。
+// 画面側でログイン状態とプレビューの残り枚数を知るために呼ぶ。
 export async function GET() {
   if (!authKeys()) return Response.json({ configured: false, loggedIn: false });
   const user = await currentUser();
@@ -11,7 +11,7 @@ export async function GET() {
     configured: true,
     loggedIn: true,
     email: user.email,
-    remaining: await remainingPreviews(user.id),
+    ...(await previewQuota(user.id)),
     limit: MEMBER_MONTHLY_PREVIEWS,
   });
 }
