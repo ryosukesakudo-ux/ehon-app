@@ -249,7 +249,7 @@ export default function Home() {
           ].map((t) => (
             <div key={t.n}>
               <div className={s.tasteSwatch} style={{ background: t.bg, borderColor: t.bd, color: t.c }}>
-                <SampleImage src={sampleUrl(t.id as (typeof TASTES)[number]["id"], "forest", 0)} alt={`${t.n}の見本`} fallback="[見本]" />
+                <SampleImage src={sampleUrl(t.id as (typeof TASTES)[number]["id"], "forest", 0)} alt={`${t.n}の見本`} fallback="[見本]" sizes="(max-width: 640px) 33vw, 200px" />
               </div>
               <div className={`${s.tasteName} display`}>{t.n}</div>
             </div>
@@ -275,7 +275,7 @@ export default function Home() {
               <div className={s.galleryThumbs}>
                 {SAMPLE_SCENES.slice(1).map((sc) => (
                   <div key={sc} className={s.galleryThumb}>
-                    <SampleImage src={sampleUrl("watercolor", st.id, sc)} alt="" fallback={null} />
+                    <SampleImage src={sampleUrl("watercolor", st.id, sc)} alt="" fallback={null} sizes="(max-width: 640px) 50vw, 240px" />
                   </div>
                 ))}
               </div>
