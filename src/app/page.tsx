@@ -153,15 +153,11 @@ function BouncyLine({ text, offset, big = [] }: { text: string; offset: number; 
   );
 }
 
-/** 見出しの中の強調語。トップの見出しと同じく1文字ずつ少し傾ける */
+/** 見出しの中の強調語（色付き・少し大きめ。傾けない） */
 function Pop({ children, color }: { children: string; color: string }) {
   return (
     <span className={s.pop} style={{ color }}>
-      {[...children].map((c, i) => (
-        <span key={i} className={s.bounce} style={{ transform: `rotate(${BOUNCE_TILT[i % BOUNCE_TILT.length]}deg) translateY(${i % 2 ? -2 : 2}px)` }}>
-          {c}
-        </span>
-      ))}
+      {children}
     </span>
   );
 }
