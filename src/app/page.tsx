@@ -167,7 +167,7 @@ export default function Home() {
     <div className={s.page}>
       <header className={s.header}>
         <Link href="/" className={s.logo}>
-          <Brand size={31} />
+          <Brand size={29} />
         </Link>
         <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
           <Link href="/login?next=/account" className={`${s.headerLink} display`}>ログイン</Link>

@@ -1,14 +1,14 @@
 .page { max-width: 480px; margin: 0 auto; background: var(--cream); overflow: hidden; }
 @media (min-width: 600px) { .page { box-shadow: 0 0 0 1px rgba(30, 47, 87, 0.06), 0 10px 40px rgba(30, 47, 87, 0.12); } }
 
-.header { display: flex; align-items: center; justify-content: space-between; padding: 12px 20px; background: var(--sky); }
+.header { display: flex; align-items: center; justify-content: space-between; padding: 12px 14px; gap: 8px; background: var(--sky); }
 .logo { display: flex; align-items: center; gap: 8px; color: var(--navy); font-size: 18px; font-weight: 900; text-decoration: none; }
 .logoMark { width: 34px; height: 34px; border-radius: 10px; background: var(--blue); display: flex; align-items: center; justify-content: center; }
-.headerCta { display: flex; align-items: center; height: 44px; padding: 0 18px; border-radius: 22px; background: var(--coral); color: #fff; font-size: 14px; font-weight: 800; text-decoration: none; }
+.headerCta { display: flex; align-items: center; height: 44px; padding: 0 16px; border-radius: 22px; background: var(--coral); color: #fff; font-size: 14px; font-weight: 800; text-decoration: none; white-space: nowrap; flex-shrink: 0; }
 .headerCta { box-shadow: 0 3px 0 var(--coral-shadow); background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.22), rgba(255, 255, 255, 0) 55%); transition: transform 0.1s ease, box-shadow 0.1s ease; }
 .headerCta:hover { color: #fff; }
 .headerCta:active { transform: translateY(3px); box-shadow: 0 0 0 var(--coral-shadow); }
-.headerLink { display: flex; align-items: center; height: 44px; padding: 0 6px; color: var(--navy); font-size: 13px; font-weight: 800; text-decoration: none; }
+.headerLink { display: flex; align-items: center; height: 44px; padding: 0 6px; color: var(--navy); font-size: 13px; font-weight: 800; text-decoration: none; white-space: nowrap; }
 
 .hero { position: relative; display: flex; flex-direction: column; gap: 18px; padding: 26px 20px 30px; background: var(--sky); }
 .hero > * { position: relative; }
