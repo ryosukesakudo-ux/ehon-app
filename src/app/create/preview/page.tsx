@@ -3,7 +3,7 @@
 import { Suspense, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { COVER_SCENE, MEMBER_MONTHLY_PREVIEWS, bookTitle, getStory, sceneText } from "@/lib/catalog";
+import { COVER_SCENE, MEMBER_MONTHLY_PREVIEWS, PREVIEW_PACK, bookTitle, yen, getStory, sceneText } from "@/lib/catalog";
 import { BookCover } from "@/components/book-cover";
 import { Chevron } from "@/components/icons";
 import { Lottie } from "@/components/lottie";
@@ -27,6 +27,8 @@ function Preview() {
   const [loading, setLoading] = useState<Record<number, boolean>>({});
   const [error, setError] = useState<string | null>(null);
   const [needLogin, setNeedLogin] = useState(false);
+  // 描けなかった絵とその理由（使い切り・会員登録が必要・その他の失敗）
+  const [failed, setFailed] = useState<Record<number, "quota" | "login" | "error">>({});
   const [account, setAccount, refreshAccount] = useAccount();
   const boughtCredits = useSearchParams().get("credits") === "done";
   // 登録前のお試し（Supabase 設定済みで未ログイン）
@@ -43,6 +45,11 @@ function Preview() {
     if (!state.draftId || inFlight.current.has(index)) return;
     inFlight.current.add(index);
     setLoading((l) => ({ ...l, [index]: true }));
+    setFailed((f) => {
+      const next = { ...f };
+      delete next[index];
+      return next;
+    });
     setError(null);
     try {
       const res = await fetch(`/api/drafts/${encodeURIComponent(state.draftId)}/scenes/${index}`, { method: "POST" });
@@ -53,6 +60,7 @@ function Preview() {
       }
       if (!res.ok) {
         setNeedLogin(!!json.needLogin);
+        setFailed((f) => ({ ...f, [index]: json.needCredits || res.status === 429 ? "quota" : json.needLogin ? "login" : "error" }));
         throw new Error(json.error ?? "絵の作成に失敗しました");
       }
       setPreview(index, json.url);
@@ -86,8 +94,26 @@ function Preview() {
 
   const url = scene === undefined ? undefined : state.previews[scene];
   const allDone = scenes.length > 0 && scenes.every((i) => state.previews[i]);
+  const failure = scene === undefined || url || loading[scene] ? undefined : failed[scene];
   const picture =
-    url && !loading[scene] ? (
+    failure ? (
+      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 8, padding: 24, textAlign: "center", color: "var(--navy)" }}>
+        <div className="display" style={{ fontSize: 17, fontWeight: 900 }}>
+          {failure === "quota"
+            ? "プレビューを使い切ったため、この絵は描けませんでした"
+            : failure === "login"
+              ? "この絵は無料会員登録のあとに描けます"
+              : "この絵を描けませんでした"}
+        </div>
+        <div style={{ fontSize: 13, lineHeight: 1.7, color: "var(--sub)" }}>
+          {failure === "quota"
+            ? `下のボタンから${PREVIEW_PACK.credits}枚追加（${yen(PREVIEW_PACK.price)}）するか、来月1日に無料分が戻ってから作れます。`
+            : failure === "login"
+              ? "下のボタンから登録・ログインしてください。"
+              : "時間をおいて「作り直す」を押してください。"}
+        </div>
+      </div>
+    ) : url && !loading[scene] ? (
       // eslint-disable-next-line @next/next/no-img-element -- 署名付きURLの一時画像
       <img src={url} alt={isCover ? "表紙の絵" : `${pos + 1}枚目の挿絵`} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
     ) : (
