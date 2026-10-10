@@ -13,13 +13,13 @@ const WHO: { id: Who; label: string }[] = [
 
 // 1ドル150円で計算した、1枚あたりの目安
 const MODES = [
-  { id: "compare-high", title: "今の本番：最高画質 2048px", cost: "1枚 約63円" },
-  { id: "compare-a", title: "A方式：最高画質 1024px → 2048pxに拡大", cost: "1枚 約25円" },
+  { id: "compare-high", title: "以前の方式：最高画質 2048px", cost: "1枚 約63円" },
+  { id: "compare-a", title: "A方式（今の本番）：最高画質 1024px → 2048pxに拡大", cost: "1枚 約25円" },
 ] as const;
 
 type Result = { status: "working" | "done" | "error"; image?: string; seconds?: number; error?: string };
 
-// 同じ写真・同じ場面で、今の本番の画質とA方式を1枚ずつ作って見比べる（保存はしない）
+// 同じ写真・同じ場面で、以前の方式（2048px）と今の本番（A方式）を1枚ずつ作って見比べる（保存はしない）
 export default function ComparePage() {
   const [photos, setPhotos] = useState<Partial<Record<Who, File>>>({});
   const [taste, setTaste] = useState<TasteId>("watercolor");
@@ -76,7 +76,7 @@ export default function ComparePage() {
       <a href="/admin">← 注文管理へ</a>
       <h1 className="display" style={{ margin: 0, color: "var(--navy)" }}>画質くらべ</h1>
       <p className="step-lead">
-        同じ写真・同じ場面で、今の本番の画質とA方式を1枚ずつ作って並べます（2枚で約90円）。写真と絵はサーバーに保存しません。
+        同じ写真・同じ場面で、以前の方式（2048px）と今の本番（A方式）を1枚ずつ作って並べます（2枚で約90円）。写真と絵はサーバーに保存しません。
         AIは毎回少し違う絵を描くので、構図ではなく「線や色のくっきりさ」を比べてください。
       </p>
 

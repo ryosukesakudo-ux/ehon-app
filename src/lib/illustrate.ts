@@ -2,6 +2,7 @@ import "server-only";
 import type { Uploadable } from "openai/uploads";
 import { COVER_SCENE, COVER_SIZE, getStory, getTaste, type Scene, type StoryId, type TasteId } from "./catalog";
 import { getOpenAI } from "./services";
+import { upscalePng } from "./upscale";
 
 export type Person = "child" | "mom" | "dad";
 
@@ -11,6 +12,9 @@ const PICTURE_BOOK_CHARACTERS =
   "no photographic skin texture, lighting or detail. Keep only the traits that make each person recognizable, such as hairstyle, hair color, glasses and overall look. " +
   "Draw expressive picture-book eyes with a visible colored iris, a dark pupil and a small white highlight, gently shaped eyelids and lashes where fitting. Never draw the eyes as plain black dots or simple lines.";
 export type Quality = "preview" | "final";
+
+/** 印刷用の本文の絵の大きさ（1辺のpx）。OPENAI_FINAL_SIZE（例 2048x2048）で変えられる */
+const FINAL_PX = Number((process.env.OPENAI_FINAL_SIZE ?? "2048x2048").split("x")[0]) || 2048;
 
 // 参考画像（写真や設定画）の絵柄に引っぱられて、テイストの違いが消えないようにする指示
 const STYLE_ONLY_FROM_TEXT =
@@ -79,18 +83,22 @@ export async function illustrate(opts: {
 }): Promise<string> {
   const ai = getOpenAI();
   if (!ai) throw new Error("OPENAI_API_KEY が未設定です");
+  // 印刷用の本文の絵は、1024px・最高画質で作ってから印刷サイズに拡大する（A方式）。
+  // 2048px で直接作るより約6割安く、2026-10-10 の画質くらべで見分けがつかないことを確認済み。
+  const isCover = opts.sceneIndex === COVER_SCENE;
+  const upscaleTo = !opts.size && !isCover && opts.quality === "final" ? FINAL_PX : null;
   const result = await ai.images.edit({
     model: process.env.OPENAI_IMAGE_MODEL ?? "gpt-image-2",
     image: opts.images.map((i) => i.file),
     prompt: buildPrompt(opts.taste, opts.story, opts.sceneIndex, opts.images.map((i) => i.who), opts.childAge),
     // 表紙は横長（タイトルは絵の上の帯に置くので、絵に文字の場所はいらない）
-    size: opts.size ?? (opts.sceneIndex === COVER_SCENE ? COVER_SIZE : opts.quality === "final" ? (process.env.OPENAI_FINAL_SIZE ?? "2048x2048") : "1024x1024"),
+    size: opts.size ?? (isCover ? COVER_SIZE : "1024x1024"),
     quality: opts.quality === "final" ? "high" : "medium",
     output_format: "png",
   });
   const b64 = result.data?.[0]?.b64_json;
   if (!b64) throw new Error("画像が生成されませんでした");
-  return b64;
+  return upscaleTo ? upscalePng(b64, upscaleTo) : b64;
 }
 
 // --- 作例（トップページなどに載せる見本の絵）---
