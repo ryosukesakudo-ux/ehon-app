@@ -126,6 +126,23 @@ alter table orders add column if not exists stripe_payment_intent text;
 alter table orders add column if not exists refunded_amount int not null default 0;
 alter table orders add column if not exists refunded_at timestamptz;
 create index if not exists orders_coupon_idx on orders (coupon_code, user_id);
+-- 主人公のお誕生日（任意、2026-10-10 追加）。誕生日の1か月前に続編のご案内メールを送る
+alter table orders add column if not exists child_birthday date;
+
+-- 誕生日の案内メールを送った記録（同じお子さまに同じ年に二度送らない）
+create table if not exists birthday_notices (
+  user_id uuid not null references auth.users(id) on delete cascade,
+  child_name text not null,
+  year int not null,
+  sent_at timestamptz not null default now(),
+  primary key (user_id, child_name, year)
+);
+
+-- ご案内メールの配信停止
+create table if not exists mail_optouts (
+  user_id uuid primary key references auth.users(id) on delete cascade,
+  created_at timestamptz not null default now()
+);
 
 create index if not exists orders_status_idx on orders (status, created_at desc);
 create index if not exists orders_user_idx on orders (user_id, created_at desc);
@@ -138,6 +155,8 @@ alter table orders enable row level security;
 alter table preview_credits enable row level security;
 alter table credit_purchases enable row level security;
 alter table coupons enable row level security;
+alter table birthday_notices enable row level security;
+alter table mail_optouts enable row level security;
 
 -- 下書きごとのプレビュー回数の確認と加算を一度に行う（登録前のお試し用）
 create or replace function claim_generation(p_id uuid, p_max int) returns boolean
@@ -238,3 +257,20 @@ revoke execute on function add_preview_credits(uuid) from public, anon, authenti
 insert into storage.buckets (id, name, public) values ('photos', 'photos', false) on conflict do nothing;
 insert into storage.buckets (id, name, public) values ('books', 'books', false) on conflict do nothing;
 insert into storage.buckets (id, name, public) values ('samples', 'samples', true) on conflict do nothing;
+
+-- 誕生日の案内メールの送り先。お誕生日の月日（'MM-DD'）が p_days のどれかに当たる、支払い済みの注文の主人公。
+-- 同じ会員・同じ主人公の名前は1件にまとめ（いちばん新しい注文のお誕生日）、全額返金した注文・配信停止の会員・今年送り済みは除く。
+create or replace function birthday_targets(p_days text[], p_year int)
+returns table (user_id uuid, child_name text, child_birthday date)
+language sql stable as $$
+  select t.user_id, t.child_name, t.child_birthday from (
+    select distinct on (o.user_id, d.child_name) o.user_id, d.child_name, o.child_birthday
+    from orders o join drafts d on d.id = o.draft_id
+    where o.user_id is not null and o.paid_at is not null and o.child_birthday is not null
+      and o.refunded_amount < o.amount
+    order by o.user_id, d.child_name, o.paid_at desc
+  ) t
+  where to_char(t.child_birthday, 'MM-DD') = any(p_days)
+    and not exists (select 1 from mail_optouts m where m.user_id = t.user_id)
+    and not exists (select 1 from birthday_notices n where n.user_id = t.user_id and n.child_name = t.child_name and n.year = p_year);
+$$;

@@ -1,5 +1,5 @@
 import "server-only";
-import { CHILD_AGES, clampCopies, getSize, getStory, getTaste, type SizeId, type StoryId, type TasteId } from "./catalog";
+import { CHILD_AGES, clampCopies, parseBirthday, getSize, getStory, getTaste, type SizeId, type StoryId, type TasteId } from "./catalog";
 import { createAuthClient } from "./auth";
 
 // 作成途中の内容（下書き）。会員が作成画面から「保存して中断」を押したときに、
@@ -24,6 +24,7 @@ export type FlowSave = {
   story: StoryId;
   childName: string;
   childAge: number | null;
+  childBirthday: string;
   draftId: string | null;
   size: SizeId;
   copies: number;
@@ -53,6 +54,7 @@ export function parseFlowSave(input: unknown): FlowSave | null {
     story: story as StoryId,
     childName: str(v.childName, 12),
     childAge: CHILD_AGES.includes(age) ? age : null,
+    childBirthday: parseBirthday(v.childBirthday) ?? "",
     // デモ用の下書き（id に中身を埋め込んだもの）は保存しない
     draftId: draftId && !draftId.startsWith("demo.") ? draftId : null,
     size: getSize(size) ? (size as SizeId) : "M",

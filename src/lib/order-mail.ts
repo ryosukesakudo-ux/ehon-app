@@ -1,6 +1,6 @@
 import "server-only";
 import { SITE_NAME } from "@/components/brand";
-import { deliveryLabel, getSize, getStory, getTaste, yen } from "./catalog";
+import { REPEAT_COUPON, deliveryLabel, getSize, getStory, getTaste, yen } from "./catalog";
 import { sendMail } from "./mail";
 import { getSupabase } from "./services";
 
@@ -50,9 +50,14 @@ export async function sendOrderConfirmation(orderId: string, base: string) {
   const subject = `【${SITE_NAME}】ご注文ありがとうございます（注文番号 ${orderNo}）`;
   const intro = `${name}\n\nこのたびは「${SITE_NAME}」でご注文いただき、ありがとうございます。\nお支払いを確認しましたので、絵本の制作を始めます。`;
   const flow = "このあとの流れ\n1. 絵本の全ページの絵を仕上げ、印刷・製本します\n2. 数日後に発送します（発送したらマイページでお知らせします）";
+  // リピート割引のご案内（お誕生日を入れた方には、誕生日の1か月前にもお知らせする）
+  const next = [
+    `次の絵本をつくるときは、クーポンコード「${REPEAT_COUPON.code}」で1冊目が${REPEAT_COUPON.discount}円引きになります（何度でもお使いいただけます）。`,
+    ...(o.child_birthday ? ["毎年お誕生日の1か月前に、続編の絵本のご案内をお送りします。"] : []),
+  ].join("\n");
   const outro = `ご注文の状況と絵本の絵は、マイページでご確認いただけます。\n${account}\n\nご不明な点は、このメールにご返信ください。\n\n${SITE_NAME}\n${base}`;
 
-  const text = [intro, "", "■ ご注文内容", ...lines.map(([k, v]) => `${k}：${v}`), "", flow, "", outro].join("\n");
+  const text = [intro, "", "■ ご注文内容", ...lines.map(([k, v]) => `${k}：${v}`), "", flow, "", "■ 次の絵本のご案内", next, "", outro].join("\n");
   const html = `<div style="font-family:sans-serif;font-size:15px;line-height:1.8;color:#1e2f57;max-width:560px">
 <p>${escapeHtml(intro).replaceAll("\n", "<br>")}</p>
 <h2 style="font-size:17px;color:#f08a6c;margin:24px 0 8px">ご注文内容</h2>
@@ -60,6 +65,8 @@ export async function sendOrderConfirmation(orderId: string, base: string) {
     .map(([k, v]) => `<tr><th style="text-align:left;padding:6px 12px 6px 0;white-space:nowrap;vertical-align:top;color:#4f6f9f">${escapeHtml(k)}</th><td style="padding:6px 0">${escapeHtml(v)}</td></tr>`)
     .join("")}</table>
 <p style="margin-top:24px">${escapeHtml(flow).replaceAll("\n", "<br>")}</p>
+<h2 style="font-size:17px;color:#f08a6c;margin:24px 0 8px">次の絵本のご案内</h2>
+<p>${escapeHtml(next).replaceAll("\n", "<br>")}</p>
 <p><a href="${account}" style="display:inline-block;padding:12px 24px;border-radius:24px;background:#f08a6c;color:#fff;text-decoration:none;font-weight:bold">マイページを見る</a></p>
 <p style="color:#4f6f9f;font-size:13px">ご不明な点は、このメールにご返信ください。<br>${escapeHtml(SITE_NAME)}　<a href="${base}">${base}</a></p>
 </div>`;

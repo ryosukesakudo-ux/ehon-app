@@ -2,6 +2,7 @@ import { COVER_SCENE, getSize, getStory, sceneText, type SizeId } from "@/lib/ca
 import { buildCoverSpread } from "@/lib/cover-spread";
 import { buildBookPdfs } from "@/lib/print-pdf";
 import { BOOK_BUCKET, getSupabase } from "@/lib/services";
+import { bookVolume } from "@/lib/volume";
 
 export const maxDuration = 300;
 
@@ -37,6 +38,8 @@ export async function POST(request: Request, ctx: RouteContext<"/api/admin/order
     images.push(Buffer.from(await data.arrayBuffer()));
   }
 
+  const volume = await bookVolume(db, order);
+
   try {
     const pdfs = await buildBookPdfs({
       storyName: story.name,
@@ -45,6 +48,7 @@ export async function POST(request: Request, ctx: RouteContext<"/api/admin/order
       images,
       coverImage,
       trimMm: size.trimMm,
+      volume,
       issuedAt: new Date(),
     });
     const spread = await buildCoverSpread({
@@ -53,6 +57,7 @@ export async function POST(request: Request, ctx: RouteContext<"/api/admin/order
       coverImage,
       trimMm: size.trimMm,
       spineMm,
+      volume,
     });
     const files = {
       body: { bytes: pdfs.body, ext: "pdf", type: "application/pdf", label: "本文" },

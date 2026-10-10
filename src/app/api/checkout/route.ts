@@ -5,11 +5,13 @@ import {
   DELIVERY_TIMES,
   clampCopies,
   extraCopyPrice,
+  firstBookPrice,
   deliveryLabel,
   getSize,
   getStory,
   jstDate,
   orderTotal,
+  parseBirthday,
   type SizeId,
 } from "@/lib/catalog";
 import { findCoupon, normalizeCouponCode, type Coupon } from "@/lib/coupons";
@@ -27,6 +29,8 @@ export async function POST(request: Request) {
   const copies = clampCopies(body?.copies);
   const deliveryDate = String(body?.deliveryDate ?? "") || null;
   const deliveryTime = String(body?.deliveryTime ?? "") || null;
+  // お誕生日は任意。入っていれば、誕生日の1か月前に続編のご案内メールを送る
+  const childBirthday = parseBirthday(body?.childBirthday);
   if (deliveryDate && (!/^\d{4}-\d{2}-\d{2}$/.test(deliveryDate) || deliveryDate < jstDate(DELIVERY_MIN_DAYS) || deliveryDate > jstDate(DELIVERY_MAX_DAYS))) {
     return Response.json({ error: `お届け日は${DELIVERY_MIN_DAYS}日後から${DELIVERY_MAX_DAYS}日後までの日付を選んでください` }, { status: 400 });
   }
@@ -59,7 +63,7 @@ export async function POST(request: Request) {
     if ("error" in found) return Response.json({ error: found.error }, { status: 400 });
     coupon = found.coupon;
   }
-  const firstPrice = coupon ? Math.min(coupon.bookPrice, size.price) : size.price;
+  const firstPrice = firstBookPrice(size.price, coupon);
   const amount = orderTotal(size.id, copies, firstPrice);
 
   const orderId = randomUUID();
@@ -76,15 +80,17 @@ export async function POST(request: Request) {
     delivery_time: deliveryTime,
     coupon_code: coupon?.code ?? null,
     discount: size.price - firstPrice,
+    child_birthday: childBirthday,
   };
   let { error } = await db.from("orders").insert(row);
   if (error?.code === "42703") {
-    // schema.sql の再実行前で copies・クーポンの列がまだない場合（部数は extra_copy と金額から分かる）
+    // schema.sql の再実行前で copies・クーポン・お誕生日の列がまだない場合（部数は extra_copy と金額から分かる）
     if (coupon) return Response.json({ error: "クーポンの準備がまだできていません" }, { status: 503 });
     const oldColumns: Partial<typeof row> = { ...row };
     delete oldColumns.copies;
     delete oldColumns.coupon_code;
     delete oldColumns.discount;
+    delete oldColumns.child_birthday;
     ({ error } = await db.from("orders").insert(oldColumns));
   }
   if (error) {

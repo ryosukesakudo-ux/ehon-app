@@ -273,6 +273,30 @@ export function orderTotal(sizeId: SizeId, copies: number, bookPrice?: number | 
   return first + (clampCopies(copies) - 1) * extraCopyPrice(sizeId);
 }
 
+/** 1冊目の値段。クーポンは「1冊目の値段を決めるもの（bookPrice）」と「値引き額（discount）」の2種類 */
+export function firstBookPrice(sizePrice: number, coupon?: { bookPrice?: number | null; discount?: number | null } | null) {
+  if (!coupon) return sizePrice;
+  if (coupon.discount) return Math.max(0, sizePrice - coupon.discount);
+  return coupon.bookPrice == null ? sizePrice : Math.min(coupon.bookPrice, sizePrice);
+}
+
+/** リピート割引：一度ご注文いただいた会員は、このコードで1冊目が500円引き（何度でも）。誕生日の案内メールと注文完了メールでお知らせする */
+export const REPEAT_COUPON = { code: "MATANE", discount: 500, label: "リピート割引" };
+
+/** 誕生日の案内メール（続編のお誘い）を送るのは、誕生日の何日前か */
+export const BIRTHDAY_NOTICE_DAYS = 30;
+
+/** お誕生日の入力（YYYY-MM-DD）を確かめる。空や、ありえない日付なら null */
+export function parseBirthday(v: unknown, now = new Date()) {
+  const s = typeof v === "string" ? v.trim() : "";
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(s)) return null;
+  const d = new Date(`${s}T00:00:00Z`);
+  if (Number.isNaN(d.getTime()) || d.toISOString().slice(0, 10) !== s) return null;
+  const today = jstDate(0, now);
+  const oldest = `${Number(today.slice(0, 4)) - 12}${today.slice(4)}`;
+  return s <= today && s >= oldest ? s : null;
+}
+
 export function yen(n: number) {
   return `${n.toLocaleString("ja-JP")}円`;
 }
