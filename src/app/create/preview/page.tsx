@@ -167,8 +167,20 @@ function Preview() {
             {typeof account.free === "number" && `（今月の無料 ${account.free} / ${account.limit}枚${account.credits ? `＋追加 ${account.credits}枚` : ""}）`}
           </p>
         )}
-        {boughtCredits && <p className="info-note" role="status">ご購入ありがとうございます。反映まで少しかかる場合は、画面を再読み込みしてください。</p>}
+        {boughtCredits && <p className="info-note" role="status">ご購入ありがとうございます。反映まで少しかかる場合は、下の「画面を再読み込み」を押してください。</p>}
         {account?.loggedIn && account.remaining <= 0 && <BuyPreviewsButton returnTo="/create/preview" />}
+        <button
+          type="button"
+          className="ghost"
+          style={{ alignSelf: "center", height: 40, padding: "0 18px", fontSize: 14, gap: 6 }}
+          onClick={() => window.location.reload()}
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <path d="M21 12a9 9 0 1 1-2.64-6.36" />
+            <path d="M21 3v6h-6" />
+          </svg>
+          画面を再読み込み
+        </button>
         {error && <p className="error" role="alert">{error}</p>}
         {needLogin && !trial && (
           <Link href={loginHref("/create/preview")} className="ghost">無料会員登録・ログインへ</Link>
