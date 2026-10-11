@@ -6,6 +6,7 @@ import { getOpenAI } from "./services";
 import { upscalePng } from "./upscale";
 import { SERIES_NOTE_MAX, type SeriesScene } from "./series";
 import type { StudioSeries } from "./series-studio";
+import type { Continuity } from "./series-data";
 
 export type { Person };
 
@@ -54,10 +55,37 @@ const SERIES_CAST_RULES =
   "Each animal or creature character keeps exactly its own species and look on every page; never turn one into a person or into a different animal. " +
   "Everyone stands, sits or kneels on top of the ground; never draw a body sunk into the ground or a hole.";
 
-/** 場面の指示に名前が出る登場人物の見た目（例：Chicchi is a tiny gray mouse ...） */
-function castPrompt(cast: Record<string, string> | undefined, ...texts: (string | undefined)[]) {
-  const named = Object.entries(cast ?? {}).filter(([name]) => texts.some((t) => t && new RegExp(`\\b${name}\\b`).test(t)));
-  return named.length ? `Who is who in this scene: ${named.map(([name, look]) => `${name} is ${look}`).join("; ")}.` : "";
+// 絵は1ページずつ別々に描くので、決めていないことはページごとに変わってしまう（服の色、バッジの数、仲間の見た目など。
+// 2026-10-11 作道さん「この話に限らず統一感をもたせるプロンプトに」）。すべての絵本の全ページに付ける共通の決まり。
+const BOOK_CONSISTENCY =
+  "This picture is one page of a picture book, and every page must match the others exactly. Keep each recurring character identical on every page: " +
+  "the same face, hairstyle, hair color, hair accessories and glasses, the same body proportions and height relative to the others, " +
+  "the same clothes with the same colors, shapes and details, and the same accessories (badges, bags, hats) in the same number, colors and position. " +
+  "Keep recurring animals, objects and places the same shape, colors and size relative to the child. " +
+  "Do not add accessories, logos, patterns or items to anyone's clothes beyond what is described.";
+
+const escapeRegExp = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
+/** 場面の指示に出る登場人物（例：Chicchi is a tiny gray mouse ...）と、場所や物（例：the golden acorn）の見た目 */
+function lookPrompt(cast: Record<string, string> | undefined, props: Record<string, string> | undefined, ...texts: (string | undefined)[]) {
+  const text = texts.filter(Boolean).join(" ");
+  const named = Object.entries(cast ?? {}).filter(([name]) => new RegExp(`\\b${escapeRegExp(name)}\\b`).test(text));
+  // 場所や物は大文字小文字を区別しない。同じ物を別の言い方で書いたキー（同じ説明）は1回だけ
+  const things = Object.entries(props ?? {})
+    .filter(([key]) => new RegExp(`\\b${escapeRegExp(key)}\\b`, "i").test(text))
+    .filter(([, look], i, all) => all.findIndex(([, l]) => l === look) === i);
+  return [
+    named.length ? `Who is who in this scene: ${named.map(([name, look]) => `${name} is ${look}`).join("; ")}.` : "",
+    things.length ? `Recurring places and objects, always drawn the same way: ${things.map(([key, look]) => `${key}: ${look}`).join("; ")}.` : "",
+  ]
+    .filter(Boolean)
+    .join(" ");
+}
+
+/** その話の持ち物・身に着ける物の決まりのうち、このページ（表紙0、場面1〜12）に当てはまるもの */
+function continuityPrompt(continuity: Continuity[] | undefined, page: number) {
+  const rules = (continuity ?? []).filter((c) => (c.from ?? 0) <= page && page <= (c.to ?? 99)).map((c) => c.text);
+  return rules.length ? `Continuity for this page: ${rules.join(" ")}` : "";
 }
 
 /** 相棒の名前（例：Pokke）。相棒の説明文の最初の語 */
@@ -68,7 +96,7 @@ function sidekickName(sidekick: string) {
 // 台本のシリーズは、話ごとに服装（形と色）を決めてある。参考画像の服ではなくこの服で、全ページ同じにする。
 // 以前は「参考画像と同じ色の冬服」とだけ伝えていて、ページごとにコートの色や形が変わった（2026-10-11 作道さんの指摘）。
 function outfitsPrompt(outfits: string) {
-  return `Clothes in this book: ${outfits} Draw these exact clothes in these exact colors on every page instead of the clothes in the reference images, so each person looks the same throughout the book; change clothes only when the scene clearly says so (such as pajamas in bed or a towel).`;
+  return `Clothes in this book: ${outfits} Draw these exact clothes in these exact colors on every page instead of the clothes in the reference images, so each person looks the same throughout the book; change clothes only when the continuity notes or the scene clearly say so (such as pajamas in bed or a towel).`;
 }
 
 /** 印刷用の本文の絵の大きさ（1辺のpx）。OPENAI_FINAL_SIZE（例 2048x2048）で変えられる */
@@ -108,7 +136,7 @@ function describeRefs(refs: { who: Person; kind?: RefKind }[]) {
     .map((r, i) => {
       const n = `Reference image ${i + 1}`;
       if (r.kind === "character") {
-        return `${n} is the approved picture-book character design of ${LABEL[r.who]}: keep exactly the same face, hairstyle, hair color and body proportions, and the same outfit unless the scene calls for different clothes.`;
+        return `${n} is the approved picture-book character design of ${LABEL[r.who]}: keep exactly the same face, hairstyle, hair color and body proportions, and the same outfit unless this prompt describes different clothes.`;
       }
       if (r.kind === "previous") return `${n} is the previous version of this drawing of ${LABEL[r.who]}.`;
       return `${n} is a photo of ${LABEL[r.who]}.`;
@@ -130,8 +158,10 @@ function redoPrompt(redo?: Redo | null) {
 }
 
 /** キャラクター（1人の全身・正面の絵）を描く指示。プレビューで見せ、本番の絵の参考にする。 */
-export function buildCharacterPrompt(taste: TasteId, who: Person, refs: { who: Person; kind?: RefKind }[], childAge?: number | null, redo?: Redo | null) {
+export function buildCharacterPrompt(taste: TasteId, who: Person, refs: { who: Person; kind?: RefKind }[], childAge?: number | null, redo?: Redo | null, story?: string) {
   const t = getTaste(taste)!;
+  // 台本のシリーズは、キャラクターの絵もその話の服で描く（本文の絵の参考になるので、服がずれないように）
+  const outfits = getBook(story)?.series?.outfits;
   const hasPrevious = refs.some((r) => r.kind === "previous");
   return [
     `${t.prompt}.`,
@@ -140,7 +170,8 @@ export function buildCharacterPrompt(taste: TasteId, who: Person, refs: { who: P
     PICTURE_BOOK_CHARACTERS,
     "Make them look friendly and natural, never caricatured.",
     who === "child" && childAge ? ageBody(childAge).replace(", at a height that fits that age next to the adults", "") : "",
-    `Character design of ${LABEL[who]} only, for a children's picture book: one person standing alone, full body from head to toes, front view, relaxed natural pose, friendly expression, simple everyday clothes.`,
+    `Character design of ${LABEL[who]} only, for a children's picture book: one person standing alone, full body from head to toes, front view, relaxed natural pose, friendly expression, ${outfits ? "wearing this person's clothes from this list" : "simple everyday clothes"}.`,
+    outfits ? `Clothes: ${outfits} Draw exactly these clothes and colors instead of the clothes in the reference images.` : "",
     "Plain soft light background with no scenery and no other people or animals. Leave a little space above the head and below the feet.",
     hasPrevious ? "Keep everything from the previous version except what the requests below ask to change." : "",
     redoPrompt(redo),
@@ -172,14 +203,16 @@ export function buildPrompt(taste: TasteId, story: string, sceneIndex: number, r
     PICTURE_BOOK_CHARACTERS,
     "Make them look friendly and natural, never caricatured.",
     childAge ? ageBody(childAge) : "",
+    BOOK_CONSISTENCY,
     series?.outfits ? outfitsPrompt(series.outfits) : "",
+    series ? continuityPrompt(series.continuity, isCover ? 0 : sceneIndex + 1) : "",
     series
       ? scene.withSidekick
         ? `The sidekick of this picture book series appears: ${series.sidekick}. Keep the sidekick looking the same on every page.`
         : `Do not include ${sidekickName(series.sidekick)} (the sidekick) in this scene.`
       : "",
     `Scene: ${scene.art}.`,
-    series ? castPrompt(series.cast, scene.art, scene.camera) : "",
+    series ? lookPrompt(series.cast, series.props, scene.art, scene.camera) : "",
     series ? SERIES_CAST_RULES : "",
     redoPrompt(redo),
     generic.length ? `${generic.join(" and ")} appear in this scene; draw them as gentle adults without a specific likeness.` : "",
@@ -219,7 +252,7 @@ export async function illustrate(opts: {
     model: process.env.OPENAI_IMAGE_MODEL ?? "gpt-image-2",
     image: opts.images.map((i) => i.file),
     prompt: character
-      ? buildCharacterPrompt(opts.taste, character, opts.images, opts.childAge, opts.redo)
+      ? buildCharacterPrompt(opts.taste, character, opts.images, opts.childAge, opts.redo, opts.story)
       : buildPrompt(opts.taste, opts.story, opts.sceneIndex, opts.images, opts.childAge, opts.redo),
     // 表紙は横長（タイトルは絵の上の帯に置くので、絵に文字の場所はいらない）
     size: opts.size ?? (isCover ? COVER_SIZE : "1024x1024"),
@@ -466,7 +499,7 @@ function seriesNote(note?: string) {
   return n ? `Additional instructions from the art director (may be written in Japanese); follow them carefully, they take priority over the instructions above: ${n}` : "";
 }
 
-export function buildSeriesPrompt(series: StudioSeries, scene: SeriesScene, opts: { cover: boolean; outfits?: string; note?: string }) {
+export function buildSeriesPrompt(series: StudioSeries, scene: SeriesScene, opts: { cover: boolean; page: number; outfits?: string; continuity?: Continuity[]; note?: string }) {
   const t = getTaste("watercolor")!;
   const people: Person[] = ["child", ...(scene.withMom ? (["mom"] as const) : []), ...(scene.withDad ? (["dad"] as const) : [])];
   return [
@@ -477,12 +510,14 @@ export function buildSeriesPrompt(series: StudioSeries, scene: SeriesScene, opts
       : "Draw exactly the same characters: the same faces, hairstyles, body proportions and outfit colors. Only the drawing style changes.",
     STYLE_ONLY_FROM_TEXT,
     sampleCast(series.id, people, !opts.outfits),
+    BOOK_CONSISTENCY,
     opts.outfits ? outfitsPrompt(opts.outfits) : "",
+    continuityPrompt(opts.continuity, opts.page),
     scene.withSidekick
       ? `The sidekick appears: ${series.sidekick}. Keep the sidekick exactly as on the character sheet.`
       : `Do not include ${sidekickName(series.sidekick)} (the sidekick) in this scene.`,
     `Scene: ${scene.art}.`,
-    castPrompt(series.cast, scene.art, scene.camera),
+    lookPrompt(series.cast, series.props, scene.art, scene.camera),
     SERIES_CAST_RULES,
     scene.withMom ? "" : "Do not include the mother in this scene.",
     scene.withDad ? "" : "Do not include the father in this scene.",
@@ -498,14 +533,15 @@ export function buildSeriesPrompt(series: StudioSeries, scene: SeriesScene, opts
 }
 
 /** シリーズの1ページ（表紙または場面）を水彩で描き、PNG の base64 を返す。 */
-export async function illustrateSeries(opts: { series: StudioSeries; scene: SeriesScene; cover: boolean; outfits?: string; note?: string; quality: Quality; sheet: Uploadable }) {
+export async function illustrateSeries(opts: { series: StudioSeries; scene: SeriesScene; page: number; outfits?: string; continuity?: Continuity[]; note?: string; quality: Quality; sheet: Uploadable }) {
+  const cover = opts.page === 0;
   const ai = getOpenAI();
   if (!ai) throw new Error("OPENAI_API_KEY が未設定です");
   const result = await ai.images.edit({
     model: process.env.OPENAI_IMAGE_MODEL ?? "gpt-image-2",
     image: [opts.sheet],
-    prompt: buildSeriesPrompt(opts.series, opts.scene, { cover: opts.cover, outfits: opts.outfits, note: opts.note }),
-    size: opts.cover ? COVER_SIZE : "1024x1024",
+    prompt: buildSeriesPrompt(opts.series, opts.scene, { cover, page: opts.page, outfits: opts.outfits, continuity: opts.continuity, note: opts.note }),
+    size: cover ? COVER_SIZE : "1024x1024",
     quality: opts.quality === "final" ? "high" : "medium",
     output_format: "png",
   });

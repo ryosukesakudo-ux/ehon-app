@@ -4,17 +4,84 @@
  "sidekick": "Mint, a small white cat wizard about half the child's height, with big green eyes, wearing an oversized mint-green pointed hat decorated with golden stars that droops over his ears, and holding a little star-tipped wand",
  "sidekickLabel": "相棒のねこのまほうつかい「ミント」",
  "cast": {
-  "Pipi": "a small yellow songbird mail carrier with a tiny satchel",
-  "Pom": "a little brown bear cub pastry chef in a white chef's hat and apron",
-  "Moko": "a small fluffy lamb made of white cloud",
-  "Shar": "a little pink seahorse with a curled tail",
-  "Gao": "a small round green baby dragon with tiny wings, about the same size as the child"
+  "Pipi": "a small yellow songbird (not a person), about the size of the child's hand, with an orange beak, round black eyes and a tiny brown leather mail satchel worn across her chest; she is the mail carrier",
+  "Pom": "a little brown bear cub (not a person), about as tall as the child's shoulder, round and chubby with a light-tan muzzle, wearing a tall white chef's hat and a white apron; he is a pastry chef",
+  "Moko": "a small lamb (not a person), about as tall as the child's waist, whose fluffy round wool is made of soft white cloud, with a pale-pink face, round black eyes and tiny dark-gray hooves",
+  "Shar": "a little pink seahorse (not a person), about as long as the child's forearm, with a curled tail, a small pale-pink fin on her back and big round dark eyes",
+  "Gao": "a small round green baby dragon (not a person), about the same height as the child, with a pale-yellow belly, tiny green bat-like wings, two short cream-colored horns and a friendly round face"
+ },
+ "props": {
+  "treasure book": "a square hardcover picture book about as wide as the child's chest, with a mint-green cover with one golden star in the center and thick cream-colored pages edged in gold; a red satin ribbon can tie it closed with a bow; it glows softly golden when magic is near",
+  "book": "a square hardcover picture book about as wide as the child's chest, with a mint-green cover with one golden star in the center and thick cream-colored pages edged in gold; a red satin ribbon can tie it closed with a bow; it glows softly golden when magic is near",
+  "glowing envelope": "a white envelope about the size of the child's hand, sealed with a round red wax seal shaped like a star, sparkling with a soft golden glow",
+  "invitation letter": "a white envelope about the size of the child's hand, sealed with a round red wax seal shaped like a star, sparkling with a soft golden glow",
+  "envelope": "a white envelope about the size of the child's hand, sealed with a round red wax seal shaped like a star, sparkling with a soft golden glow",
+  "envelopes": "plain white envelopes with a small red star-shaped seal, each about the size of the child's hand",
+  "opened letter": "a cream-colored letter card the size of the child's hand, decorated with glowing golden star patterns, with no readable writing",
+  "golden door": "a small arched golden door about the child's height, with a round golden knob and a little star-shaped window, set into the bedroom wall, with warm light glowing from its edges",
+  "sweets town": "a town of cookie houses with dark-brown chocolate roofs, pink frosting trim and candy flowers in pastel colors along the streets",
+  "cookie stars": "five-pointed golden-brown butter cookies with a thin white icing outline",
+  "cookie star": "five-pointed golden-brown butter cookies with a thin white icing outline",
+  "cookie-star": "five-pointed golden-brown butter cookies with a thin white icing outline",
+  "glass lantern": "a small round glass lantern about the size of the child's head, with a golden cap and a golden ring handle, holding a tiny star-shaped flame",
+  "gigantic cake": "a towering round layered cake with pink and white frosting and white cream swirls, so tall its top reaches the clouds, ringed with many white candles and one big white candle at the very top",
+  "giant cake": "a towering round layered cake with pink and white frosting and white cream swirls, so tall its top reaches the clouds, ringed with many white candles and one big white candle at the very top",
+  "giant glowing cake": "a towering round layered cake with pink and white frosting and white cream swirls, so tall its top reaches the clouds, ringed with many white candles and one big white candle at the very top",
+  "golden crown": "a small simple golden crown with five rounded points, each tipped with a small red jewel, sized to fit the child's head",
+  "cloud town": "a town of round puffy white cloud houses with round pastel-blue doors, its streets strung with triangular pennant flags in red, yellow and blue",
+  "town on the clouds": "a town of round puffy white cloud houses with round pastel-blue doors, its streets strung with triangular pennant flags in red, yellow and blue",
+  "town on top of the clouds": "a town of round puffy white cloud houses with round pastel-blue doors, its streets strung with triangular pennant flags in red, yellow and blue",
+  "glass bottle": "a small clear glass bottle about the size of the child's hand, with a cork stopper and a rolled-up cream-colored letter tied with a blue ribbon inside, sparkling",
+  "bottle": "a small clear glass bottle about the size of the child's hand, with a cork stopper and a rolled-up cream-colored letter tied with a blue ribbon inside, sparkling",
+  "coral castle": "a castle on the seabed built of pink and orange coral, with rounded towers topped with pearl-white domes",
+  "small wand": "a short white wand about the length of the child's forearm, tipped with a small light-blue star",
+  "seashell": "a huge pale-pink scallop seashell, big enough for the child to curl up inside",
+  "bubble lanterns": "round soap-bubble spheres about the size of a ball, shining with soft rainbow-white light from a tiny glow inside",
+  "glowing bubble": "round soap-bubble spheres about the size of a ball, shining with soft rainbow-white light from a tiny glow inside",
+  "glowing bubbles": "round soap-bubble spheres about the size of a ball, shining with soft rainbow-white light from a tiny glow inside",
+  "star-shaped ticket": "a flat golden star-shaped ticket about the size of the child's palm, glowing softly, with tiny unreadable handwriting on its back",
+  "star ticket": "a flat golden star-shaped ticket about the size of the child's palm, glowing softly, with tiny unreadable handwriting on its back",
+  "ticket": "a flat golden star-shaped ticket about the size of the child's palm, glowing softly, with tiny unreadable handwriting on its back",
+  "star train": "a small old-fashioned steam train of deep navy blue with gold trim and gold star decorations, puffing sparkling star dust instead of smoke and running on glowing rails of light; when the moon lights up it glows golden all over",
+  "golden train": "a small old-fashioned steam train of deep navy blue with gold trim and gold star decorations, puffing sparkling star dust instead of smoke and running on glowing rails of light; when the moon lights up it glows golden all over",
+  "moon rabbits": "small white rabbits (not people) about knee-high to the child, with long soft ears, pink inner ears and round red eyes",
+  "star lanterns": "small star-shaped paper lanterns glowing pale yellow, hanging from strings",
+  "star lights": "small glowing pale-yellow star-shaped lights, each about the size of an apple",
+  "tower house": "a narrow round little tower house at the edge of the sweets town, with mint-green walls, a pointed purple roof topped with a golden star, and a round wooden door",
+  "handmade invitation": "the child's crayon drawing on the fifth page of the treasure book: a simple childlike picture of a pink birthday cake with candles and a white cat in a mint-green star hat, with no readable writing"
  },
  "episodes": [
   {
    "no": 1,
    "title": "おかしの まちの ごしょうたい",
-   "outfits": null,
+   "outfits": "the child: a light-yellow long-sleeved T-shirt, red overall shorts with two white buttons, white socks and red sneakers; the mother: a pale-pink long-sleeved blouse and a light-gray long skirt; the father: a light-blue button-up shirt with rolled sleeves and beige chino pants.",
+   "continuity": [
+    {
+     "from": 1,
+     "to": 1,
+     "text": "On this page the child wears pale-yellow long-sleeved pajamas with white piping instead of the usual clothes."
+    },
+    {
+     "from": 12,
+     "to": 12,
+     "text": "On this page the child wears pale-yellow long-sleeved pajamas with white piping instead of the usual clothes."
+    },
+    {
+     "from": 6,
+     "to": 10,
+     "text": "The child carries the small round glass lantern with a golden cap and golden ring handle, holding a tiny star-shaped flame."
+    },
+    {
+     "from": 8,
+     "to": 9,
+     "text": "The lantern's star flame is weak, small and flickering."
+    },
+    {
+     "from": 11,
+     "to": 12,
+     "text": "The treasure book Mint gives has a mint-green cover with one golden star and is tied with a red satin ribbon bow."
+    }
+   ],
    "cover": {
     "label": "おかしの町の門の前で、ミント色の星のぼうしをかぶった白ねこ（ミント）と並んで、光る招待状を持つ主人公。",
     "art": "in front of the gate of a sweets town made of cookie houses and chocolate roofs, the child stands beside Mint the white cat in an oversized mint-green star hat, holding a glowing invitation letter in both hands and smiling with wonder",
@@ -265,7 +332,39 @@
   {
    "no": 2,
    "title": "くもの まちと ひつじの モコ",
-   "outfits": null,
+   "outfits": "the child: a sky-blue hooded sweatshirt, white pants and yellow sneakers; the mother: a cream knit cardigan over a white blouse and navy pants; the father: a forest-green knit sweater and dark-gray pants.",
+   "continuity": [
+    {
+     "from": 3,
+     "to": 8,
+     "text": "The child wears the small golden crown with five red-tipped points on their head."
+    },
+    {
+     "from": 7,
+     "to": 9,
+     "text": "Moko's cloud wool is rain-cloud gray instead of white, and Moko has tears."
+    },
+    {
+     "from": 10,
+     "to": 10,
+     "text": "Moko is white and fluffy again and wears the small golden crown; the child no longer wears it."
+    },
+    {
+     "from": 2,
+     "to": 2,
+     "text": "The letter in Pipi's beak is a white envelope with a red star-shaped seal."
+    },
+    {
+     "from": 12,
+     "to": 12,
+     "text": "On this page the child wears pale-yellow long-sleeved pajamas with white piping instead of the usual clothes."
+    },
+    {
+     "from": 12,
+     "to": 12,
+     "text": "The open treasure book shows on its first page a picture of the giant candle-lit cake in the sweets town and on its second page a picture of Moko in the golden crown under a rainbow."
+    }
+   ],
    "cover": {
     "label": "雲の上の町で、大きなにじの前に立つ主人公と、雲でできたひつじ（モコ）とミント。",
     "art": "in a town on top of the clouds, the child stands in front of a huge rainbow with Moko, a small fluffy lamb made of white cloud and Mint the white cat in his oversized mint-green star hat, all smiling",
@@ -516,7 +615,34 @@
   {
    "no": 3,
    "title": "うみの そこの あわの まほう",
-   "outfits": null,
+   "outfits": "the child: a white long-sleeved T-shirt with wide navy horizontal stripes, light-blue pants and white sneakers; the mother: a coral-orange long-sleeved blouse and white pants; the father: a navy polo shirt and light-gray pants.",
+   "continuity": [
+    {
+     "from": 3,
+     "to": 10,
+     "text": "Whenever the child holds a wand, it is the short white wand tipped with a small light-blue star (Mint's own wand is different)."
+    },
+    {
+     "from": 2,
+     "to": 10,
+     "text": "Under the sea the child still wears the usual clothes and breathes normally; no diving gear."
+    },
+    {
+     "from": 8,
+     "to": 8,
+     "text": "Mint's mint-green star hat has a scorched brown edge with one small burnt hole in the brim."
+    },
+    {
+     "from": 12,
+     "to": 12,
+     "text": "On this page the child wears pale-yellow long-sleeved pajamas with white piping instead of the usual clothes."
+    },
+    {
+     "from": 12,
+     "to": 12,
+     "text": "The treasure book is open at its third page, which shows a picture of the glowing coral castle with bubble lanterns and Shar."
+    }
+   ],
    "cover": {
     "label": "海の底のさんごのおしろの前で、光るあわに囲まれて小さなつえをかまえる主人公と、ミント、タツノオトシゴのシャル。",
     "art": "in front of a coral castle at the bottom of the sea, the child holds up a small wand surrounded by glowing bubbles, with Mint the white cat in his oversized mint-green star hat and Shar, a little pink seahorse with a curled tail beside them",
@@ -767,7 +893,39 @@
   {
    "no": 4,
    "title": "ほしの きしゃと ちびドラゴン",
-   "outfits": null,
+   "outfits": "the child: a mustard-yellow pullover hoodie with one big front pocket, dark-navy pants and white sneakers; the mother: a lavender knit sweater and dark-gray pants; the father: a dark-green zip-up fleece jacket and black pants.",
+   "continuity": [
+    {
+     "from": 1,
+     "to": 8,
+     "text": "The golden star-shaped ticket is in the big front pocket of the child's mustard-yellow hoodie, glowing through it."
+    },
+    {
+     "from": 9,
+     "to": 9,
+     "text": "The child holds the golden star-shaped ticket out in one hand."
+    },
+    {
+     "from": 2,
+     "to": 2,
+     "text": "On this page Mint wears a small navy-blue train conductor's cap with a gold band instead of his star hat."
+    },
+    {
+     "from": 8,
+     "to": 8,
+     "text": "The open treasure book shows three filled pages: the giant cake in the sweets town with Pom, Moko under a rainbow, and Shar by the coral castle."
+    },
+    {
+     "from": 11,
+     "to": 11,
+     "text": "The child is wrapped in a soft cream-colored blanket over the usual clothes."
+    },
+    {
+     "from": 12,
+     "to": 12,
+     "text": "The treasure book's first four pages are full of pictures and the fifth page is completely blank white."
+    }
+   ],
    "cover": {
     "label": "夜空を走る星の汽車の窓から月を見上げる主人公とミント。月の岩山に小さなドラゴンの影。",
     "art": "a star train races across the night sky; through its window the child and Mint the white cat in his oversized mint-green star hat look up at the moon, where the shadow of a small dragon sits on a rocky peak",
@@ -1018,7 +1176,34 @@
   {
    "no": 5,
    "title": "ミントの たんじょうび",
-   "outfits": null,
+   "outfits": "the child: a white collared shirt under a cherry-red sweater vest, dark-navy pants and brown shoes; the mother: a light-green cardigan over a cream-colored dress; the father: a navy cardigan over a white shirt and gray pants.",
+   "continuity": [
+    {
+     "from": 1,
+     "to": 1,
+     "text": "On this page the child wears pale-yellow long-sleeved pajamas with white piping instead of the usual clothes."
+    },
+    {
+     "from": 12,
+     "to": 12,
+     "text": "On this page the child wears pale-yellow long-sleeved pajamas with white piping instead of the usual clothes."
+    },
+    {
+     "from": 1,
+     "to": 2,
+     "text": "The treasure book's first four pages are full of pictures and the fifth page is completely blank white."
+    },
+    {
+     "from": 0,
+     "to": 0,
+     "text": "The handmade invitation is the child's crayon drawing on the fifth page of the treasure book (pink cake with candles and a white cat in a mint-green star hat, no readable writing)."
+    },
+    {
+     "from": 3,
+     "to": 12,
+     "text": "The handmade invitation is the child's crayon drawing on the fifth page of the treasure book (pink cake with candles and a white cat in a mint-green star hat, no readable writing); the child carries the treasure book."
+    }
+   ],
    "cover": {
     "label": "おかしの町の広場で、5ページの宝物の本を開いて、ミントに手書きの招待状を見せる主人公。後ろにポム・ピピ・モコ・シャル・ガオ。",
     "art": "in the town square of the sweets town, the child holds open the treasure book and shows a handmade invitation to Mint the white cat in his oversized mint-green star hat; behind them gather Pom, a little brown bear cub pastry chef in a white chef's hat and apron, Pipi, a small yellow songbird mail carrier with a tiny satchel, Moko, a small fluffy lamb made of white cloud, Shar, a little pink seahorse with a curled tail and Gao, a small round green baby dragon with tiny wings",

@@ -48,7 +48,7 @@ export async function POST(request: Request) {
     const quality = body?.quality === "preview" ? "preview" : "final";
     await save(
       seriesImagePath(series.id, episode.no, page),
-      await illustrateSeries({ series, scene, cover: page === 0, outfits: episode.outfits, note, quality, sheet }),
+      await illustrateSeries({ series, scene, page, outfits: episode.outfits, continuity: episode.continuity, note, quality, sheet }),
     );
     return Response.json({ ok: true });
   } catch (e) {

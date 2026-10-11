@@ -4,17 +4,51 @@
  "sidekick": "Pola is a palm-sized star child: a plump, soft five-pointed star glowing pale golden yellow, with a round gentle face, small dark dot eyes, rosy cheeks and tiny stubby arms, whose faint light flickers when he is scared (in episode 5 he becomes a large radiant star in the sky, described per scene).",
  "sidekickLabel": "相棒の星の子「ポラ」",
  "cast": {
-  "Kachi": "a small black-and-white magpie with a blue-tinged tail",
-  "Mochi": "a small white moon rabbit with long ears",
-  "Yukin": "a huge fluffy white snow cloud with a big gentle face",
-  "Orihime": "a weaver princess in flowing pastel robes",
-  "Hikoboshi": "a young cowherd in simple blue robes"
+  "Kachi": "a small magpie bird (not a person), about as tall as the child's knee, with a glossy black head, back and wings, a bright white belly and white patches on the wings, a long black tail with a blue sheen, and a small black beak; wears no clothes",
+  "Mochi": "a small pure-white moon rabbit (not a person), about the size of a house cat, standing upright on his hind legs, with long upright ears with pale-pink insides, round red eyes, a tiny pink nose and a round fluffy tail; wears no clothes",
+  "Yukin": "a huge fluffy snow cloud (not a person), as big as a hill and many times bigger than the child, pure white with soft pale-blue shading underneath, with a big round gentle face (small dark eyes, rosy cheeks and a wide soft mouth) and no arms or legs",
+  "Orihime": "a young weaver princess (a human woman) in flowing ancient Japanese-style robes of pale pink with a lavender sash and a long sheer pale-green scarf floating around her arms, her long black hair tied up in two looped buns with a small gold hairpin",
+  "Hikoboshi": "a young cowherd (a human man) in simple ancient Japanese-style clothes: an indigo-blue wrap top with a white collar and loose light-blue trousers tied at the ankles, short black hair tied in a small knot on top of his head",
+  "Moon": "a huge round full moon (not a person) glowing soft pale yellow, many times bigger than the child and floating in the sky, with a kind smiling face (gentle curved eyes, rosy cheeks and a small smile) and no arms, legs or body"
+ },
+ "props": {
+  "jar": "a small round clear glass jar about the size of the child's fist, with a short neck and a light-brown cork lid; whatever star fragments are inside glow softly through the glass and light up the child's face",
+  "fragment": "tiny glowing star fragments, each about the size of the child's fingertip and shaped like a small rounded five-pointed star crystal, softly radiant (how many there are and their colors are given in the scene)",
+  "fragments": "tiny glowing star fragments, each about the size of the child's fingertip and shaped like a small rounded five-pointed star crystal, softly radiant (how many there are and their colors are given in the scene)",
+  "ladder": "a long, narrow ladder made of glowing pale-gold light: two thin shining golden rails and rungs that are small twinkling five-pointed stars, just wide enough for one person, rising steeply into the night sky",
+  "staircase": "a straight, steep staircase of translucent glowing pale-gold light steps with no railings, each step wide enough for two children, rising from the clouds to the very top of the night sky",
+  "star children": "tiny star children (stars, not human children): plump five-pointed stars about the size of the child's hand, glowing pale yellow, each with a small smiling face, dot eyes and tiny stubby arms, like smaller versions of Pola",
+  "boat": "a small rowboat of pale honey-colored wood with a light-blue painted rim and two wooden oars, big enough for the child and a few small friends",
+  "Tanabata bamboo": "the family's leafy green bamboo branch about twice the child's height, tied upright to the balcony railing and hung with simple paper ornaments in red, yellow, blue and pink and a few paper wish strips",
+  "bamboo branch": "the family's leafy green bamboo branch about twice the child's height, tied upright to the balcony railing and hung with simple paper ornaments in red, yellow, blue and pink and a few paper wish strips",
+  "wish strip": "a long narrow rectangular paper wish strip (tanzaku) of pale sky-blue paper with a red string loop at the top, about as long as the child's forearm",
+  "magpies": "a flock of real magpie birds with glossy black heads and wings, bright white bellies and long blue-sheened black tails",
+  "Milky Way": "a wide river flowing through the night sky, made of countless tiny sparkling star grains in white, pale blue and gold, with soft sandy banks of starlight",
+  "mortar": "a big round wooden rice-cake mortar (usu) of light-brown wood, as tall as the child's chest, with a bowl-shaped hollow on top for the white rice cake",
+  "mallet": "a wooden rice-cake mallet (kine) of light-brown wood with a barrel-shaped head and a straight handle a little longer than the child's arm",
+  "dumpling": "small round white rice dumplings (tsukimi dango), each about the size of a ping-pong ball",
+  "dumplings": "small round white rice dumplings (tsukimi dango), each about the size of a ping-pong ball",
+  "pampas grass": "tall pampas grass (susuki) stalks with soft silvery-beige feathery plumes",
+  "veranda": "the family's Japanese wooden veranda (engawa): a long porch of warm brown wooden planks along white paper sliding doors, facing a small garden",
+  "balcony": "the second-floor balcony of the family's house, with a white metal railing and light-gray floor tiles, next to the child's bedroom window with its wide white windowsill",
+  "bedroom": "the child's small bedroom: a wooden bed with a light-blue quilt and a white pillow, cream-colored walls, a round beige rug and one large window with a wide white wooden windowsill that opens outward",
+  "windowsill": "the wide white wooden windowsill of the child's bedroom window"
  },
  "episodes": [
   {
    "no": 1,
    "title": "ほしの はしごと ながれぼし",
-   "outfits": null,
+   "outfits": "the child: light-blue long-sleeved pajamas (a button-up top and long pants) with a small pale-yellow star print and white socks; the mother: a soft lavender knit cardigan over a cream T-shirt and a long navy skirt; the father: a light-gray hooded sweatshirt and dark-navy sweatpants.",
+   "continuity": [
+    {
+     "text": "The child wears the light-blue star-print pajamas and white socks on every page of this adventure, also on the clouds, on the star ladder and in the boat, because the child left straight from bed."
+    },
+    {
+     "from": 12,
+     "to": 12,
+     "text": "On the windowsill the small glass jar holds exactly one glowing gold star fragment and nothing else."
+    }
+   ],
    "cover": {
     "label": "ふわふわの雲の上で、手のひらにのせた小さな星の子（ポラ）と、大きなおつきさまを見上げる主人公。",
     "art": "on top of fluffy clouds under a deep blue starry night sky, the child holds Pola the little star child gently on their open palm and both gaze up in wonder at the Moon, a huge round glowing moon with a kind smiling face",
@@ -265,7 +299,29 @@
   {
    "no": 2,
    "title": "たなばたの あまのがわ",
-   "outfits": "light summer clothes in the same colors as the reference: a short-sleeved top and shorts with sandals",
+   "outfits": "the child: a plain sunflower-yellow short-sleeved T-shirt, mint-green shorts with side pockets and light-brown sandals; the mother: a sleeveless coral-pink blouse and white cropped pants; the father: a navy short-sleeved polo shirt and beige shorts.",
+   "continuity": [
+    {
+     "from": 1,
+     "to": 1,
+     "text": "On the windowsill the small glass jar holds exactly one glowing gold star fragment."
+    },
+    {
+     "from": 1,
+     "to": 1,
+     "text": "The child's paper wish strip is still completely blank, with nothing written on it."
+    },
+    {
+     "from": 11,
+     "to": 11,
+     "text": "The child's pale sky-blue paper wish strip now has the child's wish written on it in a few lines of big dark-gray handwriting drawn as simple strokes, not readable letters."
+    },
+    {
+     "from": 12,
+     "to": 12,
+     "text": "On the windowsill the small glass jar holds exactly two glowing star fragments: one gold and one light blue."
+    }
+   ],
    "cover": {
     "label": "天の川のほとりで、両手を口に当ててよびかける主人公。肩にポラ、空からかささぎの群れ。",
     "art": "on the bank of the sparkling Milky Way, a river of tiny stars, the child calls out with both hands cupped around their mouth, Pola the little star child perched on their shoulder, as a flock of magpies swoops down from the night sky",
@@ -516,7 +572,34 @@
   {
    "no": 3,
    "title": "つきの うさぎと まんまる おつきさま",
-   "outfits": "light autumn clothes in the same colors as the reference: a long-sleeved top and long pants",
+   "outfits": "the child: a plain orange long-sleeved sweatshirt, brown corduroy long pants and white sneakers; the mother: a deep-red knit cardigan over a white blouse and a long beige skirt; the father: a dark-green long-sleeved shirt and gray trousers.",
+   "continuity": [
+    {
+     "from": 1,
+     "to": 5,
+     "text": "The moon is not full: a piece is missing from its right edge, like a small dark bite."
+    },
+    {
+     "from": 6,
+     "to": 9,
+     "text": "The moon's missing part has grown into a big dark shadow covering almost half of the moon, and the moonlight is weak and dim."
+    },
+    {
+     "from": 5,
+     "to": 8,
+     "text": "White sticky rice cake is smeared on the child's hands and sleeves."
+    },
+    {
+     "from": 10,
+     "to": 11,
+     "text": "The moon is now a perfectly round, brilliantly shining full moon with nothing missing."
+    },
+    {
+     "from": 12,
+     "to": 12,
+     "text": "On the windowsill the small glass jar holds exactly three glowing star fragments: one gold, one light blue and one silver."
+    }
+   ],
    "cover": {
     "label": "月の上で、きねを持った月のうさぎ（モチ）とならぶ主人公。うすの横にポラ。",
     "art": "on the glowing surface of the moon, the child stands side by side with Mochi, a small white moon rabbit with long ears, who holds a wooden mallet, and Pola the little star child sits beside a big wooden rice-cake mortar under a starry sky",
@@ -767,7 +850,39 @@
   {
    "no": 4,
    "title": "ゆきぐもの なみだ",
-   "outfits": "warm winter clothes in the same colors as the reference: a puffy coat, knit scarf and mittens",
+   "outfits": "the child: a red puffy hooded winter coat with a big front pocket over a cream turtleneck sweater, a white knit scarf, navy mittens, dark-gray long pants and brown snow boots; the mother: a long camel-brown wool coat over a pale-pink knit sweater, a pale-pink knit scarf and a gray knit hat; the father: a dark-navy puffy down jacket over a gray knit sweater, a mustard-yellow knit beanie and dark jeans.",
+   "continuity": [
+    {
+     "from": 0,
+     "to": 7,
+     "text": "The small glass jar holds exactly three glowing star fragments: one gold, one light blue and one silver."
+    },
+    {
+     "from": 3,
+     "to": 6,
+     "text": "The child carries the small glass jar in the big front pocket of the red puffy coat, with its glowing top peeking out, or holds it in a mittened hand when the scene says so."
+    },
+    {
+     "from": 8,
+     "to": 8,
+     "text": "The small glass jar is lost, buried deep in the snow, and is not visible on this page."
+    },
+    {
+     "from": 9,
+     "to": 9,
+     "text": "The small glass jar, dug out of the snow, holds exactly three glowing star fragments: one gold, one light blue and one silver."
+    },
+    {
+     "from": 11,
+     "to": 11,
+     "text": "Indoors on this page nobody wears coats, hats, scarves or mittens: the child wears the cream turtleneck sweater and dark-gray pants, the mother the pale-pink knit sweater, the father the gray knit sweater."
+    },
+    {
+     "from": 12,
+     "to": 12,
+     "text": "On the windowsill the small glass jar holds exactly four glowing star fragments: one gold, one light blue, one silver and one white with a tiny six-sided snowflake pattern."
+    }
+   ],
    "cover": {
     "label": "雪のふる夜空で、3つのかけらが光る小びんをかかげる主人公。後ろに、大きくてやさしい顔の雪ぐも。",
     "art": "in a snowy night sky, the child holds up a small glass jar glowing with three star fragments (gold, light blue and silver), and behind them looms Yukin, a huge fluffy white snow cloud with a big gentle face",
@@ -1018,7 +1133,39 @@
   {
    "no": 5,
    "title": "ポラの ほしまつり",
-   "outfits": null,
+   "outfits": "the child: a plain lilac-purple long-sleeved hoodie, light-gray long pants and white sneakers; the mother: a light-green spring jacket over a white blouse and navy pants; the father: a beige spring jacket over a light-blue button-up shirt and dark-brown trousers.",
+   "continuity": [
+    {
+     "from": 0,
+     "to": 0,
+     "text": "Pola has become a big, radiant new star high in the night sky, far larger than the child, still showing his gentle face; he is not a palm-sized star child beside the child."
+    },
+    {
+     "from": 1,
+     "to": 8,
+     "text": "The small glass jar holds exactly four glowing star fragments: one gold, one light blue, one silver and one white with a tiny six-sided snowflake pattern."
+    },
+    {
+     "from": 2,
+     "to": 8,
+     "text": "After leaving the bedroom the child always carries the small glass jar hugged in their arms."
+    },
+    {
+     "from": 9,
+     "to": 9,
+     "text": "The lid of the small glass jar is open and the four star fragments float out of it as gold, light blue, silver and white lights."
+    },
+    {
+     "from": 10,
+     "to": 12,
+     "text": "Pola has become a big, radiant new star high in the night sky, far larger than the child, still showing his gentle face; he is not a palm-sized star child beside the child."
+    },
+    {
+     "from": 11,
+     "to": 11,
+     "text": "The small glass jar is empty except for one single new drop of warm light falling into it; the four star fragments are gone."
+    }
+   ],
    "cover": {
     "label": "春の星空に新しくかがやく大きな星（ポラ）。見上げる主人公と、これまでの仲間全員。",
     "art": "in a spring night sky a big, newly born star shines brilliantly: Pola the star child, now grown into a large radiant star with his gentle face; the child looks up joyfully together with all their friends: the Moon, a huge round glowing moon with a kind smiling face, Kachi, a small black-and-white magpie with a blue-tinged tail, Mochi, a small white moon rabbit with long ears, Yukin, a huge fluffy white snow cloud with a big gentle face and the little glowing star children",

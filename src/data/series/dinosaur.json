@@ -4,18 +4,65 @@
  "sidekick": "Moko is a baby long-neck (sauropod) dinosaur with soft leaf-green skin covered in darker green polka dots, big round shiny eyes, a gentle smile, a small head and a short wiggly tail, with tiny sparkly scales along the back; Moko starts small enough to fit in two hands in episode 1 and grows bigger with a longer neck each episode until tall enough to reach a house roof in episode 5 (size is given per scene)",
  "sidekickLabel": "相棒のくびながりゅうの赤ちゃん「モコ」",
  "cast": {
-  "Nonno": "a big old tortoise with soft green moss growing on its shell",
-  "Pata": "a small young sky-blue pteranodon with clumsy wings",
-  "Tsun": "one of the three little triceratops siblings (Tsun, Tan and Ton), round and orange with stubby horns",
-  "Tan": "one of the three little triceratops siblings (Tsun, Tan and Ton), round and orange with stubby horns",
-  "Ton": "one of the three little triceratops siblings (Tsun, Tan and Ton), round and orange with stubby horns",
-  "Gotsu-jii": "a huge gentle old ankylosaurus with a rocky gray spiky back and a knobbed club tail"
+  "Nonno": "a big old tortoise (not a person) with a high dome shell of brown plates covered in soft green moss, wrinkled gray-green skin and kind narrowed eyes; the shell is about as long as the child is tall and comes up to the child's chest",
+  "Pata": "a small young pteranodon (not a person) with a sky-blue body, a pale-yellow pointed beak, a short backward head crest and thin sky-blue leathery wings that flap clumsily; the body is about the size of a chicken, the wings spread about as wide as the child's outstretched arms",
+  "Tsun": "one of the three little triceratops siblings Tsun, Tan and Ton (not people), who look identical: round and bright orange with a cream belly, three stubby cream horns and a small rounded frill, each about as tall as the child's waist",
+  "Tan": "one of the three little triceratops siblings Tsun, Tan and Ton (not people), who look identical: round and bright orange with a cream belly, three stubby cream horns and a small rounded frill, each about as tall as the child's waist",
+  "Ton": "one of the three little triceratops siblings Tsun, Tan and Ton (not people), who look identical: round and bright orange with a cream belly, three stubby cream horns and a small rounded frill, each about as tall as the child's waist",
+  "Gotsu-jii": "a huge gentle old ankylosaurus (not a person) as long as a bus, with a broad low body whose rocky gray armored back rises about three times the child's height and is covered in rows of blunt gray spikes, a heavy knobbed club at the end of the tail, short thick legs and small kind wrinkled eyes",
+  "Moko's mama": "a giant grown-up long-neck (sauropod) dinosaur (not a person), Moko's mother, with the same leaf-green skin and darker green polka dots as Moko, a very long gentle neck that lifts her small head above the treetops (about ten times the child's height), and big kind eyes"
+ },
+ "props": {
+  "fern forest": "the old fern forest at the back of the park: giant tree ferns several times taller than the adults with huge feathery bright-green fronds, mossy ground and soft mist (seen from the park it looks like a tall dark-green wall of ferns); in autumn fallen red and gold leaves cover the ground, in winter it is buried in white snow",
+  "fern leaf": "one giant feathery bright-green fern frond, much longer than the child is tall, arching over the child like a roof or umbrella",
+  "green polka-dot egg": "a smooth oval dinosaur egg about the size of a watermelon, cream-white with round leaf-green polka dots (the same green as Moko), big enough that the child hugs it with both arms",
+  "green polka-dot dinosaur egg": "a smooth oval dinosaur egg about the size of a watermelon, cream-white with round leaf-green polka dots (the same green as Moko), big enough that the child hugs it with both arms",
+  "egg with green polka dots": "a smooth oval dinosaur egg about the size of a watermelon, cream-white with round leaf-green polka dots (the same green as Moko), big enough that the child hugs it with both arms",
+  "leaf bed": "a round nest-like bed of layered green fern leaves and soft green moss on the forest floor, slightly wider than the egg",
+  "bed of leaves and moss": "a round nest-like bed of layered green fern leaves and soft green moss on the forest floor, slightly wider than the egg",
+  "dinosaur scale": "a flat, smooth teardrop-shaped dinosaur scale about the size of the child's palm that glitters and glows softly from inside (the continuity notes give how many there are and their colors)",
+  "dinosaur scales": "a flat, smooth teardrop-shaped dinosaur scale about the size of the child's palm that glitters and glows softly from inside (the continuity notes give how many there are and their colors)",
+  "glowing scale": "a flat, smooth teardrop-shaped dinosaur scale about the size of the child's palm that glitters and glows softly from inside (the continuity notes give how many there are and their colors)",
+  "glowing scales": "a flat, smooth teardrop-shaped dinosaur scale about the size of the child's palm that glitters and glows softly from inside (the continuity notes give how many there are and their colors)",
+  "orange fruit": "the sun fruit: a round bright-orange fruit about the size of a grapefruit, covered in short soft spikes, with two small green leaves at the stem and juicy golden-yellow flesh inside; the child holds it with both hands",
+  "backpack": "the child's small mustard-yellow canvas backpack with one front pocket, worn on both shoulders, big enough for Moko to sit inside with only the head and neck peeking out",
+  "cart": "a small wooden hand cart of light-brown planks with low slatted sides, four solid round wooden wheels and a long wooden pull handle; its bed is about as long as the child is tall, just big enough for Moko to sit in",
+  "log bridge": "a single round fallen tree trunk with brown bark and a few patches of green moss, laid across the stream as the only bridge, only as wide as the child's shoulders and about eight times the child's height long",
+  "single log": "a single round fallen tree trunk with brown bark and a few patches of green moss, laid across the stream as the only bridge, only as wide as the child's shoulders and about eight times the child's height long",
+  "dinosaur footprint": "a huge round long-neck dinosaur footprint pressed into the ground, about as long as the child is tall, with four short blunt toe marks at the front (the same toe shape as Moko's small footprints)",
+  "dinosaur footprints": "a huge round long-neck dinosaur footprint pressed into the ground, about as long as the child is tall, with four short blunt toe marks at the front (the same toe shape as Moko's small footprints)",
+  "volcano": "a distant cone-shaped volcano with gray-brown slopes and a flat top, gently puffing a column of white smoke (never fire or lava); in winter its top is white with snow",
+  "bicycle": "the child's small bicycle with a mint-green frame, black tires, a brown seat, a small silver bell and no training wheels",
+  "lion head": "a lion-dance performer's big red lacquered lion head with gold eyes, white bushy eyebrows and a big snapping wooden mouth, with a plain green cloth body draped behind it that hides the performer underneath",
+  "herd": "a herd of giant grown-up long-neck dinosaurs that look just like Moko's mama: leaf-green with darker green polka dots and very long necks, many times taller than the child"
  },
  "episodes": [
   {
    "no": 1,
    "title": "ふしぎな たまご",
-   "outfits": null,
+   "outfits": "the child: a sunflower-yellow zip-up hooded jacket over a plain white long-sleeved T-shirt, light-brown long pants and red sneakers; the mother: a pale-pink cardigan over a white blouse, a long navy skirt and white sneakers; the father: a light-blue button-up shirt with rolled sleeves, beige chino pants and brown shoes.",
+   "continuity": [
+    {
+     "from": 9,
+     "to": 10,
+     "text": "The child has taken off the sunflower-yellow hooded jacket and wrapped the egg in it, so the child wears only the white long-sleeved T-shirt and light-brown pants; on page 10 the cracked egg shell sits in the open yellow jacket."
+    },
+    {
+     "from": 10,
+     "to": 12,
+     "text": "Moko has just hatched and is tiny: small enough to sit in the child's two cupped hands, with a short neck, much smaller than the child's head."
+    },
+    {
+     "from": 11,
+     "to": 11,
+     "text": "The child holds exactly one dinosaur scale in one hand: pearly white-green with a rainbow sheen."
+    },
+    {
+     "from": 12,
+     "to": 12,
+     "text": "Exactly one dinosaur scale (pearly white-green with a rainbow sheen) lies on the pillow, glowing. On this page the child wears plain light-blue long-sleeved pajamas instead of the usual clothes and peeks out from under a cream-colored blanket."
+    }
+   ],
    "cover": {
     "label": "大きなしだの葉っぱの下で、みどりの水玉もようのたまごをだきしめ、そっと耳を当てる主人公。",
     "art": "under a huge fern leaf in a misty green fern forest, the child hugs a large green polka-dot dinosaur egg and gently presses an ear against it, eyes closed and listening with a soft smile; dappled spring light falls through the fronds",
@@ -266,7 +313,27 @@
   {
    "no": 2,
    "title": "はじめての ごはん",
-   "outfits": "light summer clothes in the same colors as the reference: a short-sleeved T-shirt, shorts and sandals",
+   "outfits": "the child: a white short-sleeved T-shirt with a small orange sun print on the chest, sky-blue shorts with two front pockets and green sandals; the mother: a lemon-yellow short-sleeved blouse and white cropped pants with tan sandals; the father: a navy T-shirt, khaki shorts and gray sandals.",
+   "continuity": [
+    {
+     "text": "Moko is now about the size of a small dog: the top of Moko's head reaches only the child's knee when Moko stands, with a slightly longer neck than at hatching."
+    },
+    {
+     "from": 1,
+     "to": 1,
+     "text": "Exactly one dinosaur scale (pearly white-green with a rainbow sheen) peeks out of the right front pocket of the child's sky-blue shorts, glowing softly."
+    },
+    {
+     "from": 3,
+     "to": 10,
+     "text": "The child wears the mustard-yellow backpack on both shoulders; Moko rides inside it with only the head and neck peeking out on pages 3 and 4, and walks on its own from page 5."
+    },
+    {
+     "from": 12,
+     "to": 12,
+     "text": "Exactly two dinosaur scales lie side by side on the pillow, glowing: the first pearly white-green with a rainbow sheen, the new one bright orange like the sun fruit. If the child is visible on this page, the child is in bed under a cream-colored blanket and wears plain light-blue short-sleeved pajamas instead of the usual clothes."
+    }
+   ],
    "cover": {
     "label": "がけの上で、とげとげのオレンジ色の「お日さまの実」を両手でかかえる主人公と、大きく口をあけるモコ。空にはパタ。",
     "art": "on top of a sunny cliff, the child holds up a spiky orange fruit with both hands while Moko the baby long-neck dinosaur, now about the size of a small dog, opens its mouth wide beside them; Pata, a small young sky-blue pteranodon with clumsy wings glides in the bright summer sky above",
@@ -517,7 +584,22 @@
   {
    "no": 3,
    "title": "よちよち モコと まるたの はし",
-   "outfits": "light autumn clothes in the same colors as the reference: a long-sleeved top, long pants and a light jacket",
+   "outfits": "the child: a forest-green zip-up light jacket with two front pockets over a cream long-sleeved top, brown long pants and white sneakers; the mother: a burgundy knit sweater, dark-gray long pants and brown ankle boots; the father: a camel-brown jacket over a white shirt, dark-blue jeans and dark-brown shoes.",
+   "continuity": [
+    {
+     "text": "Moko is now as tall as the child: Moko's head is at the same height as the child's head, the neck a little longer than in summer, and the legs still wobbly."
+    },
+    {
+     "from": 1,
+     "to": 1,
+     "text": "Exactly two dinosaur scales are in the right front pocket of the child's forest-green jacket, glowing through the opening: one pearly white-green with a rainbow sheen and one bright orange."
+    },
+    {
+     "from": 12,
+     "to": 12,
+     "text": "Exactly three dinosaur scales lie side by side on the pillow, glowing: one pearly white-green with a rainbow sheen, one bright orange and a new maple-red one. If the child is visible on this page, the child is in bed under a cream-colored blanket and wears plain light-blue pajamas instead of the usual clothes."
+    }
+   ],
    "cover": {
     "label": "紅葉の谷の丸太橋を一歩ずつ渡るモコ。向こう岸で両手を広げて待つ主人公。",
     "art": "in a valley of red and gold autumn leaves, Moko the baby long-neck dinosaur, now as tall as the child, wobbles step by step across a single log bridge over a stream, while the child waits on the far bank with arms wide open",
@@ -646,7 +728,7 @@
     },
     {
      "label": "谷川にかかる丸太一本の橋。向こう岸に大きな足あと。荷車の横で困る主人公",
-     "art": "a deep autumn valley where a single log bridges a rushing stream, with huge dinosaur footprints on the far bank; the child stands beside the wooden cart and Moko the baby long-neck dinosaur, now as tall as the child,, looking troubled",
+     "art": "a deep autumn valley where a single log bridges a rushing stream, with huge dinosaur footprints on the far bank; the child stands beside the wooden cart and Moko the baby long-neck dinosaur, now as tall as the child, looking troubled",
      "text": [
       "まるたの はし。ほそいなあ。",
       "たにの かわには、まるたが 1ぽん。むこうぎしに おおきな あしあと。でも モコを だっこした ままじゃ、わたれません。",
@@ -768,7 +850,47 @@
   {
    "no": 4,
    "title": "ふぶきの よるの ゴツじい",
-   "outfits": "warm winter clothes in the same colors as the reference: a puffy coat, a knit hat, mittens and a scarf",
+   "outfits": "the child: a red puffy hooded winter coat with two front pockets, a white knit hat with a pom-pom, navy mittens, dark-gray long pants and brown snow boots; the mother: a long cream-white wool coat, a light-gray knit hat, a dusty-pink scarf, black pants and black boots; the father: a dark-navy puffy jacket, a brown knit hat, a charcoal-gray scarf, blue jeans and brown boots.",
+   "continuity": [
+    {
+     "text": "Moko is now a little bigger than the child: Moko's head is about one head higher than the child's head, with a longer neck than in autumn."
+    },
+    {
+     "from": 0,
+     "to": 0,
+     "text": "The child's bright-yellow knitted scarf is wrapped around Moko's neck; the child wears no scarf."
+    },
+    {
+     "from": 1,
+     "to": 2,
+     "text": "The child wears a bright-yellow knitted scarf around the neck over the red coat."
+    },
+    {
+     "from": 3,
+     "to": 10,
+     "text": "The child's bright-yellow knitted scarf is wrapped around Moko's long neck (from page 3 on); the child wears no scarf."
+    },
+    {
+     "from": 1,
+     "to": 1,
+     "text": "Exactly three dinosaur scales are in the right front pocket of the child's red coat, glowing through the opening: one pearly white-green with a rainbow sheen, one bright orange and one maple-red."
+    },
+    {
+     "from": 6,
+     "to": 8,
+     "text": "The looming giant (its shadow, its enormous foot, its huge face) is Gotsu-jii, half-hidden by the blizzard: rocky gray armored skin, rows of blunt gray spikes on the back and a knobbed club tail."
+    },
+    {
+     "from": 11,
+     "to": 11,
+     "text": "The child wears no scarf (it was given to Moko)."
+    },
+    {
+     "from": 12,
+     "to": 12,
+     "text": "Exactly four dinosaur scales lie side by side on the pillow, glowing: one pearly white-green with a rainbow sheen, one bright orange, one maple-red and a new snow-white one. In the picture inside the glow, Moko still wears the bright-yellow knitted scarf. If the child is visible on this page, the child is in bed under a cream-colored blanket and wears plain light-blue pajamas instead of the usual clothes."
+    }
+   ],
    "cover": {
     "label": "ふぶきの中、せなかがとげとげの大きなゴツじいが体を丸め、その内側でぬくぬく笑う主人公とモコ。",
     "art": "in a swirling snowstorm, Gotsu-jii, a huge gentle old ankylosaurus with a rocky gray spiky back and a knobbed club tail curls his huge body into a ring, and inside it, in a warm glowing pocket, the child and Moko the young long-neck dinosaur, now a little bigger than the child, laugh snugly together",
@@ -845,7 +967,7 @@
     },
     {
      "label": "モコの首にマフラーを巻く主人公。遠くに白い煙をはく火の山",
-     "art": "the child wraps their own scarf around the long neck of Moko the young long-neck dinosaur, now a little bigger than the child,, while far away a volcano puffs white smoke into the winter sky",
+     "art": "the child wraps their own scarf around the long neck of Moko the young long-neck dinosaur, now a little bigger than the child, while far away a volcano puffs white smoke into the winter sky",
      "text": [
       "「ひの やまを こえよう！」",
       "「よし、ひの やまを こえて いこう！」 {name}は じぶんの マフラーを、モコの くびに まいて あげました。",
@@ -897,7 +1019,7 @@
     },
     {
      "label": "岩陰で、まぶたが下がるモコを抱きかかえる主人公。すぐそばに巨大な足",
-     "art": "behind the rock, the child holds Moko the young long-neck dinosaur, now a little bigger than the child,, whose eyelids are drooping in the cold, and an enormous rocky foot stands right next to them in the snow",
+     "art": "behind the rock, the child hugs Moko the young long-neck dinosaur, now a little bigger than the child, whose eyelids are drooping in the cold, and an enormous rocky foot stands right next to them in the snow",
      "text": [
       "モコが こごえちゃう。",
       "かげは そばで とまった まま。モコの からだが どんどん つめたく なって いきます。「モコ、ねちゃ だめ！」",
@@ -906,7 +1028,7 @@
      "withMom": false,
      "withDad": false,
      "withSidekick": true,
-     "camera": "Close-up on the child cradling the drowsy dinosaur, an enormous rocky foot towering at the edge of the frame in the snow."
+     "camera": "Close-up on the child hugging the drowsy dinosaur, an enormous rocky foot towering at the edge of the frame in the snow."
     },
     {
      "label": "岩の上から覗きこむごつごつの大きな顔。目をつぶってモコを抱く主人公",
@@ -923,7 +1045,7 @@
     },
     {
      "label": "吹雪の盾になっていた巨大きょうりゅうを見上げ、立ち上がる主人公",
-     "art": "the child stands up bravely and looks up at Gotsu-jii, a huge gentle old ankylosaurus with a rocky gray spiky back and a knobbed club tail, who has been shielding them from the blizzard and now gazes down with kind, gentle eyes; Moko the young long-neck dinosaur, now a little bigger than the child, rests in the child's arms",
+     "art": "the child stands up bravely and looks up at Gotsu-jii, a huge gentle old ankylosaurus with a rocky gray spiky back and a knobbed club tail, who has been shielding them from the blizzard and now gazes down with kind, gentle eyes; Moko the young long-neck dinosaur, now a little bigger than the child, leans drowsily against the child, who keeps an arm around Moko's neck",
      "text": [
       "「がおがお、いっしょなら、こわくない！」",
       "そっと めを あけると、やさしい めが ありました。{name}は たちあがりました。「がおがお、いっしょなら、こわくない！ モコを たすけて ください！」",
@@ -936,7 +1058,7 @@
     },
     {
      "label": "【見開き】吹雪の中、体を丸めて主人公とモコを包むゴツじい。内側だけ暖かな光",
-     "art": "in the raging white blizzard, Gotsu-jii, a huge gentle old ankylosaurus with a rocky gray spiky back and a knobbed club tail curls his huge body around the child and Moko the young long-neck dinosaur, now a little bigger than the child,; only the space inside glows with warm golden light, where the two snuggle safely. A grand, breathtaking wide view",
+     "art": "in the raging white blizzard, Gotsu-jii, a huge gentle old ankylosaurus with a rocky gray spiky back and a knobbed club tail curls his huge body around the child and Moko the young long-neck dinosaur, now a little bigger than the child; only the space inside glows with warm golden light, where the two snuggle safely. A grand, breathtaking wide view",
      "text": [
       "ゴツじいの なかで、ぬくぬく。",
       "「ほっほ。わしは ゴツじい。まかせなさい」 おおきな きょうりゅうは、からだを まるめて ふたりを つつみました。そこだけ ぽかぽかです。",
@@ -1019,7 +1141,27 @@
   {
    "no": 5,
    "title": "にじの たにの おかあさん",
-   "outfits": null,
+   "outfits": "the child: a teal zip-up light jacket with two front pockets over a white T-shirt, navy long pants and yellow sneakers; the mother: a lilac blouse under a white cardigan and a beige long skirt with white sneakers; the father: a white polo shirt, navy pants and brown shoes.",
+   "continuity": [
+    {
+     "text": "Moko is now very tall: the long neck could reach a house roof, Moko's head is about three times the child's height and the child comes up only to Moko's chest; Moko is still much smaller than Moko's mama."
+    },
+    {
+     "from": 8,
+     "to": 10,
+     "text": "The child has exactly four dinosaur scales in the right front pocket of the teal jacket: one pearly white-green with a rainbow sheen, one bright orange, one maple-red and one snow-white."
+    },
+    {
+     "from": 11,
+     "to": 11,
+     "text": "The fifth dinosaur scale, striped in all the colors of the rainbow, drifts down into the child's raised hand; the other four scales stay in the right front pocket of the teal jacket."
+    },
+    {
+     "from": 12,
+     "to": 12,
+     "text": "The child holds up exactly five dinosaur scales: pearly white-green with a rainbow sheen, bright orange, maple-red, snow-white and rainbow-striped."
+    }
+   ],
    "cover": {
     "label": "にじのかかる谷で、首の長いお母さんきょうりゅうに寄りそうモコと、笑って手をふる主人公。まわりにこれまでの仲間全員。",
     "art": "in a valley under a great rainbow, Moko the young long-neck dinosaur, now grown so tall that the long neck would reach a house roof, nestles against Moko's mama, a giant grown-up long-neck dinosaur with the same green polka dots, while the child smiles and waves; all the friends gather around: Nonno, a big old tortoise with soft green moss growing on its shell, Pata, a small young sky-blue pteranodon with clumsy wings, the three little triceratops siblings Tsun, Tan and Ton, round and orange with stubby horns and Gotsu-jii, a huge gentle old ankylosaurus with a rocky gray spiky back and a knobbed club tail",
@@ -1109,7 +1251,7 @@
     },
     {
      "label": "パタ・三きょうだい・ゴツじい・ノンノが勢ぞろいし、にぎやかに行進する",
-     "art": "a cheerful parade through the spring forest: Pata, a small young sky-blue pteranodon with clumsy wings, the three little triceratops siblings Tsun, Tan and Ton, round and orange with stubby horns, Gotsu-jii, a huge gentle old ankylosaurus with a rocky gray spiky back and a knobbed club tail and Nonno, a big old tortoise with soft green moss growing on its shell march together with the child and Moko the young long-neck dinosaur, now grown so tall that the long neck would reach a house roof,",
+     "art": "a cheerful parade through the spring forest: Pata, a small young sky-blue pteranodon with clumsy wings, the three little triceratops siblings Tsun, Tan and Ton, round and orange with stubby horns, Gotsu-jii, a huge gentle old ankylosaurus with a rocky gray spiky back and a knobbed club tail and Nonno, a big old tortoise with soft green moss growing on its shell march together with the child and Moko the young long-neck dinosaur, now grown so tall that the long neck would reach a house roof",
      "text": [
       "みんなも いっしょに いくよ！",
       "パタ、つのつの 3きょうだい、ゴツじい、ノンノ。みんなが あつまって きました。「いっしょに にじの たにへ いこう！」",
@@ -1187,7 +1329,7 @@
     },
     {
      "label": "【見開き】川の上に長い首を伸ばし、モコにほおを寄せる母くびながりゅう。谷いっぱいの虹と喜ぶ仲間たち",
-     "art": "over the wide river, Moko's mama, a giant grown-up long-neck dinosaur with the same green polka dots stretches her long neck across the water and gently presses her cheek to Moko the young long-neck dinosaur, now grown so tall that the long neck would reach a house roof,; a huge rainbow arches over the whole valley, and the child and all the friends cheer with joy. A grand, breathtaking wide view",
+     "art": "over the wide river, Moko's mama, a giant grown-up long-neck dinosaur with the same green polka dots stretches her long neck across the water and gently presses her cheek to Moko the young long-neck dinosaur, now grown so tall that the long neck would reach a house roof; a huge rainbow arches over the whole valley, and the child and all the friends cheer with joy. A grand, breathtaking wide view",
      "text": [
       "モコの おかあさんだ！",
       "むれが ふりかえりました。いちばん おおきな くびながりゅうが、かわの うえに くびを のばして、モコに ほおを よせました。たにに にじが かかりました。",
@@ -1200,7 +1342,7 @@
     },
     {
      "label": "母の首を渡りかけて振り返るモコ。虹色の5枚目のうろこを受け取り、笑って手を振る主人公",
-     "art": "Moko the young long-neck dinosaur, now grown so tall that the long neck would reach a house roof, steps onto the long neck of the giant mama dinosaur to cross the river and looks back; a rainbow-colored fifth scale drifts down into the child's hand, and the child smiles and waves goodbye",
+     "art": "Moko the young long-neck dinosaur, now grown so tall that the long neck would reach a house roof, steps onto the long neck of Moko's mama, the giant mama dinosaur, to cross the river and looks back; a rainbow-colored fifth scale drifts down into the child's hand, and the child smiles and waves goodbye",
      "text": [
       "「いってらっしゃい、モコ！」",
       "モコの せなかから、にじいろの 5まいめの うろこが ぽろり。{name}は にっこり わらいました。「いってらっしゃい、モコ！」「いってきます！」",
