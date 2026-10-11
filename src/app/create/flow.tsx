@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
 import { clampCopies, getSize, type SizeId, type TasteId } from "@/lib/catalog";
-import { isStoryKey, withoutCombo } from "@/lib/story-key";
+import { isStoryKey, parseSeriesKey, withoutCombo } from "@/lib/story-key";
 import { readLocalFlow, writeLocalFlow } from "./flow-storage";
 
 // 注文フローの入力内容。ページをまたいで保持し、ログインや再読み込みに備えてブラウザ（localStorage）にも残す。
@@ -33,7 +33,8 @@ export type FlowState = {
 
 const initial: FlowState = {
   taste: "watercolor",
-  story: "forest",
+  // お話はお話選びの画面で選ぶ（1話だけのお話は 2026-10-11 に非表示にしたので、最初は未選択）
+  story: "",
   childName: "",
   childAge: null,
   childBirthday: "",
@@ -81,7 +82,8 @@ export function FlowProvider({ children }: { children: ReactNode }) {
       // 販売をやめたサイズ（L）が残っていたら M に戻す
       if (!getSize(restored.size)) restored.size = initial.size;
       restored.story = withoutCombo(String(restored.story ?? ""));
-      if (!isStoryKey(restored.story)) restored.story = initial.story;
+      // 非表示にした1話だけのお話が残っていたら、選び直してもらう
+      if (!isStoryKey(restored.story) || !parseSeriesKey(restored.story)) restored.story = initial.story;
       restored.copies = clampCopies(restored.copies);
       // eslint-disable-next-line react-hooks/set-state-in-effect -- 保存済みの入力を一度だけ復元する
       setState(restored);

@@ -96,6 +96,13 @@ export const SERIES_LIST: {
 /** お客様と絵スタジオに出す話の数。5話目は 2026-10-11 に一旦取り下げ（台本とデータは残している） */
 export const OPEN_EPISODES = 4;
 
+/** 注文できるシリーズ。まずは森だけを公開し、ほかは「準備中」にする（2026-10-11 作道さん） */
+export const OPEN_SERIES: SeriesId[] = ["forest"];
+
+export function isOpenSeries(id: SeriesId) {
+  return OPEN_SERIES.includes(id);
+}
+
 /** 公開中の話だけ */
 export function openEpisodes<E extends { no: number }>(episodes: E[]) {
   return episodes.filter((e) => e.no <= OPEN_EPISODES);
