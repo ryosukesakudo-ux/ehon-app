@@ -2,11 +2,28 @@ import { NextResponse, type NextRequest } from "next/server";
 import { createServerClient } from "@supabase/ssr";
 
 // 1. 管理画面と管理用APIをベーシック認証で守る（ユーザー名 admin、パスワードは ADMIN_PASSWORD）。
-// 2. それ以外のページでは、会員のログイン状態（Cookie）を更新する。
+// 2. LINE のアプリ内ブラウザで開かれたページは、いつものブラウザ（Safari・Chrome）で開き直す。
+// 3. それ以外のページでは、会員のログイン状態（Cookie）を更新する。
 export async function proxy(request: NextRequest) {
   const path = request.nextUrl.pathname;
   if (path.startsWith("/admin") || path.startsWith("/api/admin")) return adminAuth(request);
+  const external = openInExternalBrowser(request);
+  if (external) return external;
   return refreshSession(request);
+}
+
+// LINE のアプリ内ブラウザでは、写真を選んでも画面が反応しないことがある（2026-10-11 報告）。
+// URL に openExternalBrowser=1 を付けると、LINE が外部ブラウザで開き直す（LINE の公式の仕組み）。
+// https://developers.line.biz/ja/docs/line-login/using-line-url-scheme/#opening-url-in-external-browser
+function openInExternalBrowser(request: NextRequest) {
+  // ページを開くときだけ（画面内の移動や画像・APIの読み込みは対象外）
+  if (request.method !== "GET" || request.nextUrl.pathname.startsWith("/api")) return null;
+  if (request.headers.get("rsc") || !request.headers.get("accept")?.includes("text/html")) return null;
+  if (!/ Line\//.test(request.headers.get("user-agent") ?? "")) return null;
+  if (request.nextUrl.searchParams.has("openExternalBrowser")) return null;
+  const url = request.nextUrl.clone();
+  url.searchParams.set("openExternalBrowser", "1");
+  return NextResponse.redirect(url);
 }
 
 function adminAuth(request: NextRequest) {
