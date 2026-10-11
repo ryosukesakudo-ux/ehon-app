@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { SAMPLE_CHILD_NAME, samplePublicUrl } from "@/lib/samples";
-import { SERIES_NOTE_MAX, seriesImagePath, seriesSheetPath, type SeriesId } from "@/lib/series";
+import { SERIES_NOTE_MAX, seriesFamilyPhotoPath, seriesImagePath, seriesSheetPath, type SeriesId } from "@/lib/series";
 import { SampleImage } from "@/components/sample-image";
 
 // 台本の絵スタジオ：作例と同じ架空の家族で、台本（シリーズ）の各話の表紙と12場面を水彩で作る。
@@ -53,6 +53,7 @@ export function SeriesStudio({ list }: { list: StudioView[] }) {
   }
 
   const makeSheet = () => call("sheet", { kind: "sheet" });
+  const makePhoto = () => call("photo", { kind: "photo" });
   const makePage = (episode: number, page: number) => call(`${episode}/${page}` satisfies Key, { episode, page, quality });
 
   async function sheetExists() {
@@ -111,6 +112,26 @@ export function SeriesStudio({ list }: { list: StudioView[] }) {
           onMake={makeSheet}
           disabled={anyBusy}
           {...noteProps("sheet")}
+        />
+      </section>
+
+      <section className="card" style={{ gap: 12 }}>
+        <h2 className="display" style={{ margin: 0, fontSize: 18, color: "var(--navy)" }}>サンプル集の家族写真</h2>
+        <p style={{ margin: 0, fontSize: 13, lineHeight: 1.7 }}>
+          サンプル集（/samples）の「この写真から → この登場人物に」に出す、設定画の家族3人にそっくりな架空の家族写真です。左からママ・{SAMPLE_CHILD_NAME}・パパの順に並べ、画面ではその順に名前を付けます。
+          並びが違ったり似ていなかったりしたら、欄に指示を書いて作り直してください（1枚 約40円）。設定画を作り直したら、これも作り直してください。
+        </p>
+        <Tile
+          path={seriesFamilyPhotoPath(SERIES_ID)}
+          version={version.photo}
+          busy={busy.photo}
+          error={errors.photo}
+          label="架空の家族写真（左からママ・主人公・パパ）"
+          aspect="3 / 2"
+          width={420}
+          onMake={makePhoto}
+          disabled={anyBusy}
+          {...noteProps("photo")}
         />
       </section>
 
