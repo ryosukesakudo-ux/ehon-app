@@ -3,7 +3,7 @@ import Link from "next/link";
 import type { CSSProperties, ReactNode } from "react";
 import { Arrow, Sparkle, Star } from "@/components/icons";
 import { EXTRA_COPY_DISCOUNT, MEMBER_MONTHLY_PREVIEWS, PREVIEW_PACK, SIZES, STORIES, TASTES, sceneText, yen } from "@/lib/catalog";
-import { SAMPLE_CHILD_NAME, SAMPLE_SCENES, SHOWCASE, SHOWCASE_BOOK, SHOWCASE_PHOTO, samplePublicUrl, sampleUrl } from "@/lib/samples";
+import { SAMPLE_CHILD_NAME, SAMPLE_SCENES, SHOWCASE, SHOWCASE_BOOK, SHOWCASE_PHOTO, samplePublicUrl, sampleUrl, versioned } from "@/lib/samples";
 import { SampleImage } from "@/components/sample-image";
 import { Brand, SITE_NAME } from "@/components/brand";
 import { Lottie } from "@/components/lottie";
@@ -268,14 +268,14 @@ export default function Home() {
         <div className={s.showcase}>
           <figure className={s.showcaseItem} data-reveal="left">
             <div className={s.showcasePhoto}>
-              <SampleImage src={samplePublicUrl(SHOWCASE_PHOTO)} alt="家族3人の写真（見本）" fallback={<span className={s.galleryFallback}>[家族の写真]</span>} />
+              <SampleImage src={versioned(samplePublicUrl(SHOWCASE_PHOTO))} alt="家族3人の写真（見本）" fallback={<span className={s.galleryFallback}>[家族の写真]</span>} />
             </div>
             <figcaption>アップする写真</figcaption>
           </figure>
           <div className={s.showcaseArrow} aria-hidden="true" data-reveal="pop" data-d={3}><Arrow size={22} /></div>
           <figure className={s.showcaseItem} data-reveal="right" data-d={5}>
             <div className={s.showcaseBook} data-shine="">
-              <SampleImage src={samplePublicUrl(SHOWCASE_BOOK)} alt="写真をもとに描いた絵本の1ページ（見本）" fallback={<span className={s.galleryFallback}>[絵本の1ページ]</span>} />
+              <SampleImage src={versioned(samplePublicUrl(SHOWCASE_BOOK))} alt="写真をもとに描いた絵本の1ページ（見本）" fallback={<span className={s.galleryFallback}>[絵本の1ページ]</span>} />
             </div>
             <figcaption>できあがる絵</figcaption>
           </figure>
