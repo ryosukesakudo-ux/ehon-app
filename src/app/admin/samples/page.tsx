@@ -228,7 +228,7 @@ export default function SamplesPage() {
                         ) : (
                           <SampleImage
                             key={version[key] ?? 0}
-                            src={url && `${url}?v=${version[key] ?? 0}`}
+                            src={url && `${url}-${version[key] ?? 0}`}
                             alt={`${s.name} ${t.name} 場面${sc + 1}`}
                             fallback={<span style={{ color: "#888" }}>未作成</span>}
                           />
