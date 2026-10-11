@@ -3,7 +3,7 @@
 import { Suspense, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { COVER_SCENE, MEMBER_MONTHLY_PREVIEWS, PREVIEW_PACK, bookTitle, yen, getStory, sceneText } from "@/lib/catalog";
+import { COVER_SCENE, MEMBER_MONTHLY_PREVIEWS, PERSON_LABEL, PREVIEW_PACK, REDO_NOTE_MAX, REDO_OPTIONS, bookTitle, characterOf, yen, getStory, sceneText, type RedoOptionId } from "@/lib/catalog";
 import { BookCover } from "@/components/book-cover";
 import { Chevron } from "@/components/icons";
 import { Lottie } from "@/components/lottie";
@@ -34,14 +34,19 @@ function Preview() {
   // 登録前のお試し（Supabase 設定済みで未ログイン）
   const trial = !!account?.configured && !account.loggedIn;
   const inFlight = useRef(new Set<number>());
+  // 作り直しの指示（選択肢と一言）
+  const [options, setOptions] = useState<RedoOptionId[]>([]);
+  const [note, setNote] = useState("");
 
   const story = getStory(state.story)!;
   const scenes = state.previewScenes;
   const scene = scenes[pos];
   const isCover = scene === COVER_SCENE;
+  const who = scene === undefined ? null : characterOf(scene);
   const title = bookTitle(state.story, state.childName);
+  const whoName = who === "child" ? state.childName || PERSON_LABEL.child : who ? PERSON_LABEL[who] : "";
 
-  async function generate(index: number) {
+  async function generate(index: number, redo?: { options: RedoOptionId[]; note: string }) {
     if (!state.draftId || inFlight.current.has(index)) return;
     inFlight.current.add(index);
     setLoading((l) => ({ ...l, [index]: true }));
@@ -52,7 +57,11 @@ function Preview() {
     });
     setError(null);
     try {
-      const res = await fetch(`/api/drafts/${encodeURIComponent(state.draftId)}/scenes/${index}`, { method: "POST" });
+      const res = await fetch(`/api/drafts/${encodeURIComponent(state.draftId)}/scenes/${index}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(redo ?? {}),
+      });
       const json = await res.json();
       if (typeof json.remaining === "number") {
         setAccount((a) => (a?.loggedIn ? { ...a, remaining: json.remaining } : a));
@@ -64,6 +73,10 @@ function Preview() {
         throw new Error(json.error ?? "絵の作成に失敗しました");
       }
       setPreview(index, json.url);
+      if (redo) {
+        setOptions([]);
+        setNote("");
+      }
     } catch (e) {
       setError(e instanceof Error ? e.message : "絵の作成に失敗しました");
     } finally {
@@ -115,7 +128,7 @@ function Preview() {
       </div>
     ) : url && !loading[scene] ? (
       // eslint-disable-next-line @next/next/no-img-element -- 署名付きURLの一時画像
-      <img src={url} alt={isCover ? "表紙の絵" : `${pos + 1}枚目の挿絵`} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+      <img src={url} alt={isCover ? "表紙の絵" : `${whoName}のキャラクター`} style={{ width: "100%", height: "100%", objectFit: who ? "contain" : "cover" }} />
     ) : (
       <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 12, color: "var(--sub)", fontSize: 13 }}>
         <Lottie name="drawing" style={{ width: 200, height: 150 }} />
@@ -127,7 +140,7 @@ function Preview() {
     <>
       <StepHeader step={4} back="/create/photo" />
       <main className="step-body">
-        <StepTitle title="できあがりを確認してください" lead="気になるページは、絵だけ作り直せます。" />
+        <StepTitle title="表紙と登場人物を確認してください" lead="気になる絵は、直したいところを選んで作り直せます。" />
         {state.demo && (
           <p className="demo-note">デモモードで動いています。実際の絵の代わりに仮の画像を表示しています。</p>
         )}
@@ -135,10 +148,22 @@ function Preview() {
           {isCover ? (
             <BookCover lead={title.lead} title={title.main} art={picture} />
           ) : (
-            <div style={{ aspectRatio: "1 / 1", background: "#E6EEF9", display: "flex", alignItems: "center", justifyContent: "center" }}>{picture}</div>
+            <div style={{ aspectRatio: "1 / 1", background: who ? "#fff" : "#E6EEF9", display: "flex", alignItems: "center", justifyContent: "center" }}>{picture}</div>
           )}
           <p style={{ margin: 0, padding: 18, fontSize: 16, lineHeight: 1.9 }}>
-            {scene === undefined ? "" : isCover ? "表紙" : sceneText(story.scenes[scene], state.childName)}
+            {scene === undefined ? (
+              ""
+            ) : isCover ? (
+              "表紙"
+            ) : who ? (
+              <>
+                <strong>{whoName}のキャラクター</strong>
+                <br />
+                <span style={{ fontSize: 13, color: "var(--sub)" }}>この姿をもとに、絵本の全ページを描きます。</span>
+              </>
+            ) : (
+              sceneText(story.scenes[scene], state.childName)
+            )}
           </p>
         </div>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
@@ -146,7 +171,7 @@ function Preview() {
             <Chevron dir="left" size={20} />
           </button>
           <div style={{ fontSize: 14, color: "var(--sub)" }}>
-            見本 {pos + 1} / {scenes.length || 3}
+            見本 {pos + 1} / {scenes.length || 2}
           </div>
           <button type="button" className="ghost" aria-label="次のページ" style={{ width: 44, height: 44, padding: 0, borderRadius: 22 }} disabled={pos >= scenes.length - 1} onClick={() => setPos(pos + 1)}>
             <Chevron dir="right" size={20} />
@@ -157,9 +182,48 @@ function Preview() {
             作り直しは無料会員登録で（月{MEMBER_MONTHLY_PREVIEWS}枚まで）
           </Link>
         ) : (
-          <button type="button" className="ghost" disabled={scene === undefined || !!loading[scene] || (account?.loggedIn && account.remaining <= 0)} onClick={() => generate(scene)}>
-            {isCover ? "表紙の絵を作り直す" : "このページの絵を作り直す"}
-          </button>
+          <section className="card" style={{ gap: 10 }}>
+            <div className="display" style={{ fontSize: 15, fontWeight: 800, color: "var(--navy)" }}>
+              {isCover ? "表紙の絵を作り直す" : who ? `${whoName}のキャラクターを作り直す` : "このページの絵を作り直す"}
+            </div>
+            <div style={{ fontSize: 12, color: "var(--sub)" }}>直したいところを選んでください（いくつでも・選ばなくても作り直せます）</div>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+              {REDO_OPTIONS.map((o) => {
+                const on = options.includes(o.id);
+                return (
+                  <button
+                    key={o.id}
+                    type="button"
+                    aria-pressed={on}
+                    onClick={() => setOptions((v) => (on ? v.filter((x) => x !== o.id) : [...v, o.id]))}
+                    style={{ height: 36, padding: "0 14px", borderRadius: 18, fontSize: 13, cursor: "pointer", border: on ? "2px solid var(--coral)" : "1px solid var(--line)", background: on ? "#FDECE8" : "#fff", color: "var(--navy)", fontWeight: on ? 700 : 500 }}
+                  >
+                    {o.label}
+                  </button>
+                );
+              })}
+            </div>
+            <label style={{ display: "flex", flexDirection: "column", gap: 4, fontSize: 12, color: "var(--sub)" }}>
+              ひとこと（任意・{REDO_NOTE_MAX}文字まで）
+              <input
+                type="text"
+                value={note}
+                maxLength={REDO_NOTE_MAX}
+                placeholder="例：メガネをかけて／前髪を短く"
+                onChange={(e) => setNote([...e.target.value].slice(0, REDO_NOTE_MAX).join(""))}
+                style={{ height: 44, padding: "0 12px", borderRadius: 10, border: "1px solid var(--line)", fontSize: 16 }}
+              />
+              <span style={{ alignSelf: "flex-end" }}>{[...note].length} / {REDO_NOTE_MAX}</span>
+            </label>
+            <button
+              type="button"
+              className="ghost"
+              disabled={scene === undefined || !!loading[scene] || (account?.loggedIn && account.remaining <= 0)}
+              onClick={() => generate(scene, { options, note: note.trim() })}
+            >
+              {options.length || note.trim() ? "この内容で作り直す" : "そのまま作り直す"}（プレビュー1枚）
+            </button>
+          </section>
         )}
         {account?.loggedIn && (
           <p className="step-lead" style={{ textAlign: "center", fontSize: 13 }}>
@@ -185,7 +249,7 @@ function Preview() {
         {needLogin && !trial && (
           <Link href={loginHref("/create/preview")} className="ghost">無料会員登録・ログインへ</Link>
         )}
-        <p className="step-lead">ここでは表紙と一部のページを見本としてお見せしています。残りのページは、ご注文後に同じタッチで仕上げます。</p>
+        <p className="step-lead">ここでは表紙と登場人物のキャラクターをお見せしています。本文のページは、ご注文後にこのキャラクターをもとに同じタッチで仕上げます。</p>
       </main>
       {trial ? (
         <NextButton href={loginHref("/create/size")} disabled={!allDone}>無料会員登録して注文へ進む</NextButton>

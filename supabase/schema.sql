@@ -24,6 +24,11 @@ create table if not exists drafts (
 alter table drafts add column if not exists dad_photo_path text;
 alter table drafts add column if not exists child_age int check (child_age between 1 and 10);
 
+-- 写真から作ったキャラクター（全身・正面の絵）。本番の絵はこれを参考に描く（2026-10-11）
+alter table drafts add column if not exists child_character_path text;
+alter table drafts add column if not exists mom_character_path text;
+alter table drafts add column if not exists dad_character_path text;
+
 create index if not exists drafts_user_idx on drafts (user_id, created_at desc);
 create index if not exists drafts_anon_idx on drafts (anon_id) where user_id is null;
 
@@ -37,6 +42,20 @@ create table if not exists user_photos (
 );
 
 create index if not exists user_photos_user_idx on user_photos (user_id, created_at desc);
+
+-- 会員が保存しているキャラクター（AIで作った登場人物の絵）。会員でいる間は保存し、マイページから削除できる。
+create table if not exists characters (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid not null references auth.users(id) on delete cascade,
+  person text not null check (person in ('child', 'mom', 'dad')),
+  taste text not null,
+  child_name text,
+  path text not null unique,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+create index if not exists characters_user_idx on characters (user_id, created_at desc);
 
 -- 会員のプレビュー生成の記録（月ごとの上限の判定に使う）
 create table if not exists generations (
@@ -132,6 +151,7 @@ create index if not exists orders_user_idx on orders (user_id, created_at desc);
 
 alter table drafts enable row level security;
 alter table user_photos enable row level security;
+alter table characters enable row level security;
 alter table generations enable row level security;
 alter table anon_trials enable row level security;
 alter table orders enable row level security;
