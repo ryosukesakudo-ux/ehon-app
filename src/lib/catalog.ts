@@ -19,10 +19,14 @@ export const TASTES: {
     description: "にじむ色合いの、やさしい手描き風",
     points: ["にじむ色", "紙の質感", "おだやか"],
     swatch: "#CFE3F0",
+    // 3つのテイストの違いが一目で分かるよう、画材の特徴と「ほかのテイストに見えないこと」をはっきり書く（2026-10-11 作道さん「見本の変わり映えがしない」）
     prompt:
-      "ART STYLE: a traditional transparent watercolor painting on textured cold-press paper. Wet-on-wet washes with soft blooms and colors bleeding into each other, " +
-      "uneven pigment granulation, white paper showing through the highlights, no dark outlines (shapes are defined by color only), " +
-      "a soft muted pastel palette, warm and calm like a classic children's picture book",
+      "ART STYLE: a loose, traditional transparent watercolor painting on rough cold-press watercolor paper, clearly painted by hand with a wet brush. " +
+      "Visible wet-on-wet washes, soft blooms and backruns, colors bleeding into each other, darker pooled pigment at the edges of each wash, " +
+      "pigment granulation and paper texture across the whole picture, generous areas of untouched white paper, soft lost edges. " +
+      "No ink outlines at all: shapes are defined only by washes of color, with at most a few faint pencil lines. " +
+      "A light, airy, muted pastel palette (soft blue, sage green, peach, pale yellow), calm like a classic children's picture book. " +
+      "It must NOT look digital, anime or crayon-drawn: no clean dark outlines, no flat cel fills, no hard-edged shadows, no waxy strokes",
   },
   {
     id: "crayon",
@@ -31,9 +35,11 @@ export const TASTES: {
     points: ["ざらっとした線", "手描き感", "にぎやか"],
     swatch: "#F8D9B8",
     prompt:
-      "ART STYLE: drawn entirely with wax crayons and colored pencils on rough off-white drawing paper, like a heartfelt hand-made picture book. " +
-      "Thick visible waxy strokes and directional hatching, the paper grain showing through every stroke, slightly wobbly naive outlines, " +
-      "simple flat perspective, rich warm saturated colors, no smooth gradients and no painterly blending",
+      "ART STYLE: a hand-made picture book drawn entirely with thick wax crayons and oil pastels on rough cream-colored drawing paper. " +
+      "Every area is filled with clearly visible, scribbly back-and-forth crayon strokes that leave small gaps where the paper shows through; " +
+      "a waxy, grainy texture everywhere, thick soft crayon outlines with natural hand-drawn wobble, simplified rounded shapes and a simple flat perspective, " +
+      "like a warm drawing made with a big box of crayons. Bold, warm, saturated colors (red, orange, sunny yellow, grass green, bright blue). " +
+      "It must NOT look painted, digital or anime: no smooth gradients, no watercolor washes, no clean thin lines, no glossy highlights, no cel shading",
   },
   {
     id: "anime",
@@ -42,9 +48,11 @@ export const TASTES: {
     points: ["くっきり線", "明るい色", "キャラ風"],
     swatch: "#DCEBD3",
     prompt:
-      "ART STYLE: a clean modern Japanese anime-style children's illustration. Crisp, even, dark-brown outlines, flat cel shading with one hard-edged shadow tone, " +
-      "smooth digital coloring with no paper or brush texture, bright clear pastel colors, soft glowing light, " +
-      "rounded friendly shapes and expressive anime-style eyes",
+      "ART STYLE: a polished modern Japanese anime illustration, like a still frame from a gentle family anime film. " +
+      "Clean, smooth, even dark-brown outlines around every character and object, flat cel shading with crisp hard-edged shadow shapes and bright rim light, " +
+      "large sparkling anime eyes with several highlights, glossy hair with highlight streaks, " +
+      "smooth digital coloring in vivid, clear colors (bright sky blue, fresh green, warm sunlight), and a detailed anime-style background with soft glowing light. " +
+      "A completely clean digital finish. It must NOT look hand-painted or hand-drawn: no paper texture, no watercolor bleeding, no crayon or brush texture, no sketchy lines",
   },
 ];
 

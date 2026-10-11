@@ -343,6 +343,8 @@ export function buildSamplePrompt(taste: TasteId, story: StoryId, sceneIndex: nu
     "The reference image is the character sheet for this story.",
     "Draw exactly the same characters: the same faces, hairstyles, body proportions, outfits and outfit colors. Only the drawing style changes.",
     STYLE_ONLY_FROM_TEXT,
+    // 設定画はどのテイストでも同じ1枚なので、その平たい塗りに引っぱられて3つのテイストが似てしまわないようにする
+    "The character sheet is drawn in a plain neutral style; do not keep any of its look. Someone comparing this picture with the same scene in watercolor, crayon and anime styles must instantly see which one it is.",
     sampleCast(story, people),
     `Scene: ${scene.art}.`,
     scene.withMom ? "" : "Do not include the mother in this scene.",
