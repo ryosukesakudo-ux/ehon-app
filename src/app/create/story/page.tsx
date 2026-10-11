@@ -1,12 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { BIRTHDAY_NOTICE_DAYS, CHILD_AGES, REPEAT_COUPON, STORIES, jstDate } from "@/lib/catalog";
+import { BIRTHDAY_NOTICE_DAYS, CHILD_AGES, REPEAT_COUPON, jstDate } from "@/lib/catalog";
 import { Check, Chevron } from "@/components/icons";
 import { SampleImage } from "@/components/sample-image";
-import { samplePublicUrl, sampleUrl } from "@/lib/samples";
+import { samplePublicUrl } from "@/lib/samples";
 import { seriesImagePath } from "@/lib/series";
-import { LEVELS, SERIES_LIST, isOpenSeries, levelForAge, openEpisodes, parseSeriesKey, seriesKey, type SeriesId } from "@/lib/story-key";
+import { LEVELS, OPEN_SERIES, SERIES_LIST, isOpenSeries, levelForAge, openEpisodes, parseSeriesKey, seriesKey, type SeriesId } from "@/lib/story-key";
 import { useFlow } from "../flow";
 import { NextButton, StepHeader, StepTitle } from "../step";
 
@@ -17,7 +17,8 @@ export default function StoryPage() {
   const current = parseSeriesKey(state.story);
   // 見本の絵がそろって選べるようになった話（シリーズごとの話の番号）
   const [ready, setReady] = useState<Record<SeriesId, number[]> | null>(null);
-  const [open, setOpen] = useState<SeriesId | null>(current?.series ?? null);
+  // 最初は公開中のシリーズ（森）を開いておく
+  const [open, setOpen] = useState<SeriesId | null>(current?.series ?? OPEN_SERIES[0]);
   useEffect(() => {
     const none = Object.fromEntries(SERIES_LIST.map((x) => [x.id, [] as number[]])) as Record<SeriesId, number[]>;
     fetch("/api/series/ready")
@@ -26,7 +27,7 @@ export default function StoryPage() {
       .catch(() => setReady(none));
   }, []);
   const isReady = (id: SeriesId, no: number) => !!ready?.[id]?.includes(no);
-  const storyOk = !current || isReady(current.series, current.episode);
+  const storyOk = !!current && isReady(current.series, current.episode);
   const choose = (story: string) => update({ story, previews: {}, draftId: null });
 
   return (
@@ -116,26 +117,6 @@ export default function StoryPage() {
           );
         })}
 
-        <h2 className="display section-label">1話だけのお話</h2>
-        {STORIES.map((s) => (
-          <button
-            key={s.id}
-            type="button"
-            className="choice"
-            aria-pressed={state.story === s.id}
-            onClick={() => choose(s.id)}
-          >
-            <Thumb src={sampleUrl(state.taste, s.id, 0)} alt={`${s.name}の見本`} />
-            <div style={{ display: "flex", flexDirection: "column", gap: 6, flexGrow: 1 }}>
-              <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
-                <div className="choice-title display">{s.name}</div>
-                <div className="tag">{s.ages}</div>
-              </div>
-              <div className="choice-desc">{s.description}</div>
-            </div>
-            {state.story === s.id && <div className="check"><Check /></div>}
-          </button>
-        ))}
         <div className="field">
           <label htmlFor="childname" className="display">主人公の名前（ひらがな）</label>
           <input

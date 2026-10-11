@@ -38,9 +38,10 @@ export async function POST(request: Request) {
   };
 
   if (!getTaste(taste) || !isStoryKey(story)) return bad("テイストとお話を選んでください");
-  // シリーズのお話は、見本の絵がそろった話だけ選べる
+  // シリーズのお話は、見本の絵がそろった話だけ選べる。1話だけのお話は 2026-10-11 から非表示（新しくは作れない）
   const series = parseSeriesKey(story);
-  if (series && !(await readyEpisodes())[series.series].includes(series.episode)) return bad("このお話はまだ準備中です。ほかのお話を選んでください");
+  if (!series) return bad("このお話は今はお選びいただけません。お話を選び直してください");
+  if (!(await readyEpisodes())[series.series].includes(series.episode)) return bad("このお話はまだ準備中です。ほかのお話を選んでください");
   if (!childName || childName.length > 12) return bad("名前は12文字以内で入力してください");
   if (!CHILD_AGES.includes(childAge)) return bad("お子さまの年齢を選んでください");
   for (const f of [childPhoto, momPhoto, dadPhoto]) {
