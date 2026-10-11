@@ -1,7 +1,7 @@
 {
  "id": "forest",
  "name": "もりのだいぼうけん",
- "sidekick": "Pokke, a small reddish-brown squirrel about the size of the child's forearm, with big round puffed-out cheeks (he keeps treasures in them), a fluffy curled tail, large friendly eyes and a tiny green leaf-shaped scarf",
+ "sidekick": "Pokke, a small reddish-brown squirrel about the size of the child's forearm, with big round puffed-out cheeks (he keeps treasures in them), a fluffy curled tail, large friendly eyes and a tiny green leaf-shaped scarf; whenever Pokke rides on the child, he always sits on the child's own right shoulder, never the left one and never on the head",
  "sidekickLabel": "相棒のりす「ポッケ」",
  "cast": {
   "Chicchi": "a tiny gray mouse (not a squirrel and not a person), much smaller than the child, about the size of the child's hand, with round pink-lined ears, a long thin tail and a muddy nose"
@@ -859,6 +859,16 @@
      "from": 12,
      "to": 12,
      "text": "On this page the child wears plain light-blue pajamas instead of the usual clothes. Leaf badges are small softly glowing leaf-shaped badges about the size of a coin, pinned in a neat horizontal row on the front of the child's top, on the child's own left chest over the heart, on whatever the child wears; they are never on the back, shoulders, sleeves, hat or bag, and when the child is seen from behind the badges are hidden and must not be drawn: exactly four badges, a cherry-blossom-pink leaf, a fresh-green leaf, a golden-yellow leaf and a silver leaf with a small white snowflake pattern (the newest)."
+    },
+    {
+     "from": 0,
+     "to": 0,
+     "text": "The baby owl rides tucked inside the front of the child's red coat at the center of the chest, with only its round face peeking out of the coat opening just under the child's chin; the leaf badges stay visible on the child's left chest beside it. In a view from behind the owl is hidden inside the coat (at most its fluffy head shows over the child's shoulder); it never rides on the child's back, head or shoulder."
+    },
+    {
+     "from": 4,
+     "to": 9,
+     "text": "The baby owl rides tucked inside the front of the child's red coat at the center of the chest, with only its round face peeking out of the coat opening just under the child's chin; the leaf badges stay visible on the child's left chest beside it. In a view from behind the owl is hidden inside the coat (at most its fluffy head shows over the child's shoulder); it never rides on the child's back, head or shoulder."
     }
    ],
    "cover": {
