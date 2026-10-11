@@ -28,7 +28,7 @@ export default function TastePage() {
           >
             {/* タッチの違いが分かるよう、絵を大きく見せる */}
             <div className="taste-art" style={{ background: t.swatch }}>
-              <SampleImage src={sampleUrl(t.id, sampleStory, 0)} alt={`${t.name}の見本`} fallback="[見本画像]" style={{ objectPosition: "50% 40%" }} sizes="(max-width: 480px) 100vw, 440px" />
+              <SampleImage src={sampleUrl(t.id, sampleStory, 0)} alt={`${t.name}の見本`} fallback="[見本画像]" sizes="(max-width: 480px) 100vw, 440px" />
               {state.taste === t.id && <div className="check taste-check"><Check /></div>}
             </div>
             <div style={{ display: "flex", flexDirection: "column", gap: 6, padding: "2px 4px 4px" }}>

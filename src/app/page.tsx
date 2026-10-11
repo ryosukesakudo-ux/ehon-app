@@ -3,10 +3,11 @@ import Link from "next/link";
 import type { CSSProperties, ReactNode } from "react";
 import { Arrow, Sparkle, Star } from "@/components/icons";
 import { DELIVERY_MIN_DAYS, EXTRA_COPY_DISCOUNT, MEMBER_MONTHLY_PREVIEWS, PREVIEW_PACK, SIZES, STORIES, TASTES, sceneText, yen } from "@/lib/catalog";
-import { SAMPLE_CHILD_NAME, SAMPLE_SCENES, SHOWCASE, SHOWCASE_BOOK, SHOWCASE_PHOTO, samplePublicUrl, sampleUrl } from "@/lib/samples";
+import { SAMPLE_CHILD_NAME, SAMPLE_SCENES, SHOWCASE, SHOWCASE_BOOK, SHOWCASE_PHOTO, samplePublicUrl, sampleUrl, versioned } from "@/lib/samples";
 import { SampleImage } from "@/components/sample-image";
 import { Brand, SITE_NAME } from "@/components/brand";
 import { Lottie } from "@/components/lottie";
+import { ScrollFx } from "@/components/scroll-fx";
 import s from "./top.module.css";
 
 const NAVY = "#1E2F57";
@@ -30,7 +31,7 @@ function Cloud({ style }: { style: CSSProperties }) {
 
 function Eyebrow({ children, color }: { children: ReactNode; color: string }) {
   return (
-    <div className={`${s.eyebrow} display`} style={{ background: color }}>
+    <div className={`${s.eyebrow} display`} style={{ background: color }} data-reveal="pop">
       {children}
     </div>
   );
@@ -156,7 +157,7 @@ function BouncyLine({ text, offset, big = [] }: { text: string; offset: number; 
 /** 見出しの中の強調語（色付き・少し大きめ。傾けない） */
 function Pop({ children, color }: { children: string; color: string }) {
   return (
-    <span className={s.pop} style={{ color }}>
+    <span className={s.pop} style={{ color }} data-boing="">
       {children}
     </span>
   );
@@ -165,6 +166,7 @@ function Pop({ children, color }: { children: string; color: string }) {
 export default function Home() {
   return (
     <div className={s.page}>
+      <ScrollFx />
       <header className={s.header}>
         <Link href="/" className={s.logo}>
           <Brand size={29} />
@@ -221,15 +223,15 @@ export default function Home() {
 
       <Wave from="#BFE0F5" to={CREAM} />
       <div className={s.trust}>
-        <div className={s.trustItem}>
+        <div className={s.trustItem} data-reveal="pop" data-d={0}>
           <div className={s.trustIcon} style={{ background: "#FFE6A6" }}>{icon(<><path d="M3 9l9-5 9 5v10H3z" /><path d="M9 19v-6h6v6" /></>)}</div>
           送料込み<br />ご自宅へお届け
         </div>
-        <div className={s.trustItem}>
+        <div className={s.trustItem} data-reveal="pop" data-d={1}>
           <div className={s.trustIcon} style={{ background: "#FFD4C7" }}>{icon(<><rect x="4" y="3" width="16" height="18" rx="2" /><path d="M8 7h8M8 11h8M8 15h5" /></>)}</div>
           しっかりした<br />製本
         </div>
-        <div className={s.trustItem}>
+        <div className={s.trustItem} data-reveal="pop" data-d={2}>
           <div className={s.trustIcon} style={{ background: "#CDEEDD" }}>{icon(<><path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6z" /><path d="M9 12l2 2 4-4" /></>)}</div>
           写真はいつでも<br />削除できる
         </div>
@@ -238,14 +240,14 @@ export default function Home() {
       <section className={s.section} style={{ background: CREAM, paddingTop: 16 }}>
         <Star size={22} className={s.deco} style={{ right: 24, top: 20, transform: "rotate(15deg)" }} />
         <Eyebrow color="#F08A6C">かんたん3ステップ</Eyebrow>
-        <h2 className={`${s.h2} display`}>
+        <h2 className={`${s.h2} display`} data-reveal="up">
           <span className="nowrap">スマホだけで、</span>
           <br />
           <span className="nowrap"><Pop color="#F08A6C">かんたん</Pop>に作れます。</span>
         </h2>
         <div className={s.steps}>
           {STEPS.map((st, i) => (
-            <div key={st.title} className={s.stepCard} style={{ boxShadow: `0 4px 0 ${st.shadow}` }}>
+            <div key={st.title} className={s.stepCard} style={{ boxShadow: `0 4px 0 ${st.shadow}` }} data-reveal="up" data-d={i}>
               <div className={`${s.stepNum} display`} style={{ background: st.color }}>{i + 1}</div>
               <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
                 <div className={`${s.stepTitle} display`}>{st.title}</div>
@@ -258,22 +260,22 @@ export default function Home() {
 
       <section className={s.section} style={{ background: CREAM, paddingTop: 8 }}>
         <Eyebrow color="#7CC7A8">写真から絵本へ</Eyebrow>
-        <h2 className={`${s.h2} display`}>
+        <h2 className={`${s.h2} display`} data-reveal="up">
           <span className="nowrap">この写真から、</span>
           <br />
           <span className="nowrap">こんな<Pop color="#5CBF8F">1ページ</Pop>に。</span>
         </h2>
         <div className={s.showcase}>
-          <figure className={s.showcaseItem}>
+          <figure className={s.showcaseItem} data-reveal="left">
             <div className={s.showcasePhoto}>
-              <SampleImage src={samplePublicUrl(SHOWCASE_PHOTO)} alt="家族3人の写真（見本）" fallback={<span className={s.galleryFallback}>[家族の写真]</span>} />
+              <SampleImage src={versioned(samplePublicUrl(SHOWCASE_PHOTO))} alt="家族3人の写真（見本）" fallback={<span className={s.galleryFallback}>[家族の写真]</span>} />
             </div>
             <figcaption>アップする写真</figcaption>
           </figure>
-          <div className={s.showcaseArrow} aria-hidden="true"><Arrow size={22} /></div>
-          <figure className={s.showcaseItem}>
-            <div className={s.showcaseBook}>
-              <SampleImage src={samplePublicUrl(SHOWCASE_BOOK)} alt="写真をもとに描いた絵本の1ページ（見本）" fallback={<span className={s.galleryFallback}>[絵本の1ページ]</span>} />
+          <div className={s.showcaseArrow} aria-hidden="true" data-reveal="pop" data-d={3}><Arrow size={22} /></div>
+          <figure className={s.showcaseItem} data-reveal="right" data-d={5}>
+            <div className={s.showcaseBook} data-shine="">
+              <SampleImage src={versioned(samplePublicUrl(SHOWCASE_BOOK))} alt="写真をもとに描いた絵本の1ページ（見本）" fallback={<span className={s.galleryFallback}>[絵本の1ページ]</span>} />
             </div>
             <figcaption>できあがる絵</figcaption>
           </figure>
@@ -288,7 +290,7 @@ export default function Home() {
       </section>
 
       <section className={s.section} style={{ background: CREAM, paddingTop: 8 }}>
-        <div className={s.member}>
+        <div className={s.member} data-reveal="up">
           <Sparkle size={18} color="#F6C445" className={s.deco} style={{ right: 18, top: 16 }} />
           <div className={`${s.memberTitle} display`}>無料会員になると</div>
           <ul className={s.memberList}>
@@ -308,12 +310,12 @@ export default function Home() {
       <section className={s.section} style={{ background: "#fff" }}>
         <Star size={20} color="#7CC7A8" className={s.deco} style={{ right: 20, top: 20 }} />
         <Eyebrow color="#7CC7A8">中身をのぞいてみる</Eyebrow>
-        <h2 className={`${s.h2} display`}>
+        <h2 className={`${s.h2} display`} data-reveal="up">
           <span className="nowrap">名前も、顔も、</span>
           <br />
           <span className="nowrap"><Pop color="#F07FA0">その子だけ</Pop>の物語。</span>
         </h2>
-        <div className={s.sample}>
+        <div className={s.sample} data-reveal="up">
           <div className={s.sampleBack} />
           <div className={s.sampleCard}>
             <div className={s.sampleArt}>
@@ -321,17 +323,17 @@ export default function Home() {
             </div>
             <p className={s.sampleText}>{sceneText(STORIES[0].scenes[3], SAMPLE_CHILD_NAME)}</p>
           </div>
-          <div className={`${s.sampleTag} display`}>名前が入る！</div>
+          <div className={`${s.sampleTag} display`} data-reveal="pop" data-d={4}>名前が入る！</div>
         </div>
         <div className={s.tastes}>
           {[
             { id: "watercolor", bg: "#CFE3F0", bd: "#2F5DA8", c: "#43505C" },
             { id: "crayon", bg: "#F8D9B8", bd: "#F08A6C", c: "#6A5440" },
             { id: "anime", bg: "#DCEBD3", bd: "#7CC7A8", c: "#44543F" },
-          ].map((v) => {
+          ].map((v, i) => {
             const t = TASTES.find((x) => x.id === v.id)!;
             return (
-              <div key={t.id}>
+              <div key={t.id} data-reveal="pop" data-d={i * 2}>
                 <div className={s.tasteSwatch} style={{ background: v.bg, borderColor: v.bd, color: v.c }}>
                   <SampleImage src={sampleUrl(t.id, "forest", 0)} alt={`${t.name}の見本`} fallback="[見本]" sizes="(max-width: 640px) 33vw, 200px" />
                 </div>
@@ -347,14 +349,14 @@ export default function Home() {
       <section className={s.section} style={{ background: "#E6F3FB" }}>
         <Star size={20} className={s.deco} style={{ right: 24, top: 22, transform: "rotate(-8deg)" }} />
         <Eyebrow color="#2F5DA8">3つのお話</Eyebrow>
-        <h2 className={`${s.h2} display`}>
+        <h2 className={`${s.h2} display`} data-reveal="up">
           <span className="nowrap">こんな絵本が</span>
           <br />
           <span className="nowrap"><Pop color="#F6A93B">できあがり</Pop>ます。</span>
         </h2>
         <div className={s.gallery}>
-          {STORIES.map((st) => (
-            <div key={st.id} className={s.galleryCard}>
+          {STORIES.map((st, i) => (
+            <div key={st.id} className={s.galleryCard} data-reveal="up" data-d={i * 2}>
               <div className={s.galleryMain}>
                 <SampleImage src={sampleUrl("watercolor", st.id, SAMPLE_SCENES[0])} alt={`${st.name}の見本`} fallback={<span className={s.galleryFallback}>[見本の絵]</span>} />
               </div>
@@ -380,14 +382,14 @@ export default function Home() {
       <section className={s.section} style={{ background: "#FFE9EE" }}>
         <Sparkle size={20} color="#F08A6C" className={s.deco} style={{ right: 26, top: 24 }} />
         <Eyebrow color="#F08A6C">こんな日の贈りものに</Eyebrow>
-        <h2 className={`${s.h2} display`}>
+        <h2 className={`${s.h2} display`} data-reveal="up">
           <span className="nowrap">何年たっても、</span>
           <br />
           <span className="nowrap">読み返したくなる<Pop color="#F08A6C">1冊</Pop>を。</span>
         </h2>
         <div className={s.chips}>
-          {GIFTS.map((g) => (
-            <div key={g.label} className={`${s.chip} display`}>
+          {GIFTS.map((g, i) => (
+            <div key={g.label} className={`${s.chip} display`} data-reveal="pop" data-d={i}>
               <span className={s.chipArt} style={{ background: g.bg }}>
                 <svg width="30" height="30" viewBox="0 0 24 24" aria-hidden="true">{g.art}</svg>
               </span>
@@ -400,12 +402,12 @@ export default function Home() {
       <Wave from="#FFE9EE" to={CREAM} />
       <section className={s.section} style={{ background: CREAM }}>
         <Eyebrow color="#2F5DA8">料金</Eyebrow>
-        <h2 className={`${s.h2} display`}>
+        <h2 className={`${s.h2} display`} data-reveal="up">
           <span className="nowrap"><Pop color="#5CBF8F">送料込み</Pop>、</span><span className="nowrap">追加料金なし。</span>
         </h2>
         <div className={s.prices}>
-          {SIZES.map((p) => (
-            <div key={p.id} className={`${s.price} ${p.popular ? s.priceHot : ""}`}>
+          {SIZES.map((p, i) => (
+            <div key={p.id} className={`${s.price} ${p.popular ? s.priceHot : ""}`} data-reveal="up" data-d={i * 2}>
               {p.popular && <div className={`${s.priceRibbon} display`}>いちばん人気</div>}
               <div className={`${s.priceSize} display`}>{p.name}</div>
               <div className={s.priceSpec}>{p.spec}</div>
@@ -413,7 +415,7 @@ export default function Home() {
             </div>
           ))}
         </div>
-        <div className={s.extra}>
+        <div className={s.extra} data-reveal="up">
           {icon(<path d="M20 12v9H4v-9M2 7h20v5H2zM12 21V7" />, 18)}
           <div>
             おじいちゃん・おばあちゃん用などの2冊目からは、1冊 <span className="display" style={{ fontWeight: 900 }}>{yen(EXTRA_COPY_DISCOUNT)}引き</span>（同じ箱でお届け）
@@ -424,10 +426,10 @@ export default function Home() {
 
       <section className={s.section} style={{ background: CREAM, paddingTop: 8, paddingBottom: 48 }}>
         <Eyebrow color="#7CC7A8">よくある質問</Eyebrow>
-        <h2 className={`${s.h2} display`}>はじめての方へ</h2>
+        <h2 className={`${s.h2} display`} data-reveal="up">はじめての方へ</h2>
         <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
           {FAQ.map((f) => (
-            <div key={f.q} className={s.qa}>
+            <div key={f.q} className={s.qa} data-reveal="up">
               <div className={s.qaQ}>
                 <div className={`${s.qaMark} display`} style={{ background: f.color }}>Q</div>
                 <div className={`${s.qaQText} display`}>{f.q}</div>
@@ -446,13 +448,15 @@ export default function Home() {
         <Star size={10} color="#fff" className={s.deco} style={{ left: 80, top: 90 }} />
         <Sparkle size={14} className={s.deco} style={{ right: 40, top: 150 }} />
         <Sparkle size={12} color="#F4A9B8" className={s.deco} style={{ left: 30, top: 210 }} />
-        <h2 className={`${s.finalH2} display`}>
+        <h2 className={`${s.finalH2} display`} data-reveal="up">
           <span className="nowrap">その子の「いま」を、</span>
           <br />
           <span className="nowrap"><Pop color="#F6C445">絵本</Pop>にのこそう。</span>
         </h2>
         <p style={{ margin: 0, fontSize: 14, lineHeight: 1.8 }}>お支払いは、見本を確認してから。</p>
-        <Cta yellow />
+        <div data-reveal="pop" data-d={2}>
+          <Cta yellow />
+        </div>
       </section>
 
       <footer className={s.footer}>
