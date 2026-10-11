@@ -2,7 +2,7 @@ import { COVER_SCENE, bookScenes, deliveryLabel, getSize, getTaste, plainText, s
 import { getBook } from "@/lib/book";
 import { levelLabel, storyLabel } from "@/lib/story-key";
 import { BOOK_BUCKET, getSupabase } from "@/lib/services";
-import { OrderActions } from "./actions";
+import { OrderActions, RedoSceneButton } from "./actions";
 
 export const dynamic = "force-dynamic";
 
@@ -112,6 +112,11 @@ export default async function AdminPage() {
                       <div style={{ aspectRatio: "1 / 1", borderRadius: 8, background: "#eee", display: "flex", alignItems: "center", justifyContent: "center" }}>未作成</div>
                     )}
                     {p.index === COVER_SCENE ? "" : `${i}. `}{p.text}
+                    {p.url && (o.status === "paid" || o.status === "generated") && (
+                      <div>
+                        <RedoSceneButton orderId={o.id} scene={p.index} />
+                      </div>
+                    )}
                   </li>
                 ))}
               </ol>
