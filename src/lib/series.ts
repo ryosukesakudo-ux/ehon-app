@@ -399,6 +399,9 @@ export const SERIES: Record<
   },
 };
 
+/** 絵スタジオで1枚ごとに書ける追加の指示の最大文字数 */
+export const SERIES_NOTE_MAX = 200;
+
 export function getSeries(id: string) {
   return (SERIES as Record<string, (typeof SERIES)[SeriesId] | undefined>)[id];
 }

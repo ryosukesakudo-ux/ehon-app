@@ -3,7 +3,7 @@ import type { Uploadable } from "openai/uploads";
 import { COVER_SCENE, COVER_SIZE, REDO_OPTIONS, characterOf, getStory, getTaste, type Person, type RedoOptionId, type Scene, type StoryId, type TasteId } from "./catalog";
 import { getOpenAI } from "./services";
 import { upscalePng } from "./upscale";
-import { SERIES, type SeriesId, type SeriesScene } from "./series";
+import { SERIES, SERIES_NOTE_MAX, type SeriesId, type SeriesScene } from "./series";
 
 export type { Person };
 
@@ -341,7 +341,7 @@ export async function makeHeroBookPhoto(opts: { title: string; cover: Uploadable
 // もとにし、相棒（森ならりすのポッケ）を加えた「シリーズの設定画」を1枚作って、全場面でそれを参考にする。
 
 /** お話の作例の設定画に相棒を加えた、シリーズの設定画を作る。 */
-export async function makeSeriesSheet(id: SeriesId, familySheet: Uploadable) {
+export async function makeSeriesSheet(id: SeriesId, familySheet: Uploadable, note?: string) {
   const ai = getOpenAI();
   if (!ai) throw new Error("OPENAI_API_KEY が未設定です");
   const series = SERIES[id];
@@ -355,7 +355,10 @@ export async function makeSeriesSheet(id: SeriesId, familySheet: Uploadable) {
       "Show all four characters side by side, full body, front view, on a plain white background, at heights that fit them.",
       "Simple, warm picture-book character design with clear shapes and flat colors so the faces, hairstyles, outfits and the sidekick are easy to copy.",
       "Do not draw any letters, words or text.",
-    ].join(" "),
+      seriesNote(note),
+    ]
+      .filter(Boolean)
+      .join(" "),
     size: "1536x1024",
     quality: "high",
     output_format: "png",
@@ -365,7 +368,13 @@ export async function makeSeriesSheet(id: SeriesId, familySheet: Uploadable) {
   return b64;
 }
 
-export function buildSeriesPrompt(id: SeriesId, scene: SeriesScene, opts: { cover: boolean; outfits?: string }) {
+/** 絵スタジオで1枚ごとに書く追加の指示（日本語でよい）。ほかの指示より優先させるため最後に置く */
+function seriesNote(note?: string) {
+  const n = note?.trim().slice(0, SERIES_NOTE_MAX);
+  return n ? `Additional instructions from the art director (may be written in Japanese); follow them carefully, they take priority over the instructions above: ${n}` : "";
+}
+
+export function buildSeriesPrompt(id: SeriesId, scene: SeriesScene, opts: { cover: boolean; outfits?: string; note?: string }) {
   const series = SERIES[id];
   const t = getTaste("watercolor")!;
   const people: Person[] = ["child", ...(scene.withMom ? (["mom"] as const) : []), ...(scene.withDad ? (["dad"] as const) : [])];
@@ -384,19 +393,20 @@ export function buildSeriesPrompt(id: SeriesId, scene: SeriesScene, opts: { cove
     opts.cover
       ? "This is the front cover of the picture book: a wide landscape composition with the child large and clearly visible near the center, the scene filling the whole frame. Do not draw any letters, words, title or text in the image."
       : SQUARE_FRAMING,
+    seriesNote(opts.note),
   ]
     .filter(Boolean)
     .join(" ");
 }
 
 /** シリーズの1ページ（表紙または場面）を水彩で描き、PNG の base64 を返す。 */
-export async function illustrateSeries(opts: { id: SeriesId; scene: SeriesScene; cover: boolean; outfits?: string; quality: Quality; sheet: Uploadable }) {
+export async function illustrateSeries(opts: { id: SeriesId; scene: SeriesScene; cover: boolean; outfits?: string; note?: string; quality: Quality; sheet: Uploadable }) {
   const ai = getOpenAI();
   if (!ai) throw new Error("OPENAI_API_KEY が未設定です");
   const result = await ai.images.edit({
     model: process.env.OPENAI_IMAGE_MODEL ?? "gpt-image-2",
     image: [opts.sheet],
-    prompt: buildSeriesPrompt(opts.id, opts.scene, { cover: opts.cover, outfits: opts.outfits }),
+    prompt: buildSeriesPrompt(opts.id, opts.scene, { cover: opts.cover, outfits: opts.outfits, note: opts.note }),
     size: opts.cover ? COVER_SIZE : "1024x1024",
     quality: opts.quality === "final" ? "high" : "medium",
     output_format: "png",

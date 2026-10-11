@@ -7,6 +7,7 @@ import { SAMPLE_BUCKET, getSupabase } from "@/lib/services";
 export const maxDuration = 300;
 
 // 台本の絵スタジオから呼ぶ。作例の家族でシリーズの絵を1枚作り、公開ストレージ（samples）に保存する。
+// note：その絵だけに効く追加の指示（日本語でよい）。
 // kind=sheet：シリーズの設定画（作例の設定画＋相棒） / それ以外：その話の表紙（page=0）か場面（1〜12）
 export async function POST(request: Request) {
   const body = await request.json().catch(() => null);
@@ -27,11 +28,13 @@ export async function POST(request: Request) {
     if (error) throw new Error(error.message);
   };
 
+  const note = typeof body?.note === "string" ? body.note.trim() : "";
+
   try {
     if (body?.kind === "sheet") {
       const family = await load(characterSheetPath(series.story), "family.png");
       if (!family) return Response.json({ error: "先に作例スタジオで、このお話のキャラクター設定画を作ってください" }, { status: 400 });
-      await save(seriesSheetPath(id), await makeSeriesSheet(id, family));
+      await save(seriesSheetPath(id), await makeSeriesSheet(id, family, note));
       return Response.json({ ok: true });
     }
 
@@ -44,7 +47,7 @@ export async function POST(request: Request) {
     const quality = body?.quality === "preview" ? "preview" : "final";
     await save(
       seriesImagePath(id, episode.no, page),
-      await illustrateSeries({ id, scene, cover: page === 0, outfits: episode.outfits, quality, sheet }),
+      await illustrateSeries({ id, scene, cover: page === 0, outfits: episode.outfits, note, quality, sheet }),
     );
     return Response.json({ ok: true });
   } catch (e) {
