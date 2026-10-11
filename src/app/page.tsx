@@ -280,6 +280,11 @@ export default function Home() {
         </div>
         <p className={s.sampleText} style={{ padding: 0 }}>{sceneText(STORIES.find((st) => st.id === SHOWCASE.story)!.scenes[SHOWCASE.scene], SAMPLE_CHILD_NAME)}</p>
         <div className={s.note}>見本は、AIで作った架空の家族です</div>
+        {/* サンプル集：見本の絵本を最初の5ページまで読める */}
+        <Link href="/samples" className="ghost" style={{ height: 54, fontSize: 16, borderColor: "var(--navy)", color: "var(--navy)" }}>
+          サンプル集で絵本を読んでみる
+          <Arrow />
+        </Link>
       </section>
 
       <section className={s.section} style={{ background: CREAM, paddingTop: 8 }}>
@@ -451,6 +456,7 @@ export default function Home() {
       </section>
 
       <footer className={s.footer}>
+        <Link href="/samples">サンプル集</Link>
         <Link href="/legal">特定商取引法に基づく表記</Link>
         <Link href="/privacy">プライバシーポリシー</Link>
         <Link href="/terms">利用規約</Link>
