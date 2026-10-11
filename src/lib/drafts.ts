@@ -1,7 +1,7 @@
 import "server-only";
 import { toFile } from "openai";
 import { BOOK_BUCKET, PHOTO_BUCKET, getOpenAI, getSupabase } from "./services";
-import { illustrate, type Quality, type Redo, type RefImage } from "./illustrate";
+import { illustrate, type Detail, type Quality, type Redo, type RefImage } from "./illustrate";
 import { CHARACTER_SCENES, COVER_SCENE, PERSON_LABEL, characterOf, getTaste, previewScenes, type Person, type TasteId } from "./catalog";
 import { getBook } from "./book";
 import { currentUser, type Member } from "./auth";
@@ -145,7 +145,7 @@ async function download(bucket: string, path: string) {
  * 参考にするのは写真と、作ってあるキャラクターの絵。写真が削除されていても、キャラクターがあれば描ける。
  * redo：作り直しの指示（選択肢と一言）。
  */
-export async function generateScene(draft: Draft, sceneIndex: number, quality: Quality, redo?: Redo | null): Promise<string> {
+export async function generateScene(draft: Draft, sceneIndex: number, quality: Quality, redo?: Redo | null, detail?: Detail): Promise<string> {
   const db = getSupabase();
   const ai = getOpenAI();
   if (!db || !ai || isDemoId(draft.id)) return demoImage(draft, sceneIndex);
@@ -168,7 +168,7 @@ export async function generateScene(draft: Draft, sceneIndex: number, quality: Q
     }
   }
 
-  const b64 = await illustrate({ taste: draft.taste, story: draft.story, sceneIndex, images, quality, childAge: draft.child_age, redo });
+  const b64 = await illustrate({ taste: draft.taste, story: draft.story, sceneIndex, images, quality, detail, childAge: draft.child_age, redo });
   const png = Buffer.from(b64, "base64");
 
   // 会員の写真は「最後に使った日」を更新する（1年使わなければ自動削除）

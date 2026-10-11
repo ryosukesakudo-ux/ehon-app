@@ -23,7 +23,7 @@ export function SeriesStudio({ list }: { list: StudioView[] }) {
   const [seriesId, setSeriesId] = useState<SeriesId>(list[0].id);
   const series = list.find((s) => s.id === seriesId)!;
   const SERIES_ID = seriesId;
-  const [quality, setQuality] = useState<"preview" | "final">("final");
+  const [quality, setQuality] = useState<"preview" | "final">("preview");
   const [busy, setBusy] = useState<Record<string, boolean>>({});
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [version, setVersion] = useState<Record<string, number>>({});
@@ -90,8 +90,8 @@ export function SeriesStudio({ list }: { list: StudioView[] }) {
       <label>
         画質：
         <select value={quality} onChange={(e) => setQuality(e.target.value as "preview" | "final")}>
-          <option value="final">高画質（1枚 約30円）</option>
           <option value="preview">中画質（1枚 約15円）</option>
+          <option value="final">高画質（1枚 約30円）</option>
         </select>
       </label>
 

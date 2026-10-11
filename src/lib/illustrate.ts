@@ -15,6 +15,8 @@ const PICTURE_BOOK_CHARACTERS =
   "no photographic skin texture, lighting or detail. Keep only the traits that make each person recognizable, such as hairstyle, hair color, glasses and overall look. " +
   "Draw expressive picture-book eyes with a visible colored iris, a dark pupil and a small white highlight, gently shaped eyelids and lashes where fitting. Never draw the eyes as plain black dots or simple lines.";
 export type Quality = "preview" | "final";
+/** AIの画質。管理画面の注文の絵づくりは中画質が標準（2026-10-11 作道さん）、高画質も選べる */
+export type Detail = "medium" | "high";
 
 // 本文の絵の構図。文章は左ページ（別ページ）に置くので、絵の中に文字用の空きは作らない。
 // 以前は「下に文字用の空き」を指示していて、人物の足元が空白に溶けて切れることがあった。
@@ -199,6 +201,8 @@ export async function illustrate(opts: {
   sceneIndex: number;
   images: RefImage[];
   quality: Quality;
+  /** 絵の細かさ（AIの画質）。省略時は、印刷用（final）は高画質、それ以外は中画質 */
+  detail?: Detail;
   childAge?: number | null;
   redo?: Redo | null;
   /** 出力サイズを指定するとき（画質くらべ用）。省略時は品質と場面から決める */
@@ -219,7 +223,7 @@ export async function illustrate(opts: {
       : buildPrompt(opts.taste, opts.story, opts.sceneIndex, opts.images, opts.childAge, opts.redo),
     // 表紙は横長（タイトルは絵の上の帯に置くので、絵に文字の場所はいらない）
     size: opts.size ?? (isCover ? COVER_SIZE : "1024x1024"),
-    quality: opts.quality === "final" ? "high" : "medium",
+    quality: opts.detail ?? (opts.quality === "final" ? "high" : "medium"),
     output_format: "png",
   });
   const b64 = result.data?.[0]?.b64_json;

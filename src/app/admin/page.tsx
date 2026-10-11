@@ -2,7 +2,7 @@ import { COVER_SCENE, bookScenes, deliveryLabel, getSize, getTaste, plainText, s
 import { getBook } from "@/lib/book";
 import { levelLabel, storyLabel } from "@/lib/story-key";
 import { BOOK_BUCKET, getSupabase } from "@/lib/services";
-import { OrderActions, RedoSceneButton } from "./actions";
+import { OrderActions, OrderDetailProvider, RedoSceneButton } from "./actions";
 
 export const dynamic = "force-dynamic";
 
@@ -77,6 +77,7 @@ export default async function AdminPage() {
         const a = ship?.address;
         return (
           <section key={o.id} className="card" style={{ gap: 12 }}>
+            <OrderDetailProvider>
             <div style={{ display: "flex", flexWrap: "wrap", gap: 8, justifyContent: "space-between" }}>
               <strong>注文 {o.id.slice(0, 8).toUpperCase()}</strong>
               <span style={{ display: "flex", gap: 6 }}>
@@ -121,6 +122,7 @@ export default async function AdminPage() {
                 ))}
               </ol>
             </details>
+            </OrderDetailProvider>
           </section>
         );
       })}
