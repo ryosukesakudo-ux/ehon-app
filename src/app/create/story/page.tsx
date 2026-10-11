@@ -1,6 +1,6 @@
 "use client";
 
-import { CHILD_AGES, STORIES } from "@/lib/catalog";
+import { BIRTHDAY_NOTICE_DAYS, CHILD_AGES, REPEAT_COUPON, STORIES, jstDate } from "@/lib/catalog";
 import { Check } from "@/components/icons";
 import { SampleImage } from "@/components/sample-image";
 import { sampleUrl } from "@/lib/samples";
@@ -61,6 +61,19 @@ export default function StoryPage() {
             ))}
           </select>
           <p style={{ margin: 0, fontSize: 12, lineHeight: 1.6, color: "var(--sub)" }}>絵の中の背丈や体つきを、年齢に合わせて描きます。</p>
+        </div>
+        <div className="field">
+          <label htmlFor="childbirthday" className="display">お誕生日（任意）</label>
+          <input
+            id="childbirthday"
+            type="date"
+            max={jstDate(0)}
+            value={state.childBirthday}
+            onChange={(e) => update({ childBirthday: e.target.value })}
+          />
+          <p style={{ margin: 0, fontSize: 12, lineHeight: 1.6, color: "var(--sub)" }}>
+            入れておくと、毎年お誕生日の{BIRTHDAY_NOTICE_DAYS === 30 ? "1か月" : `${BIRTHDAY_NOTICE_DAYS}日`}前に、続編の絵本のご案内（{REPEAT_COUPON.discount}円引きのクーポン付き）をメールでお送りします。
+          </p>
         </div>
       </main>
       <NextButton href="/create/photo" disabled={!nameOk || !ageOk}>次へ：写真をえらぶ</NextButton>

@@ -7,6 +7,7 @@ import {
   DELIVERY_MIN_DAYS,
   DELIVERY_TIMES,
   extraCopyPrice,
+  firstBookPrice,
   getSize,
   getStory,
   getTaste,
@@ -31,7 +32,7 @@ export default function CheckoutPage() {
   const [coupon, setCoupon] = useState<Coupon | null>(null);
   const [couponError, setCouponError] = useState<string | null>(null);
   const [checking, setChecking] = useState(false);
-  const firstPrice = coupon ? Math.min(coupon.bookPrice, size.price) : size.price;
+  const firstPrice = firstBookPrice(size.price, coupon);
 
   async function applyCoupon() {
     setChecking(true);
@@ -60,6 +61,7 @@ export default function CheckoutPage() {
           size: state.size,
           copies: state.copies,
           coupon: coupon?.code ?? "",
+          childBirthday: state.childBirthday,
           deliveryDate: state.deliveryDate,
           deliveryTime: state.deliveryTime,
         }),
@@ -87,6 +89,7 @@ export default function CheckoutPage() {
           <div className="sum-row"><span>お話</span><span>{getStory(state.story)?.name}</span></div>
           <div className="sum-row"><span>テイスト</span><span>{getTaste(state.taste)?.name}</span></div>
           <div className="sum-row"><span>主人公</span><span>{state.childName}{state.childAge ? `（${state.childAge}さい）` : ""}</span></div>
+          {state.childBirthday && <div className="sum-row"><span>お誕生日</span><span>{state.childBirthday.replaceAll("-", "/")}</span></div>}
           <div className="sum-row"><span>サイズ</span><span>{size.name}（{size.spec}）</span></div>
           <div className="divider" />
           <div className="sum-row"><span>絵本</span><span>{yen(size.price)}</span></div>

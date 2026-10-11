@@ -32,6 +32,7 @@ export type BookPdfInput = {
   images: Buffer[]; // 場面ごとの絵（12、正方形）
   coverImage: Buffer; // 表紙の絵（横長 3:2）
   trimMm: number; // 仕上がりの1辺
+  volume: number; // 巻数（同じ主人公の何冊目か）。表紙の右下に小さく入れる
   issuedAt: Date;
 };
 
@@ -127,6 +128,16 @@ export async function buildBookPdfs(input: BookPdfInput) {
     const blockTop = (bandTop + bandBottom) / 2 + blockHeight / 2;
     drawCentered(page, title, cover.bold, leadSize, CORAL, blockTop - leadSize);
     drawCentered(page, input.storyName, cover.bold, titleSize, NAVY, blockTop - leadSize - titleSize * 1.4);
+    // 右下に巻数（絵の上に、小さなクリーム色の札を置いて書く）
+    const vol = `Vol.${input.volume}`;
+    const volSize = 11 * scale;
+    const padX = volSize * 0.7;
+    const labelW = cover.bold.widthOfTextAtSize(vol, volSize) + padX * 2;
+    const labelH = volSize * 1.8;
+    const right = size - mm(BLEED_MM + SAFE_MM / 2);
+    const bottom = mm(BLEED_MM + SAFE_MM / 2);
+    page.drawRectangle({ x: right - labelW, y: bottom, width: labelW, height: labelH, color: CREAM, opacity: 0.92 });
+    page.drawText(vol, { x: right - labelW + padX, y: bottom + (labelH - volSize * 0.72) / 2, size: volSize, font: cover.bold, color: NAVY });
   }
   const coverPdf = await cover.doc.save();
 

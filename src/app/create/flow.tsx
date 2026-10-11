@@ -11,6 +11,8 @@ export type FlowState = {
   story: StoryId;
   childName: string;
   childAge: number | null;
+  /** 主人公のお誕生日（YYYY-MM-DD・任意）。誕生日の1か月前に続編のご案内メールを送る */
+  childBirthday: string;
   draftId: string | null;
   demo: boolean;
   previews: Record<number, string>;
@@ -32,6 +34,7 @@ const initial: FlowState = {
   story: "forest",
   childName: "",
   childAge: null,
+  childBirthday: "",
   draftId: null,
   demo: false,
   previews: {},
