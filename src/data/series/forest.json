@@ -3,6 +3,9 @@
  "name": "もりのだいぼうけん",
  "sidekick": "Pokke, a small reddish-brown squirrel about the size of the child's forearm, with big round puffed-out cheeks (he keeps treasures in them), a fluffy curled tail, large friendly eyes and a tiny green leaf-shaped scarf",
  "sidekickLabel": "相棒のりす「ポッケ」",
+ "cast": {
+  "Chicchi": "a tiny gray mouse (not a squirrel and not a person), much smaller than the child, about the size of the child's hand, with round pink-lined ears, a long thin tail and a muddy nose"
+ },
  "episodes": [
   {
    "no": 1,
@@ -634,7 +637,7 @@
      "withMom": false,
      "withDad": false,
      "withSidekick": false,
-     "camera": "Close-up on the child's hand emerging from the hole with the shining golden acorn, eyes wide, Chicchi digging in the far corner turned away."
+     "camera": "Close view from low beside the hole: the child kneels on top of the ground at the edge of the hole, upper body leaning forward, pulling the shining golden acorn out of the hole with eyes wide; both knees and legs rest on the ground surface, never inside the hole; Chicchi digs in the far corner, turned away."
     },
     {
      "label": "どんぐりをポケットに隠す主人公。笑顔のチッチ",
@@ -651,7 +654,7 @@
     },
     {
      "label": "ステージ前でポケットを握る主人公。後ろで背伸びするチッチ",
-     "art": "in front of the festival stage the child stands clutching their pocket with an uneasy look; behind the crowd little Chicchi stands on tiptoe trying to see",
+     "art": "in front of the festival stage the child stands clutching their pocket with an uneasy look; behind the crowd of forest animals, tiny Chicchi stands on tiptoe trying to see",
      "text": [
       "むねが ちくちく する。",
       "ステージの まえで、{name}は ポケットを にぎりしめました。うしろで チッチが どろだらけの かおで わらって います。むねが ちくちく しました。",

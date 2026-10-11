@@ -43,6 +43,26 @@ function framing(camera?: string) {
     : SQUARE_FRAMING;
 }
 
+// 台本のシリーズの絵で、登場人物を取り違えないための指示（2026-10-11 森3話の不具合：ねずみのチッチが場面によって
+// りすや女の子になり、知らない男の子や主人公と同じ服の子が描かれた）。名前だけの場面でも見た目の説明を足し、
+// 主人公以外の人間の子どもは描かないようにする。
+const SERIES_CAST_RULES =
+  "The main character is the only human child in this picture book: never draw any other human child, and never draw a second child who looks or dresses like the main character. " +
+  "Do not add people who are not mentioned in this scene; crowds, onlookers and friends are the story's animals and creatures, not humans. " +
+  "Each animal or creature character keeps exactly its own species and look on every page; never turn one into a person or into a different animal. " +
+  "Everyone stands, sits or kneels on top of the ground; never draw a body sunk into the ground or a hole.";
+
+/** 場面の指示に名前が出る登場人物の見た目（例：Chicchi is a tiny gray mouse ...） */
+function castPrompt(cast: Record<string, string> | undefined, ...texts: (string | undefined)[]) {
+  const named = Object.entries(cast ?? {}).filter(([name]) => texts.some((t) => t && new RegExp(`\\b${name}\\b`).test(t)));
+  return named.length ? `Who is who in this scene: ${named.map(([name, look]) => `${name} is ${look}`).join("; ")}.` : "";
+}
+
+/** 相棒の名前（例：Pokke）。相棒の説明文の最初の語 */
+function sidekickName(sidekick: string) {
+  return sidekick.split(/[ ,]/)[0];
+}
+
 /** 印刷用の本文の絵の大きさ（1辺のpx）。OPENAI_FINAL_SIZE（例 2048x2048）で変えられる */
 const FINAL_PX = Number((process.env.OPENAI_FINAL_SIZE ?? "2048x2048").split("x")[0]) || 2048;
 
@@ -145,8 +165,14 @@ export function buildPrompt(taste: TasteId, story: string, sceneIndex: number, r
     "Make them look friendly and natural, never caricatured.",
     childAge ? ageBody(childAge) : "",
     series?.outfits ? `In this story they wear: ${series.outfits}. Keep each person's own outfit colors from the references.` : "",
-    series && scene.withSidekick ? `The sidekick of this picture book series appears: ${series.sidekick}. Keep the sidekick looking the same on every page.` : "",
+    series
+      ? scene.withSidekick
+        ? `The sidekick of this picture book series appears: ${series.sidekick}. Keep the sidekick looking the same on every page.`
+        : `Do not include ${sidekickName(series.sidekick)} (the sidekick) in this scene.`
+      : "",
     `Scene: ${scene.art}.`,
+    series ? castPrompt(series.cast, scene.art, scene.camera) : "",
+    series ? SERIES_CAST_RULES : "",
     redoPrompt(redo),
     generic.length ? `${generic.join(" and ")} appear in this scene; draw them as gentle adults without a specific likeness.` : "",
     absent.length ? `Do not include ${absent.join(" or ")} in this scene.` : "",
@@ -430,11 +456,6 @@ function seriesNote(note?: string) {
   return n ? `Additional instructions from the art director (may be written in Japanese); follow them carefully, they take priority over the instructions above: ${n}` : "";
 }
 
-/** 相棒の名前（例：Pokke）。相棒の説明文の最初の語 */
-function sidekickName(sidekick: string) {
-  return sidekick.split(/[ ,]/)[0];
-}
-
 export function buildSeriesPrompt(series: StudioSeries, scene: SeriesScene, opts: { cover: boolean; outfits?: string; note?: string }) {
   const t = getTaste("watercolor")!;
   const people: Person[] = ["child", ...(scene.withMom ? (["mom"] as const) : []), ...(scene.withDad ? (["dad"] as const) : [])];
@@ -449,6 +470,8 @@ export function buildSeriesPrompt(series: StudioSeries, scene: SeriesScene, opts
       ? `The sidekick appears: ${series.sidekick}. Keep the sidekick exactly as on the character sheet.`
       : `Do not include ${sidekickName(series.sidekick)} (the sidekick) in this scene.`,
     `Scene: ${scene.art}.`,
+    castPrompt(series.cast, scene.art, scene.camera),
+    SERIES_CAST_RULES,
     scene.withMom ? "" : "Do not include the mother in this scene.",
     scene.withDad ? "" : "Do not include the father in this scene.",
     "Do not copy the white background or the side-by-side layout of the character sheet.",

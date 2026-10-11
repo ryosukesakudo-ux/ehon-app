@@ -30,6 +30,8 @@ export type SeriesData = {
   name: string;
   sidekick: string;
   sidekickLabel: string;
+  /** 相棒以外の名前のある登場人物の見た目（英語）。絵の指示に名前が出る場面で、見た目の説明を足す */
+  cast: Record<string, string>;
   episodes: {
     no: number;
     title: string;

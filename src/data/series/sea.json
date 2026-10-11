@@ -3,6 +3,12 @@
  "name": "うみの たからさがし",
  "sidekick": "Pukuru is a tiny baby pufferfish about the size of a child's fist, pale lemon-yellow with a creamy white belly, a few small brown freckle spots on its back, big round shiny black eyes, tiny fluttering fins and a little tail; when startled it puffs up into a smooth, perfectly round ball (no sharp spikes), and on land it travels in a glass bottle or bucket of seawater.",
  "sidekickLabel": "相棒のちびふぐ「プクル」",
+ "cast": {
+  "Don": "a huge red crab with giant claws",
+  "Piko": "a tiny yellow seahorse with a curled tail",
+  "Nami": "Grandma Nami, a kind old woman who keeps the lighthouse, with white hair and a captain's hat",
+  "Lulu": "a big baby blue-gray whale with a pale belly"
+ },
  "episodes": [
   {
    "no": 1,

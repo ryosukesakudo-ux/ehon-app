@@ -3,6 +3,13 @@
  "name": "たんじょうびのまほう",
  "sidekick": "Mint, a small white cat wizard about half the child's height, with big green eyes, wearing an oversized mint-green pointed hat decorated with golden stars that droops over his ears, and holding a little star-tipped wand",
  "sidekickLabel": "相棒のねこのまほうつかい「ミント」",
+ "cast": {
+  "Pipi": "a small yellow songbird mail carrier with a tiny satchel",
+  "Pom": "a little brown bear cub pastry chef in a white chef's hat and apron",
+  "Moko": "a small fluffy lamb made of white cloud",
+  "Shar": "a little pink seahorse with a curled tail",
+  "Gao": "a small round green baby dragon with tiny wings, about the same size as the child"
+ },
  "episodes": [
   {
    "no": 1,
