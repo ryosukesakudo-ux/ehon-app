@@ -9,7 +9,7 @@ export default async function DonePage({ searchParams }: PageProps<"/create/done
   const steps = [
     "ご注文確認のメールが届きます（コンビニ払いの方は、お支払い後に制作を始めます）",
     "絵本を印刷・製本します",
-    "数日後に発送します",
+    "2週間ほどでお届けします（お届け希望日を選んだ方は、その日までに届くように発送します）",
   ];
   return (
     <main className="step-body" style={{ paddingTop: 40, position: "relative" }}>
