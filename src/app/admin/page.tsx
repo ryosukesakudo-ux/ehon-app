@@ -25,6 +25,7 @@ export default async function AdminPage() {
         <p>Supabase が未設定のため、注文はありません（デモモード）。</p>
         <p><a href="/admin/trial">試作スタジオ（写真から絵本を試しに作る）</a></p>
         <p><a href="/admin/samples">作例スタジオ（見本の絵を作る）</a></p>
+        <p><a href="/admin/series">台本の絵スタジオ（台本の各話の絵を作例の家族で作る）</a></p>
         <p><a href="/admin/compare">画質くらべ（以前の方式と今のA方式を1枚ずつ）</a></p>
       </main>
     );
@@ -65,6 +66,7 @@ export default async function AdminPage() {
       <h1 className="display" style={{ margin: 0, color: "var(--navy)" }}>注文管理</h1>
       <a href="/admin/trial">試作スタジオ（写真から絵本を試しに作る）</a>
       <a href="/admin/samples">作例スタジオ（トップページなどの見本の絵を作る）</a>
+      <a href="/admin/series">台本の絵スタジオ（台本の各話の絵を作例の家族で作る）</a>
       <a href="/admin/compare">画質くらべ（以前の方式と今のA方式を1枚ずつ作って比べる）</a>
       <a href="/admin/coupons">クーポン管理（コードの発行・停止、使われた回数）</a>
       {rows.length === 0 && <p>まだ注文はありません。</p>}

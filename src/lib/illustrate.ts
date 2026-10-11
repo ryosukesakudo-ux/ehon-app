@@ -3,6 +3,7 @@ import type { Uploadable } from "openai/uploads";
 import { COVER_SCENE, COVER_SIZE, REDO_OPTIONS, characterOf, getStory, getTaste, type Person, type RedoOptionId, type Scene, type StoryId, type TasteId } from "./catalog";
 import { getOpenAI } from "./services";
 import { upscalePng } from "./upscale";
+import { SERIES, type SeriesId, type SeriesScene } from "./series";
 
 export type { Person };
 
@@ -328,6 +329,76 @@ export async function makeHeroBookPhoto(opts: { title: string; cover: Uploadable
     ].join(" "),
     size: "1024x1024",
     quality: "high",
+    output_format: "png",
+  });
+  const b64 = result.data?.[0]?.b64_json;
+  if (!b64) throw new Error("画像が生成されませんでした");
+  return b64;
+}
+
+// --- 台本（シリーズ）の絵 ---
+// 作例と同じ架空の家族で、シリーズの各話の表紙と12場面を描く。家族はお話の作例の設定画（服装も同じ）を
+// もとにし、相棒（森ならりすのポッケ）を加えた「シリーズの設定画」を1枚作って、全場面でそれを参考にする。
+
+/** お話の作例の設定画に相棒を加えた、シリーズの設定画を作る。 */
+export async function makeSeriesSheet(id: SeriesId, familySheet: Uploadable) {
+  const ai = getOpenAI();
+  if (!ai) throw new Error("OPENAI_API_KEY が未設定です");
+  const series = SERIES[id];
+  const result = await ai.images.edit({
+    model: process.env.OPENAI_IMAGE_MODEL ?? "gpt-image-2",
+    image: [familySheet],
+    prompt: [
+      "Character reference sheet for a children's picture book series.",
+      "The reference image shows the family: keep the child, the mother and the father exactly the same (faces, hairstyles, body proportions, outfits and colors).",
+      `Add the series sidekick standing next to the child: ${series.sidekick}.`,
+      "Show all four characters side by side, full body, front view, on a plain white background, at heights that fit them.",
+      "Simple, warm picture-book character design with clear shapes and flat colors so the faces, hairstyles, outfits and the sidekick are easy to copy.",
+      "Do not draw any letters, words or text.",
+    ].join(" "),
+    size: "1536x1024",
+    quality: "high",
+    output_format: "png",
+  });
+  const b64 = result.data?.[0]?.b64_json;
+  if (!b64) throw new Error("画像が生成されませんでした");
+  return b64;
+}
+
+export function buildSeriesPrompt(id: SeriesId, scene: SeriesScene, opts: { cover: boolean; outfits?: string }) {
+  const series = SERIES[id];
+  const t = getTaste("watercolor")!;
+  const people: Person[] = ["child", ...(scene.withMom ? (["mom"] as const) : []), ...(scene.withDad ? (["dad"] as const) : [])];
+  return [
+    `${t.prompt}.`,
+    "The reference image is the character sheet for this picture book series.",
+    "Draw exactly the same characters: the same faces, hairstyles, body proportions and outfit colors. Only the drawing style changes.",
+    STYLE_ONLY_FROM_TEXT,
+    sampleCast(series.story, people),
+    opts.outfits ? `In this episode they wear: ${opts.outfits}.` : "",
+    scene.withSidekick ? `The sidekick appears: ${series.sidekick}. Keep him exactly as on the character sheet.` : "Do not include the squirrel sidekick in this scene.",
+    `Scene: ${scene.art}.`,
+    scene.withMom ? "" : "Do not include the mother in this scene.",
+    scene.withDad ? "" : "Do not include the father in this scene.",
+    "Do not copy the white background or the side-by-side layout of the character sheet.",
+    opts.cover
+      ? "This is the front cover of the picture book: a wide landscape composition with the child large and clearly visible near the center, the scene filling the whole frame. Do not draw any letters, words, title or text in the image."
+      : SQUARE_FRAMING,
+  ]
+    .filter(Boolean)
+    .join(" ");
+}
+
+/** シリーズの1ページ（表紙または場面）を水彩で描き、PNG の base64 を返す。 */
+export async function illustrateSeries(opts: { id: SeriesId; scene: SeriesScene; cover: boolean; outfits?: string; quality: Quality; sheet: Uploadable }) {
+  const ai = getOpenAI();
+  if (!ai) throw new Error("OPENAI_API_KEY が未設定です");
+  const result = await ai.images.edit({
+    model: process.env.OPENAI_IMAGE_MODEL ?? "gpt-image-2",
+    image: [opts.sheet],
+    prompt: buildSeriesPrompt(opts.id, opts.scene, { cover: opts.cover, outfits: opts.outfits }),
+    size: opts.cover ? COVER_SIZE : "1024x1024",
+    quality: opts.quality === "final" ? "high" : "medium",
     output_format: "png",
   });
   const b64 = result.data?.[0]?.b64_json;
