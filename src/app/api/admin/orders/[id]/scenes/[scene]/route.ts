@@ -1,4 +1,5 @@
-import { bookScenes, getStory } from "@/lib/catalog";
+import { bookScenes } from "@/lib/catalog";
+import { getBook } from "@/lib/book";
 import { generateScene, loadDraft } from "@/lib/drafts";
 import { getSupabase } from "@/lib/services";
 
@@ -16,8 +17,8 @@ export async function POST(_request: Request, ctx: RouteContext<"/api/admin/orde
   }
   const draft = await loadDraft(order.draft_id);
   const sceneIndex = Number(scene);
-  const story = draft && getStory(draft.story);
-  if (!draft || !story || !bookScenes(story.id).includes(sceneIndex)) {
+  const story = draft && getBook(draft.story);
+  if (!draft || !story || !bookScenes().includes(sceneIndex)) {
     return Response.json({ error: "場面が見つかりません" }, { status: 400 });
   }
 

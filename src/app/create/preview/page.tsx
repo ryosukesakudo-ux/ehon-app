@@ -3,7 +3,8 @@
 import { Suspense, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { COVER_SCENE, MEMBER_MONTHLY_PREVIEWS, PERSON_LABEL, PREVIEW_PACK, REDO_NOTE_MAX, REDO_OPTIONS, bookTitle, characterOf, yen, getStory, sceneText, type RedoOptionId } from "@/lib/catalog";
+import { COVER_SCENE, MEMBER_MONTHLY_PREVIEWS, PERSON_LABEL, PREVIEW_PACK, REDO_NOTE_MAX, REDO_OPTIONS, characterOf, yen, type RedoOptionId } from "@/lib/catalog";
+import { bookTitle } from "@/lib/story-key";
 import { BookCover } from "@/components/book-cover";
 import { Chevron } from "@/components/icons";
 import { Lottie } from "@/components/lottie";
@@ -38,7 +39,6 @@ function Preview() {
   const [options, setOptions] = useState<RedoOptionId[]>([]);
   const [note, setNote] = useState("");
 
-  const story = getStory(state.story)!;
   const scenes = state.previewScenes;
   const scene = scenes[pos];
   const isCover = scene === COVER_SCENE;
@@ -162,7 +162,7 @@ function Preview() {
                 <span style={{ fontSize: 13, color: "var(--sub)" }}>この姿をもとに、絵本の全ページを描きます。</span>
               </>
             ) : (
-              sceneText(story.scenes[scene], state.childName)
+              ""
             )}
           </p>
         </div>

@@ -1,14 +1,16 @@
 "use client";
 
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
-import { clampCopies, getSize, type SizeId, type StoryId, type TasteId } from "@/lib/catalog";
+import { clampCopies, getSize, type SizeId, type TasteId } from "@/lib/catalog";
+import { isStoryKey, withoutCombo } from "@/lib/story-key";
 import { readLocalFlow, writeLocalFlow } from "./flow-storage";
 
 // 注文フローの入力内容。ページをまたいで保持し、ログインや再読み込みに備えてブラウザ（localStorage）にも残す。
 // 写真ファイル自体はメモリ上だけで持つ（ブラウザに保存しない）。
 export type FlowState = {
   taste: TasteId;
-  story: StoryId;
+  /** お話の番号（旧版のお話 "forest" か、シリーズの "forest:2:n"。story-key.ts） */
+  story: string;
   childName: string;
   childAge: number | null;
   /** 主人公のお誕生日（YYYY-MM-DD・任意）。誕生日の1か月前に続編のご案内メールを送る */
@@ -78,6 +80,8 @@ export function FlowProvider({ children }: { children: ReactNode }) {
       const restored: FlowState = { ...initial, ...(saved as Partial<FlowState>) };
       // 販売をやめたサイズ（L）が残っていたら M に戻す
       if (!getSize(restored.size)) restored.size = initial.size;
+      restored.story = withoutCombo(String(restored.story ?? ""));
+      if (!isStoryKey(restored.story)) restored.story = initial.story;
       restored.copies = clampCopies(restored.copies);
       // eslint-disable-next-line react-hooks/set-state-in-effect -- 保存済みの入力を一度だけ復元する
       setState(restored);

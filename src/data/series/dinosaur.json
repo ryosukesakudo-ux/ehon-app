@@ -1,0 +1,1168 @@
+{
+ "id": "dinosaur",
+ "name": "きょうりゅうの たまご",
+ "sidekick": "Moko is a baby long-neck (sauropod) dinosaur with soft leaf-green skin covered in darker green polka dots, big round shiny eyes, a gentle smile, a small head and a short wiggly tail, with tiny sparkly scales along the back; Moko starts small enough to fit in two hands in episode 1 and grows bigger with a longer neck each episode until tall enough to reach a house roof in episode 5 (size is given per scene)",
+ "sidekickLabel": "相棒のくびながりゅうの赤ちゃん「モコ」",
+ "episodes": [
+  {
+   "no": 1,
+   "title": "ふしぎな たまご",
+   "outfits": null,
+   "cover": {
+    "label": "大きなしだの葉っぱの下で、みどりの水玉もようのたまごをだきしめ、そっと耳を当てる主人公。",
+    "art": "under a huge fern leaf in a misty green fern forest, the child hugs a large green polka-dot dinosaur egg and gently presses an ear against it, eyes closed and listening with a soft smile; dappled spring light falls through the fronds",
+    "withSidekick": false
+   },
+   "scenes": [
+    {
+     "label": "【ママ】春の公園を手をつないで歩く主人公とママ。奥に背の高いしだの森",
+     "art": "a sunny spring park with cherry petals drifting down; the child and the mother walk hand in hand along a path, and the mother points toward a tall, mysterious fern forest at the back of the park while the child stares at it curiously",
+     "text": [
+      "{name}は ママと こうえんへ おさんぽ。",
+      "はるの ひ。{name}は ママと こうえんへ おさんぽに きました。「おくの しだの もりはね、きょうりゅうが いた ころから ある もりなんだって」",
+      "さくらの花《はな》がちる、春《はる》の日《ひ》。{name}はママといっしょに、公園《こうえん》へさんぽに来《き》ました。公園《こうえん》のおくには、大《おお》きな葉《は》っぱがわさわさしげる「しだの森《もり》」があります。ママが言《い》いました。「あの森《もり》はね、ずっと大昔《おおむかし》、きょうりゅうがいたころからあるんだって」{name}は、しだの森《もり》をじっと見《み》つめました。"
+     ],
+     "withMom": true,
+     "withDad": false,
+     "withSidekick": false,
+     "alt": {
+      "both": {
+       "label": "春の公園を歩く主人公・ママ・パパ。ママが奥のしだの森を指さし、パパがのぞきこむ",
+       "art": "a sunny spring park with cherry petals drifting down; the child, the mother and the father walk together, the mother pointing toward a tall, mysterious fern forest at the back of the park while the father leans in to look and the child stares curiously",
+       "text": [
+        "{name}は ママと パパと こうえんへ おさんぽ。",
+        "はるの ひ。{name}は ママと パパと こうえんへ おさんぽに きました。ママが いいました。「おくの しだの もりはね、きょうりゅうが いた ころから ある もりなんだって」",
+        "さくらの花《はな》がちる、春《はる》の日《ひ》。{name}はママとパパといっしょに、公園《こうえん》へさんぽに来《き》ました。公園《こうえん》のおくには、大《おお》きな葉《は》っぱがわさわさしげる「しだの森《もり》」があります。ママが言《い》いました。「あの森《もり》はね、ずっと大昔《おおむかし》、きょうりゅうがいたころからあるんだって」パパも「へえ」とのぞきこみます。{name}は、しだの森《もり》をじっと見《み》つめました。"
+       ],
+       "withMom": true,
+       "withDad": true,
+       "withSidekick": false
+      },
+      "dad": {
+       "label": "春の公園を手をつないで歩く主人公とパパ。奥に背の高いしだの森",
+       "art": "a sunny spring park with cherry petals drifting down; the child and the father walk hand in hand along a path, with a tall, mysterious fern forest rising at the back of the park that the child stares at curiously",
+       "text": [
+        "{name}は パパと こうえんへ おさんぽ。",
+        "はるの ひ。{name}は パパと こうえんへ おさんぽに きました。「おくの しだの もりはね、きょうりゅうが いた ころから ある もりなんだって」",
+        "さくらの花《はな》がちる、春《はる》の日《ひ》。{name}はパパといっしょに、公園《こうえん》へさんぽに来《き》ました。公園《こうえん》のおくには、大《おお》きな葉《は》っぱがわさわさしげる「しだの森《もり》」があります。パパが言《い》いました。「あの森《もり》はね、ずっと大昔《おおむかし》、きょうりゅうがいたころからあるんだって」{name}は、しだの森《もり》をじっと見《み》つめました。"
+       ],
+       "withMom": false,
+       "withDad": true,
+       "withSidekick": false
+      },
+      "none": {
+       "label": "春の公園で、肩にすずめをとめた主人公。奥に背の高いしだの森",
+       "art": "a sunny spring park with cherry petals drifting down; the child stands on the path with a little sparrow perched on one shoulder, gazing at a tall, mysterious fern forest rising at the back of the park",
+       "text": [
+        "{name}は こうえんで すずめと あそんだよ。",
+        "はるの ひ。{name}が こうえんで あそんで いると、すずめが とんで きました。「おくの しだの もりはね、きょうりゅうが いた ころから ある もりなんだよ」",
+        "さくらの花《はな》がちる、春《はる》の日《ひ》。{name}は公園《こうえん》で遊《あそ》んでいました。公園《こうえん》のおくには、大《おお》きな葉《は》っぱがわさわさしげる「しだの森《もり》」があります。一《いち》わのすずめが、{name}のかたにとまって、ささやきました。「あの森《もり》はね、ずっと大昔《おおむかし》、きょうりゅうがいたころからあるんだよ」{name}は、しだの森《もり》をじっと見《み》つめました。"
+       ],
+       "withMom": false,
+       "withDad": false,
+       "withSidekick": false
+      }
+     }
+    },
+    {
+     "label": "巨大なしだの葉の下に、緑の水玉もようの大きなたまご。そっと触れる主人公",
+     "art": "deep in the fern forest, a watermelon-sized egg with green polka dots rests under a giant fern leaf; the child kneels and touches it gently with one hand, surprised that it feels warm",
+     "text": [
+      "しだの したに、おおきな たまご！",
+      "しだの はっぱの したに、すいかぐらいの たまごが ありました。みどりの みずたま もようです。さわると、ほんのり あったかい。",
+      "しだの森《もり》の入《い》り口《ぐち》で、{name}は何《なに》かを見《み》つけました。大《おお》きな葉《は》っぱの下《した》に、すいかぐらいの、まるいたまごがあったのです。白《しろ》いからに、みどりの水玉《みずたま》もよう。そっとさわると、ほんのりあたたかくて、中《なか》から、ことん、と小《ちい》さな音《おと》がしました。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": false
+    },
+    {
+     "label": "葉っぱとこけのベッドにたまごをのせ、顔を近づける主人公",
+     "art": "the child has made a cozy bed of leaves and moss for the green polka-dot egg and leans in close with sparkling, impatient eyes, face almost touching the shell",
+     "text": [
+      "「はやく でておいで！」",
+      "「なにが うまれるのかな。はやく みたい！」 {name}は はっぱを あつめて、たまごの ベッドを つくりました。",
+      "「何《なに》が生《う》まれるのかな。きょうりゅうだったら、すごいな！」{name}のむねは、どきどきしてきました。葉《は》っぱとこけを集《あつ》めて、しだの下《した》に、ふかふかのベッドを作《つく》ります。たまごをそっとのせると、{name}は顔《かお》を近《ちか》づけて言《い》いました。「ねえ、早《はや》く出《で》ておいで！」"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": false
+    },
+    {
+     "label": "たまごを揺らす主人公。たまごは静まりかえる",
+     "art": "the child knocks on and rocks the green polka-dot egg on its leaf bed, and the egg sits perfectly still and silent; the child tilts their head, puzzled, in the hushed fern forest",
+     "text": [
+      "こんこん、ゆらゆら。でも でてこない。",
+      "こんこん、もしもし。{name}は たまごを たたいたり、ゆらしたり しました。でも、たまごは しーんと しずかに なって しまいました。",
+      "「こんこん、もしもし。もう朝《あさ》ですよ！」{name}は、たまごをこんこんたたいたり、ゆらゆらゆらしたりしました。でも、たまごは、うんともすんとも言《い》いません。さっきまで聞《き》こえていた、ことん、という音《おと》も、ぴたりと止《と》まってしまいました。「あれ？どうしたの？」"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": false
+    },
+    {
+     "label": "苔の生えた甲羅の年寄りかめノンノが、目を細めてたまごを見る",
+     "art": "Nonno, a big old tortoise with soft green moss growing on its shell slowly plods up to the green polka-dot egg and peers at it with kind, narrowed eyes, while the child kneels beside it listening",
+     "text": [
+      "かめの ノンノが のっそり。",
+      "のっそり のっそり、せなかに こけの はえた かめの ノンノが きました。「おや、たまごかい。わたしは むかし、おひさまの したで うたって まった ものさ」",
+      "しだのかげから、のっそり、のっそり、せなかにこけが生《は》えた、年《とし》よりのかめが出《で》てきました。「わたしはノンノ。この森《もり》に百年《ひゃくねん》すんでおるよ」ノンノは、たまごを見《み》て、目《め》を細《ほそ》めました。「おや、なつかしい。わたしの子《こ》どもたちのときはね、お日《ひ》さまの下《した》で、毎日《まいにち》うたを聞《き》かせて、待《ま》ったものさ」"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": false
+    },
+    {
+     "label": "日なたでたまごに歌いかける主人公。ノンノが横でうなずく",
+     "art": "in a warm patch of sunlight in the fern forest, the child sits beside the green polka-dot egg singing to it with an open mouth and swaying body, and Nonno, a big old tortoise with soft green moss growing on its shell nods along happily",
+     "text": [
+      "おひさまと おうたで ぬくぬく。",
+      "{name}は たまごを ひなたへ はこんで、うたを うたいました。「まだかな、まだかな」 たまごの なかで、ことんと おとが しました。",
+      "{name}は、たまごのベッドを日《ひ》なたへ運《はこ》びました。そして、知《し》っているうたを、ぜんぶうたってあげました。「まだかな、まだかな」すると、たまごの中《なか》で、また、ことん、と音《おと》がしました。「聞《き》こえてるんだ！」{name}はうれしくなって、もう一度《いちど》、はじめからうたいました。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": false
+    },
+    {
+     "label": "暗い空と雨。首を甲羅に引っこめるノンノ。耳をふさぐ主人公",
+     "art": "the sky turns dark and heavy rain pours over the fern forest with distant lightning; Nonno, a big old tortoise with soft green moss growing on its shell pulls its head into its shell, and the child covers both ears with a worried face beside the egg",
+     "text": [
+      "くもが きて、ごろごろ ごろ。",
+      "ところが、そらが くらく なって きました。ざあざあ あめ。とおくで かみなりが ごろごろ。{name}は おうちへ かえりたく なりました。",
+      "ところが、空《そら》がみるみる暗《くら》くなってきました。ぽつ、ぽつ……ざああっ。冷《つめ》たい雨《あめ》がふり出《だ》し、遠《とお》くで、かみなりがごろごろと鳴《な》りました。ノンノは、首《くび》をこうらの中《なか》へひっこめてしまいました。{name}は、かみなりが大《だい》のにがてです。「おうちに帰《かえ》りたい……」"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": false
+    },
+    {
+     "label": "ずぶぬれのたまごに耳を当てる主人公。暗い雨の森",
+     "art": "in the dark, rainy fern forest, the soaking-wet child presses an ear against the dripping green polka-dot egg, listening hard for a tiny heartbeat, face full of worry and hope",
+     "text": [
+      "たまごが つめたく なっちゃう。",
+      "たまごに さわると、ひんやり つめたく なって いました。みみを あてると、とく……とく……と、ちいさな ちいさな おとが しました。",
+      "帰《かえ》ろうとして、{name}はふと、たまごにさわりました。さっきまであたたかかったからが、雨《あめ》にぬれて、ひんやり冷《つめ》たくなっています。耳《みみ》を当《あ》てると、とく……とく……。今《いま》にも消《き》えそうな、小《ちい》さな小《ちい》さな音《おと》が聞《き》こえました。この子《こ》も、ひとりぼっちでこわいんだ。{name}は、そう思《おも》いました。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": false
+    },
+    {
+     "label": "しだの葉の傘の下、上着でくるんだたまごを抱きしめて叫ぶ主人公",
+     "art": "under a big fern leaf used as an umbrella in the stormy night, the child wraps the green polka-dot egg in their own jacket, hugs it tight and shouts bravely at the thunder with lightning flashing in the sky",
+     "text": [
+      "「がおがお、いっしょなら、こわくない！」",
+      "{name}は うわぎで たまごを くるんで、ぎゅっと だきしめました。そして、かみなりに まけない こえで いいました。「がおがお、いっしょなら、こわくない！」",
+      "{name}は、うわぎをぬいで、たまごをくるみました。そして、しだの大《おお》きな葉《は》っぱのかさの下《した》で、ぎゅっとだきしめました。ごろごろっ！{name}は、大《おお》きなきょうりゅうになったつもりで、おなかのそこから声《こえ》を出《だ》しました。「がおがお、いっしょなら、こわくない！」うでの中《なか》で、とく、とく、と音《おと》が強《つよ》くなりました。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": false
+    },
+    {
+     "label": "【見開き】月光の中、割れたたまごから水玉もようの赤ちゃんきょうりゅう。頭に殻のぼうし、見つめ合う主人公",
+     "art": "in silver moonlight after the storm, the green polka-dot egg has cracked open and out peeks Moko the baby long-neck dinosaur, tiny enough to fit in the child's two hands, with green polka dots and a piece of eggshell sitting on its head like a little hat; the child and Moko gaze into each other's eyes in wonder, fern forest glistening with raindrops all around. A grand, breathtaking wide view",
+     "text": [
+      "ぱかっ！ きょうりゅうの あかちゃん！",
+      "ぴしっ、ぱかっ！ たまごから、みずたま もようの きょうりゅうの あかちゃんが でて きました。「がお……がおがお！」 {name}の まねを して います。",
+      "雨《あめ》が上《あ》がり、雲《くも》のすきまから月《つき》の光《ひかり》がさしたそのとき。ぴしっ……ぱかっ！からがわれて、みどりの水玉《みずたま》もようの、きょうりゅうの赤《あか》ちゃんが顔《かお》を出《だ》しました。頭《あたま》には、からがぼうしみたいにのっています。赤《あか》ちゃんは{name}を見《み》て、口《くち》をぱくぱく。「がお……がおがお！」{name}の、まねっこです。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "【パパ】傘を持ったパパが主人公を肩車。主人公の手にきらきらのうろこ。しだの陰で手をふるモコ",
+     "art": "at the edge of the fern forest after the rain, the father holding an umbrella carries the child on his shoulders, and the child holds a glittering rainbow-sheen dinosaur scale in their hand; behind a fern, Moko the baby long-neck dinosaur, tiny enough to fit in the child's two hands, waves goodbye",
+     "text": [
+      "パパが むかえに きたよ。",
+      "あかちゃんの なまえは モコ。モコの せなかから、きらきらの うろこが 1まい ぽろり。そこへ パパが むかえに きて、{name}を かたぐるま しました。",
+      "{name}は赤《あか》ちゃんに「モコ」と名前《なまえ》をつけました。モコはうれしくて、しっぽをふりすぎて、ころん。そのひょうしに、せなかから、きらきら光《ひか》るうろこが1まい、ぽろりと落《お》ちました。そのとき、かさを持《も》ったパパが、むかえに来《き》ました。「こんな所《ところ》にいたのか。さがしたぞ」パパは、うろこをにぎった{name}を、ひょいとかたぐるましました。"
+     ],
+     "withMom": false,
+     "withDad": true,
+     "withSidekick": true,
+     "alt": {
+      "both": {
+       "label": "パパが主人公を肩車、横でママが傘をさしかけ髪をふく。主人公の手にうろこ。しだの陰で手をふるモコ",
+       "art": "at the edge of the fern forest after the rain, the father carries the child on his shoulders while the mother holds an umbrella over them and dries the child's hair with a towel; the child holds a glittering rainbow-sheen dinosaur scale, and behind a fern Moko the baby long-neck dinosaur, tiny enough to fit in the child's two hands, waves goodbye",
+       "text": [
+        "ママと パパが むかえに きたよ。",
+        "あかちゃんの なまえは モコ。モコの せなかから、きらきらの うろこが 1まい ぽろり。そこへ ママと パパが むかえに きて、パパが {name}を かたぐるま しました。",
+        "{name}は赤《あか》ちゃんに「モコ」と名前《なまえ》をつけました。モコはうれしくて、しっぽをふりすぎて、ころん。そのひょうしに、せなかから、きらきら光《ひか》るうろこが1まい、ぽろりと落《お》ちました。そのとき、かさを持《も》ったママとパパが、むかえに来《き》ました。「こんな所《ところ》にいたのか。さがしたぞ」パパは、うろこをにぎった{name}を、ひょいとかたぐるましました。ママもにっこり。"
+       ],
+       "withMom": true,
+       "withDad": true,
+       "withSidekick": true
+      },
+      "mom": {
+       "label": "しだの森の入口でママが主人公をハグ（肩車はしない）。主人公の手にうろこ。しだの陰で手をふるモコ",
+       "art": "at the entrance of the fern forest after the rain, the mother kneels and hugs the child tightly; the child holds a glittering rainbow-sheen dinosaur scale in one hand, and behind a fern Moko the baby long-neck dinosaur, tiny enough to fit in the child's two hands, waves goodbye",
+       "text": [
+        "ママが むかえに きたよ。ぎゅうっ。",
+        "あかちゃんの なまえは モコ。モコの せなかから、きらきらの うろこが 1まい ぽろり。そこへ ママが むかえに きて、{name}を ぎゅうっと だきしめました。",
+        "{name}は赤《あか》ちゃんに「モコ」と名前《なまえ》をつけました。モコはうれしくて、しっぽをふりすぎて、ころん。そのひょうしに、せなかから、きらきら光《ひか》るうろこが1まい、ぽろりと落《お》ちました。そのとき、かさを持《も》ったママが、むかえに来《き》ました。「こんな所《ところ》にいたの。さがしたのよ」ママは、うろこをにぎった{name}を、ぎゅうっとだきしめました。"
+       ],
+       "withMom": true,
+       "withDad": false,
+       "withSidekick": true
+      },
+      "none": {
+       "label": "ノンノの甲羅に乗って帰る主人公。手にうろこ。しだの陰で手をふるモコ",
+       "art": "at dusk after the rain, the child rides home on the mossy shell of Nonno, a big old tortoise with soft green moss growing on its shell, holding a glittering rainbow-sheen dinosaur scale in one hand; behind a fern, Moko the baby long-neck dinosaur, tiny enough to fit in the child's two hands, waves goodbye",
+       "text": [
+        "ノンノの こうらに のって かえろう。",
+        "あかちゃんの なまえは モコ。モコの せなかから、きらきらの うろこが 1まい ぽろり。ノンノが {name}を こうらに のせて、こうえんの でぐちまで おくって くれました。",
+        "{name}は赤《あか》ちゃんに「モコ」と名前《なまえ》をつけました。モコはうれしくて、しっぽをふりすぎて、ころん。そのひょうしに、せなかから、きらきら光《ひか》るうろこが1まい、ぽろりと落《お》ちました。ノンノが言《い》いました。「よくがんばったねえ。さあ、のりなさい」ノンノは、うろこをにぎった{name}をこうらにのせて、公園《こうえん》の出口《でぐち》まで、ゆっくりゆっくり送《おく》ってくれました。"
+       ],
+       "withMom": false,
+       "withDad": false,
+       "withSidekick": true
+      }
+     }
+    },
+    {
+     "label": "夜の寝室。光るうろこの中に、葉っぱをぺっと吐くモコとノンノが映る",
+     "art": "at night in the child's cozy bedroom, a dinosaur scale on the pillow glows softly, and inside its glow appears a picture of Moko the baby long-neck dinosaur, tiny enough to fit in the child's two hands, spitting out a leaf with a rumbling hungry tummy, while Nonno, a big old tortoise with soft green moss growing on its shell watches; the child peers at it from under the blanket",
+     "text": [
+      "うろこの なかで、モコが ぐうぐう。",
+      "その よる、まくらもとの うろこが ぽうっと ひかりました。うろこの なかに、おなかを ぐうぐう ならす モコが うつって いました。なにを たべるのかな？",
+      "その夜《よる》、まくらもとにおいたうろこが、ぽうっと光《ひか》りました。のぞきこむと、うろこの中《なか》に、しだの森《もり》のモコがうつっています。モコはおなかをぐうぐう鳴《な》らしながら、葉《は》っぱをくわえては、ぺっ。くわえては、ぺっ。となりで、ノンノが言《い》いました。「赤《あか》ちゃんのごはんはね、夏《なつ》に、がけの上《うえ》で実《みの》る『お日《ひ》さまの実《み》』じゃよ」"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    }
+   ]
+  },
+  {
+   "no": 2,
+   "title": "はじめての ごはん",
+   "outfits": "light summer clothes in the same colors as the reference: a short-sleeved T-shirt, shorts and sandals",
+   "cover": {
+    "label": "がけの上で、とげとげのオレンジ色の「お日さまの実」を両手でかかえる主人公と、大きく口をあけるモコ。空にはパタ。",
+    "art": "on top of a sunny cliff, the child holds up a spiky orange fruit with both hands while Moko the baby long-neck dinosaur, now about the size of a small dog, opens its mouth wide beside them; Pata, a small young sky-blue pteranodon with clumsy wings glides in the bright summer sky above",
+    "withSidekick": true
+   },
+   "scenes": [
+    {
+     "label": "【パパ】庭でパパと焼きそば。皿の端によけたピーマン。ポケットのうろこが光る",
+     "art": "a summer day in the garden; the father cooks fried noodles on a griddle, and the child has pushed the green peppers to the edge of the plate with a frown, while a dinosaur scale peeking from the child's pocket starts to glow",
+     "text": [
+      "パパと やきそば。ピーマンは いらない。",
+      "なつやすみ。パパと にわで やきそばを つくりました。でも {name}は、ピーマンを おさらの はしっこへ。「これ、いらない」",
+      "夏休《なつやす》みのお昼《ひる》。{name}はパパといっしょに、庭《にわ》でやきそばを作《つく》りました。じゅうじゅう、いいにおい。でも{name}は、みどりのピーマンだけを、おさらのはしっこへよけていきます。「これ、食《た》べたことないから、いらない」パパは、こまったように笑《わら》いました。そのとき、ポケットのうろこが、ぽうっと光《ひか》りました。"
+     ],
+     "withMom": false,
+     "withDad": true,
+     "withSidekick": false,
+     "alt": {
+      "both": {
+       "label": "庭でパパが焼きそばを作り、ママがお皿を配る。皿の端によけたピーマン。ポケットのうろこが光る",
+       "art": "a summer day in the garden; the father cooks fried noodles on a griddle and the mother hands out plates, while the child has pushed the green peppers to the edge of the plate with a frown and a dinosaur scale in the child's pocket starts to glow",
+       "text": [
+        "パパと ママと やきそば。ピーマンは いらない。",
+        "なつやすみ。パパと ママと にわで やきそばを つくりました。でも {name}は、ピーマンを おさらの はしっこへ。「これ、いらない」",
+        "夏休《なつやす》みのお昼《ひる》。{name}はパパとママといっしょに、庭《にわ》でやきそばを作《つく》りました。じゅうじゅう、いいにおい。でも{name}は、みどりのピーマンだけを、おさらのはしっこへよけていきます。「これ、食《た》べたことないから、いらない」パパは、こまったように笑《わら》いました。ママも、ふふっと笑《わら》っています。そのとき、ポケットのうろこが、ぽうっと光《ひか》りました。"
+       ],
+       "withMom": true,
+       "withDad": true,
+       "withSidekick": false
+      },
+      "mom": {
+       "label": "庭でママと焼きそば。皿の端によけたピーマン。ポケットのうろこが光る",
+       "art": "a summer day in the garden; the mother cooks fried noodles on a griddle, and the child has pushed the green peppers to the edge of the plate with a frown, while a dinosaur scale peeking from the child's pocket starts to glow",
+       "text": [
+        "ママと やきそば。ピーマンは いらない。",
+        "なつやすみ。ママと にわで やきそばを つくりました。でも {name}は、ピーマンを おさらの はしっこへ。「これ、いらない」",
+        "夏休《なつやす》みのお昼《ひる》。{name}はママといっしょに、庭《にわ》でやきそばを作《つく》りました。じゅうじゅう、いいにおい。でも{name}は、みどりのピーマンだけを、おさらのはしっこへよけていきます。「これ、食《た》べたことないから、いらない」ママは、こまったように笑《わら》いました。そのとき、ポケットのうろこが、ぽうっと光《ひか》りました。"
+       ],
+       "withMom": true,
+       "withDad": false,
+       "withSidekick": false
+      },
+      "none": {
+       "label": "庭の木陰でお弁当を食べる主人公。すみによけたピーマン、首をかしげるすずめ。ポケットのうろこが光る",
+       "art": "a summer day; the child eats a packed lunch in the shade of a garden tree, green peppers pushed into the corner of the lunch box while a sparrow tilts its head, and a dinosaur scale in the child's pocket starts to glow",
+       "text": [
+        "にわで おべんとう。ピーマンは いらない。",
+        "なつやすみ。{name}は にわの きの したで おべんとうを たべました。でも、ピーマンは おべんとうばこの すみっこへ。「これ、いらない」",
+        "夏休《なつやす》みのお昼《ひる》。{name}は、庭《にわ》の木《き》のかげで、おべんとうを広《ひろ》げました。おいしそうなやきそばです。でも{name}は、みどりのピーマンだけを、おべんとうばこのすみっこへよけていきます。「これ、食《た》べたことないから、いらない」えだの上《うえ》で、すずめが首《くび》をかしげました。そのとき、ポケットのうろこが、ぽうっと光《ひか》りました。"
+       ],
+       "withMom": false,
+       "withDad": false,
+       "withSidekick": false
+      }
+     }
+    },
+    {
+     "label": "少し大きくなったモコが葉っぱを吐き出す。ぎくっとする主人公",
+     "art": "in the summer fern forest, Moko the baby long-neck dinosaur, now about the size of a small dog, looks droopy and spits out a leaf with a grumpy face, and the child flinches, recognizing their own picky habit",
+     "text": [
+      "モコの おなかが ぐうぐう。",
+      "しだの もりへ いくと、すこし おおきく なった モコが ぐったり。はっぱを くわえては、ぺっ。「これ、いらない」と {name}の まねを しました。",
+      "しだの森《もり》へ走《はし》っていくと、春《はる》より少《すこ》し大《おお》きくなったモコが、ぐったりとねそべっていました。おなかが、ぐうぐう鳴《な》っています。{name}が葉《は》っぱをさし出《だ》すと、モコはくわえて、ぺっ。そして、{name}そっくりの顔《かお》で言《い》いました。「これ、いらない」"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "ノンノが森の奥を指す。モコをリュックに入れて出発する主人公",
+     "art": "Nonno, a big old tortoise with soft green moss growing on its shell points a stubby foot toward the deep forest, and the child sets off with a determined face, Moko the baby long-neck dinosaur, now about the size of a small dog, peeking out of the child's backpack",
+     "text": [
+      "「おひさまの み、とって くる！」",
+      "ノンノが いいました。「がけの うえの『おひさまの み』なら、たべるかもね」「まかせて！」 {name}は モコを リュックに いれて、でかけました。",
+      "のっそり出《で》てきたノンノが、言《い》いました。「森《もり》のおくの、がけの上《うえ》に、『お日《ひ》さまの実《み》』という実《み》がなっておる。きょうりゅうの赤《あか》ちゃんは、それが大《だい》すきなんじゃ」「まかせて！とってくる！」{name}はモコをリュックに入《い》れて、しだの森《もり》の、もっとおくへ進《すす》みました。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "霧の向こうにのんびり草を食べる大きなきょうりゅうたち。見上げる主人公とリュックのモコ",
+     "art": "through a misty fern tunnel, huge gentle long-necked and plant-eating dinosaurs graze peacefully in the distance; the child looks up in awe with Moko the baby long-neck dinosaur, now about the size of a small dog, peeking out of the backpack",
+     "text": [
+      "もりの おくは、きょうりゅうの くに！",
+      "しだの トンネルを ぬけると、きりの むこうで、おおきな きょうりゅうたちが のんびり くさを たべて いました。",
+      "しだのトンネルをぬけると、白《しろ》いきりの向《む》こうに、ふしぎなけしきが広《ひろ》がっていました。見上《みあ》げるほど大《おお》きなきょうりゅうたちが、のんびり草《くさ》を食《た》べています。ここは、きょうりゅうの国《くに》だったのです。どのきょうりゅうも、やさしい目《め》をしていました。リュックから顔《かお》を出《だ》したモコが、「わあ」と{name}のまねをしました。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "頭から着地した子どものプテラノドン・パタ。笑う主人公とモコ",
+     "art": "Pata, a small young sky-blue pteranodon with clumsy wings has crash-landed head first in the ferns with feathers of dust flying, and the child and Moko the baby long-neck dinosaur, now about the size of a small dog, laugh",
+     "text": [
+      "そらから パタが どてっ。",
+      "ばさばさ、どてっ！ そらから プテラノドンの パタが おちて きました。「いてて。おひさまの み？ あんない するよ！」",
+      "ばさばさばさ……どてっ！空《そら》から、何《なに》かが落《お》ちてきました。つばさの大《おお》きな、小《ちい》さなきょうりゅう――プテラノドンの子《こ》どもです。「いてて。ぼく、パタ。とぶのはとくいだけど、おりるのがへたなんだ」パタは羽《はね》の土《つち》をはらって、むねをはりました。「お日《ひ》さまの実《み》なら、ぼくがあんないするよ！」"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "崖の上の木。とげとげのオレンジ色の実。鼻をつまむ主人公",
+     "art": "at the top of a cliff, a round spiky orange fruit hangs from a lone tree; the child pinches their nose at its funny smell, with Pata the small sky-blue pteranodon perched nearby",
+     "text": [
+      "あった！ おひさまの み！",
+      "がけを のぼると、まるくて オレンジいろの みが ありました。でも、とげとげで、ちょっぴり へんな におい。",
+      "パタについて、ごつごつしたがけをよじ登《のぼ》ると、てっぺんに一本《いっぽん》の木《き》が立《た》っていました。えだには、お日《ひ》さまみたいなオレンジ色《いろ》の実《み》が、たくさんなっています。「やった！」でも、近《ちか》くで見《み》ると、実《み》はとげとげで、なんだか、ちょっぴりへんなにおいがしました。{name}は、思《おも》わず鼻《はな》をつまみました。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": false
+    },
+    {
+     "label": "主人公そっくりに鼻をつまんでそっぽを向くモコ。きょとんとするパタ",
+     "art": "the child holds out the spiky orange fruit, but Moko the baby long-neck dinosaur, now about the size of a small dog, pinches its nose with a tiny foot exactly like the child and turns its head away, while Pata, a small young sky-blue pteranodon with clumsy wings blinks in confusion",
+     "text": [
+      "モコも おはなを つまんで、ぷいっ。",
+      "「はい、モコ。たべて」 でも モコは、{name}と おなじように はなを つまんで、ぷいっ。「これ、いらない」",
+      "「はい、モコ。食《た》べてごらん」{name}が実《み》をさし出《だ》すと、モコは、{name}とそっくりに鼻《はな》をつまんで、ぷいっと横《よこ》を向《む》きました。「これ、いらない」パタが、きょとんとしました。「あれ？モコって、{name}のまねばっかりするんだね」{name}は、はっとしました。お昼《ひる》の、ピーマンのことを思《おも》い出《だ》したのです。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "力なく座りこむモコ。実を持ったまま涙ぐむ主人公",
+     "art": "Moko the baby long-neck dinosaur, now about the size of a small dog, sits down weakly on the cliff top with a hungry tummy, and the child, still holding the spiky orange fruit, has teary eyes",
+     "text": [
+      "モコ、げんきが なくなっちゃった。",
+      "モコの おなかが ぐう、きゅるる。モコは ちからなく すわりこんで しまいました。「どうしよう……」 {name}の めに なみだが にじみました。",
+      "ぐう、きゅるるる……。モコのおなかの音《おと》が、だんだん小《ちい》さくなっていきます。モコは力《ちから》なく、すわりこんでしまいました。いくら実《み》をさし出《だ》しても、首《くび》をふるばかりです。「どうしよう。モコが、ごはんを食《た》べてくれない……」{name}の目《め》に、なみだがにじみました。手《て》の中《なか》の実《み》が、ちくちくします。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "目をつぶって実にかじりつく主人公。見つめるモコとパタ",
+     "art": "on the cliff, the child squeezes their eyes shut and bravely takes a big bite of the spiky orange fruit, while Moko the baby long-neck dinosaur, now about the size of a small dog, and Pata, a small young sky-blue pteranodon with clumsy wings watch wide-eyed",
+     "text": [
+      "「がおがお、いっしょなら、こわくない！」",
+      "{name}は みを ぎゅっと にぎりました。「がおがお、いっしょなら、こわくない！」 そして、じぶんから ぱくっと かじりました。",
+      "{name}は、実《み》をぎゅっとにぎりしめました。食《た》べたことのないものは、やっぱりちょっとこわい。でも、モコがまねをするなら――。{name}は大《おお》きく息《いき》をすいこみました。「がおがお、いっしょなら、こわくない！」そして、目《め》をつぶって、とげとげの実《み》を、自分《じぶん》からぱくっとかじりました。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "【見開き】夕日の崖の上で実をほおばる主人公とモコ。しっぽを振りすぎて転がるモコ、笑うパタ",
+     "art": "on the cliff top glowing in the golden sunset, the child and Moko the baby long-neck dinosaur, now about the size of a small dog, munch happily on the honey-sweet orange fruit; Moko wags its tail so hard it tumbles over, and Pata, a small young sky-blue pteranodon with clumsy wings laughs, with the misty valley of dinosaurs spread below. A grand, breathtaking wide view",
+     "text": [
+      "あまーい！ モコも もぐもぐ！",
+      "「……あまい！」 なかは とろとろで、はちみつの あじ。モコも まねして ぱくっ。もぐもぐ、ごっくん。しっぽを ふりすぎて、ころん！",
+      "「……あまーい！」とげとげのかわの中《なか》は、とろとろで、はちみつみたいなあじがしました。{name}がにっこりすると、モコもまねをして、ぱくっ！もぐもぐ、ごっくん。モコの目《め》が、まんまるにかがやきました。「おいしい！」もう一《ひと》つ、もう一《ひと》つ。モコはうれしくて、しっぽをふりすぎて、ころん！がけの上《うえ》に、みんなの笑《わら》い声《ごえ》がひびきました。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "【ママ】夕食の食卓でピーマンを口に入れる主人公。にっこりするママ",
+     "art": "at the dinner table at home in the evening, the child nervously puts a piece of green pepper into their mouth, and the mother beams with a big smile",
+     "text": [
+      "ママの ごはん。ピーマン、ぱくっ。",
+      "いえに かえると、ママの ゆうごはん。おさらには ピーマン。{name}は どきどき しながら、ぱくっ。「……たべられた！」 ママが にっこり しました。",
+      "家《いえ》に帰《かえ》ると、ママが夕《ゆう》ごはんを作《つく》って待《ま》っていました。おさらには、またピーマン。{name}は、ちょっとだけどきどきしながら、はしでつまみました。そして、ぱくっ。もぐもぐ……。「……にがいけど、食《た》べられた！」ママは目《め》を丸《まる》くして、それから、にっこり笑《わら》いました。「すごいね。何《なに》かいいことがあったの？」"
+     ],
+     "withMom": true,
+     "withDad": false,
+     "withSidekick": false,
+     "alt": {
+      "both": {
+       "label": "夕食の食卓でピーマンを食べる主人公。にっこりするママ、驚くパパ",
+       "art": "at the dinner table at home in the evening, the child bravely eats a piece of green pepper; the mother beams with a big smile and the father looks amazed",
+       "text": [
+        "ママと パパと ごはん。ピーマン、ぱくっ。",
+        "いえに かえると、ママと パパと ゆうごはん。おさらには ピーマン。{name}は どきどき しながら、ぱくっ。「……たべられた！」 ママが にっこり しました。",
+        "家《いえ》に帰《かえ》ると、ママとパパが、夕《ゆう》ごはんを作《つく》って待《ま》っていました。おさらには、またピーマン。{name}は、ちょっとだけどきどきしながら、はしでつまみました。そして、ぱくっ。もぐもぐ……。「……にがいけど、食《た》べられた！」パパは、おはしを落《お》としそうになりました。ママは目《め》を丸《まる》くして、にっこり笑《わら》いました。「すごいね。何《なに》かいいことがあったの？」"
+       ],
+       "withMom": true,
+       "withDad": true,
+       "withSidekick": false
+      },
+      "dad": {
+       "label": "夕食の食卓でピーマンを口に入れる主人公。にっこりするパパ",
+       "art": "at the dinner table at home in the evening, the child nervously puts a piece of green pepper into their mouth, and the father beams with a big smile",
+       "text": [
+        "パパの ごはん。ピーマン、ぱくっ。",
+        "いえに かえると、パパの ゆうごはん。おさらには ピーマン。{name}は どきどき しながら、ぱくっ。「……たべられた！」 パパが にっこり しました。",
+        "家《いえ》に帰《かえ》ると、パパが夕《ゆう》ごはんを作《つく》って待《ま》っていました。おさらには、またピーマン。{name}は、ちょっとだけどきどきしながら、はしでつまみました。そして、ぱくっ。もぐもぐ……。「……にがいけど、食《た》べられた！」パパは目《め》を丸《まる》くして、それから、にっこり笑《わら》いました。「すごいな。何《なに》かいいことがあったのか？」"
+       ],
+       "withMom": false,
+       "withDad": true,
+       "withSidekick": false
+      },
+      "none": {
+       "label": "夜の窓辺、パタが転がしたピーマンを口に入れる主人公。羽をぱたぱたさせるパタ",
+       "art": "at a windowsill on a summer night, Pata, a small young sky-blue pteranodon with clumsy wings has rolled a green pepper over to the child, who bravely pops it in their mouth while Pata flaps its wings happily",
+       "text": [
+        "パタの おとどけもの。ピーマン、ぱくっ。",
+        "その よる、まどから パタが ピーマンを ころがしました。「おひるの おのこしだよ」 {name}は どきどき しながら、ぱくっ。「……たべられた！」",
+        "その夜《よる》、まどがこつこつ鳴《な》りました。パタです。「お昼《ひる》のおのこし、とどけに来《き》たよ」パタは、ピーマンを一《ひと》つ、ころんところがしました。{name}は、ちょっとだけどきどきしながら、つまみました。そして、ぱくっ。もぐもぐ……。「……にがいけど、食《た》べられた！」パタは目《め》を丸《まる》くして、それから、羽《はね》をぱたぱたさせて笑《わら》いました。「すごいや！」"
+       ],
+       "withMom": false,
+       "withDad": false,
+       "withSidekick": false
+      }
+     }
+    },
+    {
+     "label": "枕元に2枚のうろこ。うろこの中に、眠るモコと大きな足あとを指すパタ",
+     "art": "at night, two glittering dinosaur scales lie on the child's pillow, and inside their glow appears a picture of Moko the baby long-neck dinosaur, now about the size of a small dog, sleeping peacefully while Pata, a small young sky-blue pteranodon with clumsy wings points to a huge dinosaur footprint among red autumn leaves",
+     "text": [
+      "うろこが 2まいに なったよ。",
+      "その よる、うろこは 2まいに なって いました。うろこの なかで パタが いいます。「あきの もみじの たにで、モコに にた おおきな あしあとを みたよ！」",
+      "その夜《よる》、まくらもとのうろこは、2まいになっていました。新《あたら》しいうろこは、お日《ひ》さまの実《み》と同《おな》じ、オレンジ色《いろ》です。うろこの中《なか》では、おなかいっぱいのモコが、すやすやねむっています。そこへ、パタがどてっと着地《ちゃくち》しました。「たいへん！秋《あき》の『もみじの谷《たに》』で、モコそっくりの、ものすごく大《おお》きな足《あし》あとを見《み》つけたんだ！」"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    }
+   ]
+  },
+  {
+   "no": 3,
+   "title": "よちよち モコと まるたの はし",
+   "outfits": "light autumn clothes in the same colors as the reference: a long-sleeved top, long pants and a light jacket",
+   "cover": {
+    "label": "紅葉の谷の丸太橋を一歩ずつ渡るモコ。向こう岸で両手を広げて待つ主人公。",
+    "art": "in a valley of red and gold autumn leaves, Moko the baby long-neck dinosaur, now as tall as the child, wobbles step by step across a single log bridge over a stream, while the child waits on the far bank with arms wide open",
+    "withSidekick": true
+   },
+   "scenes": [
+    {
+     "label": "【ママ】紅葉の公園で自転車の練習。後ろを支えて走るママ。ポケットのうろこが光る",
+     "art": "an autumn park full of red and yellow leaves; the child practices riding a bicycle while the mother runs behind holding the back of the seat, and a dinosaur scale in the child's pocket glows",
+     "text": [
+      "ママと じてんしゃの れんしゅう。",
+      "あきの こうえん。{name}は ママと じてんしゃの れんしゅう。ママが うしろを もって、いっしょに はしって くれます。「ぜったい はなさないでね！」",
+      "赤《あか》や黄色《きいろ》の葉《は》っぱがまう、秋《あき》の公園《こうえん》。{name}はママといっしょに、じてんしゃの練習《れんしゅう》をしていました。ママは、うしろをしっかり持《も》って、いっしょに走《はし》ってくれます。「ママ、ぜったい、はなさないでね！」「はいはい」そのとき、ポケットのうろこが、ちかちかっと光《ひか》りました。"
+     ],
+     "withMom": true,
+     "withDad": false,
+     "withSidekick": false,
+     "alt": {
+      "both": {
+       "label": "紅葉の公園で自転車の練習。後ろを支えて走るママ、ゴールで手をふるパパ。ポケットのうろこが光る",
+       "art": "an autumn park full of red and yellow leaves; the child practices riding a bicycle while the mother runs behind holding the seat and the father waves from the finish point, and a dinosaur scale in the child's pocket glows",
+       "text": [
+        "ママと パパと じてんしゃの れんしゅう。",
+        "あきの こうえん。{name}は ママと パパと じてんしゃの れんしゅう。ママが うしろを もって、いっしょに はしって くれます。「ぜったい はなさないでね！」",
+        "赤《あか》や黄色《きいろ》の葉《は》っぱがまう、秋《あき》の公園《こうえん》。{name}はママとパパといっしょに、じてんしゃの練習《れんしゅう》をしていました。ママは、うしろをしっかり持《も》って、いっしょに走《はし》ってくれます。パパは、ゴールで手《て》をふっています。「ママ、ぜったい、はなさないでね！」「はいはい」そのとき、ポケットのうろこが、ちかちかっと光《ひか》りました。"
+       ],
+       "withMom": true,
+       "withDad": true,
+       "withSidekick": false
+      },
+      "dad": {
+       "label": "紅葉の公園で自転車の練習。後ろを支えて走るパパ。ポケットのうろこが光る",
+       "art": "an autumn park full of red and yellow leaves; the child practices riding a bicycle while the father runs behind holding the back of the seat, and a dinosaur scale in the child's pocket glows",
+       "text": [
+        "パパと じてんしゃの れんしゅう。",
+        "あきの こうえん。{name}は パパと じてんしゃの れんしゅう。パパが うしろを もって、いっしょに はしって くれます。「ぜったい はなさないでね！」",
+        "赤《あか》や黄色《きいろ》の葉《は》っぱがまう、秋《あき》の公園《こうえん》。{name}はパパといっしょに、じてんしゃの練習《れんしゅう》をしていました。パパは、うしろをしっかり持《も》って、いっしょに走《はし》ってくれます。「パパ、ぜったい、はなさないでね！」「はいはい」そのとき、ポケットのうろこが、ちかちかっと光《ひか》りました。"
+       ],
+       "withMom": false,
+       "withDad": true,
+       "withSidekick": false
+      },
+      "none": {
+       "label": "紅葉の公園で、自転車にまたがって足をつく主人公。ポケットのうろこが光る",
+       "art": "an autumn park full of red and yellow leaves; the child sits on a bicycle with both feet on the ground, looking a little unsure, while a dinosaur scale in the child's pocket glows",
+       "text": [
+        "ひとりで じてんしゃの れんしゅう。",
+        "あきの こうえん。{name}は じてんしゃの れんしゅう。でも こわくて、すぐに あしを ついて しまいます。「だれか、うしろを もってて くれたらなあ」",
+        "赤《あか》や黄色《きいろ》の葉《は》っぱがまう、秋《あき》の公園《こうえん》。{name}は、じてんしゃの練習《れんしゅう》をしていました。でも、ペダルをこごうとすると、ぐらっ。こわくて、すぐに足《あし》をついてしまいます。「だれか、うしろを持《も》っててくれたらなあ」そのとき、ポケットのうろこが、ちかちかっと光《ひか》りました。"
+       ],
+       "withMom": false,
+       "withDad": false,
+       "withSidekick": false
+      }
+     }
+    },
+    {
+     "label": "大きくなったモコがよちよち歩いて転ぶ。かけよる主人公",
+     "art": "in the autumn fern forest, Moko the baby long-neck dinosaur, now as tall as the child, toddles on wobbly legs and tumbles over, and the child rushes toward Moko",
+     "text": [
+      "モコ、こんなに おおきく なった！",
+      "しだの もりの モコは、すっかり おおきく なって いました。でも、あしは まだ よちよち。さんぽ あるくと、ころん。",
+      "しだの森《もり》に行《い》くと、モコは見《み》ちがえるほど大《おお》きくなっていました。もうリュックには入《はい》りません。首《くび》も、少《すこ》しのびたみたい。でも、足《あし》はまだよちよちで、三歩《さんぽ》あるくと、ころん。また三歩《さんぽ》あるくと、ころん。「モコ、いたくない？」{name}は、あわててかけよりました。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "木の荷車にモコを乗せる主人公。木の上から道を指すパタ",
+     "art": "the child lifts Moko the baby long-neck dinosaur, now as tall as the child, into a wooden cart, while Pata, a small young sky-blue pteranodon with clumsy wings perches on a tree branch above and points the way with a wing",
+     "text": [
+      "「{name}が はこんで あげる！」",
+      "パタが いいました。「もみじの たにの あしあと、モコの かぞくかも！」「いこう！ {name}が はこんで あげる！」 {name}は モコを にぐるまに のせました。",
+      "パタが、木《き》の上《うえ》から言《い》いました。「もみじの谷《たに》の大《おお》きな足《あし》あと、まだのこってるよ。モコの家族《かぞく》かもしれない！」「行《い》こう！」でも、モコの足《あし》では、谷《たに》までとても歩《ある》けません。「だいじょうぶ。{name}がはこんであげる！」{name}は、木《き》の荷車《にぐるま》にモコをのせました。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "落ち葉の坂道で汗をかきながら荷車を引く主人公。足をぶらぶらさせるモコ",
+     "art": "on a slope covered with fallen leaves, the child pulls the heavy wooden cart, sweating and puffing, while Moko the baby long-neck dinosaur, now as tall as the child, sits in the cart dangling its legs and longing to walk",
+     "text": [
+      "よいしょ、よいしょ。おもいなあ。",
+      "さかみちを、よいしょ、よいしょ。モコは とっても おもいのです。「モコも、あるく」「だめ、ころんじゃうよ」",
+      "落《お》ち葉《ば》の坂道《さかみち》を、よいしょ、よいしょ。お日《ひ》さまの実《み》をたくさん食《た》べたモコは、とっても重《おも》くなっていました。荷車《にぐるま》から、モコが足《あし》をぶらぶらさせて言《い》いました。「モコも、あるく」「だめだめ。ころんだら、いたいでしょ」{name}は、あせをふいて、また荷車《にぐるま》を引《ひ》きました。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "落ち葉を蹴散らして走るトリケラトプスの三きょうだい。身を乗り出すモコ",
+     "art": "the three little triceratops siblings Tsun, Tan and Ton, round and orange with stubby horns race past kicking up a whirl of autumn leaves, and Moko the baby long-neck dinosaur, now as tall as the child, leans eagerly out of the cart with sparkling eyes",
+     "text": [
+      "つのつの 3きょうだいだ！",
+      "どどどっ！ トリケラトプスの 3きょうだいが かけっこを して いました。「いっしょに あそぼう！」 モコは めを きらきら させました。",
+      "どどどどっ！落《お》ち葉《ば》をけちらして、つのが三本《さんぼん》ある、小《ちい》さなきょうりゅうが走《はし》ってきました。トリケラトプスの、ツン、タン、トンの三《さん》きょうだいです。「ねえ、いっしょにかけっこしようよ！」モコは目《め》をきらきらさせて、荷車《にぐるま》から身《み》をのり出《だ》しました。でも、{name}は首《くび》をふりました。「モコは、まだむりなの」"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "転んだモコを抱き上げる主人公。しっぽを下げるモコ",
+     "art": "Moko the baby long-neck dinosaur, now as tall as the child, has tumbled again after a few steps, and the child scoops Moko up in a hug, while Moko's tail droops sadly",
+     "text": [
+      "モコが ころんだ。すぐ だっこ。",
+      "モコは そっと おりて、いっぽ、にほ……ころん。{name}は すぐに だっこしました。「ほらね。{name}が やって あげるから」",
+      "モコは、こっそり荷車《にぐるま》からおりて、三《さん》きょうだいのまねをしようとしました。一歩《いっぽ》、二歩《にほ》……ころん。{name}はすぐにかけよって、モコをだき上《あ》げました。「ほらね。{name}がやってあげるから、いいの」モコはだまって、{name}のうでの中《なか》で、しっぽを下《さ》げました。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "谷川にかかる丸太一本の橋。向こう岸に大きな足あと。荷車の横で困る主人公",
+     "art": "a deep autumn valley where a single log bridges a rushing stream, with huge dinosaur footprints on the far bank; the child stands beside the wooden cart and Moko the baby long-neck dinosaur, now as tall as the child,, looking troubled",
+     "text": [
+      "まるたの はし。ほそいなあ。",
+      "たにの かわには、まるたが 1ぽん。むこうぎしに おおきな あしあと。でも モコを だっこした ままじゃ、わたれません。",
+      "やがて、もみじの谷《たに》に着《つ》きました。谷川《たにがわ》の上《うえ》には、丸太《まるた》が一本《いっぽん》わたしてあるだけ。向《む》こう岸《ぎし》には、お皿《さら》よりずっと大《おお》きな足《あし》あとが、てんてんとつづいています。でも、丸太《まるた》は細《ほそ》くて、荷車《にぐるま》は通《とお》れません。モコをだっこしたままでは、{name}もふらふらです。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "夕日の谷で座りこむ主人公。自分の足で立ち、主人公の手をなめるモコ",
+     "art": "in the sunset-lit autumn valley, the child sits slumped before the log bridge, and Moko the baby long-neck dinosaur, now as tall as the child, stands up on its own feet and gently licks the child's hand",
+     "text": [
+      "「もう、むりだよ……」",
+      "「もう、むりだよ……」 {name}は まるたの まえに すわりこみました。そのとき、モコが じぶんで たって、{name}の てを ぺろり。",
+      "「もう、むりだよ……」{name}は、丸太《まるた》の前《まえ》にすわりこんでしまいました。ずっと荷車《にぐるま》を引《ひ》いてきた手《て》は、じんじんいたみます。夕日《ゆうひ》が、谷《たに》の向《む》こうへしずんでいきます。そのとき、モコが自分《じぶん》の足《あし》でふんばって立《た》ち、{name}の手《て》を、ぺろりとなめました。「モコ……あるける」"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "丸太を先に渡り、振り向いて両手を広げる主人公。橋のたもとのモコ",
+     "art": "the child has crossed the log bridge first and turns back with arms wide open and an encouraging smile, while Moko the baby long-neck dinosaur, now as tall as the child, stands at the foot of the bridge on the other side",
+     "text": [
+      "「がおがお、いっしょなら、こわくない！」",
+      "{name}は さきに まるたを わたって、ふりむいて てを ひろげました。「モコ、ここで まってるよ。がおがお、いっしょなら、こわくない！」",
+      "{name}は、モコの足《あし》をじっと見《み》ました。小《ちい》さいけれど、ちゃんとふんばっています。{name}は、先《さき》に一人《ひとり》で丸太《まるた》をわたると、くるりとふり向《む》いて、両手《りょうて》を大《おお》きく広《ひろ》げました。「モコ、ここで待《ま》ってるよ！がおがお、いっしょなら、こわくない！」"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "【見開き】紅葉が舞う中、丸太橋を渡りきって主人公の胸に飛びこむモコ。跳ねる三きょうだいとパタ",
+     "art": "amid swirling red and gold autumn leaves, Moko the baby long-neck dinosaur, now as tall as the child, has made it all the way across the log bridge and leaps into the child's arms; the three little triceratops siblings Tsun, Tan and Ton, round and orange with stubby horns bounce with joy and Pata, a small young sky-blue pteranodon with clumsy wings cheers in the air above the glowing valley. A grand, breathtaking wide view",
+     "text": [
+      "いっぽ、いっぽ。モコ、わたれた！",
+      "モコが まるたに あしを のせました。いっぽ、また いっぽ。「がおがお！」 さいごは ぴょんと {name}の むねに とびこみました。",
+      "モコは、ぶるぶるふるえる足《あし》を、丸太《まるた》にのせました。「がおがお……いっしょなら……」{name}のまねをしながら、一歩《いっぽ》、また一歩《いっぽ》。そして、さいごの一歩《いっぽ》で、ぴょん！モコは、{name}のむねにとびこみました。「わたれた！モコ、自分《じぶん》でわたれたね！」三《さん》きょうだいとパタが、わあっとはねまわりました。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "【パパ】公園で一人で自転車をこぐ主人公。手を広げて駆け寄るパパ",
+     "art": "the next day in the autumn park, the child pedals the bicycle all alone, and the father runs toward them with arms open wide, beaming",
+     "text": [
+      "パパ、みてて！ ひとりで こげたよ。",
+      "つぎの ひ、パパと こうえんへ。「パパ、もう もたなくて いいよ」 {name}は じぶんで ペダルを こぎました。すいすい！",
+      "次《つぎ》の日《ひ》、{name}はパパと公園《こうえん》へ行《い》きました。パパがじてんしゃのうしろを持《も》とうとすると、{name}は首《くび》をふりました。「パパ、そこで見《み》てて」そして、自分《じぶん》でぐっとペダルをふみました。ふらふら……すいーっ！「やった、のれた！」パパが、かけよってきました。「すごいぞ、{name}！一人《ひとり》でのれたな！」"
+     ],
+     "withMom": false,
+     "withDad": true,
+     "withSidekick": false,
+     "alt": {
+      "both": {
+       "label": "公園で一人で自転車をこぐ主人公。駆け寄るパパ、拍手するママ",
+       "art": "the next day in the autumn park, the child pedals the bicycle all alone; the father runs toward them with arms open and the mother claps happily",
+       "text": [
+        "パパ、ママ、みてて！ ひとりで こげたよ。",
+        "つぎの ひ、パパと ママと こうえんへ。「パパ、もう もたなくて いいよ」 {name}は じぶんで ペダルを こぎました。すいすい！",
+        "次《つぎ》の日《ひ》、{name}はパパとママと公園《こうえん》へ行《い》きました。パパがじてんしゃのうしろを持《も》とうとすると、{name}は首《くび》をふりました。「パパ、そこで見《み》てて」そして、自分《じぶん》でぐっとペダルをふみました。ふらふら……すいーっ！「やった、のれた！」ママがはくしゅして、パパが、かけよってきました。「すごいぞ、{name}！一人《ひとり》でのれたな！」"
+       ],
+       "withMom": true,
+       "withDad": true,
+       "withSidekick": false
+      },
+      "mom": {
+       "label": "公園で一人で自転車をこいだ主人公を、駆け寄ったママがハグ",
+       "art": "the next day in the autumn park, the child has ridden the bicycle all alone, and the mother runs up and hugs the child warmly beside the bike",
+       "text": [
+        "ママ、みてて！ ひとりで こげたよ。",
+        "つぎの ひ、ママと こうえんへ。「ママ、もう もたなくて いいよ」 {name}は じぶんで ペダルを こぎました。すいすい！",
+        "次《つぎ》の日《ひ》、{name}はママと公園《こうえん》へ行《い》きました。ママがじてんしゃのうしろを持《も》とうとすると、{name}は首《くび》をふりました。「ママ、そこで見《み》てて」そして、自分《じぶん》でぐっとペダルをふみました。ふらふら……すいーっ！「やった、のれた！」ママが、かけよってきて、{name}をぎゅっとだきしめました。「すごいね、{name}！一人《ひとり》でのれたね！」"
+       ],
+       "withMom": true,
+       "withDad": false,
+       "withSidekick": false
+      },
+      "none": {
+       "label": "しだの森の前で一人で自転車をこぐ主人公。甲羅から首を伸ばして見守るノンノ",
+       "art": "in front of the fern forest, the child pedals the bicycle all alone with a proud smile, while Nonno, a big old tortoise with soft green moss growing on its shell stretches its neck out of its shell to watch",
+       "text": [
+        "ノンノ、みてて！ ひとりで こげたよ。",
+        "つぎの ひ、{name}は じてんしゃで しだの もりの まえへ。「ノンノ、みてて！」 {name}は じぶんで ペダルを こぎました。すいすい！",
+        "次《つぎ》の日《ひ》、{name}はじてんしゃをおして、しだの森《もり》の前《まえ》へ行《い》きました。「ノンノ、そこで見《み》てて」そして、だれにも持《も》ってもらわずに、自分《じぶん》でぐっとペダルをふみました。ふらふら……すいーっ！「やった、のれた！」ノンノが、こうらから首《くび》をのばして、目《め》を細《ほそ》めました。「ほう、えらいねえ。一人《ひとり》でのれたねえ」"
+       ],
+       "withMom": false,
+       "withDad": false,
+       "withSidekick": false
+      }
+     }
+    },
+    {
+     "label": "枕元に3枚のうろこ。うろこの中に、大きな足あとと自分の足あとを並べるモコ、遠くに煙をはく火の山",
+     "art": "at night, three glittering dinosaur scales lie on the child's pillow, and inside their glow appears a picture of Moko the baby long-neck dinosaur, now as tall as the child, standing beside a huge dinosaur footprint next to its own small one, with a distant volcano puffing smoke",
+     "text": [
+      "うろこが 3まい。あしあとは ひの やまへ。",
+      "うろこは 3まいに なりました。うろこの なかで パタが いいます。「あしあとは、ひの やまの ほうへ つづいてる。ふゆの まえに おいかけなきゃ！」",
+      "その夜《よる》、うろこは3まいになっていました。もみじのような、赤《あか》いうろこです。うろこの中《なか》で、モコが、大《おお》きな足《あし》あとのとなりに、自分《じぶん》の足《あし》あとをつけていました。大《おお》きさはちがうけれど、指《ゆび》の形《かたち》がそっくりです。そこへパタがとんできました。「足《あし》あとは、火《ひ》の山《やま》のほうへつづいてる。冬《ふゆ》が来《く》る前《まえ》に、追《お》いかけなきゃ！」"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    }
+   ]
+  },
+  {
+   "no": 4,
+   "title": "ふぶきの よるの ゴツじい",
+   "outfits": "warm winter clothes in the same colors as the reference: a puffy coat, a knit hat, mittens and a scarf",
+   "cover": {
+    "label": "ふぶきの中、せなかがとげとげの大きなゴツじいが体を丸め、その内側でぬくぬく笑う主人公とモコ。",
+    "art": "in a swirling snowstorm, Gotsu-jii, a huge gentle old ankylosaurus with a rocky gray spiky back and a knobbed club tail curls his huge body into a ring, and inside it, in a warm glowing pocket, the child and Moko the young long-neck dinosaur, now a little bigger than the child, laugh snugly together",
+    "withSidekick": true
+   },
+   "scenes": [
+    {
+     "label": "【パパ】冬祭り。口を開けたししまいから、パパの後ろに隠れる主人公。ポケットのうろこが光る",
+     "art": "a winter festival on a snowy street with lanterns; a lion-dance performer's big red lion head comes snapping its mouth, and the child hides behind the father, while a dinosaur scale in the child's pocket glows",
+     "text": [
+      "パパと おまつり。ししまいが こわい！",
+      "ふゆの おまつり。ししまいが ぱくぱく やって きました。「あたまを かんで もらうと げんきに なるよ」と パパ。でも {name}は パパの うしろに かくれました。",
+      "雪《ゆき》のちらつく、冬《ふゆ》のお祭《まつ》り。{name}がパパと歩《ある》いていると、大《おお》きな口《くち》のししまいが、ぱくぱくやってきました。「ししまいに頭《あたま》をかんでもらうと、元気《げんき》に大《おお》きくなれるんだよ」とパパ。でも、{name}はパパの後《うし》ろに、さっとかくれました。「やだ、こわい！」そのとき、ポケットのうろこが、ちかちか光《ひか》りました。"
+     ],
+     "withMom": false,
+     "withDad": true,
+     "withSidekick": false,
+     "alt": {
+      "both": {
+       "label": "冬祭り。ししまいを指さすパパ、ママの後ろに隠れる主人公。ポケットのうろこが光る",
+       "art": "a winter festival on a snowy street with lanterns; the father points to a lion-dance performer's big red lion head, but the child hides behind the mother, while a dinosaur scale in the child's pocket glows",
+       "text": [
+        "パパと ママと おまつり。ししまいが こわい！",
+        "ふゆの おまつり。ししまいが ぱくぱく やって きました。「あたまを かんで もらうと げんきに なるよ」と パパ。でも {name}は ママの うしろに かくれました。",
+        "雪《ゆき》のちらつく、冬《ふゆ》のお祭《まつ》り。{name}がパパとママと歩《ある》いていると、大《おお》きな口《くち》のししまいが、ぱくぱくやってきました。「ししまいに頭《あたま》をかんでもらうと、元気《げんき》に大《おお》きくなれるんだよ」とパパ。でも、{name}はママの後《うし》ろに、さっとかくれました。「やだ、こわい！」そのとき、ポケットのうろこが、ちかちか光《ひか》りました。"
+       ],
+       "withMom": true,
+       "withDad": true,
+       "withSidekick": false
+      },
+      "mom": {
+       "label": "冬祭り。口を開けたししまいから、ママの後ろに隠れる主人公。ポケットのうろこが光る",
+       "art": "a winter festival on a snowy street with lanterns; a lion-dance performer's big red lion head comes snapping its mouth, and the child hides behind the mother, while a dinosaur scale in the child's pocket glows",
+       "text": [
+        "ママと おまつり。ししまいが こわい！",
+        "ふゆの おまつり。ししまいが ぱくぱく やって きました。「あたまを かんで もらうと げんきに なるよ」と ママ。でも {name}は ママの うしろに かくれました。",
+        "雪《ゆき》のちらつく、冬《ふゆ》のお祭《まつ》り。{name}がママと歩《ある》いていると、大《おお》きな口《くち》のししまいが、ぱくぱくやってきました。「ししまいに頭《あたま》をかんでもらうと、元気《げんき》に大《おお》きくなれるのよ」とママ。でも、{name}はママの後《うし》ろに、さっとかくれました。「やだ、こわい！」そのとき、ポケットのうろこが、ちかちか光《ひか》りました。"
+       ],
+       "withMom": true,
+       "withDad": false,
+       "withSidekick": false
+      },
+      "none": {
+       "label": "窓の外を通るししまい。カーテンの後ろに隠れる主人公。ポケットのうろこが光る",
+       "art": "on a winter evening, a lion-dance performer's big red lion head passes by outside the window of the house, and the child hides behind the curtain peeking out, while a dinosaur scale in the child's pocket glows",
+       "text": [
+        "まどの そとに ししまい。こわい！",
+        "ふゆの おまつり。まどの そとを、ししまいが ぱくぱく とおって いきます。{name}は カーテンの うしろに かくれました。",
+        "雪《ゆき》のちらつく、冬《ふゆ》のお祭《まつ》り。{name}が家《いえ》のまどから外《そと》をのぞいていると、大《おお》きな口《くち》のししまいが、ぱくぱく通《とお》りかかりました。ししまいに頭《あたま》をかんでもらうと、元気《げんき》に大《おお》きくなれるのです。でも、{name}はカーテンの後《うし》ろに、さっとかくれました。「やだ、こわい！」そのとき、ポケットのうろこが、ちかちか光《ひか》りました。"
+       ],
+       "withMom": false,
+       "withDad": false,
+       "withSidekick": false
+      }
+     }
+    },
+    {
+     "label": "雪で真っ白なしだの森。震えるモコ、甲羅から顔を出すノンノ",
+     "art": "the fern forest is buried in white snow; Moko the young long-neck dinosaur, now a little bigger than the child, shivers in the cold, and Nonno, a big old tortoise with soft green moss growing on its shell pokes its head out of its snow-covered shell",
+     "text": [
+      "モコが さむくて ぶるぶる。",
+      "しだの もりは ゆきで まっしろ。モコが ぶるぶる ふるえて いました。ノンノが いいます。「ひの やまの むこうは、ふゆでも あたたかいよ」",
+      "しだの森《もり》は、雪《ゆき》で真《ま》っ白《しろ》になっていました。大《おお》きなしだの葉《は》っぱも、こおりついています。そのかげで、モコがぶるぶるふるえていました。「さむい……モコ、みんなのところへ、いきたい」ノンノが、こうらから顔《かお》を出《だ》しました。「火《ひ》の山《やま》の向《む》こうは、冬《ふゆ》でもあたたかい。モコの家族《かぞく》も、きっとそこじゃよ」"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "モコの首にマフラーを巻く主人公。遠くに白い煙をはく火の山",
+     "art": "the child wraps their own scarf around the long neck of Moko the young long-neck dinosaur, now a little bigger than the child,, while far away a volcano puffs white smoke into the winter sky",
+     "text": [
+      "「ひの やまを こえよう！」",
+      "「よし、ひの やまを こえて いこう！」 {name}は じぶんの マフラーを、モコの くびに まいて あげました。",
+      "「よし、火《ひ》の山《やま》をこえていこう！」{name}は、自分《じぶん》のマフラーを、モコの首《くび》にぐるぐるまいてあげました。モコはもう、{name}よりせが高《たか》くなっています。遠《とお》くに、白《しろ》いけむりをもくもくはく、火《ひ》の山《やま》が見《み》えました。モコも{name}のまねをして、むねをはりました。「いこう！」"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "三きょうだいと主人公・モコが一台のそりで雪の坂を滑る",
+     "art": "the three little triceratops siblings Tsun, Tan and Ton, round and orange with stubby horns, the child and Moko the young long-neck dinosaur, now a little bigger than the child, all squeeze onto one wooden sled and whoosh down a snowy slope, cheering",
+     "text": [
+      "みんなで そり。しゅーっ！",
+      "つのつの 3きょうだいが、そりを ひいて きました。「ふもとまで、そりで いこう！」 みんなで のって、しゅーっ！",
+      "「おーい、待《ま》ってー！」つのつの三《さん》きょうだいが、木《き》の皮《かわ》のそりを引《ひ》いて、追《お》いかけてきました。「ふもとまで、そりで行《い》こうよ！」みんなでのりこんで、雪《ゆき》の坂《さか》を、しゅーっ！モコのマフラーが、旗《はた》のようにたなびきました。「きゃはは！」モコも{name}のまねをして、大《おお》わらいです。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "吹雪の山のふもと。寄りそう主人公とモコ",
+     "art": "at the foot of the mountain a fierce snowstorm whirls, everything white; the child and Moko the young long-neck dinosaur, now a little bigger than the child, huddle close together",
+     "text": [
+      "ふぶきが きた。まっしろ。",
+      "ふもとに つくと、ひゅうごう、ふぶきに なりました。3きょうだいは かえって いき、まえも うしろも まっしろです。",
+      "ふもとに着《つ》くと、空《そら》がきゅうに暗《くら》くなりました。ひゅうう、ごうごう。ふぶきです。三《さん》きょうだいは「ここから先《さき》は、ぼくら行《い》けないよう」と、来《き》た道《みち》を帰《かえ》っていきました。{name}とモコは、たった二人《ふたり》。前《まえ》も後《うし》ろも、真《ま》っ白《しろ》です。雪《ゆき》が、ほっぺにばちばち当《あ》たります。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "吹雪の中に、背中がとげとげで尾にこぶのある巨大な影。岩陰に隠れる二人",
+     "art": "through the blizzard looms a huge shadow with a spiky back and a knobbed club tail, and the child and Moko the young long-neck dinosaur, now a little bigger than the child, hide behind a big rock",
+     "text": [
+      "ずしん、ずしん。おおきな かげ！",
+      "ずしん、ずしん。ふぶきの なかに、せなかが とげとげの おおきな かげ。{name}は モコと いわの うしろに かくれました。",
+      "ずしん……ずしん……。ふぶきの向《む》こうから、地面《じめん》がゆれるような音《おと》が近《ちか》づいてきました。せなかがとげとげで、しっぽの先《さき》に大《おお》きなこぶのある、山《やま》のようなかげ。{name}は、モコの手《て》を引《ひ》いて、岩《いわ》のかげにかくれました。むねが、どきどきとなりやみません。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "岩陰で、まぶたが下がるモコを抱きかかえる主人公。すぐそばに巨大な足",
+     "art": "behind the rock, the child holds Moko the young long-neck dinosaur, now a little bigger than the child,, whose eyelids are drooping in the cold, and an enormous rocky foot stands right next to them in the snow",
+     "text": [
+      "モコが こごえちゃう。",
+      "かげは そばで とまった まま。モコの からだが どんどん つめたく なって いきます。「モコ、ねちゃ だめ！」",
+      "大《おお》きなかげは、岩《いわ》のすぐそばで立《た》ち止《ど》まったまま、動《うご》きません。{name}は、息《いき》をひそめました。そのあいだにも、モコの体《からだ》は、どんどん冷《つめ》たくなっていきます。まぶたが、とろんと下《さ》がってきました。{name}は、モコの体《からだ》をごしごしこすりました。「モコ、ねちゃだめ！」"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "岩の上から覗きこむごつごつの大きな顔。目をつぶってモコを抱く主人公",
+     "art": "over the top of the rock peers a huge, rugged, rocky face, and the child squeezes their eyes shut while hugging Moko the young long-neck dinosaur, now a little bigger than the child, tight",
+     "text": [
+      "おおきな かおが のぞいた！",
+      "そのとき、おおきな かおが いわの うえから ぬうっと のぞきました。{name}は モコを だいて、ぎゅっと めを つぶりました。",
+      "そのとき、岩《いわ》の上《うえ》から、ごつごつした大《おお》きな顔《かお》が、ぬうっとのぞきこみました。{name}は、モコをだきしめて、ぎゅっと目《め》をつぶりました。にげたくても、モコをおいてはいけません。帰《かえ》り道《みち》も、もうわかりません。ふるえが、止《と》まりませんでした。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "吹雪の盾になっていた巨大きょうりゅうを見上げ、立ち上がる主人公",
+     "art": "the child stands up bravely and looks up at Gotsu-jii, a huge gentle old ankylosaurus with a rocky gray spiky back and a knobbed club tail, who has been shielding them from the blizzard and now gazes down with kind, gentle eyes; Moko the young long-neck dinosaur, now a little bigger than the child, rests in the child's arms",
+     "text": [
+      "「がおがお、いっしょなら、こわくない！」",
+      "そっと めを あけると、やさしい めが ありました。{name}は たちあがりました。「がおがお、いっしょなら、こわくない！ モコを たすけて ください！」",
+      "……そっと目《め》を開《あ》けると、大《おお》きな目《め》が、心配《しんぱい》そうにこちらを見《み》ていました。その頭《あたま》には、雪《ゆき》がたくさんつもっています。ずっとそこで、風《かぜ》よけになってくれていたのです。{name}は、ふるえる足《あし》で立《た》ち上《あ》がりました。「がおがお、いっしょなら、こわくない！――おねがいです。モコを助《たす》けてください！」"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "【見開き】吹雪の中、体を丸めて主人公とモコを包むゴツじい。内側だけ暖かな光",
+     "art": "in the raging white blizzard, Gotsu-jii, a huge gentle old ankylosaurus with a rocky gray spiky back and a knobbed club tail curls his huge body around the child and Moko the young long-neck dinosaur, now a little bigger than the child,; only the space inside glows with warm golden light, where the two snuggle safely. A grand, breathtaking wide view",
+     "text": [
+      "ゴツじいの なかで、ぬくぬく。",
+      "「ほっほ。わしは ゴツじい。まかせなさい」 おおきな きょうりゅうは、からだを まるめて ふたりを つつみました。そこだけ ぽかぽかです。",
+      "「ほっほっほ。わしはゴツじい。こわがらせて、すまんかったのう」大《おお》きなきょうりゅうは、ゆっくりと体《からだ》を丸《まる》めて、{name}とモコを、すっぽりつつみこみました。とげとげのせなかの内《うち》がわは、まるで、だんろのようにぽかぽかです。モコのまぶたが、ぱちっと開《ひら》きました。「あったかい！」外《そと》はふぶきなのに、そこだけは春《はる》のようでした。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "【ママ】冬祭り、ししまいに自分から頭を差し出す主人公。驚いて喜ぶママ",
+     "art": "at the snowy winter festival, the child bravely offers their head to the big red lion head of the lion dance, and the mother looks surprised and delighted",
+     "text": [
+      "ママと ししまい。あたま、かぷっ。",
+      "あさ、ゴツじいが しだの もりまで おくって くれました。その ひ、ママと おまつりへ。ししまいが きても、{name}は にげません。かぷっ！",
+      "朝《あさ》、ふぶきがやむと、ゴツじいはしだの森《もり》まで送《おく》ってくれました。その日《ひ》、{name}はママと、お祭《まつ》りのつづきに出《で》かけました。ししまいが、ぱくぱく近《ちか》づいてきます。{name}は、にげずに、自分《じぶん》から頭《あたま》を前《まえ》に出《だ》しました。かぷっ！ママはびっくりして、それから{name}をぎゅっとだきしめました。「えらいね。こわくなかったの？」"
+     ],
+     "withMom": true,
+     "withDad": false,
+     "withSidekick": false,
+     "alt": {
+      "both": {
+       "label": "冬祭り、ししまいに自分から頭を差し出す主人公。抱きしめるママ、目を丸くするパパ",
+       "art": "at the snowy winter festival, the child bravely offers their head to the big red lion head of the lion dance; the mother hugs the child happily and the father's eyes go round with surprise",
+       "text": [
+        "ママと パパと ししまい。あたま、かぷっ。",
+        "あさ、ゴツじいが しだの もりまで おくって くれました。その ひ、ママと パパと おまつりへ。ししまいが きても、{name}は にげません。かぷっ！",
+        "朝《あさ》、ふぶきがやむと、ゴツじいはしだの森《もり》まで送《おく》ってくれました。その日《ひ》、{name}はママとパパと、お祭《まつ》りのつづきに出《で》かけました。ししまいが、ぱくぱく近《ちか》づいてきます。{name}は、にげずに、自分《じぶん》から頭《あたま》を前《まえ》に出《だ》しました。かぷっ！パパは「おお！」と目《め》を丸《まる》くしました。ママは{name}をぎゅっとだきしめました。「えらいね。こわくなかったの？」"
+       ],
+       "withMom": true,
+       "withDad": true,
+       "withSidekick": false
+      },
+      "dad": {
+       "label": "冬祭り、ししまいに自分から頭を差し出す主人公。驚いて喜ぶパパ",
+       "art": "at the snowy winter festival, the child bravely offers their head to the big red lion head of the lion dance, and the father looks surprised and delighted",
+       "text": [
+        "パパと ししまい。あたま、かぷっ。",
+        "あさ、ゴツじいが しだの もりまで おくって くれました。その ひ、パパと おまつりへ。ししまいが きても、{name}は にげません。かぷっ！",
+        "朝《あさ》、ふぶきがやむと、ゴツじいはしだの森《もり》まで送《おく》ってくれました。その日《ひ》、{name}はパパと、お祭《まつ》りのつづきに出《で》かけました。ししまいが、ぱくぱく近《ちか》づいてきます。{name}は、にげずに、自分《じぶん》から頭《あたま》を前《まえ》に出《だ》しました。かぷっ！パパはびっくりして、それから{name}をぎゅっとだきしめました。「えらいな。こわくなかったのか？」"
+       ],
+       "withMom": false,
+       "withDad": true,
+       "withSidekick": false
+      },
+      "none": {
+       "label": "冬祭り、ししまいに自分から頭を差し出す主人公。拍手する町の人たち",
+       "art": "at the snowy winter festival, the child bravely offers their head to the big red lion head of the lion dance, while the townspeople around clap and cheer",
+       "text": [
+        "ししまいに、あたま、かぷっ。",
+        "あさ、ゴツじいが しだの もりまで おくって くれました。その ひ、{name}は ひとりで おまつりへ。ししまいが きても、にげません。かぷっ！",
+        "朝《あさ》、ふぶきがやむと、ゴツじいはしだの森《もり》まで送《おく》ってくれました。その日《ひ》、{name}は一人《ひとり》で、お祭《まつ》りのつづきに出《で》かけました。ししまいが、ぱくぱく近《ちか》づいてきます。{name}は、にげずに、自分《じぶん》から頭《あたま》を前《まえ》に出《だ》しました。かぷっ！まわりの人《ひと》たちから、はくしゅがわき起《お》こりました。ポケットの中《なか》で、うろこがぽかぽかあたたかくなりました。"
+       ],
+       "withMom": false,
+       "withDad": false,
+       "withSidekick": false
+      }
+     }
+    },
+    {
+     "label": "枕元に4枚のうろこ。うろこの中に、ゴツじいの背で眠るモコ",
+     "art": "at night, four glittering dinosaur scales lie on the child's pillow, and inside their glow appears a picture of Moko the young long-neck dinosaur, now a little bigger than the child, sleeping on the spiky back of Gotsu-jii, a huge gentle old ankylosaurus with a rocky gray spiky back and a knobbed club tail",
+     "text": [
+      "うろこが 4まい。はるに なったら……。",
+      "うろこは 4まいに なりました。うろこの なかで ゴツじいが いいます。「モコの かぞくは、はるに『にじの たに』へ かえって くるんじゃ」",
+      "その夜《よる》、うろこは4まいになっていました。雪《ゆき》のように白《しろ》い、冬《ふゆ》のうろこです。うろこの中《なか》では、ゴツじいのせなかで、モコがあくびをしています。ゴツじいが、ゆっくり言《い》いました。「モコは、くびながりゅうの子《こ》じゃな。その家族《かぞく》は、春《はる》になると『にじの谷《たに》』へ帰《かえ》ってくる。それまで、わしの所《ところ》でねむるといい」"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    }
+   ]
+  },
+  {
+   "no": 5,
+   "title": "にじの たにの おかあさん",
+   "outfits": null,
+   "cover": {
+    "label": "にじのかかる谷で、首の長いお母さんきょうりゅうに寄りそうモコと、笑って手をふる主人公。まわりにこれまでの仲間全員。",
+    "art": "in a valley under a great rainbow, Moko the young long-neck dinosaur, now grown so tall that the long neck would reach a house roof, nestles against Moko's mama, a giant grown-up long-neck dinosaur with the same green polka dots, while the child smiles and waves; all the friends gather around: Nonno, a big old tortoise with soft green moss growing on its shell, Pata, a small young sky-blue pteranodon with clumsy wings, the three little triceratops siblings Tsun, Tan and Ton, round and orange with stubby horns and Gotsu-jii, a huge gentle old ankylosaurus with a rocky gray spiky back and a knobbed club tail",
+    "withSidekick": true
+   },
+   "scenes": [
+    {
+     "label": "【ママ】軒下の巣から巣立つつばめを、並んで見上げる主人公とママ",
+     "art": "spring again; under the eaves of the house, baby swallows flutter out of their nest, and the child and the mother stand side by side looking up at them",
+     "text": [
+      "ママと つばめの すだちを みたよ。",
+      "また はるが きました。のきしたの つばめの こが、ぱたぱた とびたって いきます。「ちょっぴり さみしいけど、うれしいね」と ママ。",
+      "また、春《はる》がやって来《き》ました。{name}の家《いえ》ののき下《した》では、つばめの子《こ》どもたちが、ぱたぱたと、とぶ練習《れんしゅう》をしています。そして、一《いち》わ、また一《いち》わと、空《そら》へとび立《た》っていきました。ママが目《め》を細《ほそ》めて言《い》いました。「ちょっぴりさみしいけど、うれしいね」{name}は、首《くび》をかしげました。"
+     ],
+     "withMom": true,
+     "withDad": false,
+     "withSidekick": false,
+     "alt": {
+      "both": {
+       "label": "軒下の巣から巣立つつばめを、並んで見上げる主人公・ママ・パパ",
+       "art": "spring again; under the eaves of the house, baby swallows flutter out of their nest, and the child, the mother and the father stand side by side looking up at them",
+       "text": [
+        "ママと パパと つばめの すだちを みたよ。",
+        "また はるが きました。のきしたの つばめの こが、ぱたぱた とびたって いきます。「ちょっぴり さみしいけど、うれしいね」と ママ。パパも うなずきました。",
+        "また、春《はる》がやって来《き》ました。{name}の家《いえ》ののき下《した》では、つばめの子《こ》どもたちが、ぱたぱたと、とぶ練習《れんしゅう》をしています。そして、一《いち》わ、また一《いち》わと、空《そら》へとび立《た》っていきました。ママが目《め》を細《ほそ》めて言《い》いました。「ちょっぴりさみしいけど、うれしいね」パパも、だまってうなずいています。{name}は、首《くび》をかしげました。"
+       ],
+       "withMom": true,
+       "withDad": true,
+       "withSidekick": false
+      },
+      "dad": {
+       "label": "軒下の巣から巣立つつばめを、並んで見上げる主人公とパパ",
+       "art": "spring again; under the eaves of the house, baby swallows flutter out of their nest, and the child and the father stand side by side looking up at them",
+       "text": [
+        "パパと つばめの すだちを みたよ。",
+        "また はるが きました。のきしたの つばめの こが、ぱたぱた とびたって いきます。「ちょっぴり さみしいけど、うれしいね」と パパ。",
+        "また、春《はる》がやって来《き》ました。{name}の家《いえ》ののき下《した》では、つばめの子《こ》どもたちが、ぱたぱたと、とぶ練習《れんしゅう》をしています。そして、一《いち》わ、また一《いち》わと、空《そら》へとび立《た》っていきました。パパが目《め》を細《ほそ》めて言《い》いました。「ちょっぴりさみしいけど、うれしいな」{name}は、首《くび》をかしげました。"
+       ],
+       "withMom": false,
+       "withDad": true,
+       "withSidekick": false
+      },
+      "none": {
+       "label": "軒下の巣から巣立つ子つばめと、巣に残る親つばめを見上げる主人公",
+       "art": "spring again; under the eaves of the house, baby swallows fly away from their nest while a parent swallow stays behind, and the child looks up at them",
+       "text": [
+        "つばめの すだちを みたよ。",
+        "また はるが きました。のきしたの つばめの こが、ぱたぱた とびたって いきます。おやの つばめが ないて いました。「さみしいけど、うれしいな」",
+        "また、春《はる》がやって来《き》ました。{name}の家《いえ》ののき下《した》では、つばめの子《こ》どもたちが、ぱたぱたと、とぶ練習《れんしゅう》をしています。そして、一《いち》わ、また一《いち》わと、空《そら》へとび立《た》っていきました。すにのこった親《おや》のつばめが、ちいちいと鳴《な》きました。「ちょっぴりさみしいけど、うれしいな」{name}は、首《くび》をかしげました。"
+       ],
+       "withMom": false,
+       "withDad": false,
+       "withSidekick": false
+      }
+     }
+    },
+    {
+     "label": "首が長く伸びたモコが主人公にほおずり。遠くの空へ響く声",
+     "art": "in the spring fern forest, Moko the young long-neck dinosaur, now grown so tall that the long neck would reach a house roof, bends the long neck down to rub cheeks with the child; a faint call echoes from the faraway sky",
+     "text": [
+      "モコが まって いたよ。",
+      "しだの もりで、くびが ながく のびた モコが まって いました。そのとき、とおくから「ぽおーん」と ふえのような こえ。",
+      "しだの森《もり》に行《い》くと、ゴツじいのところで冬《ふゆ》をこしたモコが待《ま》っていました。首《くび》がにゅうっとのびて、もう、家《いえ》のやねにとどきそうです。「{name}！」モコが首《くび》を下《さ》げて、ほっぺをすりよせた、そのとき。遠《とお》くから、「ぽおーん……」と、ふえのような声《こえ》がひびきました。モコの目《め》が、ぱっとかがやきました。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "しっぽを振りすぎて転ぶモコ。胸をおさえる主人公とノンノ",
+     "art": "Moko the young long-neck dinosaur, now grown so tall that the long neck would reach a house roof, wags its tail so hard it tumbles over with joy, while the child and Nonno, a big old tortoise with soft green moss growing on its shell hold a hand to their chests with a bittersweet look",
+     "text": [
+      "「モコの かぞくの こえ？」",
+      "「にじの たにの、くびながりゅうの こえじゃ」と ノンノ。モコは うれしくて、ころん。でも、{name}の むねは ちくんと いたみました。",
+      "「あれは、にじの谷《たに》に帰《かえ》ってきた、くびながりゅうの声《こえ》じゃな」とノンノが言《い》いました。モコはうれしくて、しっぽをふりすぎて、ころん。でも、{name}のむねは、ちくん、といたみました。家族《かぞく》に会《あ》えたら、モコは、もうしだの森《もり》には帰《かえ》ってこないかもしれない。「……行《い》こう」{name}は、小《ちい》さな声《こえ》で言《い》いました。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "パタ・三きょうだい・ゴツじい・ノンノが勢ぞろいし、にぎやかに行進する",
+     "art": "a cheerful parade through the spring forest: Pata, a small young sky-blue pteranodon with clumsy wings, the three little triceratops siblings Tsun, Tan and Ton, round and orange with stubby horns, Gotsu-jii, a huge gentle old ankylosaurus with a rocky gray spiky back and a knobbed club tail and Nonno, a big old tortoise with soft green moss growing on its shell march together with the child and Moko the young long-neck dinosaur, now grown so tall that the long neck would reach a house roof,",
+     "text": [
+      "みんなも いっしょに いくよ！",
+      "パタ、つのつの 3きょうだい、ゴツじい、ノンノ。みんなが あつまって きました。「いっしょに にじの たにへ いこう！」",
+      "「ぼくらも行《い》くよ！」空《そら》からパタが、どてっ。つのつの三《さん》きょうだいも、どどどっとかけてきます。ゴツじいは、ずしん、ずしん。そして、のっそり、のっそり、ノンノも。春《はる》から冬《ふゆ》までの仲間《なかま》が、みんな集《あつ》まってくれたのです。にぎやかな行列《ぎょうれつ》が、にじの谷《たに》へ歩《ある》き出《だ》しました。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "寄り道して花をつむ主人公とまねするモコ。谷のほうを見つめるモコの横顔",
+     "art": "on the way, the child lingers to pick spring flowers and Moko the young long-neck dinosaur, now grown so tall that the long neck would reach a house roof, copies, picking flowers too, but Moko's face turns to gaze toward the far valley",
+     "text": [
+      "{name}は ゆっくり ゆっくり。",
+      "でも {name}は、わざと ゆっくり あるきました。「ねえ、おはなを つんで いこうよ」 なんども よりみちを しました。",
+      "ところが、{name}は、なんだか足《あし》がすすみません。「ねえ、お花《はな》をつんでいこうよ」「あっちの池《いけ》も見《み》ていこうよ」わざと、よりみちばかりします。モコはそのたびに、{name}のまねをして、花《はな》のにおいをかいだり、池《いけ》をのぞいたり。でもときどき、谷《たに》のほうを、じっと見《み》ていました。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "大きな川の向こうに首長竜の群れ。首を伸ばして呼ぶモコ",
+     "art": "across a wide river, a herd of giant long-neck dinosaurs grazes; Moko the young long-neck dinosaur, now grown so tall that the long neck would reach a house roof, stretches the long neck and calls out, but the voice is too small to reach them",
+     "text": [
+      "にじの たにに ついたよ。",
+      "かわの むこうに、くびながりゅうの むれが いました。モコは「ぽおん」と よびました。でも、こえが ちいさくて、とどきません。",
+      "やっと、にじの谷《たに》に着《つ》きました。大《おお》きな川《かわ》の向《む》こうで、見上《みあ》げるほどのくびながりゅうたちが、ゆったりと草《くさ》を食《た》べています。モコは首《くび》をのばして、「ぽおん！」とよびました。でも、川《かわ》の音《おと》にかき消《け》されて、声《こえ》はとどきません。むれは、谷《たに》のおくへ、ゆっくり歩《ある》き出《だ》しました。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "背を向けかける主人公。群れを見つめたまま目をうるませるモコ",
+     "art": "the child starts to turn away from the river, while Moko the young long-neck dinosaur, now grown so tall that the long neck would reach a house roof, keeps gazing at the herd across the water with teary eyes",
+     "text": [
+      "「きこえないね。かえろうか……」",
+      "「きこえない みたい。……かえろうか」 {name}が いうと、モコも まねして「かえろうか」。でも モコの めは、むれを みつめた ままでした。",
+      "「……聞《き》こえないみたいだね。今日《きょう》は、帰《かえ》ろうか」{name}は、つい、そう言《い》ってしまいました。すると、モコも、{name}のまねをして言《い》いました。「かえろう、か」でも、モコの目《め》は、遠《とお》ざかっていくむれを、じっと見《み》つめたままでした。その目《め》が、うるうるとゆれています。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "モコの首に抱きついて泣く主人公。ポケットのうろこが鳴る",
+     "art": "the child throws both arms around the long neck of Moko the young long-neck dinosaur, now grown so tall that the long neck would reach a house roof, and cries, and the dinosaur scales in the child's pocket chime with a soft glow",
+     "text": [
+      "ほんとうは、ずっと いっしょが いい。",
+      "{name}は モコの くびに だきつきました。「ほんとうは、ずっと いっしょに いたいよ」 ポケットの 4まいの うろこが、ちりんと なりました。",
+      "{name}は、モコの長《なが》い首《くび》に、ぎゅっとだきつきました。「ごめんね。ほんとうは、ずっといっしょにいたかったの」なみだが、ぽろぽろこぼれます。雨《あめ》の夜《よる》のたまご。お日《ひ》さまの実《み》。丸太《まるた》のはし。ふぶきの夜《よる》。ポケットの4まいのうろこが、思《おも》い出《で》をよぶように、ちりん、ちりんと鳴《な》りました。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "川辺の一番高い岩の上で、モコと一緒に叫ぶ主人公。後ろで声をそろえる仲間たち",
+     "art": "on the highest rock by the river, the child and Moko the young long-neck dinosaur, now grown so tall that the long neck would reach a house roof, shout together with all their might, and behind them the friends Nonno, Pata, Tsun, Tan, Ton and Gotsu-jii join in the call",
+     "text": [
+      "「がおがお、いっしょなら、こわくない！」",
+      "{name}は なみだを ふいて、モコと たかい いわに のぼりました。ふたりで おなかの そこから。「がおがお、いっしょなら、こわくない！」",
+      "{name}は、なみだをごしごしふきました。そして、モコといっしょに、川《かわ》のそばのいちばん高《たか》い岩《いわ》に登《のぼ》りました。「モコ、いっしょに言《い》おう」二人《ふたり》は、大《おお》きく息《いき》をすいこみました。「がおがお、いっしょなら、こわくない！」すると、パタも、三《さん》きょうだいも、ゴツじいも、ノンノも、声《こえ》をそろえてさけびました。「がおがおー！」"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "【見開き】川の上に長い首を伸ばし、モコにほおを寄せる母くびながりゅう。谷いっぱいの虹と喜ぶ仲間たち",
+     "art": "over the wide river, Moko's mama, a giant grown-up long-neck dinosaur with the same green polka dots stretches her long neck across the water and gently presses her cheek to Moko the young long-neck dinosaur, now grown so tall that the long neck would reach a house roof,; a huge rainbow arches over the whole valley, and the child and all the friends cheer with joy. A grand, breathtaking wide view",
+     "text": [
+      "モコの おかあさんだ！",
+      "むれが ふりかえりました。いちばん おおきな くびながりゅうが、かわの うえに くびを のばして、モコに ほおを よせました。たにに にじが かかりました。",
+      "谷《たに》じゅうに声《こえ》がひびくと、むれが、いっせいにふり返《かえ》りました。いちばん大《おお》きなくびながりゅうが、長《なが》い長《なが》い首《くび》を、川《かわ》の上《うえ》へぐうっとのばしてきます。そして、モコの頭《あたま》に、そっとほおをよせました。「ぽおん……」モコのお母《かあ》さんです。水《みず》しぶきにお日《ひ》さまがさして、谷《たに》いっぱいに、大《おお》きなにじがかかりました。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "母の首を渡りかけて振り返るモコ。虹色の5枚目のうろこを受け取り、笑って手を振る主人公",
+     "art": "Moko the young long-neck dinosaur, now grown so tall that the long neck would reach a house roof, steps onto the long neck of the giant mama dinosaur to cross the river and looks back; a rainbow-colored fifth scale drifts down into the child's hand, and the child smiles and waves goodbye",
+     "text": [
+      "「いってらっしゃい、モコ！」",
+      "モコの せなかから、にじいろの 5まいめの うろこが ぽろり。{name}は にっこり わらいました。「いってらっしゃい、モコ！」「いってきます！」",
+      "お母《かあ》さんの首《くび》をつたって川《かわ》をわたる前《まえ》に、モコはふり向《む》きました。首《くび》を下《さ》げると、せなかから、にじ色《いろ》のうろこが1まい、ぽろり。5まいめのうろこです。{name}は、なみだをこらえて、にっこり笑《わら》いました。「いってらっしゃい、モコ！また会《あ》おうね！」モコも、{name}とそっくりの顔《かお》で笑《わら》いました。「いってきます！」"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "【パパ】夕暮れ、パパに肩車されてうろこを鳴らす主人公。空色のたまごを抱えて落ちてくるパタ",
+     "art": "at dusk on the way home, the child rides on the father's shoulders and holds up the five glittering dinosaur scales making them chime, while Pata, a small young sky-blue pteranodon with clumsy wings comes tumbling down from the sky clutching a sky-blue egg",
+     "text": [
+      "パパの かたぐるまで、うろこが ちりりん。",
+      "かえりみち、パパの かたぐるまで うろこを ならすと、とおくで「ぽおーん」。そこへ パタが、みずいろの たまごを はこんで きました。",
+      "夕方《ゆうがた》、しだの森《もり》の外《そと》で、パパが待《ま》っていました。パパにかたぐるましてもらって、5まいのうろこをならべると、ちりりん、とすんだ音《おと》。遠《とお》くの谷《たに》から、「ぽおーん」とモコの返事《へんじ》が聞《き》こえました。そのとき、空《そら》からパタが、どてっ。空色《そらいろ》の小《ちい》さなたまごを、かかえています。「たいへん！空《そら》の国《くに》から、落《お》ちてきたんだ！」"
+     ],
+     "withMom": false,
+     "withDad": true,
+     "withSidekick": false,
+     "alt": {
+      "both": {
+       "label": "夕暮れ、パパに肩車されてうろこを鳴らす主人公、となりで微笑むママ。空色のたまごを抱えて落ちてくるパタ",
+       "art": "at dusk on the way home, the child rides on the father's shoulders chiming the five glittering dinosaur scales, the mother smiling beside them, while Pata, a small young sky-blue pteranodon with clumsy wings comes tumbling down from the sky clutching a sky-blue egg",
+       "text": [
+        "パパの かたぐるまで、うろこが ちりりん。",
+        "かえりみち、パパの かたぐるまで うろこを ならすと、とおくで「ぽおーん」。となりで ママが にっこり。そこへ パタが、みずいろの たまごを はこんで きました。",
+        "夕方《ゆうがた》、しだの森《もり》の外《そと》で、パパとママが待《ま》っていました。パパにかたぐるましてもらって、5まいのうろこをならべると、ちりりん、とすんだ音《おと》。遠《とお》くの谷《たに》から、「ぽおーん」とモコの返事《へんじ》が聞《き》こえました。となりで、ママがほほえみます。そのとき、空《そら》からパタが、どてっ。空色《そらいろ》の小《ちい》さなたまごを、かかえています。「たいへん！空《そら》の国《くに》から、落《お》ちてきたんだ！」"
+       ],
+       "withMom": true,
+       "withDad": true,
+       "withSidekick": false
+      },
+      "mom": {
+       "label": "夕暮れ、ママに抱きしめられてうろこを鳴らす主人公（肩車はしない）。空色のたまごを抱えて落ちてくるパタ",
+       "art": "at dusk on the way home, the mother hugs the child as the child holds up the five glittering dinosaur scales making them chime, while Pata, a small young sky-blue pteranodon with clumsy wings comes tumbling down from the sky clutching a sky-blue egg",
+       "text": [
+        "ママと ぎゅっ。うろこが ちりりん。",
+        "かえりみち、ママと ぎゅっと だきあって うろこを ならすと、とおくで「ぽおーん」。そこへ パタが、みずいろの たまごを はこんで きました。",
+        "夕方《ゆうがた》、しだの森《もり》の外《そと》で、ママが待《ま》っていました。ママにぎゅっとだきしめてもらって、5まいのうろこをならべると、ちりりん、とすんだ音《おと》。遠《とお》くの谷《たに》から、「ぽおーん」とモコの返事《へんじ》が聞《き》こえました。そのとき、空《そら》からパタが、どてっ。空色《そらいろ》の小《ちい》さなたまごを、かかえています。「たいへん！空《そら》の国《くに》から、落《お》ちてきたんだ！」"
+       ],
+       "withMom": true,
+       "withDad": false,
+       "withSidekick": false
+      },
+      "none": {
+       "label": "夕暮れ、ゴツじいの背に乗ってうろこを鳴らす主人公。空色のたまごを抱えて落ちてくるパタ",
+       "art": "at dusk on the way home, the child rides on the spiky back of Gotsu-jii, a huge gentle old ankylosaurus with a rocky gray spiky back and a knobbed club tail chiming the five glittering dinosaur scales, while Pata, a small young sky-blue pteranodon with clumsy wings comes tumbling down from the sky clutching a sky-blue egg",
+       "text": [
+        "ゴツじいの せなかで、うろこが ちりりん。",
+        "かえりみち、ゴツじいの せなかで うろこを ならすと、とおくで「ぽおーん」。そこへ パタが、みずいろの たまごを はこんで きました。",
+        "夕方《ゆうがた》、ゴツじいが、{name}をせなかにのせて、しだの森《もり》まで送《おく》ってくれました。高《たか》いせなかの上《うえ》で、5まいのうろこをならべると、ちりりん、とすんだ音《おと》。遠《とお》くの谷《たに》から、「ぽおーん」とモコの返事《へんじ》が聞《き》こえました。そのとき、空《そら》からパタが、どてっ。空色《そらいろ》の小《ちい》さなたまごを、かかえています。「たいへん！空《そら》の国《くに》から、落《お》ちてきたんだ！」"
+       ],
+       "withMom": false,
+       "withDad": false,
+       "withSidekick": false
+      }
+     }
+    }
+   ]
+  }
+ ]
+}

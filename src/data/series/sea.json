@@ -1,0 +1,1168 @@
+{
+ "id": "sea",
+ "name": "うみの たからさがし",
+ "sidekick": "Pukuru is a tiny baby pufferfish about the size of a child's fist, pale lemon-yellow with a creamy white belly, a few small brown freckle spots on its back, big round shiny black eyes, tiny fluttering fins and a little tail; when startled it puffs up into a smooth, perfectly round ball (no sharp spikes), and on land it travels in a glass bottle or bucket of seawater.",
+ "sidekickLabel": "相棒のちびふぐ「プクル」",
+ "episodes": [
+  {
+   "no": 1,
+   "title": "びんの てがみと いその カニ",
+   "outfits": "light summer clothes in the same colors as the reference: the child in a short-sleeved T-shirt and shorts, the parents in short sleeves",
+   "cover": {
+    "label": "夏のいそで、ガラスのびんの中のまんまるなちびふぐ（プクル）を、のぞきこんで笑う主人公。",
+    "art": "on a sunny summer rocky shore with tide pools and the sparkling sea behind, the child crouches and peeks, laughing, into a clear glass bottle of seawater held up in both hands, where Pukuru the baby pufferfish floats puffed up perfectly round",
+    "withSidekick": true
+   },
+   "scenes": [
+    {
+     "label": "【ママ】夏の砂浜にパラソル。ママが岩場を指さし、主人公が見つめる",
+     "art": "a sunny summer beach with a striped beach umbrella planted in the sand; the mother points toward the rocky shore where little tide pools glitter, and the child gazes at them, white waves rolling in behind",
+     "text": [
+      "{name}は ママと うみへ きたよ。",
+      "なつやすみ。{name}は ママと うみへ きました。「なみが ひいた いそには、ちいさな うみが たくさん できるのよ」",
+      "夏休《なつやす》み。{name}はママといっしょに、海《うみ》へやって来《き》ました。ざぶん、ざぶんと、白《しろ》い波《なみ》がよせては返《かえ》します。ママが岩場《いわば》を指《ゆび》さして言《い》いました。「波《なみ》が引《ひ》いたあとのいそにはね、小《ちい》さな海《うみ》がたくさんできるのよ」{name}は、きらきら光《ひか》る水《みず》たまりを、じっと見《み》つめました。"
+     ],
+     "withMom": true,
+     "withDad": false,
+     "withSidekick": false,
+     "alt": {
+      "both": {
+       "label": "砂浜に主人公・ママ・パパ。ママが岩場を指さし、パパがパラソルを立てる",
+       "art": "a sunny summer beach; the father plants a striped beach umbrella in the sand while the mother points toward the rocky shore where little tide pools glitter, and the child gazes at them, white waves rolling in behind",
+       "text": [
+        "{name}は ママと パパと うみへ きたよ。",
+        "なつやすみ。{name}は ママと パパと うみへ きました。ママが いいました。「なみが ひいた いそには、ちいさな うみが たくさん できるのよ」",
+        "夏休《なつやす》み。{name}はママとパパといっしょに、海《うみ》へやって来《き》ました。ざぶん、ざぶんと、白《しろ》い波《なみ》がよせては返《かえ》します。パパがパラソルを立《た》てると、ママが岩場《いわば》を指《ゆび》さして言《い》いました。「波《なみ》が引《ひ》いたあとのいそにはね、小《ちい》さな海《うみ》がたくさんできるのよ」{name}は、きらきら光《ひか》る水《みず》たまりを、じっと見《み》つめました。"
+       ],
+       "withMom": true,
+       "withDad": true,
+       "withSidekick": false
+      },
+      "dad": {
+       "label": "夏の砂浜にパラソル。パパが岩場を指さし、主人公が見つめる",
+       "art": "a sunny summer beach with a striped beach umbrella planted in the sand; the father points toward the rocky shore where little tide pools glitter, and the child gazes at them, white waves rolling in behind",
+       "text": [
+        "{name}は パパと うみへ きたよ。",
+        "なつやすみ。{name}は パパと うみへ きました。「なみが ひいた いそには、ちいさな うみが たくさん できるんだよ」",
+        "夏休《なつやす》み。{name}はパパといっしょに、海《うみ》へやって来《き》ました。ざぶん、ざぶんと、白《しろ》い波《なみ》がよせては返《かえ》します。パパが岩場《いわば》を指《ゆび》さして言《い》いました。「波《なみ》が引《ひ》いたあとのいそにはね、小《ちい》さな海《うみ》がたくさんできるんだよ」{name}は、きらきら光《ひか》る水《みず》たまりを、じっと見《み》つめました。"
+       ],
+       "withMom": false,
+       "withDad": true,
+       "withSidekick": false
+      },
+      "none": {
+       "label": "夏の砂浜でかもめを追う主人公。かもめが岩場のほうへ飛ぶ",
+       "art": "on a sunny summer beach the child runs after a white seagull that circles overhead and flies off toward the rocky shore, where little tide pools glitter in the sun",
+       "text": [
+        "{name}は うみで かもめと あそんだよ。",
+        "なつやすみ。{name}は すなはまで かもめを おいかけて いました。かもめが いいました。「なみが ひいた いそには、ちいさな うみが たくさん できるよ」",
+        "夏休《なつやす》み。{name}は海《うみ》のすなはまで、かもめをおいかけていました。かもめは{name}の頭《あたま》の上《うえ》をくるりと回《まわ》って、岩場《いわば》のほうへとんでいきます。「波《なみ》が引《ひ》いたあとのいそにはね、小《ちい》さな海《うみ》がたくさんできるんだよ」{name}は、きらきら光《ひか》る水《みず》たまりを、じっと見《み》つめました。"
+       ],
+       "withMom": false,
+       "withDad": false,
+       "withSidekick": false
+      }
+     }
+    },
+    {
+     "label": "波打ち際でガラスのびんを拾う主人公。中に丸めた手紙と緑の葉っぱ",
+     "art": "at the sparkling water's edge of a summer beach, the child picks up a clear glass bottle washed ashore; inside are a rolled-up old letter and a single fresh green leaf, as if it had traveled from a faraway forest",
+     "text": [
+      "すなはまに、びんが おちて いたよ。",
+      "なみうちぎわに、ふしぎな びんが ころん。なかには まるめた てがみと、みどりの はっぱが 1まい はいって いました。",
+      "波《なみ》うちぎわで、何《なに》かがきらりと光《ひか》りました。ガラスのびんです。せんをぬくと、まるめた手紙《てがみ》と、みどりの葉《は》っぱが1まい出《で》てきました。遠《とお》くの森《もり》から、旅《たび》をしてきたような葉《は》っぱです。手紙《てがみ》には、こう書《か》いてありました。「海《うみ》のたからをさがす人《ひと》へ。地図《ちず》のかけらは5つ。さいしょの1まいは、いその大《おお》きなカニが持《も》っている」"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": false
+    },
+    {
+     "label": "潮だまりで丸くふくらんだ子ふぐ。びんで水ごとすくう主人公",
+     "art": "in a small tide pool on the rocky shore floats Pukuru the baby pufferfish, puffed up perfectly round and looking worried, while the child kneels and gently scoops Pukuru up together with seawater into the glass bottle",
+     "text": [
+      "「たすけて！ うみに かえれないの」",
+      "いその みずたまりで、まんまるの ふぐが ぷかぷか。「ぼく、プクル。うみに かえれなく なっちゃった」 {name}は びんに プクルを いれました。「いっしょに いこう！」",
+      "いその水《みず》たまりをのぞくと、まんまるにふくらんだ小《ちい》さなふぐが、ぷかぷかういていました。「ぼく、プクル。波《なみ》が引《ひ》いて、海《うみ》に帰《かえ》れなくなっちゃったの」{name}は、びんに海《うみ》の水《みず》をくんで、プクルをそっと入《い》れてあげました。「いっしょに海《うみ》まで行《い》こう！手紙《てがみ》のカニも、さがしてみよう」"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "岩を跳び渡る主人公。びんの中で目をつぶって唱えるプクル",
+     "art": "the child leaps from rock to rock along the rocky shore as a wave splashes up in a burst of spray; inside the bottle held tight in the child's hand, Pukuru the baby pufferfish closes its eyes and chants its little spell, shrinking back from a round puff",
+     "text": [
+      "いわを ぴょん。プクルが ぷくーっ！",
+      "いわを ぴょんと とぶと、ざぶん！ なみの しぶきに びっくりして、プクルが ぷくーっ。「すって、はいて、ぷくぷくぱっ！」 プクルは しゅるっと もとに もどりました。",
+      "二人《ふたり》は、岩《いわ》から岩《いわ》へ、ぴょんぴょんとんで進《すす》みました。ざぶん！波《なみ》のしぶきがかかると、びんの中《なか》のプクルが、ぷくーっとまんまるになりました。プクルは目《め》をつぶって、となえました。「すって、はいて、ぷくぷくぱっ！」すると、しゅるるっと、元《もと》の形《かたち》にもどりました。「こわいときの、ぼくのおまじないなんだ」"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "潮だまりのヒトデやイソギンチャク。大岩を指さす、ふるえるやどかりたち",
+     "art": "a tide pool full of orange starfish and pink sea anemones, where a group of small hermit crabs tremble and point their claws toward a huge boulder in the distance; the child crouches to listen, holding the bottle with Pukuru the baby pufferfish inside",
+     "text": [
+      "やどかりさん、うみは どっち？",
+      "やどかりたちに、うみへの みちを ききました。「おおきな いわの むこうだよ。でも、そこには こわい おおカニの ドンが いるんだ」",
+      "水《みず》たまりには、ヒトデやイソギンチャク、小《ちい》さなやどかりたちがくらしていました。「海《うみ》へ出《で》るには、どっちへ行《い》けばいい？」と聞《き》くと、やどかりたちは、ぶるっとふるえました。「あの大《おお》きな岩《いわ》の向《む》こうさ。でも、気《き》をつけて。そこには、こわーい大《おお》カニのドンがいるんだ」"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "大岩の上の巨大な赤いカニ。岩陰に隠れる主人公、びんの中で丸いプクル",
+     "art": "on top of a huge boulder sits Don, a huge red crab with giant claws, clacking them loudly; the child hides behind a rock looking nervous, clutching the bottle in which Pukuru the baby pufferfish has puffed up into a round ball",
+     "text": [
+      "おおきな はさみ！ ガチン ガチン！",
+      "おおきな いわの うえに、おおきな カニが いました。はさみを ガチン、ガチン。{name}は いそいで いわの かげに かくれました。",
+      "大《おお》きな岩《いわ》の上《うえ》に、それはいました。{name}よりも大《おお》きな、真《ま》っ赤《か》なカニです。大《おお》きなはさみを、ガチン、ガチンと鳴《な》らしています。「あれがドンだ……」{name}はあわてて、岩《いわ》のかげにかくれました。心《しん》ぞうが、どきどきしています。びんの中《なか》で、プクルもまんまるにふくらんでいました。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "ぬるぬるの岩場をそろそろ進む主人公。びんの中でへたるプクル",
+     "art": "the child creeps carefully across slippery seaweed-covered rocks, arms out for balance; in the bottle, Pukuru the baby pufferfish droops limply in the warming water",
+     "text": [
+      "こっそり、べつの みちへ。",
+      "「べつの みちから いこう」 でも、そっちは すべる いわばかり。びんの みずも だんだん ぬるく なって きました。",
+      "「ドンに見《み》つからないように、べつの道《みち》から行《い》こう」二人《ふたり》は、遠回《とおまわ》りをすることにしました。ところが、そっちの道《みち》は、つるつるすべる岩《いわ》ばかり。なかなか前《まえ》に進《すす》めません。お日《ひ》さまにてらされて、びんの水《みず》も、だんだんぬるくなってきました。「なんだか、ふらふらする……」プクルの声《こえ》が、小《ちい》さくなっていきます。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "行き止まりの岩場。びんを抱きしめて立ちつくす主人公。奥に大岩とドンの影",
+     "art": "at a dead end among tall rocks, the child stands still, hugging the glass bottle where Pukuru the baby pufferfish lies weakly at the bottom; in the background looms the huge boulder with the shadow of Don, a huge red crab with giant claws",
+     "text": [
+      "プクルが ぐったり。どうしよう……。",
+      "みちは いきどまり。うみへ でるには、ドンの いる いわを こえるしか ありません。プクルは びんの そこで ぐったり して います。",
+      "道《みち》は、行《い》き止《ど》まりでした。海《うみ》へ出《で》るには、やっぱりドンのいる岩《いわ》をこえるしかありません。びんの中《なか》のプクルは、ぐったりとそこにしずんでいます。「プクル、しっかりして」{name}の手《て》がふるえました。もう、ほかに道《みち》はありません。岩《いわ》の上《うえ》で、ドンのはさみが、ガチン、と鳴《な》りました。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "岩陰から一歩出て、大きなドンを見上げて話しかける主人公",
+     "art": "the child steps out from behind a rock after a brave deep breath and looks up to say hello to Don, a huge red crab with giant claws, who towers on the boulder and leans down curiously; Pukuru the baby pufferfish watches from the bottle in the child's arms",
+     "text": [
+      "「すって、はいて、ぷくぷくぱっ！」",
+      "{name}は おおきく いきを すいました。「すって、はいて、ぷくぷくぱっ！」 そして、ドンの まえに でて いいました。「こんにちは。プクルを うみに かえしたいの」",
+      "{name}は、プクルのおまじないを思《おも》い出《だ》しました。目《め》をつぶって、大《おお》きく息《いき》をすいこみます。「すって、はいて、ぷくぷくぱっ！」どきどきが、少《すこ》しだけ小《ちい》さくなりました。{name}は岩《いわ》のかげから出《で》て、ドンを見上《みあ》げました。「こんにちは。この子《こ》を、海《うみ》に帰《かえ》してあげたいの。ここを通《とお》してくれる？」"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "【見開き】夕日の海。ドンのはさみに乗った主人公、波へ飛びこんで回るプクル",
+     "art": "a summer sunset over the sea glowing orange and gold; the child rides happily on the giant claw of Don, a huge red crab with giant claws, who carries them to the waves, while Pukuru the baby pufferfish dives out of the bottle into the sea and twirls joyfully in the splash. A grand, breathtaking wide view",
+     "text": [
+      "ドンが うみまで はこんで くれたよ！",
+      "「もちろん！」 ドンは にっこり。はさみで {name}と びんを そっと もちあげて、うみまで はこんで くれました。プクルは なみへ ぽちゃん！",
+      "ドンは目《め》をぱちくりさせて、それから、にっこり笑《わら》いました。「話《はな》しかけてくれたのは、きみがはじめてだ。わしは、はずかしいと、はさみが鳴《な》ってしまうんじゃよ」ドンは大《おお》きなはさみで、{name}とびんをそうっと持《も》ち上《あ》げ、岩《いわ》をこえて、海《うみ》まで運《はこ》んでくれました。ぽちゃん！夕日《ゆうひ》の海《うみ》で、プクルがくるくる回《まわ》りました。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "【パパ】夕方の砂浜で主人公を肩車するパパ。主人公の手に地図のかけら入りのびん",
+     "art": "on the beach at sunset the father carries the beaming child on his shoulders; the child holds up the glass bottle with an old torn map piece inside",
+     "text": [
+      "パパが むかえに きたよ。",
+      "ドンに もらった ちずの かけらを びんに いれて、すなはまへ もどると、パパが むかえに きて いました。「すごいね！」 パパは {name}を たかい たかい しました。",
+      "「おれいに、これをあげよう」ドンは、こうらのすきまから、古《ふる》い地図《ちず》のかけらを出《だ》してくれました。かけらをびんに入《い》れて、すなはまへもどると、パパがむかえに来《き》ていました。{name}がドンの話《はなし》をすると、パパは「すごい友《とも》だちができたなあ！」と、{name}を高《たか》くかたぐるましました。"
+     ],
+     "withMom": false,
+     "withDad": true,
+     "withSidekick": false,
+     "alt": {
+      "both": {
+       "label": "パパが主人公を肩車、横でママが拍手。主人公の手に地図のかけら入りのびん",
+       "art": "on the beach at sunset the father carries the beaming child on his shoulders while the mother claps happily beside them; the child holds up the glass bottle with an old torn map piece inside",
+       "text": [
+        "ママと パパが むかえに きたよ。",
+        "ドンに もらった ちずの かけらを びんに いれて、すなはまへ もどると、ママと パパが まって いました。「すごいね！」 パパは {name}を たかい たかい しました。",
+        "「おれいに、これをあげよう」ドンは、こうらのすきまから、古《ふる》い地図《ちず》のかけらを出《だ》してくれました。かけらをびんに入《い》れて、すなはまへもどると、ママとパパが待《ま》っていました。{name}がドンの話《はなし》をすると、パパは「すごい友《とも》だちができたなあ！」と、{name}を高《たか》くかたぐるましました。ママも、にこにこ手《て》をたたいています。"
+       ],
+       "withMom": true,
+       "withDad": true,
+       "withSidekick": false
+      },
+      "mom": {
+       "label": "夕方の砂浜でママが主人公をハグ（肩車はしない）。手に地図のかけら入りのびん",
+       "art": "on the beach at sunset the mother hugs the child tightly, both smiling; the child holds the glass bottle with an old torn map piece inside",
+       "text": [
+        "ママが まってたよ。ぎゅうっ。",
+        "ドンに もらった ちずの かけらを びんに いれて、すなはまへ もどると、ママが まって いました。「すごいね！」 ママは {name}を ぎゅうっと だきしめました。",
+        "「おれいに、これをあげよう」ドンは、こうらのすきまから、古《ふる》い地図《ちず》のかけらを出《だ》してくれました。かけらをびんに入《い》れて、すなはまへもどると、ママが待《ま》っていました。{name}がドンの話《はなし》をすると、ママは「すごい友《とも》だちができたのね！」と、{name}をぎゅうっとだきしめました。"
+       ],
+       "withMom": true,
+       "withDad": false,
+       "withSidekick": false
+      },
+      "none": {
+       "label": "砂浜で喜ぶやどかりたち。ドンがはさみで主人公を高く持ち上げる",
+       "art": "on the beach at sunset small hermit crabs cheer and wave their claws while Don, a huge red crab with giant claws, lifts the child high up with one claw; the child holds the glass bottle with an old torn map piece inside",
+       "text": [
+        "やどかりさんたちが まってたよ。",
+        "ドンに もらった ちずの かけらを びんに いれて、すなはまへ もどると、やどかりたちが まって いました。「すごいね！」 ドンが {name}を はさみで たかい たかい しました。",
+        "「おれいに、これをあげよう」ドンは、こうらのすきまから、古《ふる》い地図《ちず》のかけらを出《だ》してくれました。かけらをびんに入《い》れて、すなはまへもどると、やどかりたちが待《ま》っていました。{name}がドンと友《とも》だちになった話《はなし》をすると、みんなは「すごいなあ！」と大《おお》よろこび。ドンが{name}を、大《おお》きなはさみで高《たか》く持《も》ち上《あ》げてくれました。"
+       ],
+       "withMom": false,
+       "withDad": false,
+       "withSidekick": false
+      }
+     }
+    },
+    {
+     "label": "夕暮れの波打ち際。波間でひれを振るプクル。主人公の手のかけらの裏にさんごの絵",
+     "art": "at the water's edge in the evening glow, Pukuru the baby pufferfish peeks out of the waves waving a little fin; the child holds up the map piece, its back showing a colorful picture of a coral sea",
+     "text": [
+      "なみの なかから、プクルが ひれを ふったよ。",
+      "なみの なかから、プクルが かおを だしました。「かけらの うらを みて」 そこには、さんごの うみの え。「あきに なったら、うみの なかへ いこうね！」",
+      "帰《かえ》る前《まえ》、波《なみ》うちぎわで、プクルが顔《かお》を出《だ》しました。「今日《きょう》はありがとう。ぼく、もうドンがこわくないよ」言《い》われてかけらをうらがえすと、色《いろ》とりどりのさんごと、魚《さかな》の絵《え》がかいてありました。「秋《あき》になったら、海《うみ》の中《なか》へ行《い》こう。ぼくのあわがあれば、海《うみ》の中《なか》でも息《いき》ができるんだ」"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    }
+   ]
+  },
+  {
+   "no": 2,
+   "title": "さんごの うみの ちいさな こえ",
+   "outfits": "autumn clothes in the same colors as the reference: long sleeves and light jackets, the child in a cozy sweater",
+   "cover": {
+    "label": "色とりどりのさんごの海で、あわのヘルメットをかぶった主人公とプクル。さんごのかげから小さなタツノオトシゴがのぞく。",
+    "art": "in a colorful coral sea, the child wearing a shimmering rainbow bubble helmet swims alongside Pukuru the baby pufferfish, while Piko, a tiny yellow seahorse with a curled tail, shyly peeks out from behind the coral",
+    "withSidekick": true
+   },
+   "scenes": [
+    {
+     "label": "【パパ】秋の桟橋でパパと並んで釣り。主人公のびんの中のかけらが光る",
+     "art": "on a wooden pier on a clear autumn day, the child and the father sit side by side fishing over the transparent sea; beside the child, the glass bottle holding a map piece suddenly flashes with light",
+     "text": [
+      "パパと さんばしで つり。",
+      "あきの にちようび。{name}は パパと さんばしで つりを しました。「あきの うみは すきとおって いるね」 そのとき、びんの かけらが ぴかっと ひかりました。",
+      "秋《あき》の日曜日《にちようび》。{name}はパパといっしょに、さんばしでつりをしていました。「秋《あき》の海《うみ》はすき通《とお》っていて、そこまでよく見《み》えるなあ」パパが言《い》ったそのとき。びんの中《なか》の地図《ちず》のかけらが、ぴかっと光《ひか》りました。「プクルがよんでる！」パパは笑《わら》って言《い》いました。「おひるまでに、もどっておいで」"
+     ],
+     "withMom": false,
+     "withDad": true,
+     "withSidekick": false,
+     "alt": {
+      "both": {
+       "label": "秋の桟橋でパパと主人公が釣り、ママは隣でスケッチ。びんの中のかけらが光る",
+       "art": "on a wooden pier on a clear autumn day, the child and the father sit side by side fishing over the transparent sea while the mother sketches beside them; the glass bottle holding a map piece suddenly flashes with light",
+       "text": [
+        "パパと ママと さんばしで つり。",
+        "あきの にちようび。{name}は パパと ママと さんばしで つりを しました。「あきの うみは すきとおって いるね」 そのとき、びんの かけらが ぴかっと ひかりました。",
+        "秋《あき》の日曜日《にちようび》。{name}はパパとママといっしょに、さんばしでつりをしていました。ママは、となりで絵《え》をかいています。「秋《あき》の海《うみ》はすき通《とお》っていて、そこまでよく見《み》えるなあ」パパが言《い》ったそのとき。びんの中《なか》の地図《ちず》のかけらが、ぴかっと光《ひか》りました。「プクルがよんでる！」パパは笑《わら》って言《い》いました。「おひるまでに、もどっておいで」"
+       ],
+       "withMom": true,
+       "withDad": true,
+       "withSidekick": false
+      },
+      "mom": {
+       "label": "秋の桟橋でママと並んで釣り。主人公のびんの中のかけらが光る",
+       "art": "on a wooden pier on a clear autumn day, the child and the mother sit side by side fishing over the transparent sea; beside the child, the glass bottle holding a map piece suddenly flashes with light",
+       "text": [
+        "ママと さんばしで つり。",
+        "あきの にちようび。{name}は ママと さんばしで つりを しました。「あきの うみは すきとおって いるね」 そのとき、びんの かけらが ぴかっと ひかりました。",
+        "秋《あき》の日曜日《にちようび》。{name}はママといっしょに、さんばしでつりをしていました。「秋《あき》の海《うみ》はすき通《とお》っていて、そこまでよく見《み》えるね」ママが言《い》ったそのとき。びんの中《なか》の地図《ちず》のかけらが、ぴかっと光《ひか》りました。「プクルがよんでる！」ママは笑《わら》って言《い》いました。「おひるまでに、もどっておいで」"
+       ],
+       "withMom": true,
+       "withDad": false,
+       "withSidekick": false
+      },
+      "none": {
+       "label": "秋の桟橋でドンと並んで日なたぼっこ。主人公のびんの中のかけらが光る",
+       "art": "on a wooden pier on a clear autumn day, the child and Don, a huge red crab with giant claws, sunbathe side by side over the transparent sea; beside the child, the glass bottle holding a map piece suddenly flashes with light",
+       "text": [
+        "ドンと さんばしで ひなたぼっこ。",
+        "あきの にちようび。{name}は さんばしで ドンと ひなたぼっこを しました。「あきの うみは すきとおって いるのう」 そのとき、びんの かけらが ぴかっと ひかりました。",
+        "秋《あき》の日曜日《にちようび》。{name}は、さんばしで、おおカニのドンとならんで、ひなたぼっこをしていました。「秋《あき》の海《うみ》はすき通《とお》っていて、そこまでよく見《み》えるのう」ドンが言《い》ったそのとき。びんの中《なか》の地図《ちず》のかけらが、ぴかっと光《ひか》りました。「プクルがよんでる！」ドンは、はさみをふって言《い》いました。「おひるまでに、もどっておいで」"
+       ],
+       "withMom": false,
+       "withDad": false,
+       "withSidekick": false
+      }
+     }
+    },
+    {
+     "label": "波から跳ねるプクル。しゃっくりの虹色の泡が主人公の頭をすっぽり包む",
+     "art": "at the end of the autumn pier, Pukuru the baby pufferfish leaps out of a wave and hiccups, and a big shimmering rainbow bubble floats out of its mouth and covers the child's whole head like a helmet; the child looks surprised and delighted",
+     "text": [
+      "プクルの しゃっくりで、あわの ぼうし！",
+      "「{name}！」 なみから プクルが とびだしました。「ひっく！」 しゃっくりと いっしょに でた おおきな あわが、{name}の あたまを すっぽり つつみました。",
+      "「{name}、来《き》たよ！」波《なみ》の間《あいだ》から、プクルがぴょんととび出《だ》しました。「さんごの海《うみ》で、2まいめのかけらがよんでるんだ。ひっく！」しゃっくりといっしょに、プクルの口《くち》から、にじ色《いろ》のあわがぷうっとふくらみました。あわは{name}の頭《あたま》を、すっぽりつつみこみました。「あわのヘルメットだよ。これで、海《うみ》の中《なか》でも息《いき》ができるからね」"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "泡のヘルメットで海へ飛びこむ主人公。慌てて追うプクル",
+     "art": "wearing the rainbow bubble helmet and clutching a map piece, the child dives eagerly into the clear blue sea in a burst of bubbles, while Pukuru the baby pufferfish hurries after in a fluster",
+     "text": [
+      "「はやく いこう！」 ざぶーん！",
+      "「はやく はやく！」 {name}は ちずの かけらを にぎって、うみの なかへ とびこみました。プクルが あわてて おいかけます。",
+      "「すごい！早《はや》く行《い》こう、早《はや》く！」{name}は地図《ちず》のかけらをにぎりしめ、ざぶーんと海《うみ》へとびこみました。ヘルメットの中《なか》で、しっかり息《いき》ができます。かけらの絵《え》とそっくりのさんごが、海《うみ》のそこに見《み》えてきました。「待《ま》ってよう、{name}！」後《うし》ろからプクルが、ひれをぱたぱたさせて追《お》いかけてきました。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "色とりどりのさんご礁。縞模様の魚の列の横を急いで泳ぐ主人公",
+     "art": "underwater in a colorful coral reef of red, yellow and purple corals, the child in the bubble helmet swims quickly past a neat line of striped fish, with Pukuru the baby pufferfish trailing behind",
+     "text": [
+      "さんごの うみは、いろが いっぱい！",
+      "うみの なかは、あかや きいろの さんごで いっぱい。しまもようの さかなが ならんで およいで います。{name}は どんどん すすみました。",
+      "海《うみ》の中《なか》は、まるでお花畑《はなばたけ》でした。赤《あか》、黄色《きいろ》、むらさきのさんごが、どこまでも広《ひろ》がっています。しまもようの魚《さかな》たちが、列《れつ》になって通《とお》りすぎていきます。でも、{name}はかけらのことで頭《あたま》がいっぱい。「たからはどこ？早《はや》く見《み》つけなくちゃ」と、どんどん先《さき》へ進《すす》んでいきました。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "さんごの陰から声をかける小さなタツノオトシゴ。振り向かずに泳ぎ去る主人公",
+     "art": "from behind a coral, Piko, a tiny yellow seahorse with a curled tail, calls out with a hopeful face, but the child in the bubble helmet swims right past without turning around; Pukuru the baby pufferfish glances back at Piko",
+     "text": [
+      "「あのね……」 ちいさな こえ。",
+      "さんごの かげから、ちいさな タツノオトシゴが いいました。「あのね、あのね……」 「あとでね！」 {name}は とまらずに いって しまいました。",
+      "さんごのかげから、指《ゆび》ほどの小《ちい》さなタツノオトシゴが顔《かお》を出《だ》しました。「あのね、あのね、かけらはね……」とても小《ちい》さな声《こえ》です。でも、{name}は「ごめん、あとでね！」と言《い》って、止《と》まらずに通《とお》りすぎてしまいました。タツノオトシゴのピコは、しっぽをさんごにまいたまま、さびしそうに見送《みおく》りました。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "砂けむりの中で夢中で砂を掘る主人公。逃げる魚、丸くふくらんだプクル",
+     "art": "underwater, the child digs eagerly in the sandy seabed, stirring up a big cloud of sand; startled fish scatter away and Pukuru the baby pufferfish puffs up into a round ball",
+     "text": [
+      "すなを ほって、ほって、もくもく。",
+      "「ここかな？ ここかな？」 {name}は あちこちの すなを ほりました。すなが もくもく まいあがって、さかなたちは にげて しまいました。",
+      "「ここかな？それとも、ここ？」{name}は、あちこちのすなを手《て》でほり返《かえ》しました。ほるたびに、すなけむりがもくもくまい上《あ》がり、魚《さかな》たちはびっくりしてにげていきます。プクルも、すなをかぶってまんまるにふくらんでしまいました。「{name}、ちょっと待《ま》って……」プクルの声《こえ》も、{name}にはとどきません。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "同じ形のさんごが続く迷路。きょろきょろする主人公とプクル",
+     "art": "as the sand cloud clears, the child in the bubble helmet and Pukuru the baby pufferfish look around anxiously in a maze of corals that all look the same",
+     "text": [
+      "あれ？ ここ、どこ？",
+      "すなけむりが はれると、まわりは おなじような さんごばかり。どっちから きたのか、わからなく なって しまいました。",
+      "すなけむりが、ようやくしずまりました。ところが、あたりを見回《みまわ》すと、どこを見《み》ても同《おな》じようなさんごばかり。右《みぎ》へ行《い》っても、左《ひだり》へ行《い》っても、さっきの場所《ばしょ》にもどってきてしまいます。「あれ……さっきもここ、通《とお》ったよね？」さんごのめいろに、まよいこんでしまったのです。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "砂の上に座りこんでうつむく主人公。そばで丸いまま浮かぶプクル",
+     "art": "the child sits down on the sandy seabed with head bowed, looking sad and lost; Pukuru the baby pufferfish floats quietly beside, still puffed round",
+     "text": [
+      "「どこにも ない……」 しょんぼり。",
+      "{name}は すなの うえに すわりこみました。「どこにも ない……」 プクルも まんまるの まま、しずかに うかんで います。",
+      "{name}は、すなの上《うえ》にぺたんとすわりこみました。「どこをさがしても、ない……」いっぱい泳《およ》いで、いっぱいほったのに、何《なに》も見《み》つかりません。プクルもまんまるにふくらんだまま、元《もと》にもどれずにいます。そのとき、しんとした海《うみ》の中《なか》で、どこからか、かすかな声《こえ》が聞《き》こえた気《き》がしました。「……あのね」"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "目をつぶり耳に手を当てる主人公。肩先にタツノオトシゴのピコ",
+     "art": "on the seabed the child closes their eyes and cups a hand to their ear, listening carefully; on the child's shoulder perches Piko, a tiny yellow seahorse with a curled tail, whispering, and Pukuru the baby pufferfish floats close by",
+     "text": [
+      "「すって、はいて、ぷくぷくぱっ！」",
+      "{name}は めを つぶりました。「すって、はいて、ぷくぷくぱっ！」 じっと みみを すますと、ピコの ちいさな こえが きこえました。「かけらは、うたう かいの なかだよ」",
+      "{name}は、目《め》をつぶりました。「すって、はいて、ぷくぷくぱっ！」あせっていた心《こころ》が、すうっと静《しず》かになっていきます。じっと耳《みみ》をすますと、あの小《ちい》さな声《こえ》が、はっきり聞《き》こえました。「あのね、かけらは、歌《うた》う貝《かい》の中《なか》にあるの」ピコが、追《お》いかけてきてくれたのです。その向《む》こうから、かすかな歌《うた》が、ラララ……と聞《き》こえてきました。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "【見開き】巨大な貝が開き、中で光るかけら。光がさんご礁全体を虹色に照らす",
+     "art": "a giant seashell opens wide on the coral reef, revealing a glowing map piece inside; its light spreads rainbow colors across the whole coral sea as the child, Pukuru the baby pufferfish and Piko the tiny yellow seahorse watch in wonder. A grand, breathtaking wide view",
+     "text": [
+      "おおきな かいが、ぱかっ！",
+      "うたの する ほうへ いくと、おおきな かいが ありました。かいが ぱかっと ひらくと、なかで かけらが ひかり、さんごの うみ ぜんぶが きらきら かがやきました。",
+      "歌《うた》をたどっていくと、さんごの森《もり》のまん中《なか》に、{name}の何《なん》ばいもある大《おお》きな貝《かい》がありました。「しずかに聞《き》いてくれる子《こ》にだけ、開《ひら》くのよ」貝《かい》がゆっくりと口《くち》を開《ひら》くと、中《なか》で地図《ちず》のかけらが光《ひか》っていました。その光《ひかり》がさんごにうつって、海《うみ》いっぱいが、にじ色《いろ》にかがやきはじめました。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "【ママ】桟橋でママがタオルで主人公を包む。話に耳を傾けるママ",
+     "art": "back on the autumn pier, the mother wraps the dripping child snugly in a fluffy towel and listens with a warm smile as the child excitedly tells the story",
+     "text": [
+      "ママが さんばしで まってたよ。",
+      "ピコに さよならして さんばしへ もどると、ママが まって いました。ママは タオルで {name}を ぎゅっと つつんで くれました。「あのね、ちいさな こえを きいたんだよ」",
+      "ピコと魚《さかな》たちに手《て》をふって、さんばしへもどると、おべんとうを持《も》ってきたママが待《ま》っていました。「まあ、かみの毛《け》がしおでぱりぱり！」ママは{name}を、ふかふかのタオルで、ぎゅっとつつみました。「あのね、ピコっていう、すごく小《ちい》さな友《とも》だちの声《こえ》を聞《き》いたんだよ」ママは、{name}の話《はなし》に、じっと耳《みみ》をかたむけてくれました。"
+     ],
+     "withMom": true,
+     "withDad": false,
+     "withSidekick": false,
+     "alt": {
+      "both": {
+       "label": "桟橋でママがタオルで包み、パパが水筒のスープを注ぐ",
+       "art": "back on the autumn pier, the mother wraps the dripping child snugly in a fluffy towel while the father smiles and pours warm soup from a thermos",
+       "text": [
+        "ママと パパが さんばしで まってたよ。",
+        "ピコに さよならして さんばしへ もどると、ママと パパが まって いました。ママは タオルで {name}を ぎゅっと つつんで くれました。パパも「おかえり」と にっこり。",
+        "ピコと魚《さかな》たちに手《て》をふって、さんばしへもどると、ママとパパが待《ま》っていました。「まあ、かみの毛《け》がしおでぱりぱり！」ママは{name}を、ふかふかのタオルで、ぎゅっとつつみました。パパは、あたたかいスープをついでいます。「あのね、ピコっていう、すごく小《ちい》さな友《とも》だちの声《こえ》を聞《き》いたんだよ」ママは、{name}の話《はなし》に、じっと耳《みみ》をかたむけてくれました。"
+       ],
+       "withMom": true,
+       "withDad": true,
+       "withSidekick": false
+      },
+      "dad": {
+       "label": "桟橋でパパがタオルで主人公を包む。話に耳を傾けるパパ",
+       "art": "back on the autumn pier, the father wraps the dripping child snugly in a fluffy towel and listens with a warm smile as the child excitedly tells the story",
+       "text": [
+        "パパが さんばしで まってたよ。",
+        "ピコに さよならして さんばしへ もどると、パパが まって いました。パパは タオルで {name}を ぎゅっと つつんで くれました。「あのね、ちいさな こえを きいたんだよ」",
+        "ピコと魚《さかな》たちに手《て》をふって、さんばしへもどると、パパが待《ま》っていました。「おや、かみの毛《け》がしおでぱりぱりだ！」パパは{name}を、ふかふかのタオルで、ぎゅっとつつみました。「あのね、ピコっていう、すごく小《ちい》さな友《とも》だちの声《こえ》を聞《き》いたんだよ」パパは、{name}の話《はなし》に、じっと耳《みみ》をかたむけてくれました。"
+       ],
+       "withMom": false,
+       "withDad": true,
+       "withSidekick": false
+      },
+      "none": {
+       "label": "桟橋でドンがふかふかの海そうで主人公の髪をふく",
+       "art": "back on the autumn pier, Don, a huge red crab with giant claws, gently dries the child's hair with a fluffy bunch of seaweed while the child excitedly tells the story",
+       "text": [
+        "ドンが さんばしで まってたよ。",
+        "ピコに さよならして さんばしへ もどると、ドンが まって いました。ドンは ふかふかの かいそうで {name}を ふいて くれました。「あのね、ちいさな こえを きいたんだよ」",
+        "ピコと魚《さかな》たちに手《て》をふって、さんばしへもどると、ドンが待《ま》っていました。「おや、かみの毛《け》がしおでぱりぱりじゃ！」ドンは、ふかふかの海《かい》そうで、{name}のかみをごしごしふいてくれました。「あのね、ピコっていう、すごく小《ちい》さな友《とも》だちの声《こえ》を聞《き》いたんだよ」ドンは、{name}の話《はなし》に、じっと耳《みみ》をかたむけてくれました。"
+       ],
+       "withMom": false,
+       "withDad": false,
+       "withSidekick": false
+      }
+     }
+    },
+    {
+     "label": "夜の寝室。枕元のびんに2枚のかけら。新しいかけらに雪の灯台と「ナミ」の文字",
+     "art": "a cozy bedroom at night lit by a small lamp; on the bedside table the glass bottle holds two glowing map pieces, and the newest piece shows a small picture of a white lighthouse on a snowy cape; the child looks at it in wonder from the bed",
+     "text": [
+      "かけらが 2まいに なったよ。",
+      "その よる、びんの なかの かけらが 2まいに なりました。あたらしい かけらには、ゆきの みさきの とうだいの え。そばに「ナミ」と かいて ありました。",
+      "その夜《よる》、まくらもとのびんの中《なか》で、地図《ちず》のかけらが2まいにふえていました。2まいをならべると、道《みち》がつながります。新《あたら》しいかけらには、雪《ゆき》のふるみさきに立《た》つ、白《しろ》い灯台《とうだい》の絵《え》。そのそばに、小《ちい》さく「ナミ」と書《か》いてありました。「ナミって、だれだろう？」まどの外《そと》で、波《なみ》の音《おと》が、ざざん、とこたえました。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": false
+    }
+   ]
+  },
+  {
+   "no": 3,
+   "title": "ゆきの とうだいと ほしの ガラス",
+   "outfits": "warm winter clothes in the same colors as the reference: puffy coats, knitted hats, scarves and mittens",
+   "cover": {
+    "label": "雪のみさきに立つ白い灯台。てっぺんの光る星のガラスを見上げる主人公と、バケツの中のプクル。",
+    "art": "a white lighthouse stands on a snowy cape above the winter sea; the child looks up at the rainbow-glowing star-shaped glass at its top, holding a small bucket of seawater where Pukuru the baby pufferfish peeks out",
+    "withSidekick": true
+   },
+   "scenes": [
+    {
+     "label": "【ママ】雪の岬の道をママと手をつないで歩く。奥に白い灯台",
+     "art": "on a snowy day, the child and the mother walk hand in hand along a snow-covered path on a cape, with a white lighthouse standing in the distance above the gray winter sea",
+     "text": [
+      "ママと ゆきの みさきへ。",
+      "ゆきの ふる ふゆの ひ。{name}は ママと みさきの とうだいへ いきました。「あそこには、うみを まもる ナミばあさんが いるのよ」",
+      "雪《ゆき》がちらちらまう、冬《ふゆ》の日《ひ》。{name}はママと手《て》をつないで、みさきの灯台《とうだい》へ向《む》かいました。白《しろ》い息《いき》が、ほわっとうかびます。「あの灯台《とうだい》にはね、むかしからずっと海《うみ》をまもっている、ナミばあさんがいるのよ」ママが言《い》いました。{name}は、かけらの絵《え》とそっくりの灯台《とうだい》を、じっと見上《みあ》げました。"
+     ],
+     "withMom": true,
+     "withDad": false,
+     "withSidekick": false,
+     "alt": {
+      "both": {
+       "label": "雪の岬の道を、主人公をまん中にママとパパが手をつないで歩く。奥に白い灯台",
+       "art": "on a snowy day, the child walks in the middle holding hands with the mother and the father along a snow-covered path on a cape, with a white lighthouse standing in the distance above the gray winter sea",
+       "text": [
+        "ママと パパと ゆきの みさきへ。",
+        "ゆきの ふる ふゆの ひ。{name}は ママと パパと みさきの とうだいへ いきました。ママが いいました。「あそこには、うみを まもる ナミばあさんが いるのよ」",
+        "雪《ゆき》がちらちらまう、冬《ふゆ》の日《ひ》。{name}はママとパパと手《て》をつないで、みさきの灯台《とうだい》へ向《む》かいました。三人《さんにん》の白《しろ》い息《いき》が、ほわっとうかびます。「あの灯台《とうだい》にはね、むかしからずっと海《うみ》をまもっている、ナミばあさんがいるのよ」ママが言《い》いました。{name}は、かけらの絵《え》とそっくりの灯台《とうだい》を、じっと見上《みあ》げました。"
+       ],
+       "withMom": true,
+       "withDad": true,
+       "withSidekick": false
+      },
+      "dad": {
+       "label": "雪の岬の道をパパと手をつないで歩く。奥に白い灯台",
+       "art": "on a snowy day, the child and the father walk hand in hand along a snow-covered path on a cape, with a white lighthouse standing in the distance above the gray winter sea",
+       "text": [
+        "パパと ゆきの みさきへ。",
+        "ゆきの ふる ふゆの ひ。{name}は パパと みさきの とうだいへ いきました。「あそこには、うみを まもる ナミばあさんが いるんだよ」",
+        "雪《ゆき》がちらちらまう、冬《ふゆ》の日《ひ》。{name}はパパと手《て》をつないで、みさきの灯台《とうだい》へ向《む》かいました。白《しろ》い息《いき》が、ほわっとうかびます。「あの灯台《とうだい》にはね、むかしからずっと海《うみ》をまもっている、ナミばあさんがいるんだよ」パパが言《い》いました。{name}は、かけらの絵《え》とそっくりの灯台《とうだい》を、じっと見上《みあ》げました。"
+       ],
+       "withMom": false,
+       "withDad": true,
+       "withSidekick": false
+      },
+      "none": {
+       "label": "雪の岬の道を歩く主人公。頭上を旋回するかもめ、奥に白い灯台",
+       "art": "on a snowy day, the child walks along a snow-covered path on a cape while a seagull circles overhead, with a white lighthouse standing in the distance above the gray winter sea",
+       "text": [
+        "かもめと ゆきの みさきへ。",
+        "ゆきの ふる ふゆの ひ。{name}は みさきの とうだいへ いきました。かもめが いいました。「あそこには、うみを まもる ナミばあさんが いるんだよ」",
+        "雪《ゆき》がちらちらまう、冬《ふゆ》の日《ひ》。{name}は、みさきの灯台《とうだい》へ向《む》かいました。白《しろ》い息《いき》が、ほわっとうかびます。夏《なつ》に会《あ》ったかもめが、くるりととんできて言《い》いました。「あの灯台《とうだい》にはね、むかしからずっと海《うみ》をまもっている、ナミばあさんがいるんだよ」{name}は、かけらの絵《え》とそっくりの灯台《とうだい》を、じっと見上《みあ》げました。"
+       ],
+       "withMom": false,
+       "withDad": false,
+       "withSidekick": false
+      }
+     }
+    },
+    {
+     "label": "灯台の赤い扉から顔を出す、船長帽の白髪のおばあさん。バケツの中のプクル",
+     "art": "at the foot of the white lighthouse in the snow, the child holds a bucket of seawater with Pukuru the baby pufferfish inside, as the red door opens and Grandma Nami, a kind old lighthouse keeper with white hair and a captain's hat, peeks out with a smile",
+     "text": [
+      "プクルと ナミばあさん、こんにちは。",
+      "みさきの したの なみから、プクルが ぴょん。{name}は プクルを うみの みずの バケツに いれました。とうだいの とびらが ひらいて、しろい かみの おばあさんが でて きました。",
+      "みさきの下《した》の波《なみ》から、「さむーい！」とプクルがとび出《だ》してきました。{name}は、海《うみ》の水《みず》をくんだバケツに、プクルを入《い》れてあげました。そのとき、灯台《とうだい》の赤《あか》いとびらが、ぎいっと開《ひら》きました。白《しろ》いかみに、船長《せんちょう》のぼうしをかぶったおばあさんです。「おや、めずらしいお客《きゃく》さん。ナミばあさんとよんでおくれ。さあ、お入《はい》り」"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "らせん階段をのぼるナミばあさんと主人公。人差し指を立てて注意するナミばあさん",
+     "art": "inside the lighthouse, Grandma Nami, a kind old lighthouse keeper with white hair and a captain's hat, climbs a spiral staircase ahead of the child and turns back raising one finger in a gentle warning; the child follows carrying the bucket with Pukuru the baby pufferfish",
+     "text": [
+      "「ほしの ガラスは さわらないでね」",
+      "「こんやは ゆきの よる。ふねが、この あかりを めじるしに かえって くるの。でも、まんなかの ほしの ガラスだけは、さわらないでね」",
+      "「今夜《こんや》は雪《ゆき》の夜《よる》。漁《りょう》に出《で》た船《ふね》が、この灯台《とうだい》の明《あ》かりを目印《めじるし》に、港《みなと》へ帰《かえ》ってくるんだよ」ナミばあさんは、らせん階《かい》だんをのぼりながら言《い》いました。「ただし、ランプのまん中《なか》の『星《ほし》のガラス』だけは、さわらないでおくれ。とても大事《だいじ》なものだからね」{name}は「はーい」と、元気《げんき》にへんじをしました。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "灯台のてっぺんの部屋。大きなランプの中心で虹色に光る星形のガラス、見とれる主人公",
+     "art": "the lamp room at the top of the lighthouse, with a wide view of the snowy sea through the windows; at the center of the big lamp a star-shaped glass sparkles in rainbow colors, and the child gazes at it enchanted, the bucket with Pukuru the baby pufferfish at their feet",
+     "text": [
+      "てっぺんから、ゆきの うみ！",
+      "とうだいの てっぺんに つくと、ゆきの うみが ずっと とおくまで みえました。まんなかで、ほしの かたちの ガラスが きらきら ひかって います。",
+      "階《かい》だんをのぼりきると、灯台《とうだい》のてっぺんです。まどの外《そと》には、雪《ゆき》のふる海《うみ》が、どこまでも広《ひろ》がっていました。へやのまん中《なか》には、大《おお》きなランプ。その真《ま》ん中《なか》で、星《ほし》の形《かたち》をしたガラスが、にじ色《いろ》にきらきら光《ひか》っています。「わあ、きれい……」{name}は、ガラスから目《め》がはなせなくなりました。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "外れた星のガラスを手のひらに受けて驚く主人公。バケツの中でふくらむプクル",
+     "art": "in the lamp room, the star-shaped glass has come loose and dropped into the child's open palms, and the child looks startled; in the bucket beside them Pukuru the baby pufferfish puffs up into a round ball",
+     "text": [
+      "ちょっとだけ……あっ、とれちゃった！",
+      "ナミばあさんが おちゃを いれに おりて いきました。「ちょっとだけ」 {name}が ゆびで さわると、ガラスが ころんと とれて しまいました。",
+      "「お茶《ちゃ》を入《い》れてくるから、待《ま》っていておくれ」ナミばあさんが、階《かい》だんを下《お》りていきました。{name}は、星《ほし》のガラスの前《まえ》に立《た》ちました。「ちょっとだけなら……」指《ゆび》の先《さき》で、そっとふれたとたん。ころん！ガラスがランプから外《はず》れて、{name}の手《て》のひらに落《お》ちてきました。「あっ！」バケツの中《なか》で、プクルがぷくーっとふくらみました。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "ポケットを押さえて目をそらす主人公。湯気の立つココアを差し出すナミばあさん",
+     "art": "at the top of the spiral staircase, Grandma Nami, a kind old lighthouse keeper with white hair and a captain's hat, holds out a steaming mug of cocoa, while the child presses a hand over their pocket and looks away awkwardly; Pukuru the baby pufferfish watches from the bucket",
+     "text": [
+      "ポケットに かくしちゃった。",
+      "とん、とん、とん。かいだんを のぼる あしおと！ {name}は あわてて ガラスを ポケットに かくしました。「な、なんでも ないよ」",
+      "とん、とん、とん。階《かい》だんをのぼってくる足音《あしおと》がします。{name}はあわてて、星《ほし》のガラスをポケットにおしこみました。「おまたせ。あったかいココアだよ」ナミばあさんが、湯気《ゆげ》の立《た》つカップをさし出《だ》しました。「どうかしたかい？」「う、ううん、なんでもない」{name}の声《こえ》は、自分《じぶん》でもわかるくらい、上《うわ》ずっていました。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "ぼんやりした弱い光のランプ。床を探すナミばあさん、ポケットを押さえて黙る主人公",
+     "art": "in the evening the big lamp gives only a dim, weak glow; Grandma Nami, a kind old lighthouse keeper with white hair and a captain's hat, searches the floor looking puzzled, while the child stands silently with a hand over their pocket and Pukuru the baby pufferfish glances worriedly from the bucket",
+     "text": [
+      "あかりが よわいよ。",
+      "ゆうがた。ナミばあさんが ランプを つけると、ひかりは ぼんやり。うみまで とどきません。「おかしいねえ」 ナミばあさんは あちこち さがしはじめました。",
+      "夕方《ゆうがた》になりました。ナミばあさんがランプに火《ひ》をともすと、光《ひかり》はぼんやりとちらばって、海《うみ》までとどきません。「おかしいねえ。星《ほし》のガラスがない……」ナミばあさんは、ゆかにはいつくばって、あちこちさがしはじめました。{name}は、ポケットをぎゅっとおさえたまま、だまっていました。バケツの中《なか》のプクルが、じっと{name}を見《み》ています。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "窓の外、吹雪の向こうにかすかな船の明かり。涙をこらえる主人公",
+     "art": "through the lighthouse window, faint lights of ships flicker beyond a snowstorm over the dark sea; the child stands by the window holding back tears, one hand on their pocket",
+     "text": [
+      "ぼおー……ふねが まよって いるよ。",
+      "ゆきの むこうから、ぼおー、ぼおーと ふねの ふえ。「みなとが みえなくて、こまって いるんだねえ」 ポケットの ガラスが、つめたくて おもく かんじました。",
+      "雪《ゆき》のカーテンの向《む》こうから、ぼおー、ぼおー、と船《ふね》の音《おと》が聞《き》こえてきました。「港《みなと》が見《み》えなくて、こまっているんだねえ」ナミばあさんが、心配《しんぱい》そうにまどの外《そと》を見《み》つめます。ポケットの中《なか》のガラスが、氷《こおり》のように冷《つめ》たく、重《おも》く感《かん》じられました。{name}の目《め》に、じわっとなみだがうかびました。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": false
+    },
+    {
+     "label": "手のひらの星のガラスを差し出す主人公。見つめるナミばあさん",
+     "art": "the child bravely holds out the star-shaped glass on an open palm with a sincere face, and Grandma Nami, a kind old lighthouse keeper with white hair and a captain's hat, bends down and looks at it gently; Pukuru the baby pufferfish watches from the bucket",
+     "text": [
+      "「すって、はいて、ぷくぷくぱっ！」",
+      "{name}は ふかく いきを しました。「すって、はいて、ぷくぷくぱっ！」 そして ポケットから ガラスを だしました。「ごめんなさい。さわったら、とれちゃったの」",
+      "{name}は、ポケットから手《て》を出《だ》しました。そして、大《おお》きく息《いき》をすいました。「すって、はいて、ぷくぷくぱっ！」手《て》のひらを開《ひら》くと、星《ほし》のガラスがきらりと光《ひか》りました。「ごめんなさい。さわっちゃいけないのに、さわったら、とれちゃったの。かくして、ごめんなさい」ナミばあさんは、だまって{name}の顔《かお》を見《み》つめました。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "【見開き】雪の夜の海を貫く灯台の光の帯。答えるように灯る船の明かり、手を重ねる二人",
+     "art": "on a snowy night, a bright beam of light from the lighthouse shoots straight across the dark winter sea and the ships answer with their own lights; at the top of the lighthouse the child and Grandma Nami, a kind old lighthouse keeper with white hair and a captain's hat, rest their hands together on the shining star glass, with Pukuru the baby pufferfish in the bucket beside them. A grand, breathtaking wide view",
+     "text": [
+      "とうだいの ひかりが、うみの むこうまで！",
+      "「よく いって くれたね。さあ、いっしょに なおそう」 ふたりで ガラスを はめると、ひかりが ゆきの うみを まっすぐ てらしました。ふねたちが ぼおーっと こたえます。",
+      "「よく言《い》ってくれたね。さあ、いっしょに直《なお》そう」ナミばあさんは、しわしわの手《て》を、{name}の手《て》にそえました。二人《ふたり》で星《ほし》のガラスをランプにはめこむと――ぱあっ！光《ひかり》の帯《おび》が、雪《ゆき》の海《うみ》をまっすぐにてらしました。遠《とお》くで、船《ふね》の明《あ》かりが、一《ひと》つ、また一《ひと》つとともります。ぼおー、ぼおー。「ありがとう」と言《い》っているみたいでした。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "【パパ】雪の灯台の下で主人公を肩車するパパ。海に光の道と港へ帰る船の列",
+     "art": "at the foot of the snowy lighthouse at night, the father carries the child on his shoulders; out on the sea a road of light stretches across the water and a line of ships sails home to the harbor",
+     "text": [
+      "パパが むかえに きたよ。",
+      "とうだいの したへ おりると、パパが むかえに きて いました。「ひかりの みち、みえたよ！」 パパは {name}を かたぐるま しました。",
+      "灯台《とうだい》の下《した》へ下《お》りると、パパがむかえに来《き》ていました。「海《うみ》の上《うえ》に、光《ひかり》の道《みち》ができたのが見《み》えたよ」{name}は、ガラスのことを、ぜんぶ話《はな》しました。パパはだまって{name}の頭《あたま》をなでてから、高《たか》くかたぐるましました。高《たか》いところから見《み》ると、港《みなと》に帰《かえ》ってくる船《ふね》の明《あ》かりが、ならんで見《み》えました。"
+     ],
+     "withMom": false,
+     "withDad": true,
+     "withSidekick": false,
+     "alt": {
+      "both": {
+       "label": "パパが主人公を肩車、ママがマフラーを巻く。海に光の道と港へ帰る船の列",
+       "art": "at the foot of the snowy lighthouse at night, the father carries the child on his shoulders while the mother wraps a scarf around the child; out on the sea a road of light stretches across the water and a line of ships sails home to the harbor",
+       "text": [
+        "ママと パパが むかえに きたよ。",
+        "とうだいの したへ おりると、ママと パパが まって いました。「ひかりの みち、みえたよ！」 パパは {name}を かたぐるま しました。",
+        "灯台《とうだい》の下《した》へ下《お》りると、ママとパパが待《ま》っていました。「海《うみ》の上《うえ》に、光《ひかり》の道《みち》ができたのが見《み》えたよ」{name}は、ガラスのことを、ぜんぶ話《はな》しました。パパはだまって{name}の頭《あたま》をなでてから、高《たか》くかたぐるましました。ママは、{name}の首《くび》にマフラーをまいてくれました。高《たか》いところから見《み》ると、港《みなと》に帰《かえ》ってくる船《ふね》の明《あ》かりが、ならんで見《み》えました。"
+       ],
+       "withMom": true,
+       "withDad": true,
+       "withSidekick": false
+      },
+      "mom": {
+       "label": "雪の灯台の下でママが主人公をハグ（肩車はしない）。海に光の道と港へ帰る船の列",
+       "art": "at the foot of the snowy lighthouse at night, the mother hugs the child tightly; out on the sea a road of light stretches across the water and a line of ships sails home to the harbor",
+       "text": [
+        "ママが まってたよ。ぎゅうっ。",
+        "とうだいの したへ おりると、ママが むかえに きて いました。「ひかりの みち、みえたよ！」 ママは {name}を ぎゅうっと だきしめました。",
+        "灯台《とうだい》の下《した》へ下《お》りると、ママがむかえに来《き》ていました。「海《うみ》の上《うえ》に、光《ひかり》の道《みち》ができたのが見《み》えたよ」{name}は、ガラスのことを、ぜんぶ話《はな》しました。ママはだまって{name}の頭《あたま》をなでてから、ぎゅうっとだきしめました。ママのうでの中《なか》から見《み》ると、港《みなと》に帰《かえ》ってくる船《ふね》の明《あ》かりが、ならんで見《み》えました。"
+       ],
+       "withMom": true,
+       "withDad": false,
+       "withSidekick": false
+      },
+      "none": {
+       "label": "雪の灯台の下で、雪をかぶったドンが主人公をはさみで持ち上げる。海に光の道と船の列",
+       "art": "at the foot of the snowy lighthouse at night, Don, a huge red crab with giant claws, with snow on his shell, lifts the child high with one claw; out on the sea a road of light stretches across the water and a line of ships sails home",
+       "text": [
+        "ドンが むかえに きたよ。",
+        "とうだいの したへ おりると、ドンが まって いました。「ひかりの みち、みえたぞ！」 ドンは {name}を はさみで たかく もちあげました。",
+        "灯台《とうだい》の下《した》へ下《お》りると、雪《ゆき》をかぶったドンが待《ま》っていました。「海《うみ》の上《うえ》に、光《ひかり》の道《みち》ができたのが見《み》えたぞ」{name}は、ガラスのことを、ぜんぶ話《はな》しました。ドンはだまってうなずいてから、大《おお》きなはさみで{name}を高《たか》く持《も》ち上《あ》げました。高《たか》いところから見《み》ると、港《みなと》に帰《かえ》ってくる船《ふね》の明《あ》かりが、ならんで見《み》えました。"
+       ],
+       "withMom": false,
+       "withDad": false,
+       "withSidekick": false
+      }
+     }
+    },
+    {
+     "label": "夜の寝室。ポケットから出たかけらとメモ。かけらに沈んだ船とくじらのしっぽの絵",
+     "art": "a cozy bedroom at night; the child finds a third map piece and a small folded note in a coat pocket, and the piece shows a picture of a sunken ship and a whale's tail",
+     "text": [
+      "ポケットに、3まいめの かけら！",
+      "その よる。ポケットに なにか はいって いました。3まいめの ちずの かけらと、「ナミより」の メモ。かけらには、しずんだ ふねと くじらの しっぽの え。",
+      "その夜《よる》、ねる前《まえ》に、{name}はポケットに何《なに》か入《はい》っているのに気《き》づきました。星《ほし》のガラスをかくした、あのポケットです。出《で》てきたのは、3まいめの地図《ちず》のかけらと、小《ちい》さなメモ。「小《ちい》さな灯台《とうだい》もりさんへ。春《はる》になったら、くじらが来《く》るよ。ナミより」かけらには、海《うみ》のそこにしずんだ船《ふね》と、大《おお》きなくじらのしっぽの絵《え》がかいてありました。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": false
+    }
+   ]
+  },
+  {
+   "no": 4,
+   "title": "しずんだ ふねと くじらの ルル",
+   "outfits": null,
+   "cover": {
+    "label": "海のそこにしずんだ大きな船の前で、くじらの子ルルのせなかに乗る主人公とプクル。",
+    "art": "on the sea floor in front of a large sunken old sailing ship, the child in a rainbow bubble helmet and Pukuru the baby pufferfish ride on the back of Lulu, a big baby blue-gray whale with a pale belly, sunbeams slanting down through the blue water",
+    "withSidekick": true
+   },
+   "scenes": [
+    {
+     "label": "【パパ】春の浜辺でパパと砂の城づくり。沖にくじらの潮吹き",
+     "art": "on a sunny spring beach, the child and the father build a sand castle together; far out at sea a whale blows a spout of water, and the child points at it excitedly",
+     "text": [
+      "パパと すなの おしろ。あ、くじら！",
+      "はるの はまべ。{name}は パパと すなの おしろを つくって いました。「みて！ くじらの しおだ！」 「はるは、くじらが たびを する きせつなんだよ」",
+      "春《はる》の、あたたかい日《ひ》。{name}はパパといっしょに、はまべで、すなのお城《しろ》を作《つく》っていました。「見《み》て！あそこ！」ずっと遠《とお》くの海《うみ》で、ぷしゅーっと、しおがふき上《あ》がりました。「くじらだ。春《はる》は、くじらが北《きた》の海《うみ》へ旅《たび》をする季節《きせつ》なんだよ」パパが目《め》を細《ほそ》めて言《い》いました。"
+     ],
+     "withMom": false,
+     "withDad": true,
+     "withSidekick": false,
+     "alt": {
+      "both": {
+       "label": "春の浜辺でパパと主人公が砂の城づくり、ママは貝がらで飾る。沖にくじらの潮吹き",
+       "art": "on a sunny spring beach, the child and the father build a sand castle while the mother decorates it with seashells; far out at sea a whale blows a spout of water, and the child points at it excitedly",
+       "text": [
+        "パパと ママと すなの おしろ。あ、くじら！",
+        "はるの はまべ。{name}は パパと ママと すなの おしろを つくって いました。「みて！ くじらの しおだ！」 パパが いいました。「はるは、くじらが たびを する きせつなんだよ」",
+        "春《はる》の、あたたかい日《ひ》。{name}はパパとママといっしょに、はまべで、すなのお城《しろ》を作《つく》っていました。ママは貝《かい》がらで、お城《しろ》をかざっています。「見《み》て！あそこ！」ずっと遠《とお》くの海《うみ》で、ぷしゅーっと、しおがふき上《あ》がりました。「くじらだ。春《はる》は、くじらが北《きた》の海《うみ》へ旅《たび》をする季節《きせつ》なんだよ」パパが目《め》を細《ほそ》めて言《い》いました。"
+       ],
+       "withMom": true,
+       "withDad": true,
+       "withSidekick": false
+      },
+      "mom": {
+       "label": "春の浜辺でママと砂の城づくり。沖にくじらの潮吹き",
+       "art": "on a sunny spring beach, the child and the mother build a sand castle together; far out at sea a whale blows a spout of water, and the child points at it excitedly",
+       "text": [
+        "ママと すなの おしろ。あ、くじら！",
+        "はるの はまべ。{name}は ママと すなの おしろを つくって いました。「みて！ くじらの しおだ！」 「はるは、くじらが たびを する きせつなのよ」",
+        "春《はる》の、あたたかい日《ひ》。{name}はママといっしょに、はまべで、すなのお城《しろ》を作《つく》っていました。「見《み》て！あそこ！」ずっと遠《とお》くの海《うみ》で、ぷしゅーっと、しおがふき上《あ》がりました。「くじらね。春《はる》は、くじらが北《きた》の海《うみ》へ旅《たび》をする季節《きせつ》なのよ」ママが目《め》を細《ほそ》めて言《い》いました。"
+       ],
+       "withMom": true,
+       "withDad": false,
+       "withSidekick": false
+      },
+      "none": {
+       "label": "春の浜辺でドンと砂の城づくり（ドンがはさみで堀を掘る）。沖にくじらの潮吹き",
+       "art": "on a sunny spring beach, the child builds a sand castle with Don, a huge red crab with giant claws, who digs the moat with his claws; far out at sea a whale blows a spout of water, and the child points at it excitedly",
+       "text": [
+        "ドンと すなの おしろ。あ、くじら！",
+        "はるの はまべ。{name}は ドンと すなの おしろを つくって いました。「みて！ くじらの しおだ！」 「はるは、くじらが たびを する きせつなんじゃ」",
+        "春《はる》の、あたたかい日《ひ》。{name}は、おおカニのドンといっしょに、はまべで、すなのお城《しろ》を作《つく》っていました。「見《み》て！あそこ！」ずっと遠《とお》くの海《うみ》で、ぷしゅーっと、しおがふき上《あ》がりました。「くじらじゃ。春《はる》は、くじらが北《きた》の海《うみ》へ旅《たび》をする季節《きせつ》なんじゃよ」ドンが目《め》を細《ほそ》めて言《い》いました。"
+       ],
+       "withMom": false,
+       "withDad": false,
+       "withSidekick": false
+      }
+     }
+    },
+    {
+     "label": "波から跳ねて慌てるプクル。主人公の頭に泡のヘルメット",
+     "art": "Pukuru the baby pufferfish leaps out of a wave in a panic, and with a hiccup a shimmering rainbow bubble pops onto the child's head as a bubble helmet",
+     "text": [
+      "「くじらの こが まいごなの！」",
+      "なみから プクルが とびだしました。「たいへん！ くじらの こが まいごなの」 「ひっく！」 {name}の あたまに、あわの ヘルメットが ぽわん。",
+      "「{name}、たいへん！」波《なみ》から、プクルがとび出《だ》してきました。「くじらの子《こ》が、まいごになってるの。ずっとないてるんだ」プクルが「ひっく！」としゃっくりをすると、{name}の頭《あたま》に、あわのヘルメットがぽわんとかぶさりました。{name}は、かけらのびんをにぎって、海《うみ》へ走《はし》りだしました。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "泣いているくじらの子。その顔をなでる主人公とプクル",
+     "art": "underwater, Lulu, a big baby blue-gray whale with a pale belly, cries with big teardrop bubbles, and the child in the bubble helmet gently strokes Lulu's face while Pukuru the baby pufferfish nuzzles close",
+     "text": [
+      "くじらの ルルが ないて いたよ。",
+      "うみの なかで、おおきな くじらの こが ないて いました。「ぼく、ルル。おかあさんと はぐれちゃった」 「いっしょに さがそう！」",
+      "海《うみ》の中《なか》で、バスくらいある大《おお》きなくじらの子《こ》が、なみだのあわを、ぽろぽろこぼしていました。「ぼく、ルル。おかあさんと、はぐれちゃったの。おかあさんの歌《うた》が、聞《き》こえなくなっちゃった」{name}は、ルルの大《おお》きな顔《かお》を、そっとなでました。「だいじょうぶ。いっしょにさがそう！」"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "ルルの背に乗って泳ぐ主人公。泡の輪をくぐって大笑い",
+     "art": "the child rides on the back of Lulu, a big baby blue-gray whale with a pale belly, zooming through the blue sea and laughing while passing through a ring of bubbles Lulu has blown; Pukuru the baby pufferfish swims happily alongside",
+     "text": [
+      "ルルの せなかで、びゅーん！",
+      "ルルの せなかに のって、うみの なかを びゅーん！ ルルが あわの わを つくると、{name}は くぐって おおわらい。すっかり なかよしです。",
+      "「ぼくのせなかに乗《の》って！」ルルのせなかで、{name}とプクルは、海《うみ》の中《なか》をびゅーんとすべりました。ルルが、しっぽでくるりとあわの輪《わ》を作《つく》ると、{name}はそこをくぐりぬけて、大笑《おおわら》い。「ルル、だいすき！」「ぼくも、{name}がだいすき！」二人《ふたり》は、すっかりなかよしになりました。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "さんごの上で尾を振るピコ。耳を寄せて聞く主人公",
+     "art": "beside the coral, Piko, a tiny yellow seahorse with a curled tail, waves its tail, and the child in the bubble helmet leans in close to listen, with Lulu the baby whale and Pukuru the baby pufferfish nearby",
+     "text": [
+      "ピコが みちを おしえて くれたよ。",
+      "さんごの そばで、ピコに あいました。「おおきな うたなら、しずんだ ふねの ほうから きこえたよ」",
+      "さんごの海《うみ》を通《とお》りかかると、秋《あき》に会《あ》ったタツノオトシゴのピコが、しっぽをふっていました。「{name}、ひさしぶり！大《おお》きな歌《うた》なら、きのう、しずんだ船《ふね》のほうから聞《き》こえたよ」ピコの小《ちい》さな声《こえ》を、{name}は、今度《こんど》は一《ひと》つも聞《き》きのがしませんでした。「ありがとう、ピコ！」"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "斜めに沈んだ古い帆船。船長室の箱から光るかけらを取り出す主人公",
+     "art": "inside an old sailing ship sunk at a tilt on the seabed, now a secret home for little fish, the child opens a small box in the captain's cabin and lifts out a glowing map piece; Pukuru the baby pufferfish peers over the child's shoulder",
+     "text": [
+      "しずんだ ふねで、4まいめの かけら！",
+      "しずんだ ふねの なかは、さかなたちの ひみつの すみか。せんちょうの へやの はこから、4まいめの ちずの かけらが でて きました。",
+      "海《うみ》のそこに、古《ふる》い大《おお》きな船《ふね》が、ななめにしずんでいました。まどからのぞくと、中《なか》は小《ちい》さな魚《さかな》たちの、ひみつのすみかです。船長《せんちょう》のへやの古《ふる》い箱《はこ》を開《あ》けると、出《で》てきたのは、4まいめの地図《ちず》のかけら！「やったあ！」ルルが、うれしそうにぐるりと回《まわ》りました。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "沈没船の甲板でルルに寄りかかる主人公。遠くに歌の波紋。目をそらす主人公",
+     "art": "on the deck of the sunken ship, the child leans against Lulu, a big baby blue-gray whale with a pale belly, deliberately looking away, while faint ripples of a far-off song drift through the water in the distance; Pukuru the baby pufferfish looks between them uneasily",
+     "text": [
+      "「ずっと いっしょに いようよ」",
+      "「ルル、ずっと ここで いっしょに いようよ」 そのとき、とおくから かすかな うたが きこえました。{name}は、きこえない ふりを しました。",
+      "船《ふね》のかんぱんで、{name}はルルによりかかりました。「ねえ、ルル。ずっとここで、いっしょにいようよ」そのときです。ずっと遠《とお》くから、ほうう……ほうう……と、ひくくてやさしい歌《うた》が聞《き》こえてきました。小《ちい》さな音《おと》を聞《き》くのがとくいになった{name}にだけ、聞《き》こえるくらいの音《おと》です。{name}は、聞《き》こえないふりをしました。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "遠くを見つめて涙の泡をためるルル。胸を押さえてうつむく主人公",
+     "art": "Lulu, a big baby blue-gray whale with a pale belly, gazes into the faraway sea with tear bubbles gathering in its eyes, and the child presses a hand to their chest and looks down sadly; Pukuru the baby pufferfish floats quietly nearby",
+     "text": [
+      "ルルが さびしそうに うみを みてる。",
+      "ルルは ときどき とおくの うみを みて、「おかあさん……」と ないて います。{name}の むねが ちくっと いたく なりました。",
+      "ルルは、ときどき遠《とお》くの海《うみ》を見《み》つめては、小《ちい》さな声《こえ》で「おかあさん……」とつぶやきました。大《おお》きな目《め》に、なみだのあわがたまっています。{name}のむねが、ちくりといたみました。歌《うた》は、だんだん遠《とお》ざかっていきます。今《いま》言《い》わなければ、もう聞《き》こえなくなってしまいます。プクルが、心配《しんぱい》そうに{name}を見上《みあ》げました。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "沈没船の鐘を鳴らし、遠くを指さす主人公。顔を上げるルル",
+     "art": "on the sunken ship the child rings the old ship's bell and points toward the distant sea, and Lulu, a big baby blue-gray whale with a pale belly, lifts its head hopefully; Pukuru the baby pufferfish cheers beside them",
+     "text": [
+      "「すって、はいて、ぷくぷくぱっ！」",
+      "「すって、はいて、ぷくぷくぱっ！」 {name}は ふねの かねを ならしました。「ルル、きこえる？ おかあさんの うた、あっちだよ！」",
+      "{name}は、ぎゅっと目《め》をつぶりました。「すって、はいて、ぷくぷくぱっ！」そして、船《ふね》の古《ふる》いかねを、力《ちから》いっぱい鳴《な》らしました。カーン、カーン！「ルル、聞《き》こえる？おかあさんの歌《うた》、あっちだよ！」かねの音《おと》にこたえるように、遠《とお》くの歌《うた》が、ぐんと大《おお》きくなりました。ルルの目《め》が、ぱあっとかがやきました。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "【見開き】海面から並んでジャンプするくじらの親子と大きな虹。手を振る主人公とプクル",
+     "art": "above the sparkling spring sea, Lulu, a big baby blue-gray whale with a pale belly, and a huge gentle grown-up whale (Lulu's mama) leap out of the water side by side under a great rainbow, sunlit spray everywhere, while the child in the bubble helmet and Pukuru the baby pufferfish wave from the waves. A grand, breathtaking wide view",
+     "text": [
+      "ルルと おかあさんが あえたよ！",
+      "うみの むこうから、おおきな おかあさんくじらが やって きました。ルルと おかあさんは いっしょに ジャンプ！ しぶきに おひさまが きらきら ひかりました。",
+      "青《あお》い海《うみ》の向《む》こうから、山《やま》のように大《おお》きなおかあさんくじらが、ゆっくりとあらわれました。「ルル！」「おかあさん！」ざっぱーん！親子《おやこ》がいっしょに空《そら》へジャンプすると、しぶきにお日《ひ》さまがあたって、大《おお》きなにじがかかりました。「{name}、ありがとう！夏《なつ》になったら、また会《あ》おうね！」{name}は、ちぎれそうなくらい手《て》をふりました。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "【ママ】春の浜辺でママに抱きつく主人公。背中をなでるママ、沖にくじらの潮",
+     "art": "on the spring beach the child hugs the mother and cries a little, and the mother quietly strokes the child's back; far out at sea a whale spout rises",
+     "text": [
+      "ママが ぎゅっと して くれたよ。",
+      "はまべに もどると、ママが まって いました。{name}は ママに だきついて、すこし なきました。ママは だまって、せなかを なでて くれました。",
+      "はまべにもどると、ママが待《ま》っていました。{name}はママにだきついて、少《すこ》しだけ泣《な》きました。「ルルとね、さよならしたの。ちょっとさびしかった」ママは何《なに》も聞《き》かずに、{name}のせなかを、ゆっくりなでてくれました。しばらくして、ママがそっと言《い》いました。「でも、いいお顔《かお》してるよ」{name}は、海《うみ》のほうを見《み》て、こくんとうなずきました。"
+     ],
+     "withMom": true,
+     "withDad": false,
+     "withSidekick": false,
+     "alt": {
+      "both": {
+       "label": "春の浜辺でママに抱きつく主人公。背中をなでるママ、隣に座るパパ、沖にくじらの潮",
+       "art": "on the spring beach the child hugs the mother and cries a little while the mother strokes the child's back and the father sits close beside them; far out at sea a whale spout rises",
+       "text": [
+        "ママと パパが ぎゅっと して くれたよ。",
+        "はまべに もどると、ママと パパが まって いました。{name}は ママに だきついて、すこし なきました。ママは せなかを なでて くれました。パパも そばに いて くれました。",
+        "はまべにもどると、ママとパパが待《ま》っていました。{name}はママにだきついて、少《すこ》しだけ泣《な》きました。「ルルとね、さよならしたの。ちょっとさびしかった」ママは何《なに》も聞《き》かずに、{name}のせなかを、ゆっくりなでてくれました。パパも、だまってとなりにすわっています。しばらくして、ママがそっと言《い》いました。「でも、いいお顔《かお》してるよ」{name}は、こくんとうなずきました。"
+       ],
+       "withMom": true,
+       "withDad": true,
+       "withSidekick": false
+      },
+      "dad": {
+       "label": "春の浜辺でパパに抱きつく主人公。背中をなでるパパ、沖にくじらの潮",
+       "art": "on the spring beach the child hugs the father and cries a little, and the father quietly strokes the child's back; far out at sea a whale spout rises",
+       "text": [
+        "パパが ぎゅっと して くれたよ。",
+        "はまべに もどると、パパが まって いました。{name}は パパに だきついて、すこし なきました。パパは だまって、せなかを なでて くれました。",
+        "はまべにもどると、パパが待《ま》っていました。{name}はパパにだきついて、少《すこ》しだけ泣《な》きました。「ルルとね、さよならしたの。ちょっとさびしかった」パパは何《なに》も聞《き》かずに、{name}のせなかを、ゆっくりなでてくれました。しばらくして、パパがそっと言《い》いました。「でも、いい顔《かお》してるぞ」{name}は、海《うみ》のほうを見《み》て、こくんとうなずきました。"
+       ],
+       "withMom": false,
+       "withDad": true,
+       "withSidekick": false
+      },
+      "none": {
+       "label": "春の浜辺に座る主人公。波打ち際で手にほほを寄せるプクル、隣に座るドン、沖にくじらの潮",
+       "art": "the child sits on the spring beach looking a little teary; at the water's edge Pukuru the baby pufferfish gently presses its cheek against the child's hand, and Don, a huge red crab with giant claws, sits quietly beside them; far out at sea a whale spout rises",
+       "text": [
+        "プクルが そばに いて くれたよ。",
+        "はまべに もどると、{name}は すこし なきました。プクルが ほっぺを そっと よせて くれました。ドンも だまって となりに すわって くれました。",
+        "はまべにもどると、{name}はすなの上《うえ》にすわって、少《すこ》しだけ泣《な》きました。「ルルとね、さよならしたの。ちょっとさびしかった」波《なみ》うちぎわのプクルは、何《なに》も聞《き》かずに、{name}の手《て》に、そっとほっぺをよせてくれました。ドンも、だまってとなりにすわっています。しばらくして、プクルがそっと言《い》いました。「でも、いい顔《かお》してるよ」{name}は、こくんとうなずきました。"
+       ],
+       "withMom": false,
+       "withDad": false,
+       "withSidekick": true
+      }
+     }
+    },
+    {
+     "label": "夜の机に並ぶ4枚のかけら。まん中だけ空いた地図。窓の外の月の海にくじらのしっぽ",
+     "art": "a desk by the window at night: four map pieces lie side by side forming an almost complete map with only the center missing, and the child looks at them; outside the window, under the moon, a whale's tail rises from the shining sea",
+     "text": [
+      "かけらが 4まい。あと 1まい！",
+      "その よる、4まいの かけらを ならべると、ちずが ほとんど できあがりました。でも、まんなかが ありません。とおくから、ルルの うたが きこえました。「なつに、もって いくね」",
+      "その夜《よる》、{name}は4まいのかけらを、つくえの上《うえ》にならべてみました。いそ、さんごの海《うみ》、灯台《とうだい》、しずんだ船《ふね》。かけらはぴたりとつながって、大《おお》きな地図《ちず》になりかけています。でも、まん中《なか》の1まいだけがありません。そのとき、まどの外《そと》の遠《とお》い海《うみ》から、ルルの歌《うた》がひびいてきました。「さいごのかけら、夏《なつ》に持《も》っていくね」"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": false
+    }
+   ]
+  },
+  {
+   "no": 5,
+   "title": "うみの そこの たからばこ",
+   "outfits": "light summer clothes in the same colors as the reference: the child in a short-sleeved T-shirt and shorts, the parents in short sleeves",
+   "cover": {
+    "label": "海のそこで開いた古いたからばこ。まき貝の笛を吹く主人公のまわりに、プクル、ドン、ピコ、ルルの親子、上から差しこむ灯台の光。",
+    "art": "on the deep seabed an old treasure chest stands open, and the child in a bubble helmet blows a small spiral seashell flute; gathered around are Pukuru the baby pufferfish, Don, a huge red crab with giant claws, Piko, a tiny yellow seahorse with a curled tail, and Lulu, a young blue-gray whale with a pale belly, with a huge gentle grown-up whale (Lulu's mama), while beams of lighthouse light shine down from above",
+    "withSidekick": true
+   },
+   "scenes": [
+    {
+     "label": "【ママ】第1話と同じ構図の砂浜。少し背が伸びた主人公とママ、手に4枚のかけら入りのびん",
+     "art": "the same sunny summer beach as last year, with a striped beach umbrella and glittering tide pools on the rocky shore; the child, now a little taller, stands with the mother, holding a glass bottle with four map pieces inside",
+     "text": [
+      "また なつ。ママと うみへ。",
+      "また なつが きました。ママと、きょねんと おなじ うみへ。「{name}、せが のびたね」 びんには、4まいの かけらが はいって います。",
+      "また、夏《なつ》がやって来《き》ました。{name}はママといっしょに、去年《きょねん》と同《おな》じ海《うみ》に来《き》ています。「去年《きょねん》は、あの岩《いわ》にとどかなかったのにね」ママが、{name}のせの高《たか》さを手《て》ではかって、笑《わら》いました。{name}の手《て》には、4まいのかけらが入《はい》ったびんが、しっかりにぎられていました。"
+     ],
+     "withMom": true,
+     "withDad": false,
+     "withSidekick": false,
+     "alt": {
+      "both": {
+       "label": "第1話と同じ構図の砂浜。少し背が伸びた主人公とママ・パパ、手に4枚のかけら入りのびん",
+       "art": "the same sunny summer beach as last year, with a striped beach umbrella and glittering tide pools on the rocky shore; the child, now a little taller, stands with the mother and the father, holding a glass bottle with four map pieces inside",
+       "text": [
+        "また なつ。ママと パパと うみへ。",
+        "また なつが きました。ママと パパと、きょねんと おなじ うみへ。「{name}、せが のびたね」 びんには、4まいの かけらが はいって います。",
+        "また、夏《なつ》がやって来《き》ました。{name}はママとパパといっしょに、去年《きょねん》と同《おな》じ海《うみ》に来《き》ています。「去年《きょねん》は、あの岩《いわ》にとどかなかったのにね」ママが、{name}のせの高《たか》さを手《て》ではかって、笑《わら》いました。パパも、うれしそうにうなずいています。{name}の手《て》には、4まいのかけらが入《はい》ったびんが、しっかりにぎられていました。"
+       ],
+       "withMom": true,
+       "withDad": true,
+       "withSidekick": false
+      },
+      "dad": {
+       "label": "第1話と同じ構図の砂浜。少し背が伸びた主人公とパパ、手に4枚のかけら入りのびん",
+       "art": "the same sunny summer beach as last year, with a striped beach umbrella and glittering tide pools on the rocky shore; the child, now a little taller, stands with the father, holding a glass bottle with four map pieces inside",
+       "text": [
+        "また なつ。パパと うみへ。",
+        "また なつが きました。パパと、きょねんと おなじ うみへ。「{name}、せが のびたな」 びんには、4まいの かけらが はいって います。",
+        "また、夏《なつ》がやって来《き》ました。{name}はパパといっしょに、去年《きょねん》と同《おな》じ海《うみ》に来《き》ています。「去年《きょねん》は、あの岩《いわ》にとどかなかったのになあ」パパが、{name}のせの高《たか》さを手《て》ではかって、笑《わら》いました。{name}の手《て》には、4まいのかけらが入《はい》ったびんが、しっかりにぎられていました。"
+       ],
+       "withMom": false,
+       "withDad": true,
+       "withSidekick": false
+      },
+      "none": {
+       "label": "第1話と同じ構図の砂浜。少し背が伸びた主人公と、はさみで背を測るドン、手に4枚のかけら入りのびん",
+       "art": "the same sunny summer beach as last year, with glittering tide pools on the rocky shore; the child, now a little taller, stands beside Don, a huge red crab with giant claws, who measures the child's height with one claw, the child holding a glass bottle with four map pieces inside",
+       "text": [
+        "また なつ。うみに きたよ。",
+        "また なつが きました。{name}は きょねんと おなじ うみへ。ドンが いいました。「{name}、せが のびたのう」 びんには、4まいの かけらが はいって います。",
+        "また、夏《なつ》がやって来《き》ました。{name}は、去年《きょねん》と同《おな》じ海《うみ》に来《き》ています。いその岩《いわ》から、ドンが顔《かお》を出《だ》しました。「去年《きょねん》は、この岩《いわ》にとどかなかったのにのう」ドンが、はさみで{name}のせの高《たか》さをはかって、笑《わら》いました。{name}の手《て》には、4まいのかけらが入《はい》ったびんが、しっかりにぎられていました。"
+       ],
+       "withMom": false,
+       "withDad": false,
+       "withSidekick": false
+      }
+     }
+    },
+    {
+     "label": "浅瀬に来た少し大きくなったルル。頭の上にプクル。口から出てくる最後のかけら",
+     "art": "in the shallow water, Lulu, a young blue-gray whale with a pale belly, now a little bigger, blows a spout with Pukuru the baby pufferfish sitting on top of its head, and gently lets the last map piece out of its mouth toward the delighted child",
+     "text": [
+      "ルルが きたよ！ 5まいめの かけら！",
+      "ぷしゅーっ！ おきで しおが あがりました。ルルです！ あたまには プクル。ルルは くちから 5まいめの かけらを そっと だしました。",
+      "ぷしゅーっ！沖《おき》で、大《おお》きなしおがふき上《あ》がりました。少《すこ》し大《おお》きくなったルルが、波《なみ》をかきわけて、近《ちか》くまで来《き》てくれたのです。頭《あたま》の上《うえ》には、プクルがちょこんと乗《の》っています。「{name}、やくそくのものだよ」ルルが大《おお》きな口《くち》をそっと開《あ》けると、中《なか》から、5まいめの地図《ちず》のかけらが出《で》てきました。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "5枚がつながって光る1枚の地図。金貨を想像して跳びはねる主人公（想像の吹き出し）",
+     "art": "on the beach the five map pieces join into one glowing map of the sea with an X mark at the deepest spot; the child jumps for joy, imagining a chest overflowing with gold coins in a dreamy thought cloud, while Pukuru the baby pufferfish watches",
+     "text": [
+      "ちずが できた！ たからは うみの そこ！",
+      "5まいを あわせると、ちずが できあがりました。まんなかの ばつじるしは、うみの いちばん ふかい ところ。「きっと きんかが ざくざくだ！」",
+      "5まいのかけらを合《あ》わせると、ぴかっと光《ひか》って、1まいの地図《ちず》になりました。まん中《なか》のばつじるしは、海《うみ》のいちばん深《ふか》いところをさしています。「たからだ！きっと、金《きん》かや首《くび》かざりが、ざくざく入《はい》ってるんだ！」{name}がとびはねると、プクルも「ざくざく！」とまねして、ぷくっとふくらみました。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "ルルの背で出発する主人公。岩の上で手を振るドン、さんごの上で尾を振るピコ",
+     "art": "wearing the bubble helmet, the child sets off riding on the back of Lulu, a young blue-gray whale with a pale belly, together with Pukuru the baby pufferfish; on a rock Don, a huge red crab with giant claws, waves his claws, and over the coral Piko, a tiny yellow seahorse with a curled tail, waves its tail",
+     "text": [
+      "ドンと ピコが てを ふって いるよ。",
+      "あわの ヘルメットを かぶって、ルルの せなかで しゅっぱつ！ いそでは ドンが はさみを ふり、さんごの うみでは ピコが しっぽを ふりました。",
+      "プクルのあわのヘルメットをかぶって、ルルのせなかに乗《の》って、しゅっぱつです。いその岩《いわ》の上《うえ》では、ドンが大《おお》きなはさみを、ガチン、ガチンと鳴《な》らしてくれました。もう、ちっともこわくありません。さんごの海《うみ》では、ピコとしまもようの魚《さかな》たちが、「いってらっしゃい！」と小《ちい》さな声《こえ》で見送《みおく》ってくれました。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "夏の灯台のてっぺんで手を振るナミばあさん。海に光の道、その上を進むルル",
+     "art": "at the top of a white lighthouse on a sunny summer cape, Grandma Nami, a kind old lighthouse keeper with white hair and a captain's hat, waves, and the beam lays a shining path across the sea, along which Lulu the young whale swims carrying the child and Pukuru the baby pufferfish",
+     "text": [
+      "とうだいから、ひかりの あいず。",
+      "とうだいの てっぺんで、ナミばあさんが てを ふりました。ぴかっ、ぴかっ。とうだいの ひかりが、うみの みちを てらして くれます。",
+      "みさきの灯台《とうだい》の前《まえ》を通《とお》ると、てっぺんで、ナミばあさんが大《おお》きく手《て》をふっていました。ぴかっ、ぴかっ、ぴかっ。灯台《とうだい》の光《ひかり》が、海《うみ》の上《うえ》に、まっすぐな道《みち》をえがきます。「行《い》っておいで！たからは、もうすぐそこだよ」ナミばあさんは、なぜか、なつかしそうにほほえんでいました。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "深い青の海の底。光るくらげの明かりの中、白い砂の丘に古いたからばこ",
+     "art": "the deep blue bottom of the sea, lit by softly glowing jellyfish; on a white sand dune rests an old treasure chest, as the child in the bubble helmet, Pukuru the baby pufferfish and Lulu the young whale approach in wonder",
+     "text": [
+      "ふかい うみの そこに、たからばこ！",
+      "ルルと いっしょに、ふかく ふかく もぐりました。ひかる くらげが あかりを ともす うみの そこに、ふるい たからばこが ありました。",
+      "ルルは、深《ふか》く、深《ふか》くもぐっていきました。あたりは夜《よる》のようにこい青《あお》です。でも、こわくはありません。ちょうちんのように光《ひか》るくらげたちが、ふわふわと明《あ》かりをともしてくれるからです。そして、白《しろ》いすなのおかの上《うえ》に、ありました。地図《ちず》のばつじるしと同《おな》じ場所《ばしょ》に、古《ふる》いたからばこが！"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "錆びたふたを力を合わせて押し上げる主人公・プクル・ルル。すきまからこぼれる光",
+     "art": "the child, Pukuru the baby pufferfish and Lulu, a young blue-gray whale with a pale belly, push together with all their might on the rusty lid of the old treasure chest, which creaks open, light spilling from the gap",
+     "text": [
+      "せーの！ ふたが おもいよ。",
+      "ふたは さびて、びくとも しません。「みんなで いっしょに！ せーの！」 ルルも あたまで おして、ぎぎぎ……ふたが ひらきました。",
+      "たからばこのふたは、さびついて、びくともしません。「みんなで、いっしょに！」{name}がふちをつかみ、プクルがすきまにもぐりこみ、ルルが大《おお》きな頭《あたま》でおし上《あ》げます。「せーの！」ぎぎぎ、ぎいい……。ふたが、ゆっくりと開《ひら》きました。中《なか》から、ふわりと光《ひかり》がこぼれます。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "空っぽに近い箱の底に、小さなまき貝の笛と古い手紙。がっかりしてうつむく主人公",
+     "art": "the open treasure chest is nearly empty, with only a small spiral seashell flute and an old rolled-up letter at the bottom; the child looks down in disappointment, Pukuru the baby pufferfish beside them",
+     "text": [
+      "きんかが ない……。",
+      "なかに あったのは、ちいさな かいの ふえと、ふるい てがみだけ。「たから、これだけ……？」 {name}は がっかりして、うつむきました。",
+      "ところが、中《なか》に入《はい》っていたのは、金《きん》かでも首《くび》かざりでもありませんでした。小《ちい》さなまき貝《がい》の笛《ふえ》と、古《ふる》い手紙《てがみ》が1まい。それだけです。「たから……これだけ？」{name}の声《こえ》が、しぼんでいきました。プクルも、しゅうっと小《ちい》さくしぼみました。手紙《てがみ》には「この笛《ふえ》を、ふいてごらん」と、それだけ書《か》いてありました。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "まき貝の笛を吹く主人公。笛から音の輪が海中へ広がる",
+     "art": "on the seabed the child takes a deep breath and blows the small spiral seashell flute, and rings of clear sound spread out through the deep blue water; Pukuru the baby pufferfish listens in wonder",
+     "text": [
+      "「すって、はいて、ぷくぷくぱっ！」",
+      "{name}は ふえを くちに あてました。「すって、はいて、ぷくぷくぱっ！」 おおきく すって、ながく ふくと、ぴいいい……と すんだ おとが ひろがりました。",
+      "{name}は、笛《ふえ》をじっと見《み》つめました。それから、手紙《てがみ》のとおりに、やってみることにしました。「すって、はいて、ぷくぷくぱっ！」大《おお》きく息《いき》をすって、ゆっくり、長《なが》く、笛《ふえ》をふきます。ぴいいいい……。すんだ音《おと》が、海《うみ》の中《なか》を、どこまでも、どこまでも広《ひろ》がっていきました。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "【見開き】笛の音に集まったドン・ピコと魚たち・くじらの親子が主人公を輪になって囲む。海底まで差しこむ灯台の光。第1話のいそ・第2話のさんごの色がそろう",
+     "art": "drawn by the flute's sound, Don, a huge red crab with giant claws, Piko, a tiny yellow seahorse with a curled tail, schools of colorful fish, and Lulu, a young blue-gray whale with a pale belly, with a huge gentle grown-up whale (Lulu's mama), circle around the smiling child and Pukuru the baby pufferfish; lighthouse beams reach all the way down to the seabed, and the rocky-shore colors and rainbow coral colors of their earlier adventures fill the scene. A grand, breathtaking wide view",
+     "text": [
+      "みんなが あつまって きたよ！",
+      "すると、ドンが、ピコが、くじらの おやこが、つぎつぎに やって きました。うえからは、とうだいの ひかり。みんなが {name}を かこんで わらって います。",
+      "すると、海《うみ》のあちこちから、みんながやって来《き》ました。いそからはドンが、さんごの海《うみ》からはピコと魚《さかな》たちが、遠《とお》い海《うみ》からはルルのおかあさんが。上《うえ》からは、灯台《とうだい》の光《ひかり》が、海《うみ》のそこまでさしこみます。手紙《てがみ》のうらには、こう書《か》いてありました。「笛《ふえ》をふけば、来《き》てくれる友《とも》だち。それが、このはこのたからものです。――むかし小《ちい》さかったナミより」"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "【パパ】夕方の浜辺でパパに肩車され、貝の笛を空へかかげる主人公。沖で潮を吹くルル",
+     "art": "on the beach at sunset the father carries the child on his shoulders, and the child raises the spiral seashell flute high to the sky; far out at sea Lulu the young whale blows a spout",
+     "text": [
+      "パパが はまで まってたよ。",
+      "ルルに おくって もらって はまに もどると、パパが まって いました。「たから、あった？」 {name}は パパの かたぐるまの うえで、かいの ふえを たかく かかげました。",
+      "ルルのせなかに乗《の》って、はまべへ帰《かえ》ってくると、パパが待《ま》っていました。「おかえり！たからは見《み》つかったかい？」{name}は、にっこりして、まき貝《がい》の笛《ふえ》を見《み》せました。「うん！すごいたからだよ」パパは「それはすごい」と、{name}を高《たか》くかたぐるましました。{name}が笛《ふえ》を空《そら》へかかげると、沖《おき》でルルが、うれしそうにしおをふき上《あ》げました。"
+     ],
+     "withMom": false,
+     "withDad": true,
+     "withSidekick": false,
+     "alt": {
+      "both": {
+       "label": "パパが主人公を肩車、横でママが拍手。主人公が貝の笛を空へかかげ、沖でルルが潮吹き",
+       "art": "on the beach at sunset the father carries the child on his shoulders while the mother claps beside them, and the child raises the spiral seashell flute high to the sky; far out at sea Lulu the young whale blows a spout",
+       "text": [
+        "ママと パパが はまで まってたよ。",
+        "ルルに おくって もらって はまに もどると、ママと パパが まって いました。「たから、あった？」 {name}は パパの かたぐるまの うえで、かいの ふえを たかく かかげました。",
+        "ルルのせなかに乗《の》って、はまべへ帰《かえ》ってくると、ママとパパが待《ま》っていました。「おかえり！たからは見《み》つかったかい？」パパが聞《き》くと、{name}は、にっこりして、まき貝《がい》の笛《ふえ》を見《み》せました。「うん！すごいたからだよ」パパは「それはすごい」と、{name}を高《たか》くかたぐるましました。ママも手《て》をたたいています。沖《おき》でルルが、うれしそうにしおをふき上《あ》げました。"
+       ],
+       "withMom": true,
+       "withDad": true,
+       "withSidekick": false
+      },
+      "mom": {
+       "label": "夕方の浜辺でママが主人公をハグ（肩車はしない）。主人公の手に貝の笛、沖で潮を吹くルル",
+       "art": "on the beach at sunset the mother hugs the child tightly, and the child shows her the spiral seashell flute; far out at sea Lulu the young whale blows a spout",
+       "text": [
+        "ママが はまで まってたよ。ぎゅうっ。",
+        "ルルに おくって もらって はまに もどると、ママが まって いました。「たから、あった？」 {name}は ママに ぎゅうっと だきつきながら、かいの ふえを みせました。",
+        "ルルのせなかに乗《の》って、はまべへ帰《かえ》ってくると、ママが待《ま》っていました。「おかえり！たからは見《み》つかった？」{name}は、にっこりして、まき貝《がい》の笛《ふえ》を見《み》せました。「うん！すごいたからだよ」ママは「それはすてきね」と、{name}をぎゅうっとだきしめました。ママのうでの中《なか》から笛《ふえ》をかかげると、沖《おき》でルルが、うれしそうにしおをふき上《あ》げました。"
+       ],
+       "withMom": true,
+       "withDad": false,
+       "withSidekick": false
+      },
+      "none": {
+       "label": "夕方の浜辺でドンがはさみで主人公を持ち上げ、やどかりたちが喜ぶ。貝の笛、沖で潮を吹くルル",
+       "art": "on the beach at sunset Don, a huge red crab with giant claws, lifts the child high on one claw while small hermit crabs cheer, and the child raises the spiral seashell flute to the sky; far out at sea Lulu the young whale blows a spout",
+       "text": [
+        "ドンたちが はまで まってたよ。",
+        "ルルに おくって もらって はまに もどると、ドンと やどかりたちが まって いました。「たから、あった？」 {name}は ドンの はさみの うえで、かいの ふえを たかく かかげました。",
+        "ルルのせなかに乗《の》って、はまべへ帰《かえ》ってくると、ドンとやどかりたちが待《ま》っていました。「おかえり！たからは見《み》つかったかい？」{name}は、にっこりして、まき貝《がい》の笛《ふえ》を見《み》せました。「うん！すごいたからだよ」ドンは「それはすごい」と、{name}をはさみで高《たか》く持《も》ち上《あ》げました。{name}が笛《ふえ》を空《そら》へかかげると、沖《おき》でルルが、うれしそうにしおをふき上《あ》げました。"
+       ],
+       "withMom": false,
+       "withDad": false,
+       "withSidekick": false
+      }
+     }
+    },
+    {
+     "label": "夕暮れの波打ち際。手紙入りのびんを海へ流す主人公。空から舞い落ちる星の地図の光る羽、見上げるプクル",
+     "art": "at the water's edge at dusk, the child lets a glass bottle holding a rolled-up map and letter float out to sea; a glowing feather patterned with a map of stars drifts down from the sky, and Pukuru the baby pufferfish looks up at it from the waves",
+     "text": [
+      "びんに てがみ。つぎの だれかへ。",
+      "ゆうがた、{name}は じぶんで かいた ちずと てがみを びんに いれて、うみへ ながしました。そのとき、そらから ひかる はねが ひらり。ほしの ちずが かいて あります。",
+      "夕方《ゆうがた》、{name}は、自分《じぶん》でかいた地図《ちず》と手紙《てがみ》を、あのびんに入《い》れました。書《か》き出《だ》しは「海《うみ》のたからをさがす人《ひと》へ」。びんを波《なみ》にのせると、ゆらゆらと沖《おき》へ流《なが》れていきます。そのとき、空《そら》から、光《ひか》る羽《はね》がひらりと落《お》ちてきました。星《ほし》をつないだ地図《ちず》がかいてあります。プクルがささやきました。「ねえ、{name}。今度《こんど》は、あの星《ほし》の向《む》こうへ、行《い》ってみない？」"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    }
+   ]
+  }
+ ]
+}

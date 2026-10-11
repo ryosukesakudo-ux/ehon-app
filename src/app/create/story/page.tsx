@@ -1,9 +1,12 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { BIRTHDAY_NOTICE_DAYS, CHILD_AGES, REPEAT_COUPON, STORIES, jstDate } from "@/lib/catalog";
-import { Check } from "@/components/icons";
+import { Check, Chevron } from "@/components/icons";
 import { SampleImage } from "@/components/sample-image";
-import { sampleUrl } from "@/lib/samples";
+import { samplePublicUrl, sampleUrl } from "@/lib/samples";
+import { seriesImagePath } from "@/lib/series";
+import { LEVELS, SERIES_LIST, levelForAge, parseSeriesKey, seriesKey, type SeriesId } from "@/lib/story-key";
 import { useFlow } from "../flow";
 import { NextButton, StepHeader, StepTitle } from "../step";
 
@@ -11,22 +14,115 @@ export default function StoryPage() {
   const { state, update } = useFlow();
   const nameOk = state.childName.trim().length > 0 && state.childName.trim().length <= 12;
   const ageOk = !!state.childAge;
+  const current = parseSeriesKey(state.story);
+  // 見本の絵がそろって選べるようになった話（シリーズごとの話の番号）
+  const [ready, setReady] = useState<Record<SeriesId, number[]> | null>(null);
+  const [open, setOpen] = useState<SeriesId | null>(current?.series ?? null);
+  useEffect(() => {
+    const none = Object.fromEntries(SERIES_LIST.map((x) => [x.id, [] as number[]])) as Record<SeriesId, number[]>;
+    fetch("/api/series/ready")
+      .then((r) => (r.ok ? r.json() : null))
+      .then((json) => setReady(json ?? none))
+      .catch(() => setReady(none));
+  }, []);
+  const isReady = (id: SeriesId, no: number) => !!ready?.[id]?.includes(no);
+  const storyOk = !current || isReady(current.series, current.episode);
+  const choose = (story: string) => update({ story, previews: {}, draftId: null });
+
   return (
     <>
       <StepHeader step={2} back="/create/taste" />
       <main className="step-body">
         <StepTitle title="お話を選んでください" lead="主人公はお子さまです。名前は本文に入ります。" />
+
+        <h2 className="display section-label">シリーズのお話</h2>
+        <p className="section-lead">1冊に1話。季節がめぐるように、続きのお話もあとから作れます。</p>
+        {SERIES_LIST.map((s) => {
+          const firstReady = s.episodes.find((e) => isReady(s.id, e.no));
+          const expanded = open === s.id;
+          return (
+            <div key={s.id} style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+              <button
+                type="button"
+                className="choice"
+                aria-expanded={expanded}
+                aria-pressed={current?.series === s.id}
+                onClick={() => setOpen(expanded ? null : s.id)}
+              >
+                <Thumb src={firstReady ? samplePublicUrl(seriesImagePath(s.id, firstReady.no, 0)) : null} alt={`${s.name}の見本`} />
+                <div style={{ display: "flex", flexDirection: "column", gap: 6, flexGrow: 1 }}>
+                  <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
+                    <div className="choice-title display">{s.name}</div>
+                    <div className="tag">全{s.episodes.length}話</div>
+                  </div>
+                  <div className="choice-desc">{s.description}</div>
+                </div>
+                <Chevron dir={expanded ? "up" : "down"} size={18} />
+              </button>
+              {expanded && (
+                <div className="episode-list">
+                  {s.episodes.map((ep) => {
+                    const ok = isReady(s.id, ep.no);
+                    const selected = current?.series === s.id && current.episode === ep.no;
+                    return (
+                      <button
+                        key={ep.no}
+                        type="button"
+                        className="choice episode-choice"
+                        aria-pressed={selected}
+                        disabled={!ok}
+                        onClick={() => choose(seriesKey(s.id, ep.no, current?.level ?? levelForAge(state.childAge)))}
+                      >
+                        <Thumb src={ok ? samplePublicUrl(seriesImagePath(s.id, ep.no, 0)) : null} alt={`第${ep.no}話の見本`} size={56} />
+                        <div style={{ display: "flex", flexDirection: "column", gap: 4, flexGrow: 1 }}>
+                          <div style={{ display: "flex", gap: 6, alignItems: "center", flexWrap: "wrap", fontSize: 12, color: "var(--sub)" }}>
+                            <span>第{ep.no}話・{ep.season}</span>
+                            {!ok && <span className="soon">{ready ? "準備中" : "確認中"}</span>}
+                          </div>
+                          <div className="display" style={{ fontSize: 15, fontWeight: 800, color: "var(--navy)" }}>{ep.title}</div>
+                        </div>
+                        {selected && <div className="check"><Check /></div>}
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
+              {current?.series === s.id && (
+                <div className="field">
+                  <span className="display" style={{ fontWeight: 800, color: "var(--navy)" }}>文の量</span>
+                  <div className="level-row" role="radiogroup" aria-label="文の量">
+                    {LEVELS.map((l) => (
+                      <button
+                        key={l.id}
+                        type="button"
+                        role="radio"
+                        aria-checked={current.level === l.id}
+                        className="choice level-choice"
+                        onClick={() => choose(seriesKey(current.series, current.episode, l.id))}
+                      >
+                        <span className="choice-title display">{l.name}</span>
+                        <span className="tag">{l.ages}</span>
+                        <span className="choice-desc" style={{ fontSize: 12 }}>{l.note}</span>
+                      </button>
+                    ))}
+                  </div>
+                  <p style={{ margin: 0, fontSize: 12, lineHeight: 1.6, color: "var(--sub)" }}>お話の筋は同じで、多いほど会話や気持ちの言葉がふえます。</p>
+                </div>
+              )}
+            </div>
+          );
+        })}
+
+        <h2 className="display section-label">1話だけのお話</h2>
         {STORIES.map((s) => (
           <button
             key={s.id}
             type="button"
             className="choice"
             aria-pressed={state.story === s.id}
-            onClick={() => update({ story: s.id, previews: {}, draftId: null })}
+            onClick={() => choose(s.id)}
           >
-            <div style={{ flexShrink: 0, width: 72, height: 72, borderRadius: 12, overflow: "hidden", background: "#E6EEF9", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 10, color: "var(--sub)" }}>
-              <SampleImage src={sampleUrl(state.taste, s.id, 0)} alt={`${s.name}の見本`} fallback="[見本]" sizes="72px" />
-            </div>
+            <Thumb src={sampleUrl(state.taste, s.id, 0)} alt={`${s.name}の見本`} />
             <div style={{ display: "flex", flexDirection: "column", gap: 6, flexGrow: 1 }}>
               <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
                 <div className="choice-title display">{s.name}</div>
@@ -76,7 +172,15 @@ export default function StoryPage() {
           </p>
         </div>
       </main>
-      <NextButton href="/create/photo" disabled={!nameOk || !ageOk}>次へ：写真をえらぶ</NextButton>
+      <NextButton href="/create/photo" disabled={!nameOk || !ageOk || !storyOk}>次へ：写真をえらぶ</NextButton>
     </>
+  );
+}
+
+function Thumb({ src, alt, size = 72 }: { src: string | null; alt: string; size?: number }) {
+  return (
+    <div style={{ flexShrink: 0, width: size, height: size, borderRadius: 12, overflow: "hidden", background: "#E6EEF9", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 10, color: "var(--sub)" }}>
+      <SampleImage src={src} alt={alt} fallback="[見本]" sizes={`${size}px`} />
+    </div>
   );
 }

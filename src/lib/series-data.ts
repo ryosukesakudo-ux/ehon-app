@@ -1,0 +1,38 @@
+import "server-only";
+import forest from "@/data/series/forest.json";
+import star from "@/data/series/star.json";
+import birthday from "@/data/series/birthday.json";
+import sea from "@/data/series/sea.json";
+import dinosaur from "@/data/series/dinosaur.json";
+import type { Combo, SeriesId } from "./story-key";
+
+// 確定した台本（/mnt/project-files/stories/*-script.md、Claude Doc で 2026-10-11 承認）を、サイトで使う形にしたデータ。
+// text は文の量（少ない・普通・多い）の順。多いは 漢字《かな》 でふりがなを書いている。{name} は主人公の名前。
+// 各場面は「その場面の親」が出る形（ママ場面はママだけ…）で、ほかの写真の組み合わせの文と絵は alt にある。
+
+export type SeriesVersion = {
+  label: string;
+  art: string;
+  text: string[];
+  withMom: boolean;
+  withDad: boolean;
+  withSidekick: boolean;
+};
+
+export type SeriesSceneData = SeriesVersion & { alt?: Partial<Record<Combo, SeriesVersion>> };
+
+export type SeriesData = {
+  id: SeriesId;
+  name: string;
+  sidekick: string;
+  sidekickLabel: string;
+  episodes: {
+    no: number;
+    title: string;
+    outfits: string | null;
+    cover: { label: string; art: string; withSidekick: boolean };
+    scenes: SeriesSceneData[];
+  }[];
+};
+
+export const SERIES_DATA = { forest, star, birthday, sea, dinosaur } as Record<SeriesId, SeriesData>;

@@ -8,7 +8,6 @@ import {
   firstBookPrice,
   deliveryLabel,
   getSize,
-  getStory,
   jstDate,
   orderTotal,
   parseBirthday,
@@ -17,6 +16,7 @@ import {
 import { findCoupon, normalizeCouponCode, type Coupon } from "@/lib/coupons";
 import { isDemoId, loadOwnedDraft } from "@/lib/drafts";
 import { getStripe, getSupabase, siteUrl } from "@/lib/services";
+import { storyLabel } from "@/lib/story-key";
 
 // サイズ選択後に呼ぶ。金額はサーバー側で計算し、Stripe の決済画面へのURLを返す。
 // お届け先・電話番号・メールアドレスは Stripe の画面で入力してもらう。
@@ -106,7 +106,6 @@ export async function POST(request: Request) {
     return Response.json({ error: "注文の作成に失敗しました" }, { status: 500 });
   }
 
-  const story = getStory(draft.story)!;
   const lineItems = [
     {
       quantity: 1,
@@ -114,7 +113,7 @@ export async function POST(request: Request) {
         currency: "jpy",
         unit_amount: firstPrice,
         product_data: {
-          name: `絵本「${story.name}」${size.name}サイズ（${size.spec}）${coupon ? `・クーポン「${coupon.label}」適用` : ""}`,
+          name: `絵本「${storyLabel(draft.story)}」${size.name}サイズ（${size.spec}）${coupon ? `・クーポン「${coupon.label}」適用` : ""}`,
         },
       },
     },

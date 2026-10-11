@@ -2,7 +2,8 @@ import "server-only";
 import { toFile } from "openai";
 import { BOOK_BUCKET, PHOTO_BUCKET, getOpenAI, getSupabase } from "./services";
 import { illustrate, type Quality, type Redo, type RefImage } from "./illustrate";
-import { CHARACTER_SCENES, COVER_SCENE, PERSON_LABEL, characterOf, getStory, getTaste, previewScenes, type Person, type StoryId, type TasteId } from "./catalog";
+import { CHARACTER_SCENES, COVER_SCENE, PERSON_LABEL, characterOf, getTaste, previewScenes, type Person, type TasteId } from "./catalog";
+import { getBook } from "./book";
 import { currentUser, type Member } from "./auth";
 import { getAnonId } from "./anon";
 
@@ -11,7 +12,8 @@ export type Draft = {
   user_id: string | null;
   anon_id: string | null;
   taste: TasteId;
-  story: StoryId;
+  /** お話の番号（旧版のお話 "forest" か、シリーズの "forest:2:n:mom" など。story-key.ts） */
+  story: string;
   child_name: string;
   child_age: number | null;
   child_photo_path: string | null;
@@ -36,7 +38,7 @@ export function isDemoId(id: string) {
   return id.startsWith(DEMO_PREFIX);
 }
 
-export function demoDraftId(d: { taste: TasteId; story: StoryId; childName: string; childAge: number | null; hasMom: boolean; hasDad: boolean }) {
+export function demoDraftId(d: { taste: TasteId; story: string; childName: string; childAge: number | null; hasMom: boolean; hasDad: boolean }) {
   return DEMO_PREFIX + Buffer.from(JSON.stringify(d)).toString("base64url");
 }
 
@@ -114,7 +116,7 @@ export function characterPath(draftId: string, who: Person) {
 
 function demoImage(draft: Draft, sceneIndex: number) {
   const taste = getTaste(draft.taste)!;
-  const story = getStory(draft.story)!;
+  const story = getBook(draft.story)!;
   const cover = sceneIndex === COVER_SCENE;
   const who = characterOf(sceneIndex);
   const scene = cover ? { art: story.cover } : who ? { art: `${PERSON_LABEL[who]}のキャラクター（全身・正面）` } : story.scenes[sceneIndex];

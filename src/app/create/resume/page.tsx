@@ -2,6 +2,7 @@
 
 import { Suspense, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { withoutCombo } from "@/lib/story-key";
 import { useFlow } from "../flow";
 
 // 会員ページの「つづきから」。保存されている下書きを読み込んで、プレビュー画面へ進む。
@@ -63,7 +64,7 @@ function Resume() {
         if (!res.ok) throw new Error(json.error ?? "読み込めませんでした");
         update((prev) => ({
           taste: json.taste,
-          story: json.story,
+          story: withoutCombo(json.story),
           childName: json.childName,
           childAge: json.childAge ?? null,
           // お誕生日は下書きに保存していないので、同じ主人公のときだけ残す

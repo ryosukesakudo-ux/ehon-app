@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { MEMBER_MONTHLY_PREVIEWS, PERSON_LABEL, RETENTION, getSize, getStory, getTaste, yen } from "@/lib/catalog";
+import { MEMBER_MONTHLY_PREVIEWS, PERSON_LABEL, RETENTION, getSize, getTaste, yen } from "@/lib/catalog";
 import { currentUser } from "@/lib/auth";
 import { listCharacters, listPhotos, previewQuota } from "@/lib/account";
 import { konbiniVoucher } from "@/lib/konbini";
@@ -11,6 +11,7 @@ import { FLOW_STEPS, getFlowSave } from "@/lib/flow-save";
 import { DeletePhotoButton } from "./delete-photo";
 import { DeleteSaveButton } from "./delete-save";
 import { SyncLocalFlow } from "./local-flow";
+import { storyLabel } from "@/lib/story-key";
 
 export const dynamic = "force-dynamic";
 
@@ -93,7 +94,7 @@ export default async function AccountPage({ searchParams }: PageProps<"/account"
               <div>
                 <div className="display" style={{ fontSize: 16, fontWeight: 800, color: "var(--navy)" }}>つくりかけの絵本</div>
                 <div style={{ fontSize: 12, color: "var(--sub)", lineHeight: 1.7 }}>
-                  {getStory(save.story)?.name}／{getTaste(save.taste)?.name}
+                  {storyLabel(save.story)}／{getTaste(save.taste)?.name}
                   {save.childName ? `／主人公「${save.childName}」` : ""}
                   <br />
                   {FLOW_STEPS[save.path]}の画面で保存（{date(save.savedAt)}）
@@ -135,7 +136,7 @@ export default async function AccountPage({ searchParams }: PageProps<"/account"
             <article key={d.id} className="card" style={{ gap: 12 }}>
               <div style={{ display: "flex", justifyContent: "space-between", gap: 8, alignItems: "flex-start" }}>
                 <div>
-                  <div className="display" style={{ fontSize: 16, fontWeight: 800, color: "var(--navy)" }}>{getStory(d.story)?.name}</div>
+                  <div className="display" style={{ fontSize: 16, fontWeight: 800, color: "var(--navy)" }}>{storyLabel(d.story)}</div>
                   <div style={{ fontSize: 12, color: "var(--sub)" }}>
                     主人公「{d.child_name}」／{getTaste(d.taste)?.name}／{date(d.created_at)} 作成
                   </div>

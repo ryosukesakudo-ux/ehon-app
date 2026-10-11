@@ -1,6 +1,7 @@
 "use client";
 
-import { TASTES } from "@/lib/catalog";
+import { STORIES, TASTES, type StoryId } from "@/lib/catalog";
+import { parseSeriesKey } from "@/lib/story-key";
 import { Check } from "@/components/icons";
 import { SampleImage } from "@/components/sample-image";
 import { sampleUrl } from "@/lib/samples";
@@ -9,6 +10,9 @@ import { NextButton, StepHeader, StepTitle } from "../step";
 
 export default function TastePage() {
   const { state, update } = useFlow();
+  // テイストごとの見本は旧版の3つのお話にある。シリーズを選んでいるときは同じ名前のお話（無ければ森）の見本を出す
+  const id = parseSeriesKey(state.story)?.series ?? state.story;
+  const sampleStory: StoryId = STORIES.find((s) => s.id === id)?.id ?? "forest";
   return (
     <>
       <StepHeader step={1} />
@@ -24,7 +28,7 @@ export default function TastePage() {
           >
             {/* タッチの違いが分かるよう、絵を大きく見せる */}
             <div className="taste-art" style={{ background: t.swatch }}>
-              <SampleImage src={sampleUrl(t.id, state.story, 0)} alt={`${t.name}の見本`} fallback="[見本画像]" style={{ objectPosition: "50% 40%" }} sizes="(max-width: 480px) 100vw, 440px" />
+              <SampleImage src={sampleUrl(t.id, sampleStory, 0)} alt={`${t.name}の見本`} fallback="[見本画像]" style={{ objectPosition: "50% 40%" }} sizes="(max-width: 480px) 100vw, 440px" />
               {state.taste === t.id && <div className="check taste-check"><Check /></div>}
             </div>
             <div style={{ display: "flex", flexDirection: "column", gap: 6, padding: "2px 4px 4px" }}>

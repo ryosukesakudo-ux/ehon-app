@@ -1,9 +1,10 @@
 import "server-only";
 import { SITE_NAME } from "@/components/brand";
-import { REPEAT_COUPON, deliveryLabel, getSize, getStory, getTaste, yen } from "./catalog";
+import { REPEAT_COUPON, deliveryLabel, getSize, getTaste, yen } from "./catalog";
 import { sendMail } from "./mail";
 import { getSupabase } from "./services";
 import { konbiniVoucher } from "./konbini";
+import { storyLabel } from "./story-key";
 
 type Address = { postal_code?: string | null; state?: string | null; city?: string | null; line1?: string | null; line2?: string | null };
 
@@ -39,7 +40,7 @@ export async function sendOrderConfirmation(orderId: string, base: string) {
 
   const lines: [string, string][] = [
     ["注文番号", orderNo],
-    ["お話", `${getStory(o.drafts?.story)?.name ?? ""}（主人公：${o.drafts?.child_name ?? ""}）`],
+    ["お話", `${storyLabel(o.drafts?.story)}（主人公：${o.drafts?.child_name ?? ""}）`],
     ["テイスト", getTaste(o.drafts?.taste)?.name ?? ""],
     ["サイズ", `${size?.name ?? o.size}サイズ（${size?.spec ?? ""}）×${copies}冊`],
     ...(discount > 0 ? ([["クーポン", `${o.coupon_code}（${yen(discount)}引き）`]] as [string, string][]) : []),
@@ -105,7 +106,7 @@ export async function sendKonbiniGuide(orderId: string, base: string) {
   const intro = `${name}\n\nこのたびは「${SITE_NAME}」でご注文いただき、ありがとうございます。\nコンビニでのお支払いを受け付けました。下のボタンからお支払い番号とお支払いの手順をご確認のうえ、${deadline ? `${deadline} までに` : ""}お支払いください。`;
   const lines: [string, string][] = [
     ["注文番号", orderNo],
-    ["お話", `${getStory(o.drafts?.story)?.name ?? ""}（主人公：${o.drafts?.child_name ?? ""}）`],
+    ["お話", `${storyLabel(o.drafts?.story)}（主人公：${o.drafts?.child_name ?? ""}）`],
     ["お支払い金額", `${yen(o.amount)}（送料・税込）`],
     ...(deadline ? ([["お支払い期限", deadline]] as [string, string][]) : []),
   ];

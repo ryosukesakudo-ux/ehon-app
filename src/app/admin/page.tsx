@@ -1,4 +1,6 @@
-import { COVER_SCENE, bookScenes, deliveryLabel, getSize, getStory, getTaste, sceneText, SIZES, yen } from "@/lib/catalog";
+import { COVER_SCENE, bookScenes, deliveryLabel, getSize, getTaste, plainText, sceneText, SIZES, yen } from "@/lib/catalog";
+import { getBook } from "@/lib/book";
+import { levelLabel, storyLabel } from "@/lib/story-key";
 import { BOOK_BUCKET, getSupabase } from "@/lib/services";
 import { OrderActions } from "./actions";
 
@@ -42,7 +44,7 @@ export default async function AdminPage() {
   // 制作済みの絵を表示するための一時URL
   const rows = await Promise.all(
     (orders ?? []).map(async (o) => {
-      const story = getStory(o.drafts.story)!;
+      const story = getBook(o.drafts.story)!;
       const { data: files } = await db.storage.from(BOOK_BUCKET).list(`${o.draft_id}/final`);
       const paths = (files ?? []).map((f) => `${o.draft_id}/final/${f.name}`);
       const { data: urls } = paths.length
@@ -52,9 +54,9 @@ export default async function AdminPage() {
         order: o,
         story,
         // 表紙＋全場面
-        pages: bookScenes(story.id).map((i) => ({
+        pages: bookScenes().map((i) => ({
           index: i,
-          text: i === COVER_SCENE ? "表紙" : sceneText(story.scenes[i], o.drafts.child_name),
+          text: i === COVER_SCENE ? "表紙" : plainText(sceneText(story.scenes[i], o.drafts.child_name)),
           url: urls?.find((u) => u.path?.endsWith(`/${String(i).padStart(2, "0")}.png`))?.signedUrl ?? null,
         })),
       };
@@ -70,7 +72,7 @@ export default async function AdminPage() {
       <a href="/admin/compare">画質くらべ（以前の方式と今のA方式を1枚ずつ作って比べる）</a>
       <a href="/admin/coupons">クーポン管理（コードの発行・停止、使われた回数）</a>
       {rows.length === 0 && <p>まだ注文はありません。</p>}
-      {rows.map(({ order: o, story, pages }) => {
+      {rows.map(({ order: o, pages }) => {
         const ship = o.shipping as Shipping;
         const a = ship?.address;
         return (
@@ -83,7 +85,7 @@ export default async function AdminPage() {
               </span>
             </div>
             <div style={{ fontSize: 14, lineHeight: 1.8 }}>
-              {story.name}／{getTaste(o.drafts.taste)?.name}／主人公「{o.drafts.child_name}」／{getSize(o.size)?.name}サイズ
+              {storyLabel(o.drafts.story)}{levelLabel(o.drafts.story) && `（文の量：${levelLabel(o.drafts.story)}）`}／{getTaste(o.drafts.taste)?.name}／主人公「{o.drafts.child_name}」／{getSize(o.size)?.name}サイズ
               {copiesOf(o) > 1 ? `×${copiesOf(o)}冊` : ""}／{yen(o.amount)}
               {o.coupon_code ? `（クーポン ${o.coupon_code}：${yen(o.discount ?? 0)}引き）` : ""}
               <br />
