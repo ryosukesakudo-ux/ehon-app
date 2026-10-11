@@ -24,6 +24,8 @@ export type Book = {
     title: string;
     /** 相棒の見た目（英語）。相棒が出る場面の絵の指示に入れる */
     sidekick: string;
+    /** 相棒以外の名前のある登場人物の見た目（英語） */
+    cast: Record<string, string>;
     /** その話の季節の服装（英語） */
     outfits: string | null;
     /** 本文に 漢字《かな》 のふりがながある（文の量が「多い」） */
@@ -63,6 +65,7 @@ export function getBook(key: string | null | undefined): Book | null {
       episode: ep.no,
       title: ep.title,
       sidekick: data.sidekick,
+      cast: data.cast,
       outfits: ep.outfits,
       ruby: k.level === "l",
     },

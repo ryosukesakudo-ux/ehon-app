@@ -16,6 +16,7 @@ export type StudioSeries = {
   familyStory: StoryId | null;
   sidekick: string;
   sidekickLabel: string;
+  cast: Record<string, string>;
   episodes: StudioEpisode[];
 };
 
@@ -30,6 +31,7 @@ export function getStudioSeries(id: string): StudioSeries | null {
     familyStory: FAMILY_STORY[data.id] ?? null,
     sidekick: data.sidekick,
     sidekickLabel: data.sidekickLabel,
+    cast: data.cast,
     episodes: openEpisodes(data.episodes).map((ep) => ({
       no: ep.no,
       title: ep.title,

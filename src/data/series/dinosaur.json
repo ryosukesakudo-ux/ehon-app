@@ -3,6 +3,14 @@
  "name": "きょうりゅうの たまご",
  "sidekick": "Moko is a baby long-neck (sauropod) dinosaur with soft leaf-green skin covered in darker green polka dots, big round shiny eyes, a gentle smile, a small head and a short wiggly tail, with tiny sparkly scales along the back; Moko starts small enough to fit in two hands in episode 1 and grows bigger with a longer neck each episode until tall enough to reach a house roof in episode 5 (size is given per scene)",
  "sidekickLabel": "相棒のくびながりゅうの赤ちゃん「モコ」",
+ "cast": {
+  "Nonno": "a big old tortoise with soft green moss growing on its shell",
+  "Pata": "a small young sky-blue pteranodon with clumsy wings",
+  "Tsun": "one of the three little triceratops siblings (Tsun, Tan and Ton), round and orange with stubby horns",
+  "Tan": "one of the three little triceratops siblings (Tsun, Tan and Ton), round and orange with stubby horns",
+  "Ton": "one of the three little triceratops siblings (Tsun, Tan and Ton), round and orange with stubby horns",
+  "Gotsu-jii": "a huge gentle old ankylosaurus with a rocky gray spiky back and a knobbed club tail"
+ },
  "episodes": [
   {
    "no": 1,

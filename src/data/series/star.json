@@ -3,6 +3,13 @@
  "name": "ママとおほしさまのくに",
  "sidekick": "Pola is a palm-sized star child: a plump, soft five-pointed star glowing pale golden yellow, with a round gentle face, small dark dot eyes, rosy cheeks and tiny stubby arms, whose faint light flickers when he is scared (in episode 5 he becomes a large radiant star in the sky, described per scene).",
  "sidekickLabel": "相棒の星の子「ポラ」",
+ "cast": {
+  "Kachi": "a small black-and-white magpie with a blue-tinged tail",
+  "Mochi": "a small white moon rabbit with long ears",
+  "Yukin": "a huge fluffy white snow cloud with a big gentle face",
+  "Orihime": "a weaver princess in flowing pastel robes",
+  "Hikoboshi": "a young cowherd in simple blue robes"
+ },
  "episodes": [
   {
    "no": 1,

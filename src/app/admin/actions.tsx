@@ -162,3 +162,33 @@ export function OrderActions({
     </div>
   );
 }
+
+/** 1ページだけ印刷用の絵を作り直す（お客様の本の不具合を直すとき。1枚 約50円・1分前後） */
+export function RedoSceneButton({ orderId, scene }: { orderId: string; scene: number }) {
+  const router = useRouter();
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const redo = async () => {
+    if (!confirm("この絵を作り直します。今の絵は上書きされます。よろしいですか？")) return;
+    setBusy(true);
+    setError(null);
+    try {
+      const res = await fetch(`/api/admin/orders/${orderId}/scenes/${scene}`, { method: "POST" });
+      const json = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(json.error ?? `失敗しました (${res.status})`);
+      router.refresh();
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "失敗しました");
+    } finally {
+      setBusy(false);
+    }
+  };
+  return (
+    <>
+      <button type="button" className="ghost" disabled={busy} onClick={redo} style={{ fontSize: 12, padding: "2px 8px" }}>
+        {busy ? "作り直し中…" : "この絵を作り直す"}
+      </button>
+      {error && <span className="error" role="alert"> {error}</span>}
+    </>
+  );
+}
