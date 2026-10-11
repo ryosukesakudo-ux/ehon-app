@@ -82,9 +82,17 @@ export async function POST(request: Request) {
     discount: size.price - firstPrice,
     child_birthday: childBirthday,
   };
+  // schema.sql の再実行前で新しい列がまだない場合は、新しい列から順に外して入れ直す
+  // （列がないときのエラーは、PostgREST 経由だと PGRST204、データベース直だと 42703）
+  const isMissingColumn = (e: { code?: string } | null) => e?.code === "PGRST204" || e?.code === "42703";
   let { error } = await db.from("orders").insert(row);
-  if (error?.code === "42703") {
-    // schema.sql の再実行前で copies・クーポン・お誕生日の列がまだない場合（部数は extra_copy と金額から分かる）
+  if (isMissingColumn(error)) {
+    const withoutBirthday: Partial<typeof row> = { ...row };
+    delete withoutBirthday.child_birthday;
+    ({ error } = await db.from("orders").insert(withoutBirthday));
+  }
+  if (isMissingColumn(error)) {
+    // copies・クーポンの列もない場合（部数は extra_copy と金額から分かる）
     if (coupon) return Response.json({ error: "クーポンの準備がまだできていません" }, { status: 503 });
     const oldColumns: Partial<typeof row> = { ...row };
     delete oldColumns.copies;
