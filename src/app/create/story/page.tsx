@@ -6,7 +6,7 @@ import { Check, Chevron } from "@/components/icons";
 import { SampleImage } from "@/components/sample-image";
 import { samplePublicUrl, sampleUrl } from "@/lib/samples";
 import { seriesImagePath } from "@/lib/series";
-import { LEVELS, SERIES_LIST, levelForAge, openEpisodes, parseSeriesKey, seriesKey, type SeriesId } from "@/lib/story-key";
+import { LEVELS, SERIES_LIST, isOpenSeries, levelForAge, openEpisodes, parseSeriesKey, seriesKey, type SeriesId } from "@/lib/story-key";
 import { useFlow } from "../flow";
 import { NextButton, StepHeader, StepTitle } from "../step";
 
@@ -39,7 +39,9 @@ export default function StoryPage() {
         <p className="section-lead">1冊に1話。季節がめぐるように、続きのお話もあとから作れます。</p>
         {SERIES_LIST.map((s) => {
           const firstReady = openEpisodes(s.episodes).find((e) => isReady(s.id, e.no));
-          const expanded = open === s.id;
+          // 公開前のシリーズは「準備中」で、開けない
+          const soon = !isOpenSeries(s.id);
+          const expanded = !soon && open === s.id;
           return (
             <div key={s.id} style={{ display: "flex", flexDirection: "column", gap: 8 }}>
               <button
@@ -47,17 +49,18 @@ export default function StoryPage() {
                 className="choice"
                 aria-expanded={expanded}
                 aria-pressed={current?.series === s.id}
+                disabled={soon}
                 onClick={() => setOpen(expanded ? null : s.id)}
               >
                 <Thumb src={firstReady ? samplePublicUrl(seriesImagePath(s.id, firstReady.no, 0)) : null} alt={`${s.name}の見本`} />
                 <div style={{ display: "flex", flexDirection: "column", gap: 6, flexGrow: 1 }}>
                   <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
                     <div className="choice-title display">{s.name}</div>
-                    <div className="tag">全{openEpisodes(s.episodes).length}話</div>
+                    {soon ? <span className="soon">準備中</span> : <div className="tag">全{openEpisodes(s.episodes).length}話</div>}
                   </div>
                   <div className="choice-desc">{s.description}</div>
                 </div>
-                <Chevron dir={expanded ? "up" : "down"} size={18} />
+                {!soon && <Chevron dir={expanded ? "up" : "down"} size={18} />}
               </button>
               {expanded && (
                 <div className="episode-list">
