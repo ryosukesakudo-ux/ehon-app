@@ -25,10 +25,11 @@ export async function POST(request: Request, ctx: RouteContext<"/api/admin/order
   }
 
   try {
-    // 作り直しのときは、管理画面で書いた指示（日本語でよい）を絵の指示に足す
+    // 作り直しのときは、管理画面で書いた指示（日本語でよい）を絵の指示に足す。画質は中画質が標準で、高画質も選べる
     const body = await request.json().catch(() => ({}));
     const note = typeof body?.note === "string" ? body.note.trim().slice(0, SERIES_NOTE_MAX) : "";
-    const url = await generateScene(draft, sceneIndex, "final", note ? { options: [], note } : null);
+    const detail = body?.detail === "high" ? "high" : "medium";
+    const url = await generateScene(draft, sceneIndex, "final", note ? { options: [], note } : null, detail);
     return Response.json({ url });
   } catch (e) {
     return Response.json({ error: e instanceof Error ? e.message : "生成に失敗しました" }, { status: 500 });

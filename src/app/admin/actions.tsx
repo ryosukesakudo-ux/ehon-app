@@ -1,8 +1,30 @@
 "use client";
 
-import { useState } from "react";
+import { createContext, useContext, useState, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import { SERIES_NOTE_MAX } from "@/lib/series";
+
+// 注文の絵を作るときの画質。中画質が標準（2026-10-11 作道さん）。注文ごとに選び、全ページ作成と1枚の作り直しの両方に効く
+type Detail = "medium" | "high";
+const DetailContext = createContext<{ detail: Detail; setDetail: (d: Detail) => void }>({ detail: "medium", setDetail: () => {} });
+
+export function OrderDetailProvider({ children }: { children: ReactNode }) {
+  const [detail, setDetail] = useState<Detail>("medium");
+  return <DetailContext.Provider value={{ detail, setDetail }}>{children}</DetailContext.Provider>;
+}
+
+function DetailSelect() {
+  const { detail, setDetail } = useContext(DetailContext);
+  return (
+    <label style={{ display: "inline-flex", gap: 4, alignItems: "center" }}>
+      画質
+      <select value={detail} onChange={(e) => setDetail(e.target.value as Detail)}>
+        <option value="medium">中画質（1枚 約15円）</option>
+        <option value="high">高画質（1枚 約30円）</option>
+      </select>
+    </label>
+  );
+}
 
 export function OrderActions({
   orderId,
@@ -26,6 +48,7 @@ export function OrderActions({
   refunded: number;
 }) {
   const router = useRouter();
+  const { detail } = useContext(DetailContext);
   const [busy, setBusy] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [pdfs, setPdfs] = useState<Record<string, { body: string; cover: string; spread: string }>>({});
@@ -52,8 +75,11 @@ export function OrderActions({
     });
   };
 
-  async function call(path: string) {
-    const res = await fetch(`/api/admin/orders/${orderId}/${path}`, { method: "POST" });
+  async function call(path: string, body?: object) {
+    const res = await fetch(`/api/admin/orders/${orderId}/${path}`, {
+      method: "POST",
+      ...(body ? { headers: { "content-type": "application/json" }, body: JSON.stringify(body) } : {}),
+    });
     const json = await res.json().catch(() => ({}));
     if (!res.ok) throw new Error(json.error ?? `失敗しました (${res.status})`);
   }
@@ -79,7 +105,7 @@ export function OrderActions({
     run("generate", async () => {
       for (const [n, i] of todo.entries()) {
         setBusy(`generate:${doneScenes.length + n + 1}/${scenes.length}`);
-        await call(`scenes/${i}`);
+        await call(`scenes/${i}`, { detail });
       }
     });
 
@@ -98,6 +124,7 @@ export function OrderActions({
 
   return (
     <div style={{ display: "flex", flexWrap: "wrap", gap: 8, alignItems: "center" }}>
+      {(status === "paid" || status === "generated") && <DetailSelect />}
       {status === "paid" && (
         <>
           <button type="button" className="ghost" disabled={!!busy || todo.length === 0} onClick={generateAll}>
@@ -164,12 +191,13 @@ export function OrderActions({
   );
 }
 
-/** 1ページだけ印刷用の絵を作り直す（お客様の本の不具合を直すとき。1枚 約50円・1分前後） */
+/** 1ページだけ印刷用の絵を作り直す（お客様の本の不具合を直すとき。1分前後。画質は注文の「画質」の選択に従う） */
 export function RedoSceneButton({ orderId, scene }: { orderId: string; scene: number }) {
   const router = useRouter();
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [note, setNote] = useState("");
+  const { detail } = useContext(DetailContext);
   const redo = async () => {
     if (!confirm("この絵を作り直します。今の絵は上書きされます。よろしいですか？")) return;
     setBusy(true);
@@ -178,7 +206,7 @@ export function RedoSceneButton({ orderId, scene }: { orderId: string; scene: nu
       const res = await fetch(`/api/admin/orders/${orderId}/scenes/${scene}`, {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ note }),
+        body: JSON.stringify({ note, detail }),
       });
       const json = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(json.error ?? `失敗しました (${res.status})`);
