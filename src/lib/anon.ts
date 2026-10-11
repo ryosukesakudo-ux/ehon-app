@@ -5,14 +5,21 @@ import { cookies } from "next/headers";
 // 登録前のお試しの持ち主を見分けるCookie。会員登録すると、この下書きが会員のものになる。
 export const ANON_COOKIE = "ehon_anon";
 
+// Cookie はお客様側で書きかえられるので、自分で作った形（UUID）以外は無視する。
+// （下書きの引き継ぎでは検索条件の文字列に入れるため、別の条件を混ぜ込まれないようにする）
+const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
+function validAnonId(value: string | undefined) {
+  return value && UUID.test(value) ? value : null;
+}
+
 export async function getAnonId() {
-  return (await cookies()).get(ANON_COOKIE)?.value ?? null;
+  return validAnonId((await cookies()).get(ANON_COOKIE)?.value);
 }
 
 /** Route Handler から呼ぶ。Cookieがなければ作る。 */
 export async function ensureAnonId() {
   const store = await cookies();
-  const existing = store.get(ANON_COOKIE)?.value;
+  const existing = validAnonId(store.get(ANON_COOKIE)?.value);
   if (existing) return existing;
   const id = randomUUID();
   store.set(ANON_COOKIE, id, {

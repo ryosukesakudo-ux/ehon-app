@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import type { EmailOtpType } from "@supabase/supabase-js";
 import { createAuthClient } from "@/lib/auth";
+import { safeNext } from "@/lib/safe-next";
 import { claimAnonData } from "@/lib/claim";
 import { getAnonId } from "@/lib/anon";
 import { parseFlowSave } from "@/lib/flow-save";
@@ -59,8 +60,4 @@ export async function GET(request: Request) {
     return NextResponse.redirect(new URL("/create/resume?saved=1", url.origin));
   }
   return NextResponse.redirect(new URL(next, url.origin));
-}
-
-function safeNext(next: string | null) {
-  return next && next.startsWith("/") && !next.startsWith("//") ? next : "/account";
 }
