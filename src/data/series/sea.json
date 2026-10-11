@@ -4,16 +4,71 @@
  "sidekick": "Pukuru is a tiny baby pufferfish about the size of a child's fist, pale lemon-yellow with a creamy white belly, a few small brown freckle spots on its back, big round shiny black eyes, tiny fluttering fins and a little tail; when startled it puffs up into a smooth, perfectly round ball (no sharp spikes), and on land it travels in a glass bottle or bucket of seawater.",
  "sidekickLabel": "相棒のちびふぐ「プクル」",
  "cast": {
-  "Don": "a huge red crab with giant claws",
-  "Piko": "a tiny yellow seahorse with a curled tail",
-  "Nami": "Grandma Nami, a kind old woman who keeps the lighthouse, with white hair and a captain's hat",
-  "Lulu": "a big baby blue-gray whale with a pale belly"
+  "Don": "a huge red crab (not a person), a little bigger than the child, with a glossy bright-red rounded shell, two giant red claws with pale-orange tips, short black eyestalks and six thin red legs",
+  "Piko": "a tiny seahorse (not a person) about as long as the child's finger, bright sunflower-yellow all over with a row of tiny orange dots down its back, big round black eyes, a little snout and a tail curled into a spiral",
+  "Nami": "Grandma Nami, a kind, small old woman who keeps the lighthouse, with white hair in a bun, round gold-rimmed glasses, a navy-blue captain's hat with a white band and a small gold anchor badge, a navy-blue knitted cardigan over a white blouse and a long gray skirt",
+  "Lulu": "a baby whale (not a person) about as long as a bus and many times bigger than the child, smooth blue-gray back, pale cream belly with soft grooves, small kind black eyes, a rounded head with a blowhole on top and a little white spot on the forehead"
+ },
+ "props": {
+  "glass bottle": "a clear glass bottle with a brown cork stopper, about as long as the child's forearm, round-bellied with a short neck",
+  "bottle": "a clear glass bottle with a brown cork stopper, about as long as the child's forearm, round-bellied with a short neck",
+  "map piece": "an old torn piece of map made of yellowed parchment, about the size of the child's palm, with ragged edges and faint brown ink lines; it glows softly gold when it shines",
+  "map pieces": "an old torn piece of map made of yellowed parchment, about the size of the child's palm, with ragged edges and faint brown ink lines; it glows softly gold when it shines",
+  "bubble helmet": "a big round transparent bubble that covers the child's whole head like a helmet, with a thin shimmering rainbow sheen, the child's face clearly visible inside",
+  "rainbow bubble": "a big round transparent bubble that covers the child's whole head like a helmet, with a thin shimmering rainbow sheen, the child's face clearly visible inside",
+  "star-shaped glass": "a palm-sized five-pointed star made of clear glass that sparkles with rainbow colors, set at the center of the big lighthouse lamp",
+  "star glass": "a palm-sized five-pointed star made of clear glass that sparkles with rainbow colors, set at the center of the big lighthouse lamp",
+  "lighthouse": "a tall round white lighthouse tower on the cape, with a red door at the base, a ring of windows around the lamp room at the top, a red dome roof and a small balcony railing",
+  "bucket": "a small light-blue metal bucket with a silver wire handle, about as tall as the child's knee, filled with seawater",
+  "spiral seashell flute": "a small spiral conch-shell flute about the size of the child's hand, cream-white with coral-pink stripes spiraling around it and a little mouthpiece at the pointed tip",
+  "shell flute": "a small spiral conch-shell flute about the size of the child's hand, cream-white with coral-pink stripes spiraling around it and a little mouthpiece at the pointed tip",
+  "flute": "a small spiral conch-shell flute about the size of the child's hand, cream-white with coral-pink stripes spiraling around it and a little mouthpiece at the pointed tip",
+  "treasure chest": "an old wooden treasure chest about as tall as the child's waist, dark brown planks with rusty iron bands and a rounded lid",
+  "old chest": "an old wooden treasure chest about as tall as the child's waist, dark brown planks with rusty iron bands and a rounded lid",
+  "sunken ship": "a big old wooden sailing ship lying tilted on the seabed, dark brown hull with round portholes, two broken masts with tattered gray sails, covered with a little green seaweed",
+  "sailing ship": "a big old wooden sailing ship lying tilted on the seabed, dark brown hull with round portholes, two broken masts with tattered gray sails, covered with a little green seaweed",
+  "striped beach umbrella": "a beach umbrella with wide red and white stripes on a white pole",
+  "striped umbrella": "a beach umbrella with wide red and white stripes on a white pole",
+  "Lulu's mama": "a huge gentle grown-up whale, many times bigger than Lulu, with the same smooth blue-gray back and pale cream belly",
+  "grown-up whale": "a huge gentle grown-up whale, many times bigger than Lulu, with the same smooth blue-gray back and pale cream belly"
  },
  "episodes": [
   {
    "no": 1,
    "title": "びんの てがみと いその カニ",
-   "outfits": "light summer clothes in the same colors as the reference: the child in a short-sleeved T-shirt and shorts, the parents in short sleeves",
+   "outfits": "the child: a sky-blue short-sleeved T-shirt, navy shorts and red rubber sandals; the mother: a coral-pink short-sleeved blouse, white cropped pants and white sandals; the father: a light-gray T-shirt, navy knee-length shorts and brown flip-flops.",
+   "continuity": [
+    {
+     "from": 0,
+     "to": 0,
+     "text": "The glass bottle the child holds is filled with seawater, with Pukuru floating inside it."
+    },
+    {
+     "from": 2,
+     "to": 2,
+     "text": "The glass bottle holds only a rolled-up letter of old cream paper tied with a thin brown string and one fresh green leaf; it is not yet filled with water."
+    },
+    {
+     "from": 3,
+     "to": 9,
+     "text": "The child carries the one clear glass bottle filled with seawater with Pukuru inside it (no letter or leaf inside); Pukuru is never outside the bottle on these pages."
+    },
+    {
+     "from": 10,
+     "to": 10,
+     "text": "Pukuru leaves the glass bottle and goes into the sea on this page."
+    },
+    {
+     "from": 11,
+     "to": 11,
+     "text": "The glass bottle now holds exactly one old torn map piece and a little seawater, and Pukuru is not in it."
+    },
+    {
+     "from": 12,
+     "to": 12,
+     "text": "The child holds exactly one map piece in hand; Pukuru is in the sea, not in the bottle."
+    }
+   ],
    "cover": {
     "label": "夏のいそで、ガラスのびんの中のまんまるなちびふぐ（プクル）を、のぞきこんで笑う主人公。",
     "art": "on a sunny summer rocky shore with tide pools and the sparkling sea behind, the child crouches and peeks, laughing, into a clear glass bottle of seawater held up in both hands, where Pukuru the baby pufferfish floats puffed up perfectly round",
@@ -264,7 +319,39 @@
   {
    "no": 2,
    "title": "さんごの うみの ちいさな こえ",
-   "outfits": "autumn clothes in the same colors as the reference: long sleeves and light jackets, the child in a cozy sweater",
+   "outfits": "the child: a mustard-yellow long-sleeved crew-neck sweater, brown long pants and white sneakers; the mother: a burgundy knitted cardigan over a cream blouse, a dark-gray long skirt and brown ankle boots; the father: a dark-green zip-up fleece jacket over a white T-shirt, beige long pants and brown boots.",
+   "continuity": [
+    {
+     "from": 0,
+     "to": 0,
+     "text": "The child wears the rainbow bubble helmet over the head while swimming in the usual clothes (sweater, long pants and sneakers)."
+    },
+    {
+     "from": 1,
+     "to": 1,
+     "text": "The glass bottle beside the child holds exactly one map piece."
+    },
+    {
+     "from": 2,
+     "to": 10,
+     "text": "Underwater the child keeps wearing the usual clothes (mustard-yellow sweater, brown long pants and white sneakers) with the rainbow bubble helmet over the whole head; there is no swimsuit or diving gear."
+    },
+    {
+     "from": 3,
+     "to": 9,
+     "text": "If the child holds a map piece, it is exactly one map piece (the first one)."
+    },
+    {
+     "from": 11,
+     "to": 11,
+     "text": "The child is soaking wet in the usual clothes and wrapped in a fluffy white towel; the bubble helmet is gone."
+    },
+    {
+     "from": 12,
+     "to": 12,
+     "text": "On this page the child wears pale-blue cotton pajamas with long sleeves and long pants instead of the usual clothes. The glass bottle on the bedside table holds exactly two map pieces."
+    }
+   ],
    "cover": {
     "label": "色とりどりのさんごの海で、あわのヘルメットをかぶった主人公とプクル。さんごのかげから小さなタツノオトシゴがのぞく。",
     "art": "in a colorful coral sea, the child wearing a shimmering rainbow bubble helmet swims alongside Pukuru the baby pufferfish, while Piko, a tiny yellow seahorse with a curled tail, shyly peeks out from behind the coral",
@@ -515,7 +602,54 @@
   {
    "no": 3,
    "title": "ゆきの とうだいと ほしの ガラス",
-   "outfits": "warm winter clothes in the same colors as the reference: puffy coats, knitted hats, scarves and mittens",
+   "outfits": "the child: a red puffy hooded winter coat with two front pockets, a white knitted hat with a pom-pom, a navy scarf, white mittens, dark-gray pants and black snow boots; the mother: a long camel-brown wool coat, a gray knitted hat, a cream scarf and black boots; the father: a dark-navy puffy down jacket, a gray knitted hat, a mustard-yellow scarf, dark jeans and brown snow boots.",
+   "continuity": [
+    {
+     "from": 0,
+     "to": 0,
+     "text": "Pukuru is inside the light-blue bucket of seawater the child holds."
+    },
+    {
+     "from": 2,
+     "to": 10,
+     "text": "Pukuru stays inside the light-blue bucket of seawater, which the child carries or keeps close by."
+    },
+    {
+     "from": 3,
+     "to": 10,
+     "text": "Inside the lighthouse the child keeps the red puffy coat on but has taken off the knitted hat and mittens."
+    },
+    {
+     "from": 0,
+     "to": 4,
+     "text": "The star-shaped glass sits in its place at the center of the big lamp at the top of the lighthouse, sparkling with rainbow colors."
+    },
+    {
+     "from": 5,
+     "to": 5,
+     "text": "The star-shaped glass has come out of the lamp and lies in the child's open palms; the center of the lamp is empty."
+    },
+    {
+     "from": 6,
+     "to": 8,
+     "text": "The star-shaped glass is hidden in the right front pocket of the child's red coat and is not visible; the center of the lamp is empty, so the lamp glows only dimly."
+    },
+    {
+     "from": 9,
+     "to": 9,
+     "text": "The child holds the star-shaped glass out on an open palm; the center of the lamp is still empty."
+    },
+    {
+     "from": 10,
+     "to": 11,
+     "text": "The star-shaped glass is back at the center of the lamp and the lighthouse shines a bright beam across the sea."
+    },
+    {
+     "from": 12,
+     "to": 12,
+     "text": "On this page the child wears pale-blue cotton pajamas with long sleeves and long pants instead of the usual clothes. The child's red puffy coat lies on the bed beside them, and the third map piece and a small folded white note come out of its right front pocket."
+    }
+   ],
    "cover": {
     "label": "雪のみさきに立つ白い灯台。てっぺんの光る星のガラスを見上げる主人公と、バケツの中のプクル。",
     "art": "a white lighthouse stands on a snowy cape above the winter sea; the child looks up at the rainbow-glowing star-shaped glass at its top, holding a small bucket of seawater where Pukuru the baby pufferfish peeks out",
@@ -766,7 +900,29 @@
   {
    "no": 4,
    "title": "しずんだ ふねと くじらの ルル",
-   "outfits": null,
+   "outfits": "the child: a mint-green long-sleeved T-shirt, beige cotton pants rolled up at the ankles and yellow sneakers; the mother: a lavender cardigan over a white T-shirt, light-blue jeans and white sneakers; the father: a light-blue long-sleeved shirt with rolled-up sleeves, beige long pants and navy sneakers.",
+   "continuity": [
+    {
+     "from": 0,
+     "to": 0,
+     "text": "The child wears the rainbow bubble helmet over the head while riding underwater in the usual clothes (mint-green long-sleeved T-shirt and beige pants)."
+    },
+    {
+     "from": 2,
+     "to": 10,
+     "text": "In the sea the child keeps wearing the usual clothes (mint-green long-sleeved T-shirt, beige rolled-up pants and yellow sneakers) with the rainbow bubble helmet over the whole head; there is no swimsuit or diving gear."
+    },
+    {
+     "from": 6,
+     "to": 6,
+     "text": "The child lifts exactly one map piece (the fourth) out of a small wooden box."
+    },
+    {
+     "from": 12,
+     "to": 12,
+     "text": "On this page the child wears pale-blue cotton pajamas with long sleeves and long pants instead of the usual clothes. Exactly four map pieces lie on the desk, fitted together, with an empty gap in the center."
+    }
+   ],
    "cover": {
     "label": "海のそこにしずんだ大きな船の前で、くじらの子ルルのせなかに乗る主人公とプクル。",
     "art": "on the sea floor in front of a large sunken old sailing ship, the child in a rainbow bubble helmet and Pukuru the baby pufferfish ride on the back of Lulu, a big baby blue-gray whale with a pale belly, sunbeams slanting down through the blue water",
@@ -1017,7 +1173,47 @@
   {
    "no": 5,
    "title": "うみの そこの たからばこ",
-   "outfits": "light summer clothes in the same colors as the reference: the child in a short-sleeved T-shirt and shorts, the parents in short sleeves",
+   "outfits": "the child: a bright orange short-sleeved T-shirt, turquoise shorts and navy sandals; the mother: a mint-green short-sleeved blouse, white knee-length shorts and tan sandals; the father: a navy short-sleeved polo shirt, khaki shorts and gray sneakers.",
+   "continuity": [
+    {
+     "text": "Lulu is a year older and a little bigger than in the spring, but has exactly the same colors and look."
+    },
+    {
+     "from": 1,
+     "to": 1,
+     "text": "The glass bottle in the child's hand holds exactly four map pieces."
+    },
+    {
+     "from": 2,
+     "to": 2,
+     "text": "Exactly one map piece (the fifth and last) comes out of Lulu's mouth."
+    },
+    {
+     "from": 3,
+     "to": 3,
+     "text": "The five map pieces have joined into one whole glowing map with no gaps."
+    },
+    {
+     "from": 0,
+     "to": 0,
+     "text": "The child wears the rainbow bubble helmet over the head while underwater in the usual clothes (orange T-shirt and turquoise shorts)."
+    },
+    {
+     "from": 4,
+     "to": 10,
+     "text": "In the sea the child keeps wearing the usual clothes (bright orange T-shirt, turquoise shorts and navy sandals) with the rainbow bubble helmet over the whole head; there is no swimsuit or diving gear."
+    },
+    {
+     "from": 9,
+     "to": 11,
+     "text": "The child holds the small spiral seashell flute from the treasure chest."
+    },
+    {
+     "from": 12,
+     "to": 12,
+     "text": "The glass bottle drifting out to sea holds a rolled-up map and letter the child made, on white paper drawn in crayon."
+    }
+   ],
    "cover": {
     "label": "海のそこで開いた古いたからばこ。まき貝の笛を吹く主人公のまわりに、プクル、ドン、ピコ、ルルの親子、上から差しこむ灯台の光。",
     "art": "on the deep seabed an old treasure chest stands open, and the child in a bubble helmet blows a small spiral seashell flute; gathered around are Pukuru the baby pufferfish, Don, a huge red crab with giant claws, Piko, a tiny yellow seahorse with a curled tail, and Lulu, a young blue-gray whale with a pale belly, with a huge gentle grown-up whale (Lulu's mama), while beams of lighthouse light shine down from above",

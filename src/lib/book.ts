@@ -1,7 +1,7 @@
 import "server-only";
 import { STORIES, type Scene } from "./catalog";
 import { LEVELS, getSeriesInfo, parseSeriesKey, type Combo, type SeriesId } from "./story-key";
-import { SERIES_DATA, type SeriesSceneData } from "./series-data";
+import { SERIES_DATA, type Continuity, type SeriesSceneData } from "./series-data";
 
 // 注文の「お話の番号」から、絵本の中身（表紙の絵・12場面の文と絵）を組み立てる（サーバー専用）。
 // 旧版の1話だけのお話は catalog.ts の STORIES、シリーズは src/data/series/*.json（確定した台本）から。
@@ -26,8 +26,12 @@ export type Book = {
     sidekick: string;
     /** 相棒以外の名前のある登場人物の見た目（英語） */
     cast: Record<string, string>;
+    /** 何度も出てくる場所や物の見た目（英語） */
+    props: Record<string, string>;
     /** その話の季節の服装（英語） */
     outfits: string | null;
+    /** 持ち物・身に着ける物などのページごとの決まり */
+    continuity: Continuity[];
     /** 本文に 漢字《かな》 のふりがながある（文の量が「多い」） */
     ruby: boolean;
   };
@@ -66,7 +70,9 @@ export function getBook(key: string | null | undefined): Book | null {
       title: ep.title,
       sidekick: data.sidekick,
       cast: data.cast,
+      props: data.props ?? {},
       outfits: ep.outfits,
+      continuity: ep.continuity ?? [],
       ruby: k.level === "l",
     },
   };

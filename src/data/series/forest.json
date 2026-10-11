@@ -6,11 +6,45 @@
  "cast": {
   "Chicchi": "a tiny gray mouse (not a squirrel and not a person), much smaller than the child, about the size of the child's hand, with round pink-lined ears, a long thin tail and a muddy nose"
  },
+ "props": {
+  "glowing seed": "a small round seed about the size of a marble that glows a warm golden-white light",
+  "map": "a small hand-drawn map on a piece of beige paper about the size of the child's palm, drawn with a blue river line, small trees and a red X mark",
+  "golden acorn": "a shiny solid-gold acorn about the size of the child's thumb, with a darker golden textured cap",
+  "star crown": "a small sparkling golden crown with five star points and tiny glittering stars on its band",
+  "white feather": "a small pure-white downy feather about the length of the child's finger",
+  "giant ancient tree": "Grandpa Tree, a huge, very old broad tree with a thick gnarled light-brown trunk, wide spreading branches and big roots that rise above the ground",
+  "giant tree": "Grandpa Tree, a huge, very old broad tree with a thick gnarled light-brown trunk, wide spreading branches and big roots that rise above the ground",
+  "root tunnel": "a round tunnel formed by huge tangled brown tree roots, just tall enough for the child to walk through",
+  "rabbit siblings": "two small light-brown rabbit siblings with long ears, animal-sized (about knee-high to the child), not people",
+  "beaver children": "three little brown beaver children with flat paddle tails and two big front teeth, about knee-high to the child, not people",
+  "owl village chief": "the owl village chief, a big round brown owl with ear tufts and a small pair of round glasses, about as tall as the child's waist",
+  "owl chief": "the owl village chief, a big round brown owl with ear tufts and a small pair of round glasses, about as tall as the child's waist",
+  "baby owl": "a round fluffy pale-gray baby owl with big yellow eyes, small enough to fit inside the front of the child's coat",
+  "mother owl": "a big soft-gray-and-white mother owl with wide wings and gentle yellow eyes",
+  "owl mother": "a big soft-gray-and-white mother owl with wide wings and gentle yellow eyes",
+  "small tent": "a small orange dome tent"
+ },
  "episodes": [
   {
    "no": 1,
    "title": "ひかる たねと おじいの き",
-   "outfits": "the child: a light-yellow long-sleeved shirt under a navy zip-up hoodie, beige pants and white sneakers; the mother: a light-green cardigan over a white blouse, beige wide pants and white sneakers; the father: a light-blue denim shirt with rolled sleeves, khaki pants and brown shoes. At night in bed the child wears plain light-blue pajamas instead.",
+   "outfits": "the child: a light-yellow long-sleeved shirt under a navy zip-up hoodie, beige pants and white sneakers; the mother: a light-green cardigan over a white blouse, beige wide pants and white sneakers; the father: a light-blue denim shirt with rolled sleeves, khaki pants and brown shoes.",
+   "continuity": [
+    {
+     "to": 10,
+     "text": "The child has no leaf badge yet: draw no badge or pin on the child's clothes."
+    },
+    {
+     "from": 11,
+     "to": 11,
+     "text": "Leaf badges are small softly glowing leaf-shaped badges about the size of a coin, pinned in a neat horizontal row on the left side of the chest of whatever the child wears: exactly one badge, a cherry-blossom-pink leaf."
+    },
+    {
+     "from": 12,
+     "to": 12,
+     "text": "On this page the child wears plain light-blue pajamas instead of the usual clothes. The one leaf badge (a cherry-blossom-pink leaf, small and softly glowing) lies beside the pillow, not on the pajamas."
+    }
+   ],
    "cover": {
     "label": "森の入口で、ほっぺのふくらんだりす（ポッケ）と並んで、光る種を見つめる主人公。",
     "art": "at the entrance of a sunny spring forest, the child and Pokke the squirrel sit side by side looking in wonder at a small glowing seed resting in the child's hands; tall trees and a winding path into the forest behind them",
@@ -261,7 +295,18 @@
   {
    "no": 2,
    "title": "ほたるの かわの ひみつ",
-   "outfits": "the child: a white T-shirt with a small green leaf print, navy shorts and blue sneakers; the mother: a pale-yellow short-sleeved blouse and light denim pants; the father: a gray T-shirt and khaki shorts. At night in bed the child wears plain light-blue pajamas instead.",
+   "outfits": "the child: a white T-shirt with a small green leaf print, navy shorts and blue sneakers; the mother: a pale-yellow short-sleeved blouse and light denim pants; the father: a gray T-shirt and khaki shorts.",
+   "continuity": [
+    {
+     "to": 11,
+     "text": "Leaf badges are small softly glowing leaf-shaped badges about the size of a coin, pinned in a neat horizontal row on the left side of the chest of whatever the child wears: exactly one badge, a cherry-blossom-pink leaf."
+    },
+    {
+     "from": 12,
+     "to": 12,
+     "text": "On this page the child wears plain light-blue pajamas instead of the usual clothes. Leaf badges are small softly glowing leaf-shaped badges about the size of a coin, pinned in a neat horizontal row on the left side of the chest of whatever the child wears: exactly two badges, a cherry-blossom-pink leaf and a fresh-green leaf."
+    }
+   ],
    "cover": {
     "label": "夜の川辺で、ほたるの光に囲まれて笑う主人公とポッケ。",
     "art": "on a summer night by a forest river, the child and Pokke the squirrel laugh happily, surrounded by countless glowing fireflies whose lights reflect on the water",
@@ -442,7 +487,7 @@
     },
     {
      "label": "【ママ】テントの前でタオルにくるまれる主人公。ほたるの光の道",
-     "art": "at night in front of the tent the mother wraps the soaked child in a fluffy towel and hugs them; a path of firefly lights leads back from the forest",
+     "art": "at night in front of the small tent the mother wraps the soaked child in a fluffy towel and hugs them; a path of firefly lights leads back from the forest",
      "text": [
       "ママが テントで まってたよ。",
       "ほたるたちが ひかりの みちを つくって、テントまで おくって くれました。ママが タオルで ぎゅっと つつんで くれました。",
@@ -454,7 +499,7 @@
      "alt": {
       "both": {
        "label": "テント前でママがタオルで包み、パパがたき火でミルクを温める。ほたるの光の道",
-       "art": "at night in front of the tent the mother wraps the soaked child in a fluffy towel and hugs them while the father warms milk in a pot over a small campfire; a path of firefly lights leads back from the forest",
+       "art": "at night in front of the small tent the mother wraps the soaked child in a fluffy towel and hugs them while the father warms milk in a pot over a small campfire; a path of firefly lights leads back from the forest",
        "text": [
         "ママと パパが テントで まってたよ。",
         "ほたるたちが ひかりの みちを つくって、テントまで おくって くれました。ママが タオルで ぎゅっと つつんで くれました。パパも「よく がんばったね」と にっこり。",
@@ -467,7 +512,7 @@
       },
       "dad": {
        "label": "テント前でパパがタオルで包む。ほたるの光の道",
-       "art": "at night in front of the tent the father wraps the soaked child in a fluffy towel and hugs them; a path of firefly lights leads back from the forest",
+       "art": "at night in front of the small tent the father wraps the soaked child in a fluffy towel and hugs them; a path of firefly lights leads back from the forest",
        "text": [
         "パパが テントで まってたよ。",
         "ほたるたちが ひかりの みちを つくって、テントまで おくって くれました。パパが タオルで ぎゅっと つつんで くれました。",
@@ -496,7 +541,7 @@
     },
     {
      "label": "テントの入口で金色のどんぐりを見せるポッケ",
-     "art": "the child lies in a sleeping bag inside the tent with two leaf badges on their chest; at the tent entrance Pokke shows a shining golden acorn from his cheek",
+     "art": "the child lies in a sleeping bag inside the small tent with two leaf badges on their chest; at the tent entrance Pokke shows a shining golden acorn from his cheek",
      "text": [
       "バッジが 2まいに なったよ。",
       "むねの バッジが、2まいに ふえて いました。ポッケが ほっぺから だしたのは、きんいろの どんぐり。「あきは、どんぐりまつりだよ！」",
@@ -527,7 +572,18 @@
   {
    "no": 3,
    "title": "きんの どんぐりと チッチ",
-   "outfits": "the child: a mustard-yellow knit sweater, blue jeans and brown sneakers; the mother: a brown corduroy jacket over a cream sweater and dark jeans; the father: a navy jacket over a gray sweater and jeans. At night in bed the child wears plain light-blue pajamas instead.",
+   "outfits": "the child: a mustard-yellow knit sweater, blue jeans and brown sneakers; the mother: a brown corduroy jacket over a cream sweater and dark jeans; the father: a navy jacket over a gray sweater and jeans.",
+   "continuity": [
+    {
+     "to": 11,
+     "text": "Leaf badges are small softly glowing leaf-shaped badges about the size of a coin, pinned in a neat horizontal row on the left side of the chest of whatever the child wears: exactly two badges, a cherry-blossom-pink leaf and a fresh-green leaf."
+    },
+    {
+     "from": 12,
+     "to": 12,
+     "text": "On this page the child wears plain light-blue pajamas instead of the usual clothes. Leaf badges are small softly glowing leaf-shaped badges about the size of a coin, pinned in a neat horizontal row on the left side of the chest of whatever the child wears: exactly three badges, a cherry-blossom-pink leaf, a fresh-green leaf and a golden-yellow leaf."
+    }
+   ],
    "cover": {
     "label": "落ち葉の広場で、星のかんむりをかぶった主人公と、てのひらの小さなねずみのチッチ、肩にポッケ。",
     "art": "in a forest clearing covered with red and yellow fallen leaves, the child wearing a sparkling star crown stands smiling and holds out one open palm where Chicchi, a tiny gray mouse no bigger than the child's hand and wearing a tiny star crown, sits happily, with Pokke the squirrel on the child's shoulder",
@@ -778,7 +834,33 @@
   {
    "no": 4,
    "title": "ゆきの よるの まいごの ふくろう",
-   "outfits": "the child: a red puffy winter coat, a cream knitted hat with a pom-pom, a cream scarf, red mittens, blue jeans and brown snow boots; the mother: a long camel coat, a gray scarf and black boots; the father: a dark-green down jacket, a navy knitted hat and jeans. At night in bed the child wears plain light-blue pajamas instead.",
+   "outfits": "the child: a red puffy winter coat, a cream knitted hat with a pom-pom, a cream scarf, red mittens, blue jeans and brown snow boots; the mother: a long camel coat, a gray scarf and black boots; the father: a dark-green down jacket, a navy knitted hat and jeans.",
+   "continuity": [
+    {
+     "from": 1,
+     "to": 1,
+     "text": "The child is not wearing the leaf badges in this daytime scene: draw no badge on the child's clothes."
+    },
+    {
+     "from": 2,
+     "to": 2,
+     "text": "The child is putting the red puffy coat on over plain light-blue pajamas. Leaf badges are small softly glowing leaf-shaped badges about the size of a coin, pinned in a neat horizontal row on the left side of the chest of whatever the child wears: exactly three badges on the coat, a cherry-blossom-pink leaf, a fresh-green leaf and a golden-yellow leaf."
+    },
+    {
+     "to": 0,
+     "text": "Leaf badges are small softly glowing leaf-shaped badges about the size of a coin, pinned in a neat horizontal row on the left side of the chest of whatever the child wears: exactly three badges on the red coat, a cherry-blossom-pink leaf, a fresh-green leaf and a golden-yellow leaf."
+    },
+    {
+     "from": 3,
+     "to": 11,
+     "text": "Leaf badges are small softly glowing leaf-shaped badges about the size of a coin, pinned in a neat horizontal row on the left side of the chest of whatever the child wears: exactly three badges on the red coat (or on the clothes if the coat is off), a cherry-blossom-pink leaf, a fresh-green leaf and a golden-yellow leaf."
+    },
+    {
+     "from": 12,
+     "to": 12,
+     "text": "On this page the child wears plain light-blue pajamas instead of the usual clothes. Leaf badges are small softly glowing leaf-shaped badges about the size of a coin, pinned in a neat horizontal row on the left side of the chest of whatever the child wears: exactly four badges, a cherry-blossom-pink leaf, a fresh-green leaf, a golden-yellow leaf and a silver leaf with a small white snowflake pattern (the newest)."
+    }
+   ],
    "cover": {
     "label": "雪の夜の森で、コートからふくろうの赤ちゃんが顔を出し、胸の3枚のバッジが光る主人公。",
     "art": "in a snowy forest at night, a round fluffy baby owl peeks out from the front of the child's coat, and three leaf badges on the child's chest glow softly; Pokke sits on the child's shoulder",
@@ -1029,7 +1111,18 @@
   {
    "no": 5,
    "title": "おじいの きの たんじょうび",
-   "outfits": null,
+   "outfits": "the child: a mint-green long-sleeved T-shirt under a light-gray zip-up hoodie, navy pants and white sneakers; the mother: a light-green cardigan over a white blouse, beige wide pants and white sneakers; the father: a light-blue denim shirt with rolled sleeves, khaki pants and brown shoes.",
+   "continuity": [
+    {
+     "to": 8,
+     "text": "Leaf badges are small softly glowing leaf-shaped badges about the size of a coin, pinned in a neat horizontal row on the left side of the chest of whatever the child wears: exactly four badges, a cherry-blossom-pink leaf, a fresh-green leaf, a golden-yellow leaf and a silver leaf with a small white snowflake pattern."
+    },
+    {
+     "from": 9,
+     "text": "The child no longer wears the leaf badges (they were given to the giant ancient tree): draw no badge on the child's clothes.",
+     "to": 12
+    }
+   ],
    "cover": {
     "label": "満開のおじいの木の下、これまでの仲間全員に囲まれた主人公とポッケ。",
     "art": "under a giant ancient tree in full bloom with pink, green, gold and silver leaves, the child and Pokke the squirrel stand happily surrounded by all their forest friends: two rabbit siblings, three beaver children, a tiny gray mouse, an owl chief and an owl mother with her baby",

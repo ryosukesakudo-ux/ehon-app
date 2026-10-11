@@ -1,13 +1,13 @@
 import "server-only";
 import type { StoryId } from "./catalog";
-import { SERIES_DATA } from "./series-data";
+import { SERIES_DATA, type Continuity } from "./series-data";
 import { SERIES_PAGES, seriesImagePath, type SeriesScene } from "./series";
 import { SERIES_LIST, isOpenSeries, openEpisodes, type SeriesId } from "./story-key";
 import { SAMPLE_BUCKET, getSupabase } from "./services";
 
 // 絵スタジオで描く見本の場面。見本の家族はママもパパもいるので、両方の写真がある形（alt.both）があればそちらを使う。
 
-export type StudioEpisode = { no: number; title: string; outfits?: string; cover: SeriesScene; scenes: SeriesScene[] };
+export type StudioEpisode = { no: number; title: string; outfits?: string; continuity: Continuity[]; cover: SeriesScene; scenes: SeriesScene[] };
 
 export type StudioSeries = {
   id: SeriesId;
@@ -17,6 +17,7 @@ export type StudioSeries = {
   sidekick: string;
   sidekickLabel: string;
   cast: Record<string, string>;
+  props: Record<string, string>;
   episodes: StudioEpisode[];
 };
 
@@ -32,10 +33,12 @@ export function getStudioSeries(id: string): StudioSeries | null {
     sidekick: data.sidekick,
     sidekickLabel: data.sidekickLabel,
     cast: data.cast,
+    props: data.props ?? {},
     episodes: openEpisodes(data.episodes).map((ep) => ({
       no: ep.no,
       title: ep.title,
       outfits: ep.outfits ?? undefined,
+      continuity: ep.continuity ?? [],
       cover: ep.cover,
       scenes: ep.scenes.map((s) => {
         const v = s.alt?.both ?? s;
