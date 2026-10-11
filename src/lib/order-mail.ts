@@ -51,7 +51,7 @@ export async function sendOrderConfirmation(orderId: string, base: string) {
   const account = `${base}/account`;
   const subject = `【${SITE_NAME}】ご注文ありがとうございます（注文番号 ${orderNo}）`;
   const intro = `${name}\n\nこのたびは「${SITE_NAME}」でご注文いただき、ありがとうございます。\nお支払いを確認しましたので、絵本の制作を始めます。`;
-  const flow = "このあとの流れ\n1. 絵本の全ページの絵を仕上げ、印刷・製本します\n2. 数日後に発送します（発送したらマイページでお知らせします）";
+  const flow = "このあとの流れ\n1. 絵本の全ページの絵を仕上げ、印刷・製本します\n2. ご注文から2週間ほどでお届けします。お届け希望日を選んだ方は、その日までに届くように発送します（発送したらマイページでお知らせします）";
   // リピート割引のご案内（お誕生日を入れた方には、誕生日の1か月前にもお知らせする）
   const next = [
     `次の絵本をつくるときは、クーポンコード「${REPEAT_COUPON.code}」で1冊目が${REPEAT_COUPON.discount}円引きになります（何度でもお使いいただけます）。`,

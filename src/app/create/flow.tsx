@@ -26,7 +26,7 @@ export type FlowState = {
   copies: number;
   /** お届け希望日（YYYY-MM-DD）。空は最短 */
   deliveryDate: string;
-  /** お届け時間帯。空は指定なし */
+  /** お届け時間帯（以前の保存データとの互換用。いまは選べない） */
   deliveryTime: string;
   /** 最後に開いていた作成画面（ログイン後の「つづきから」で戻る先） */
   path: string;

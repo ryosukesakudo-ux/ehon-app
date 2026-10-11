@@ -248,9 +248,14 @@ export function getSize(id: string) {
   return SIZES.find((s) => s.id === id);
 }
 
-// お届け日の指定：ご注文日から7日後〜60日後（日本時間）。指定しなければ最短でお届け。
-export const DELIVERY_MIN_DAYS = 7;
+// お届け日の指定：ご注文日から14日後〜60日後（日本時間）。指定しなければ最短でお届け。
+// 14日の根拠：絵の仕上げ・入稿に最大2日＋製本直送の普通便（入金の翌営業日から3〜6営業日で発送、
+// 土日祝をはさむと約9日）＋配達1〜2日＝約13日に、1日の余裕。
+// 製本直送は日時指定ができないため、希望日は「この日までに届くように発送」の意味で、時間帯は選べない。
+// https://www.seichoku.com/user_data/faq.php / https://www.seichoku.com/user_data/moneyPlan.php
+export const DELIVERY_MIN_DAYS = 14;
 export const DELIVERY_MAX_DAYS = 60;
+/** 以前の注文で選ばれていた時間帯（表示用。いまは選べない） */
 export const DELIVERY_TIMES = [
   { id: "am", label: "午前中" },
   { id: "14-16", label: "14〜16時" },
@@ -265,13 +270,18 @@ export function jstDate(days: number, now = new Date()) {
   return new Date(now.getTime() + 9 * 3600_000 + days * 86400_000).toISOString().slice(0, 10);
 }
 
-/** お届け日・時間帯の表示（例：10月20日（月）午前中）。指定なしは「最短でお届け」 */
+/** 日付の表示（例：10月20日（月）） */
+export function dateLabel(date: string) {
+  const d = new Date(`${date}T00:00:00Z`);
+  const w = "日月火水木金土"[d.getUTCDay()];
+  return `${d.getUTCMonth() + 1}月${d.getUTCDate()}日（${w}）`;
+}
+
+/** お届け希望の表示（例：10月20日（月）までにお届け）。指定なしは「最短でお届け」。時間帯は以前の注文だけ */
 export function deliveryLabel(date: string | null | undefined, time: string | null | undefined) {
   const t = DELIVERY_TIMES.find((d) => d.id === time)?.label ?? "";
   if (!date) return t ? `最短でお届け・${t}` : "最短でお届け";
-  const d = new Date(`${date}T00:00:00Z`);
-  const w = "日月火水木金土"[d.getUTCDay()];
-  return `${d.getUTCMonth() + 1}月${d.getUTCDate()}日（${w}）${t ? ` ${t}` : ""}`;
+  return `${dateLabel(date)}までにお届け${t ? `・${t}` : ""}`;
 }
 
 /** 主人公の年齢の選択肢（1〜10歳） */

@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import type { CSSProperties, ReactNode } from "react";
 import { Arrow, Sparkle, Star } from "@/components/icons";
-import { EXTRA_COPY_DISCOUNT, MEMBER_MONTHLY_PREVIEWS, PREVIEW_PACK, SIZES, STORIES, TASTES, sceneText, yen } from "@/lib/catalog";
+import { DELIVERY_MIN_DAYS, EXTRA_COPY_DISCOUNT, MEMBER_MONTHLY_PREVIEWS, PREVIEW_PACK, SIZES, STORIES, TASTES, sceneText, yen } from "@/lib/catalog";
 import { SAMPLE_CHILD_NAME, SAMPLE_SCENES, SHOWCASE, SHOWCASE_BOOK, SHOWCASE_PHOTO, samplePublicUrl, sampleUrl, versioned } from "@/lib/samples";
 import { SampleImage } from "@/components/sample-image";
 import { Brand, SITE_NAME } from "@/components/brand";
@@ -55,7 +55,7 @@ const icon = (d: ReactNode, size = 26) => (
 const STEPS = [
   { color: "#2F5DA8", shadow: "#D5DDEB", title: "タッチとお話をえらぶ", desc: "水彩・クレヨン・アニメ風から、お子さまに合うものを。" },
   { color: "#F08A6C", shadow: "#F2D3C8", title: "写真をアップロード", desc: "お子さまの写真1枚から。ママやパパも一緒に登場できます。" },
-  { color: "#7CC7A8", shadow: "#CFE7DC", title: "できあがりを見て注文", desc: "見本のページを確認してから。数日後に発送します。" },
+  { color: "#7CC7A8", shadow: "#CFE7DC", title: "できあがりを見て注文", desc: "見本のページを確認してから。2週間ほどでお届けします。" },
 ];
 
 // 贈りものの場面。カラフルな小さいイラストで華やかに
@@ -127,7 +127,7 @@ const GIFTS: { label: string; bg: string; art: ReactNode }[] = [
 const FAQ = [
   { q: "会員登録は必要ですか？", a: `登録なしでも1回だけ、表紙と登場人物のキャラクターをお試しで作れます。作り直しやご注文は、無料会員登録（Google またはメールアドレス）のあとでご利用いただけます。`, color: "#F6C445" },
   { q: "写真はどう扱われますか？", a: "絵本の制作にだけ使います。マイページからいつでも削除でき、1年使わなければ自動で削除します。", color: "#2F5DA8" },
-  { q: "届くまでどのくらいかかりますか？", a: "ご注文から数日後に発送します。", color: "#F08A6C" },
+  { q: "届くまでどのくらいかかりますか？", a: `ご注文から2週間ほどでお届けします。お誕生日などに合わせて、ご注文の${DELIVERY_MIN_DAYS}日後以降の日付を「この日までに届けてほしい日」として選ぶこともできます。`, color: "#F08A6C" },
   { q: "気に入らない絵があったら？", a: "見本のページは、ご注文前に絵を作り直せます。", color: "#7CC7A8" },
 ];
 

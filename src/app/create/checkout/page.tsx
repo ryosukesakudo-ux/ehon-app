@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import {
   DELIVERY_MAX_DAYS,
   DELIVERY_MIN_DAYS,
-  DELIVERY_TIMES,
+  dateLabel,
   extraCopyPrice,
   firstBookPrice,
   getSize,
@@ -63,7 +63,6 @@ export default function CheckoutPage() {
           coupon: coupon?.code ?? "",
           childBirthday: state.childBirthday,
           deliveryDate: state.deliveryDate,
-          deliveryTime: state.deliveryTime,
         }),
       });
       const json = await res.json();
@@ -140,9 +139,9 @@ export default function CheckoutPage() {
           )}
         </div>
         <div className="card" style={{ padding: 18, gap: 12 }}>
-          <div className="display" style={{ fontSize: 15, fontWeight: 800, color: "var(--navy)" }}>お届け日時</div>
+          <div className="display" style={{ fontSize: 15, fontWeight: 800, color: "var(--navy)" }}>お届け日</div>
           <div className="field">
-            <label htmlFor="delivery-date">お届け希望日</label>
+            <label htmlFor="delivery-date">お届け希望日（この日までにお届け）</label>
             <input
               id="delivery-date"
               type="date"
@@ -152,7 +151,7 @@ export default function CheckoutPage() {
               onChange={(e) => update({ deliveryDate: e.target.value })}
             />
             <p style={{ margin: 0, fontSize: 12, lineHeight: 1.6, color: "var(--sub)" }}>
-              ご注文日から{DELIVERY_MIN_DAYS}日後以降の日付を選べます。空欄のときは、できあがり次第お届けします。
+              ご注文日から{DELIVERY_MIN_DAYS}日後以降の日付を選べます。選んだ日までに届くように発送します。空欄のときは、できあがり次第お届けします（{dateLabel(minDate)}ごろまでにお届け予定）。印刷・製本を外部の製本会社に依頼しているため、時間帯は指定できません。
             </p>
             {state.deliveryDate && (
               <button type="button" className="ghost" style={{ alignSelf: "flex-start", height: 36, padding: "0 14px", fontSize: 13 }} onClick={() => update({ deliveryDate: "" })}>
@@ -160,15 +159,6 @@ export default function CheckoutPage() {
               </button>
             )}
             {!dateOk && <p className="error" role="alert">{DELIVERY_MIN_DAYS}日後から{DELIVERY_MAX_DAYS}日後までの日付を選んでください</p>}
-          </div>
-          <div className="field">
-            <label htmlFor="delivery-time">時間帯</label>
-            <select id="delivery-time" value={state.deliveryTime} onChange={(e) => update({ deliveryTime: e.target.value })}>
-              <option value="">指定なし</option>
-              {DELIVERY_TIMES.map((t) => (
-                <option key={t.id} value={t.id}>{t.label}</option>
-              ))}
-            </select>
           </div>
         </div>
         <div style={{ display: "flex", gap: 8, alignItems: "center", justifyContent: "center", fontSize: 12, color: "var(--sub)" }}>
