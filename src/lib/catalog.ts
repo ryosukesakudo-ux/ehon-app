@@ -168,15 +168,12 @@ export function clampCopies(n: unknown) {
 export const COVER_SCENE = 99;
 export const COVER_SIZE = "1536x1024";
 
-/** 本番で作る絵の番号（表紙＋全場面） */
-export function bookScenes(storyId: StoryId) {
-  return [COVER_SCENE, ...(getStory(storyId)?.scenes.map((_, i) => i) ?? [])];
+/** 本番で作る絵の番号（表紙＋全場面）。どのお話も12場面 */
+export const BOOK_SCENE_COUNT = 12;
+export function bookScenes() {
+  return [COVER_SCENE, ...Array.from({ length: BOOK_SCENE_COUNT }, (_, i) => i)];
 }
 
-/** 本の題名（表紙・扉に使う） */
-export function bookTitle(storyId: StoryId, childName: string) {
-  return { lead: `${childName}の`, main: getStory(storyId)?.name ?? "" };
-}
 
 export type Person = "child" | "mom" | "dad";
 
@@ -274,6 +271,11 @@ export const CHILD_AGES = Array.from({ length: 10 }, (_, i) => i + 1);
 
 export function sceneText(scene: Scene, childName: string) {
   return scene.text.replaceAll("{name}", childName);
+}
+
+/** ふりがな（漢字《かな》）を外した文（管理画面の一覧やメールなど、ふりがなを出せないところ用） */
+export function plainText(text: string) {
+  return text.replace(/《[^》]*》/g, "");
 }
 
 /** 合計金額。クーポンがあれば1冊目をクーポンの値段（bookPrice）にする。2冊目以降は通常の値段 */

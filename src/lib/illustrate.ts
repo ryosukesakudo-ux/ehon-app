@@ -1,9 +1,11 @@
 import "server-only";
 import type { Uploadable } from "openai/uploads";
-import { COVER_SCENE, COVER_SIZE, REDO_OPTIONS, characterOf, getStory, getTaste, type Person, type RedoOptionId, type Scene, type StoryId, type TasteId } from "./catalog";
+import { COVER_SCENE, COVER_SIZE, REDO_OPTIONS, characterOf, getStory, getTaste, type Person, type RedoOptionId, type StoryId, type TasteId } from "./catalog";
+import { getBook, type BookScene } from "./book";
 import { getOpenAI } from "./services";
 import { upscalePng } from "./upscale";
-import { SERIES, SERIES_NOTE_MAX, type SeriesId, type SeriesScene } from "./series";
+import { SERIES_NOTE_MAX, type SeriesScene } from "./series";
+import type { StudioSeries } from "./series-studio";
 
 export type { Person };
 
@@ -100,11 +102,12 @@ export function buildCharacterPrompt(taste: TasteId, who: Person, refs: { who: P
     .join(" ");
 }
 
-export function buildPrompt(taste: TasteId, story: StoryId, sceneIndex: number, refs: { who: Person; kind?: RefKind }[], childAge?: number | null, redo?: Redo | null) {
+export function buildPrompt(taste: TasteId, story: string, sceneIndex: number, refs: { who: Person; kind?: RefKind }[], childAge?: number | null, redo?: Redo | null) {
   const t = getTaste(taste)!;
   const isCover = sceneIndex === COVER_SCENE;
-  const s = getStory(story)!;
-  const scene: Scene = isCover ? { text: "", art: s.cover } : s.scenes[sceneIndex];
+  const book = getBook(story)!;
+  const scene: BookScene = isCover ? { text: "", art: book.cover, withSidekick: book.coverWithSidekick } : book.scenes[sceneIndex];
+  const series = book.series;
   const people = [...new Set(refs.map((r) => r.who))];
   const generic = [
     scene.withMom && !people.includes("mom") ? "the mother" : null,
@@ -121,6 +124,8 @@ export function buildPrompt(taste: TasteId, story: StoryId, sceneIndex: number, 
     PICTURE_BOOK_CHARACTERS,
     "Make them look friendly and natural, never caricatured.",
     childAge ? ageBody(childAge) : "",
+    series?.outfits ? `In this story they wear: ${series.outfits}. Keep each person's own outfit colors from the references.` : "",
+    series && scene.withSidekick ? `The sidekick of this picture book series appears: ${series.sidekick}. Keep the sidekick looking the same on every page.` : "",
     `Scene: ${scene.art}.`,
     redoPrompt(redo),
     generic.length ? `${generic.join(" and ")} appear in this scene; draw them as gentle adults without a specific likeness.` : "",
@@ -136,7 +141,8 @@ export function buildPrompt(taste: TasteId, story: StoryId, sceneIndex: number, 
 /** 参考写真（とキャラクター）から1場面の挿絵、またはキャラクターの絵を作り、PNG の base64 を返す。 */
 export async function illustrate(opts: {
   taste: TasteId;
-  story: StoryId;
+  /** お話の番号（旧版のお話か、シリーズの "forest:2:n:mom" など） */
+  story: string;
   sceneIndex: number;
   images: RefImage[];
   quality: Quality;
@@ -178,7 +184,7 @@ const SAMPLE_CAST: Record<Person, string> = {
 };
 
 // お話ごとの服装（同じお話の中では変えない）
-const SAMPLE_OUTFITS: Record<StoryId, Record<Person, string>> = {
+const SAMPLE_OUTFITS: Record<StoryId | "sea" | "dinosaur", Record<Person, string>> = {
   forest: {
     child: "a mustard-yellow hooded jacket, navy shorts, white socks, red sneakers and a small green backpack",
     mom: "a light-green cardigan over a white T-shirt, beige wide pants and white sneakers",
@@ -194,9 +200,20 @@ const SAMPLE_OUTFITS: Record<StoryId, Record<Person, string>> = {
     mom: "a coral dress with a small white collar",
     dad: "a light-blue shirt with rolled-up sleeves and beige chinos",
   },
+  // 台本のシリーズで増えたお話（作例スタジオには無く、絵スタジオで使う）
+  sea: {
+    child: "a blue-and-white striped T-shirt, red shorts, a yellow sun hat and blue sandals",
+    mom: "a white linen blouse, light-blue wide pants and straw sandals",
+    dad: "a coral-colored polo shirt, beige shorts and navy sneakers",
+  },
+  dinosaur: {
+    child: "an orange T-shirt, olive-green shorts, a khaki explorer hat and brown boots",
+    mom: "a mustard-yellow knit top, dark green pants and brown boots",
+    dad: "a light-brown safari shirt, navy pants and hiking boots",
+  },
 };
 
-function sampleCast(story: StoryId, people: Person[]) {
+function sampleCast(story: keyof typeof SAMPLE_OUTFITS, people: Person[]) {
   const role: Record<Person, string> = { child: "The main character", mom: "The mother", dad: "The father" };
   return people.map((p) => `${role[p]}: ${SAMPLE_CAST[p]}, wearing ${SAMPLE_OUTFITS[story][p]}.`).join(" ");
 }
@@ -339,30 +356,48 @@ export async function makeHeroBookPhoto(opts: { title: string; cover: Uploadable
 // --- 台本（シリーズ）の絵 ---
 // 作例と同じ架空の家族で、シリーズの各話の表紙と12場面を描く。家族はお話の作例の設定画（服装も同じ）を
 // もとにし、相棒（森ならりすのポッケ）を加えた「シリーズの設定画」を1枚作って、全場面でそれを参考にする。
+// 作例の設定画が無いシリーズ（海・恐竜）は、家族と相棒の設定画を文章から作る。
 
-/** お話の作例の設定画に相棒を加えた、シリーズの設定画を作る。 */
-export async function makeSeriesSheet(id: SeriesId, familySheet: Uploadable, note?: string) {
+/** シリーズの設定画（家族3人＋相棒）を作る。familySheet はお話の作例の設定画（無ければ文章から描く） */
+export async function makeSeriesSheet(series: StudioSeries, familySheet: Uploadable | null, note?: string) {
   const ai = getOpenAI();
   if (!ai) throw new Error("OPENAI_API_KEY が未設定です");
-  const series = SERIES[id];
-  const result = await ai.images.edit({
-    model: process.env.OPENAI_IMAGE_MODEL ?? "gpt-image-2",
-    image: [familySheet],
-    prompt: [
-      "Character reference sheet for a children's picture book series.",
-      "The reference image shows the family: keep the child, the mother and the father exactly the same (faces, hairstyles, body proportions, outfits and colors).",
-      `Add the series sidekick standing next to the child: ${series.sidekick}.`,
-      "Show all four characters side by side, full body, front view, on a plain white background, at heights that fit them.",
-      "Simple, warm picture-book character design with clear shapes and flat colors so the faces, hairstyles, outfits and the sidekick are easy to copy.",
-      "Do not draw any letters, words or text.",
-      seriesNote(note),
-    ]
-      .filter(Boolean)
-      .join(" "),
-    size: "1536x1024",
-    quality: "high",
-    output_format: "png",
-  });
+  const common = [
+    "Show all four characters side by side, full body, front view, on a plain white background, at heights that fit them.",
+    "Simple, warm picture-book character design with clear shapes and flat colors so the faces, hairstyles, outfits and the sidekick are easy to copy.",
+    "Do not draw any letters, words or text.",
+    seriesNote(note),
+  ];
+  const result = familySheet
+    ? await ai.images.edit({
+        model: process.env.OPENAI_IMAGE_MODEL ?? "gpt-image-2",
+        image: [familySheet],
+        prompt: [
+          "Character reference sheet for a children's picture book series.",
+          "The reference image shows the family: keep the child, the mother and the father exactly the same (faces, hairstyles, body proportions, outfits and colors).",
+          `Add the series sidekick standing next to the child: ${series.sidekick}.`,
+          ...common,
+        ]
+          .filter(Boolean)
+          .join(" "),
+        size: "1536x1024",
+        quality: "high",
+        output_format: "png",
+      })
+    : await ai.images.generate({
+        model: process.env.OPENAI_IMAGE_MODEL ?? "gpt-image-2",
+        prompt: [
+          "Character reference sheet for a children's picture book series about a fictional Japanese family.",
+          sampleCast(series.id, ["child", "mom", "dad"]),
+          `The series sidekick stands next to the child: ${series.sidekick}.`,
+          ...common,
+        ]
+          .filter(Boolean)
+          .join(" "),
+        size: "1536x1024",
+        quality: "high",
+        output_format: "png",
+      });
   const b64 = result.data?.[0]?.b64_json;
   if (!b64) throw new Error("画像が生成されませんでした");
   return b64;
@@ -374,8 +409,12 @@ function seriesNote(note?: string) {
   return n ? `Additional instructions from the art director (may be written in Japanese); follow them carefully, they take priority over the instructions above: ${n}` : "";
 }
 
-export function buildSeriesPrompt(id: SeriesId, scene: SeriesScene, opts: { cover: boolean; outfits?: string; note?: string }) {
-  const series = SERIES[id];
+/** 相棒の名前（例：Pokke）。相棒の説明文の最初の語 */
+function sidekickName(sidekick: string) {
+  return sidekick.split(/[ ,]/)[0];
+}
+
+export function buildSeriesPrompt(series: StudioSeries, scene: SeriesScene, opts: { cover: boolean; outfits?: string; note?: string }) {
   const t = getTaste("watercolor")!;
   const people: Person[] = ["child", ...(scene.withMom ? (["mom"] as const) : []), ...(scene.withDad ? (["dad"] as const) : [])];
   return [
@@ -383,9 +422,11 @@ export function buildSeriesPrompt(id: SeriesId, scene: SeriesScene, opts: { cove
     "The reference image is the character sheet for this picture book series.",
     "Draw exactly the same characters: the same faces, hairstyles, body proportions and outfit colors. Only the drawing style changes.",
     STYLE_ONLY_FROM_TEXT,
-    sampleCast(series.story, people),
+    sampleCast(series.id, people),
     opts.outfits ? `In this episode they wear: ${opts.outfits}.` : "",
-    scene.withSidekick ? `The sidekick appears: ${series.sidekick}. Keep him exactly as on the character sheet.` : "Do not include the squirrel sidekick in this scene.",
+    scene.withSidekick
+      ? `The sidekick appears: ${series.sidekick}. Keep the sidekick exactly as on the character sheet.`
+      : `Do not include ${sidekickName(series.sidekick)} (the sidekick) in this scene.`,
     `Scene: ${scene.art}.`,
     scene.withMom ? "" : "Do not include the mother in this scene.",
     scene.withDad ? "" : "Do not include the father in this scene.",
@@ -400,13 +441,13 @@ export function buildSeriesPrompt(id: SeriesId, scene: SeriesScene, opts: { cove
 }
 
 /** シリーズの1ページ（表紙または場面）を水彩で描き、PNG の base64 を返す。 */
-export async function illustrateSeries(opts: { id: SeriesId; scene: SeriesScene; cover: boolean; outfits?: string; note?: string; quality: Quality; sheet: Uploadable }) {
+export async function illustrateSeries(opts: { series: StudioSeries; scene: SeriesScene; cover: boolean; outfits?: string; note?: string; quality: Quality; sheet: Uploadable }) {
   const ai = getOpenAI();
   if (!ai) throw new Error("OPENAI_API_KEY が未設定です");
   const result = await ai.images.edit({
     model: process.env.OPENAI_IMAGE_MODEL ?? "gpt-image-2",
     image: [opts.sheet],
-    prompt: buildSeriesPrompt(opts.id, opts.scene, { cover: opts.cover, outfits: opts.outfits, note: opts.note }),
+    prompt: buildSeriesPrompt(opts.series, opts.scene, { cover: opts.cover, outfits: opts.outfits, note: opts.note }),
     size: opts.cover ? COVER_SIZE : "1024x1024",
     quality: opts.quality === "final" ? "high" : "medium",
     output_format: "png",

@@ -32,10 +32,12 @@ export function Check({ size = 16 }: { size?: number }) {
   );
 }
 
-export function Chevron({ dir = "left", size = 22 }: { dir?: "left" | "right"; size?: number }) {
+const CHEVRON = { left: "M15 18l-6-6 6-6", right: "M9 18l6-6-6-6", up: "M6 15l6-6 6 6", down: "M6 9l6 6 6-6" };
+
+export function Chevron({ dir = "left", size = 22 }: { dir?: "left" | "right" | "up" | "down"; size?: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-      <path d={dir === "left" ? "M15 18l-6-6 6-6" : "M9 18l6-6-6-6"} />
+      <path d={CHEVRON[dir]} />
     </svg>
   );
 }

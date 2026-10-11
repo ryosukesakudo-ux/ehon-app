@@ -1,4 +1,6 @@
-import { COVER_SCENE, getSize, getStory, sceneText, type SizeId } from "@/lib/catalog";
+import { COVER_SCENE, getSize, sceneText, type SizeId } from "@/lib/catalog";
+import { getBook } from "@/lib/book";
+import { bookTitle } from "@/lib/story-key";
 import { buildCoverSpread } from "@/lib/cover-spread";
 import { buildBookPdfs } from "@/lib/print-pdf";
 import { BOOK_BUCKET, getSupabase } from "@/lib/services";
@@ -22,7 +24,8 @@ export async function POST(request: Request, ctx: RouteContext<"/api/admin/order
 
   const body = await request.json().catch(() => null);
   const size = getSize((body?.size as SizeId | undefined) ?? order.size);
-  const story = getStory(order.drafts.story);
+  const story = getBook(order.drafts.story);
+  const title = bookTitle(order.drafts.story, order.drafts.child_name);
   if (!size || !story) return Response.json({ error: "注文の内容を読み込めません" }, { status: 400 });
   const spineMm = Number(body?.spineMm ?? DEFAULT_SPINE_MM);
   if (!Number.isFinite(spineMm) || spineMm < 0 || spineMm > 30) return Response.json({ error: "背幅は0〜30mmで入れてください" }, { status: 400 });
@@ -42,7 +45,7 @@ export async function POST(request: Request, ctx: RouteContext<"/api/admin/order
 
   try {
     const pdfs = await buildBookPdfs({
-      storyName: story.name,
+      title,
       childName: order.drafts.child_name,
       texts: story.scenes.map((sc) => sceneText(sc, order.drafts.child_name)),
       images,
@@ -52,8 +55,7 @@ export async function POST(request: Request, ctx: RouteContext<"/api/admin/order
       issuedAt: new Date(),
     });
     const spread = await buildCoverSpread({
-      storyName: story.name,
-      childName: order.drafts.child_name,
+      title,
       coverImage,
       trimMm: size.trimMm,
       spineMm,

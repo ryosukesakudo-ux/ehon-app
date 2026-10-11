@@ -23,8 +23,8 @@ const CORAL = "#f08a6c";
 const FONT_DIR = path.join(process.cwd(), "assets/fonts");
 
 export type CoverSpreadInput = {
-  storyName: string;
-  childName: string;
+  /** 表紙の題名（lead は上の小さい行、main は大きい行） */
+  title: { lead: string; main: string };
   coverImage: Buffer; // 表紙の絵（横長 3:2）
   trimMm: number; // 仕上がりの1辺
   spineMm: number; // 背幅
@@ -53,16 +53,16 @@ export async function buildCoverSpread(input: CoverSpreadInput) {
     .toBuffer();
 
   // 上1/3の帯にタイトル（入稿用PDFの表紙と同じ大きさ・位置）
-  const title = `${input.childName}の`;
-  const leadSize = pt(20 * scale);
-  const titleSize = fitSize(font, input.storyName, pt(34 * scale), px(trimMm - SAFE_MM * 2));
+  const { lead, main } = input.title;
+  const leadSize = fitSize(font, lead, pt(20 * scale), px(trimMm - SAFE_MM * 2));
+  const titleSize = fitSize(font, main, pt(34 * scale), px(trimMm - SAFE_MM * 2));
   const blockHeight = leadSize + titleSize * 1.4;
   const bandTop = px(BLEED_MM);
   const bandBottom = height - artHeight;
   const blockTop = (bandTop + bandBottom) / 2 - blockHeight / 2;
   const texts = [
-    textPath(font, title, leadSize, frontCenter, blockTop + leadSize, CORAL),
-    textPath(font, input.storyName, titleSize, frontCenter, blockTop + leadSize + titleSize * 1.4, NAVY),
+    textPath(font, lead, leadSize, frontCenter, blockTop + leadSize, CORAL),
+    textPath(font, main, titleSize, frontCenter, blockTop + leadSize + titleSize * 1.4, NAVY),
     // 裏表紙：下の方にサービス名
     textPath(font, "えほん Only Yours", pt(10 * scale), backCenter, height - px(BLEED_MM + SAFE_MM), CORAL),
   ];

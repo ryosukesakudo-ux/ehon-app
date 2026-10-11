@@ -1,5 +1,6 @@
 import "server-only";
-import { CHILD_AGES, clampCopies, parseBirthday, getSize, getStory, getTaste, type SizeId, type StoryId, type TasteId } from "./catalog";
+import { CHILD_AGES, clampCopies, parseBirthday, getSize, getTaste, type SizeId, type TasteId } from "./catalog";
+import { isStoryKey, withoutCombo } from "./story-key";
 import { createAuthClient } from "./auth";
 
 // 作成途中の内容（下書き）。会員が作成画面から「保存して中断」を押したときに、
@@ -21,7 +22,8 @@ export type FlowSave = {
   path: FlowPath;
   savedAt: string;
   taste: TasteId;
-  story: StoryId;
+  /** お話の番号（story-key.ts。写真の組み合わせは付けない） */
+  story: string;
   childName: string;
   childAge: number | null;
   childBirthday: string;
@@ -42,16 +44,16 @@ export function parseFlowSave(input: unknown): FlowSave | null {
   const path = str(v.path, 40);
   if (!(path in FLOW_STEPS)) return null;
   const taste = str(v.taste, 20);
-  const story = str(v.story, 20);
+  const story = withoutCombo(str(v.story, 30));
   const size = str(v.size, 4);
-  if (!getTaste(taste) || !getStory(story)) return null;
+  if (!getTaste(taste) || !isStoryKey(story)) return null;
   const age = Number(v.childAge);
   const draftId = str(v.draftId, 2000);
   return {
     path: path as FlowPath,
     savedAt: new Date().toISOString(),
     taste: taste as TasteId,
-    story: story as StoryId,
+    story,
     childName: str(v.childName, 12),
     childAge: CHILD_AGES.includes(age) ? age : null,
     childBirthday: parseBirthday(v.childBirthday) ?? "",

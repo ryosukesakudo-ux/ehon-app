@@ -1,0 +1,1206 @@
+{
+ "id": "star",
+ "name": "ママとおほしさまのくに",
+ "sidekick": "Pola is a palm-sized star child: a plump, soft five-pointed star glowing pale golden yellow, with a round gentle face, small dark dot eyes, rosy cheeks and tiny stubby arms, whose faint light flickers when he is scared (in episode 5 he becomes a large radiant star in the sky, described per scene).",
+ "sidekickLabel": "相棒の星の子「ポラ」",
+ "episodes": [
+  {
+   "no": 1,
+   "title": "ほしの はしごと ながれぼし",
+   "outfits": null,
+   "cover": {
+    "label": "ふわふわの雲の上で、手のひらにのせた小さな星の子（ポラ）と、大きなおつきさまを見上げる主人公。",
+    "art": "on top of fluffy clouds under a deep blue starry night sky, the child holds Pola the little star child gently on their open palm and both gaze up in wonder at the Moon, a huge round glowing moon with a kind smiling face",
+    "withSidekick": true
+   },
+   "scenes": [
+    {
+     "label": "【ママ】夜の子ども部屋の窓から空へのびる星のはしご。ママと手をつないでのぼる主人公",
+     "art": "a dark child's bedroom on a sleepless night; a ladder of twinkling stars stretches from the open window up into the sky, and the mother holds the child's hand as they begin to climb it together",
+     "text": [
+      "ねむれない よる、ママと ほしの はしごへ。",
+      "ねむれない よる。「いっしょに いってみる？」 ママが ほほえむと、まどから ほしの はしごが のびて きました。ふたりで のぼると、ママは「くもの うえで まってるね」。",
+      "ねむれない夜《よる》。部屋《へや》が暗《くら》くてこわくて、{name}はまどの外《そと》ばかり見《み》ていました。ママがとなりにすわって、ほほえみました。「いっしょに行《い》ってみる？」まどの外《そと》には、星《ほし》のはしごが空《そら》までのびています。手《て》をつないでのぼると、ママは言《い》いました。「雲《くも》の上《うえ》で待《ま》ってるから、たくさん見《み》ておいで」"
+     ],
+     "withMom": true,
+     "withDad": false,
+     "withSidekick": false,
+     "alt": {
+      "both": {
+       "label": "窓から空へのびる星のはしご。ママと手をつないでのぼる主人公、下ではしごをささえるパパ",
+       "art": "a ladder of twinkling stars stretches from a bedroom window up into the night sky; the child climbs it hand in hand with the mother while the father holds the bottom of the ladder steady from below",
+       "text": [
+        "ねむれない よる、ママと ほしの はしごへ。",
+        "ねむれない よる。「いっしょに いってみる？」 ママが ほほえむと、まどから ほしの はしごが のびて きました。パパが したで ささえて、ママと ふたりで のぼります。",
+        "ねむれない夜《よる》。部屋《へや》が暗《くら》くてこわくて、{name}はまどの外《そと》ばかり見《み》ていました。ママがとなりにすわって、ほほえみました。「いっしょに行《い》ってみる？」まどの外《そと》には、星《ほし》のはしごが空《そら》までのびています。パパが下《した》で、はしごをしっかりささえてくれました。ママと手《て》をつないで、一《ひと》だん、また一《ひと》だん。"
+       ],
+       "withMom": true,
+       "withDad": true,
+       "withSidekick": false
+      },
+      "dad": {
+       "label": "夜の子ども部屋の窓から空へのびる星のはしご。パパと手をつないでのぼる主人公",
+       "art": "a dark child's bedroom on a sleepless night; a ladder of twinkling stars stretches from the open window up into the sky, and the father holds the child's hand as they begin to climb it together",
+       "text": [
+        "ねむれない よる、パパと ほしの はしごへ。",
+        "ねむれない よる。「いっしょに いってみる？」 パパが ほほえむと、まどから ほしの はしごが のびて きました。ふたりで のぼると、パパは「くもの うえで まってるね」。",
+        "ねむれない夜《よる》。部屋《へや》が暗《くら》くてこわくて、{name}はまどの外《そと》ばかり見《み》ていました。パパがとなりにすわって、ほほえみました。「いっしょに行《い》ってみる？」まどの外《そと》には、星《ほし》のはしごが空《そら》までのびています。手《て》をつないでのぼると、パパは言《い》いました。「雲《くも》の上《うえ》で待《ま》ってるから、たくさん見《み》ておいで」"
+       ],
+       "withMom": false,
+       "withDad": true,
+       "withSidekick": false
+      },
+      "none": {
+       "label": "窓の外でほほえむおつきさま。空へのびる星のはしごに足をかける主人公",
+       "art": "outside a dark bedroom window, the Moon, a huge round glowing moon with a kind smiling face smiles in at the child, who sets a first foot on a ladder of twinkling stars stretching from the window up into the night sky",
+       "text": [
+        "ねむれない よる、おつきさまが よんで いるよ。",
+        "ねむれない よる。まどの そとで、おつきさまが ほほえみました。「いっしょに おいで」 まどから ほしの はしごが のびて きて、{name}は そっと のぼりはじめました。",
+        "ねむれない夜《よる》。部屋《へや》が暗《くら》くてこわくて、{name}はまどの外《そと》ばかり見《み》ていました。すると、まんまるのおつきさまが、まどの向《む》こうでほほえみました。「ねむれないの？いっしょにおいで」まどを開《あ》けると、星《ほし》のはしごが空《そら》までのびています。{name}は、一《ひと》だん、また一《ひと》だんと、のぼっていきました。"
+       ],
+       "withMom": false,
+       "withDad": false,
+       "withSidekick": false
+      }
+     }
+    },
+    {
+     "label": "ふわふわの雲の上ではねる主人公。雲のかげで泣く手のひらサイズの星の子（ポラ）",
+     "art": "the child bounces happily on a soft fluffy cloud like a carpet under the night sky, while in the shadow of a nearby cloud Pola the little star child sits crying, his faint glow trembling",
+     "text": [
+      "ふわふわの くもで、ちいさな ほしが ないてる。",
+      "くもの うえは、ふわふわの じゅうたん。くもの かげで、ちいさな ほしの こが ないて いました。「ぼく、ポラ。ひかりが ちいさくて、くらいのが こわいの」",
+      "雲《くも》の上《うえ》は、ふわふわのじゅうたんでした。ぽよん、ぽよんとはねて遊《あそ》んでいると、雲《くも》のかげから、しくしく泣《な》く声《こえ》が聞《き》こえます。手《て》のひらにのるくらいの小《ちい》さな星《ほし》の子《こ》が、ちかちかと弱《よわ》く光《ひか》っていました。「ぼく、ポラ。光《ひかり》が小《ちい》さくて、暗《くら》いところがこわいの」"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "大きなおつきさまが笑顔であいさつ。ポラの手を取る主人公",
+     "art": "the Moon, a huge round glowing moon with a kind smiling face greets them warmly from the sky, and on the clouds the child gently takes the tiny hand of Pola the little star child",
+     "text": [
+      "おつきさまが「ようこそ」と あいさつ。",
+      "おつきさまが「ようこそ」と あいさつ。「こんやは、ほしの みずうみに ながれぼしが くるよ」 {name}は ポラの てを とりました。「くらいの こわいの、おなじだね。いっしょに いこう」",
+      "「ようこそ、星《ほし》の国《くに》へ」大《おお》きなおつきさまが、にっこりあいさつしてくれました。「今夜《こんや》は、星《ほし》の湖《みずうみ》に流《なが》れ星《ぼし》が来《く》る夜《よる》。願《ねが》いを一《ひと》つ、とどけてくれるよ」{name}はポラの手《て》をそっとにぎりました。「{name}も、暗《くら》いのはにがて。いっしょに行《い》こう」"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "雲のうしろや月のかげにかくれる、光る星の子どもたち。目をかくして数える主人公",
+     "art": "a game of hide-and-seek among the night clouds: little glowing star children (tiny smiling star-shaped kids) peek out from behind clouds and the shadow of the moon, easy to spot because they shine, while the child covers their eyes and counts",
+     "text": [
+      "ほしの こどもたちと かくれんぼ。",
+      "とちゅうで、ほしの こどもたちと かくれんぼ。{name}が おにです。ぴかぴか ひかる こどもたちは、すぐに みつかりました。",
+      "湖《みずうみ》へ行《い》くとちゅう、星《ほし》の子《こ》どもたちが集《あつ》まってきました。「かくれんぼしよう！」{name}がおにになって、十《とお》数《かぞ》えます。雲《くも》のうしろ、月《つき》のかげ。でも、星《ほし》の子《こ》どもたちはぴかぴか光《ひか》っているので、すぐに見《み》つかってしまいます。みんなで、ころころわらいました。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": false
+    },
+    {
+     "label": "暗い雲のすみで豆つぶほどに光るポラを見つける主人公",
+     "art": "in a dark corner of a cloud the child crouches and discovers Pola the little star child, glowing no bigger than a bean, who beams with joy at being found",
+     "text": [
+      "ポラ、どこ？ ちいさな ひかり、みつけた！",
+      "でも、ポラが みつかりません。くらい すみで、ちいさな ひかりが ちかっ。「みつけた！」 ポラは うれしそうに いいました。「きらり、きらり、とどけ、ひかり。ほんとに とどいた！」",
+      "ところが、ポラだけがどうしても見《み》つかりません。いちばん暗《くら》い雲《くも》のすみを、目《め》をこらしてのぞくと――ちかっ。豆《まめ》つぶほどの光《ひかり》が見《み》えました。「ポラ、見《み》つけた！」ポラはうれしそうに、ちかちか光《ひか》りました。「おつきさまに教《おそ》わったおまじない、本当《ほんとう》だった。きらり、きらり、とどけ、ひかり」"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "星をうつす湖にボートをこぎ出す主人公とポラ",
+     "art": "a calm lake that mirrors the whole starry sky like sparkling glass; the child and Pola the little star child row a small wooden boat out onto the glittering water",
+     "text": [
+      "ほしの みずうみで、ポラと ボートに のったよ。",
+      "ほしの みずうみは、そらが うつって きらきら。{name}と ポラは ボートに のって、ゆっくり こぎだしました。",
+      "星《ほし》の湖《みずうみ》は、空《そら》をそのままうつした鏡《かがみ》のようでした。{name}とポラは、小《ちい》さなボートにのりこみました。オールでこぐたびに、水《みず》の上《うえ》の星《ほし》がゆらゆらゆれて、しゃらしゃらとすずのような音《おと》がします。「流《なが》れ星《ぼし》、まだかな」二人《ふたり》は、湖《みずうみ》のまん中《なか》まで進《すす》みました。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "黒い雲が月と星をかくし、暗くなった湖にうかぶボート",
+     "art": "thick black clouds billow across the sky and hide the moon and stars, and the small boat with the child and Pola the little star child floats on the lake, which has turned dark",
+     "text": [
+      "まっくろな くもが きて、まっくら。",
+      "そのとき、まっくろな くもが もくもく。おつきさまも ほしも かくれて、あたりは まっくらに なりました。",
+      "そのとき、向《む》こうの空《そら》から、まっ黒《くろ》な雲《くも》がもくもくとやって来《き》ました。黒《くろ》い雲《くも》は、おつきさまも、星《ほし》の子《こ》どもたちも、つぎつぎにかくしてしまいます。湖《みずうみ》の光《ひかり》もふっと消《き》えて、あたりはまっ暗《くら》。ボートは、どちらへ進《すす》めばいいのかわからなくなりました。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "暗やみのボートでひざをかかえる主人公。消えそうなポラの光",
+     "art": "in the darkness the child sits curled up hugging their knees in the small boat, while beside them the faint light of Pola the little star child trembles as if about to go out",
+     "text": [
+      "「こわいよ……ママ……」",
+      "「こわいよ……ママ……」 {name}は ボートの なかで まるく なりました。ポラの ひかりも、きえそうに ふるえて います。",
+      "「こわいよ……ママ……」{name}はボートのそこで、ひざをかかえて小《ちい》さくなりました。聞《き》こえるのは、ちゃぷん、ちゃぷんという水《みず》の音《おと》だけ。となりのポラの光《ひかり》も、今《いま》にも消《き》えそうに、ふるふるふるえています。「ぼくの光《ひかり》じゃ、だれにも見《み》えないよ」ポラが、泣《な》きそうな声《こえ》で言《い》いました。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "ボートの上でポラを高くかかげる主人公。光を見つけて集まってくる星の子どもたち",
+     "art": "standing in the boat, the child lifts Pola the little star child high with both hands; his light grows bigger and brighter, and little glowing star children (tiny smiling star-shaped kids) come flying toward it from all around",
+     "text": [
+      "「きらり、きらり、とどけ、ひかり！」",
+      "{name}は ポラを りょうてで たかく かかげました。「きらり、きらり、とどけ、ひかり！」 ポラの ひかりが、すこしずつ おおきく なって いきます。",
+      "{name}は顔《かお》を上《あ》げました。そして、ポラを両手《りょうて》でつつんで、空《そら》へ高《たか》くかかげました。「きらり、きらり、とどけ、ひかり！」すると、ポラの光《ひかり》が、ぽう、ぽうと大《おお》きくなっていきます。その光《ひかり》を見《み》つけて、かくれていた星《ほし》の子《こ》どもたちが、一《ひと》つ、また一《ひと》つと、まわりに集《あつ》まってきました。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "【見開き】晴れた星空を横切る大きな流れ星。目をとじて願う主人公、まわりで光るポラと星の子どもたち。湖にうつる星",
+     "art": "the dark clouds have cleared and a huge shooting star streaks across the glittering night sky; the child closes their eyes and quietly makes a wish while Pola the little star child and the little glowing star children shine all around, and the stars are reflected in the lake below. A grand, breathtaking wide view",
+     "text": [
+      "「あ、ながれぼし！」 そっと おねがい。",
+      "みんなの ひかりで、くろい くもが はれました。「あ、ながれぼし！」 {name}は めを とじて、そっと おねがいしました。ほしたちが きらきらと ひかって こたえます。",
+      "みんなの光《ひかり》で、黒《くろ》い雲《くも》はするすると晴《は》れていきました。そのとき、空《そら》いっぱいに、長《なが》い光《ひかり》の線《せん》が走《はし》りました。「あ、流《なが》れ星《ぼし》！」{name}は目《め》をとじて、そっとおねがいをしました。星《ほし》たちが、きらきらとまたたいてこたえます。手《て》のひらに、金色《きんいろ》のかけらが、ころんと落《お》ちてきました。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "【ママ・パパ】パパにおんぶされて星のはしごを下りる主人公。となりでほほえむママ",
+     "art": "the father carries the sleepy child piggyback down a ladder of twinkling stars through the night sky, and the mother walks beside them smiling warmly",
+     "text": [
+      "かえりは パパの せなかで うとうと。",
+      "くもの うえに もどると、パパが むかえに きて いました。かえりは、パパの せなかで うとうと。ママも となりで にっこり。",
+      "雲《くも》の上《うえ》にもどると、ママと、むかえに来《き》たパパが待《ま》っていました。「おかえり」パパは{name}をせなかにおぶって、星《ほし》のはしごを一《ひと》だんずつ下《お》りていきます。パパのせなかは大《おお》きくて、温《あたた》かくて、{name}はうとうと。ママも、となりでにっこりほほえんでいました。"
+     ],
+     "withMom": true,
+     "withDad": true,
+     "withSidekick": false,
+     "alt": {
+      "dad": {
+       "label": "パパにおんぶされて星のはしごを下りる主人公。空から手をふるポラ",
+       "art": "the father carries the sleepy child piggyback down a ladder of twinkling stars through the night sky, while Pola the little star child waves goodbye from the sky above",
+       "text": [
+        "かえりは パパの せなかで うとうと。",
+        "くもの うえに もどると、パパが まって いました。かえりは、パパの せなかで うとうと。ポラが ちいさく てを ふって います。",
+        "雲《くも》の上《うえ》にもどると、パパが待《ま》っていました。「おかえり」パパは{name}をせなかにおぶって、星《ほし》のはしごを一《ひと》だんずつ下《お》りていきます。パパのせなかは大《おお》きくて、温《あたた》かくて、{name}はうとうと。ポラが、空《そら》から小《ちい》さく手《て》をふっていました。"
+       ],
+       "withMom": false,
+       "withDad": true,
+       "withSidekick": true
+      },
+      "mom": {
+       "label": "雲の上でママが主人公をぎゅっと抱きしめる（おんぶはしない）。空から手をふるポラ",
+       "art": "on top of the fluffy clouds under the night sky, the mother hugs the child tightly, while Pola the little star child waves goodbye from the sky above",
+       "text": [
+        "かえりは ママに だっこされて うとうと。",
+        "くもの うえに もどると、ママが まって いました。かえりは、ママに ぎゅっと だっこされて うとうと。ポラが ちいさく てを ふって います。",
+        "雲《くも》の上《うえ》にもどると、ママが待《ま》っていました。「おかえり」ママは{name}を、ぎゅっとだきしめてくれました。ママのうでの中《なか》は温《あたた》かくて、いいにおいがして、{name}はうとうと。ポラが、空《そら》から小《ちい》さく手《て》をふっていました。"
+       ],
+       "withMom": true,
+       "withDad": false,
+       "withSidekick": true
+      },
+      "none": {
+       "label": "雲のベッドで眠りかける主人公。運んでいく星の子どもたちと、となりのポラ",
+       "art": "the child drifts off to sleep on a soft cloud bed that little glowing star children (tiny smiling star-shaped kids) gently carry down through the night sky, with Pola the little star child glowing beside the child's pillow",
+       "text": [
+        "かえりは くもの ベッドで うとうと。",
+        "くもの うえに もどると、ほしの こどもたちが くもの ベッドを よういして くれました。かえりは、ふわふわの くもに のって うとうと。",
+        "雲《くも》の上《うえ》にもどると、星《ほし》の子《こ》どもたちが、ふわふわの雲《くも》のベッドを用意《ようい》してくれていました。「おうちまで送《おく》るね」{name}は雲《くも》のベッドにのって、ゆっくり、ゆっくり下《お》りていきます。雲《くも》は温《あたた》かくて、やわらかくて、{name}はうとうと。ポラも、となりでにっこりわらっていました。"
+       ],
+       "withMom": false,
+       "withDad": false,
+       "withSidekick": true
+      }
+     }
+    },
+    {
+     "label": "暗い部屋で光る、かけら入りの小びん。窓の外でささの葉をふるポラ",
+     "art": "a dark, cozy bedroom where a small glass jar on the windowsill glows with one golden star fragment inside; outside the window Pola the little star child waves a green bamboo leaf",
+     "text": [
+      "まどの そとで、ポラが ささの はを ふって いるよ。",
+      "ほしの かけらを こびんに いれて、{name}は じぶんで でんきを けしました。おねがいは、ポラと ふたりだけの ひみつ。まどで ポラが ささの はを ふりました。「なつに また あおうね」",
+      "部屋《へや》にもどると、{name}は金色《きんいろ》のかけらを、小《ちい》さなガラスのびんに入《い》れました。そして、自分《じぶん》で電気《でんき》をぱちんと消《け》しました。おねがいごとは、ポラと{name}、ふたりだけのひみつです。まどの外《そと》で、ポラがささの葉《は》をふっています。「夏《なつ》の七夕《たなばた》の夜《よる》、天《あま》の川《がわ》でたいへんなことが起《お》きるの。また来《き》てね」"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    }
+   ]
+  },
+  {
+   "no": 2,
+   "title": "たなばたの あまのがわ",
+   "outfits": "light summer clothes in the same colors as the reference: a short-sleeved top and shorts with sandals",
+   "cover": {
+    "label": "天の川のほとりで、両手を口に当ててよびかける主人公。肩にポラ、空からかささぎの群れ。",
+    "art": "on the bank of the sparkling Milky Way, a river of tiny stars, the child calls out with both hands cupped around their mouth, Pola the little star child perched on their shoulder, as a flock of magpies swoops down from the night sky",
+    "withSidekick": true
+   },
+   "scenes": [
+    {
+     "label": "【パパ】ベランダでパパとささかざり。白いままの短冊を持つ主人公。窓辺の小びんが光る",
+     "art": "a summer evening on a balcony with a Tanabata bamboo branch hung with colorful paper ornaments; the father hangs decorations while the child holds a blank paper wish strip and looks down shyly, and a small glass jar with one glowing golden fragment shines on the windowsill",
+     "text": [
+      "パパと ささかざり。たんざくは まっしろ。",
+      "たなばたの よる。パパと ささに かざりを つけました。でも {name}の たんざくは まっしろ。「おねがい、はずかしくて かけないよ」",
+      "七夕《たなばた》の夜《よる》。{name}はパパと、ベランダのささにかざりをつけました。パパのたんざくには「みんなが元気《げんき》でいられますように」。でも、{name}のたんざくは、まっ白《しろ》なままです。「ねがいごと、人《ひと》に見《み》られるの、はずかしいな」そのとき、まどべの小《こ》びんの中《なか》で、金色《きんいろ》のかけらがちかっと光《ひか》りました。"
+     ],
+     "withMom": false,
+     "withDad": true,
+     "withSidekick": false,
+     "alt": {
+      "both": {
+       "label": "ベランダでパパとささかざり、ママは短冊を結ぶ。白いままの短冊を持つ主人公。窓辺の小びんが光る",
+       "art": "a summer evening on a balcony with a Tanabata bamboo branch hung with colorful paper ornaments; the father hangs decorations and the mother ties paper strips to the branch, while the child holds a blank paper wish strip and looks down shyly, and a small glass jar with one glowing golden fragment shines on the windowsill",
+       "text": [
+        "パパと ママと ささかざり。たんざくは まっしろ。",
+        "たなばたの よる。パパと ママと ささに かざりを つけました。でも {name}の たんざくは まっしろ。「おねがい、はずかしくて かけないよ」",
+        "七夕《たなばた》の夜《よる》。{name}はパパとママと、ベランダのささにかざりをつけました。パパのたんざくには「みんなが元気《げんき》でいられますように」。でも、{name}のたんざくは、まっ白《しろ》なままです。「ねがいごと、人《ひと》に見《み》られるの、はずかしいな」そのとき、まどべの小《こ》びんの中《なか》で、金色《きんいろ》のかけらがちかっと光《ひか》りました。"
+       ],
+       "withMom": true,
+       "withDad": true,
+       "withSidekick": false
+      },
+      "mom": {
+       "label": "ベランダでママとささかざり。白いままの短冊を持つ主人公。窓辺の小びんが光る",
+       "art": "a summer evening on a balcony with a Tanabata bamboo branch hung with colorful paper ornaments; the mother hangs decorations while the child holds a blank paper wish strip and looks down shyly, and a small glass jar with one glowing golden fragment shines on the windowsill",
+       "text": [
+        "ママと ささかざり。たんざくは まっしろ。",
+        "たなばたの よる。ママと ささに かざりを つけました。でも {name}の たんざくは まっしろ。「おねがい、はずかしくて かけないよ」",
+        "七夕《たなばた》の夜《よる》。{name}はママと、ベランダのささにかざりをつけました。ママのたんざくには「みんなが元気《げんき》でいられますように」。でも、{name}のたんざくは、まっ白《しろ》なままです。「ねがいごと、人《ひと》に見《み》られるの、はずかしいな」そのとき、まどべの小《こ》びんの中《なか》で、金色《きんいろ》のかけらがちかっと光《ひか》りました。"
+       ],
+       "withMom": true,
+       "withDad": false,
+       "withSidekick": false
+      },
+      "none": {
+       "label": "ベランダでささかざりをする主人公。白いままの短冊。窓辺の小びんが光る",
+       "art": "a summer evening on a balcony; the child decorates a Tanabata bamboo branch with colorful paper ornaments but holds a blank paper wish strip and looks down shyly, and a small glass jar with one glowing golden fragment shines on the windowsill",
+       "text": [
+        "ひとりで ささかざり。たんざくは まっしろ。",
+        "たなばたの よる。{name}は ベランダの ささに かざりを つけました。でも たんざくは まっしろ。「おねがい、はずかしくて かけないよ」",
+        "七夕《たなばた》の夜《よる》。{name}は、ベランダのささに、おりがみのかざりをつけました。わかざり、ほしかざり、ちょうちん。でも、たんざくだけは、まっ白《しろ》なままです。「ねがいごと、人《ひと》に見《み》られるの、はずかしいな」そのとき、まどべの小《こ》びんの中《なか》で、金色《きんいろ》のかけらがちかっと光《ひか》りました。"
+       ],
+       "withMom": false,
+       "withDad": false,
+       "withSidekick": false
+      }
+     }
+    },
+    {
+     "label": "ささのてっぺんからすべり下りるポラ。ささの先から空へのびる星のはしご",
+     "art": "Pola the little star child slides down from the top of the Tanabata bamboo branch, and from the tip of the bamboo a ladder of twinkling stars stretches up into the summer night sky",
+     "text": [
+      "ポラが ささを すべって きたよ。",
+      "ささの てっぺんから、ポラが するする すべって きました。「たいへん！ あまのがわの はしが なくなって、おりひめさまと ひこぼしさまが あえないの」",
+      "ささのてっぺんから、ポラがするするとすべり下《お》りてきました。「たいへん、たいへん！天《あま》の川《がわ》にかかる、かささぎの橋《はし》がなくなっちゃったの。このままじゃ、おりひめさまとひこぼしさまが、一年《いちねん》に一度《いちど》の今夜《こんや》に会《あ》えないよ」ささの葉《は》の先《さき》から、星《ほし》のはしごが空《そら》へのびていきました。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "星のつぶが流れる天の川。岸でしょんぼりするかささぎのカチ",
+     "art": "high in the sky the Milky Way flows like a river of tiny sparkling star grains, and on its bank Kachi, a small black-and-white magpie with a blue-tinged tail sits drooping sadly",
+     "text": [
+      "きらきらの あまのがわに ついたよ。",
+      "そらの うえは、ほしの つぶが ながれる あまのがわ。きしで、かささぎの カチが しょんぼり。「ゆうだちで、なかまが ちりぢりに なっちゃった」",
+      "はしごをのぼりきると、目《め》の前《まえ》を、星《ほし》のつぶがさらさらと流《なが》れていました。天《あま》の川《がわ》です。川岸《かわぎし》には、白《しろ》と黒《くろ》の羽《はね》の鳥《とり》が一《いち》わ、しょんぼりすわっていました。かささぎのカチです。「夕立《ゆうだち》で、なかまがみんな、雲《くも》の向《む》こうへとばされてしまったんだ。よびもどさなきゃ」"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": false
+    },
+    {
+     "label": "星の子どもたちがこぐボートで天の川を上る主人公、ポラ、カチ",
+     "art": "little glowing star children (tiny smiling star-shaped kids) row a boat up the shimmering Milky Way, carrying the child, Pola the little star child and Kachi, a small black-and-white magpie with a blue-tinged tail",
+     "text": [
+      "ほしの こどもたちが ボートで きたよ。",
+      "はるに あった ほしの こどもたちが、ボートを こいで きました。「みんなで かささぎを さがそう！」 ボートは あまのがわを すいすい すすみます。",
+      "「{name}、ひさしぶり！」春《はる》にかくれんぼをした星《ほし》の子《こ》どもたちが、星《ほし》の湖《みずうみ》のボートをこいでやって来《き》ました。「かささぎをさがすなら、のって！」{name}とポラとカチをのせて、ボートは天《あま》の川《がわ》をすいすい上《のぼ》っていきます。川面《かわも》の星《ほし》が、しぶきになってはねました。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "遠くの雲の島にかささぎの群れ。声がかれたカチと、主人公を見つめるポラ",
+     "art": "far away on a cloud island a flock of magpies can be seen; in the boat Kachi, a small black-and-white magpie with a blue-tinged tail opens his beak but no voice comes out, and Pola the little star child looks up at the child hopefully",
+     "text": [
+      "とおくの くもに、かささぎが いた！",
+      "とおくの くもの しまに、かささぎたちが みえました。でも カチの こえは かれて でません。「{name}、おおきな こえで よんで！」",
+      "遠《とお》くの雲《くも》の島《しま》に、かささぎたちの白《しろ》い羽《はね》が、ちらちら見《み》えました。カチはよびかけようとしましたが、ずっとなかまをよびつづけていたので、声《こえ》がかすれて出《で》ません。ポラの声《こえ》は、小《ちい》さすぎてとどきません。「{name}、おねがい。大《おお》きな声《こえ》で、よんでくれる？」"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "小さな声でよびかけ、顔を赤くする主人公。見守る星の子どもたち",
+     "art": "standing in the boat on the Milky Way, the child calls out in a tiny voice, cheeks flushed red, and starts to look down, while the little glowing star children (tiny smiling star-shaped kids) watch quietly",
+     "text": [
+      "「お……おーい」 こえが ちいさい。",
+      "「お……おーい」 {name}の こえは、かぜに まけて しまいました。かおが あつく なって、うつむいて しまいます。",
+      "{name}は、すうっと息《いき》をすいました。「お……おーい……」でも、出《で》てきたのは、ささやきのような声《こえ》でした。みんなが自分《じぶん》を見《み》ていると思《おも》うと、顔《かお》がかあっと熱《あつ》くなって、のどがきゅっとしまってしまうのです。声《こえ》は、天《あま》の川《がわ》の風《かぜ》に、あっけなくかき消《け》されてしまいました。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": false
+    },
+    {
+     "label": "天の川の両岸で見つめ合うおりひめとひこぼし。傾いていく月",
+     "art": "on opposite banks of the wide, sparkling Milky Way, Orihime, a weaver princess in flowing pastel robes and Hikoboshi, a young cowherd in simple blue robes gaze sadly at each other across the river of stars, while the moon sinks lower in the night sky",
+     "text": [
+      "おりひめさまが まって いるよ。",
+      "むこうぎしで おりひめさまが、こちらの きしで ひこぼしさまが、かなしそうに みつめあって います。よるが どんどん ふけて いきます。",
+      "天《あま》の川《がわ》の向《む》こう岸《ぎし》では、おりひめさまが、こちらの岸《きし》では、ひこぼしさまが、だまって見《み》つめ合《あ》っていました。二人《ふたり》のあいだを、星《ほし》の川《かわ》がさらさらと流《なが》れていきます。月《つき》はもう、空《そら》のてっぺんをすぎようとしていました。「夜《よる》が明《あ》けたら、また一年《いちねん》会《あ》えないんだ」とカチがつぶやきました。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": false
+    },
+    {
+     "label": "ボートのすみでうつむく主人公。その手を小さな光でてらすポラ",
+     "art": "in a corner of the boat the child sits with head bowed, and Pola the little star child gently lights up the child's hands with his small warm glow",
+     "text": [
+      "はずかしくて、こえが でない……。",
+      "「やっぱり、{name}には むりだよ」 うつむく {name}の てを、ポラが ちいさな ひかりで てらしました。「はるの よる、ぼくの ひかりも とどいたよ」",
+      "「やっぱり、{name}にはむりだよ……」{name}はボートのすみで、うつむきました。ポケットの中《なか》で、まっ白《しろ》なたんざくが、くしゃりとまがります。そのとき、ポラが小《ちい》さな光《ひかり》で、{name}の手《て》をてらしました。「春《はる》の夜《よる》、{name}はぼくを高《たか》くかかげてくれたよね。小《ちい》さくても、ちゃんととどいたよ」"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "ボートの先に立ち、両手を口に当てて大声でよぶ主人公",
+     "art": "the child stands at the very front of the boat on the Milky Way, both hands cupped around their mouth, calling out with all their might in a big brave voice",
+     "text": [
+      "「きらり、きらり、とどけ、ひかり！ おーい！」",
+      "{name}は ボートの さきに たちました。「きらり、きらり、とどけ、ひかり！」 そして、おなかの そこから よびました。「かささぎさーん！ こっちだよー！」",
+      "{name}は顔《かお》を上《あ》げて、ボートのいちばん前《まえ》に立《た》ちました。むねに手《て》を当《あ》てて、つぶやきます。「きらり、きらり、とどけ、ひかり」それから、おなかのそこから、ありったけの声《こえ》を出《だ》しました。「かささぎさーん！こっちだよー！おりひめさまが、待《ま》ってるよー！」声《こえ》は、天《あま》の川《がわ》をこえて、雲《くも》の島《しま》までひびきました。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": false
+    },
+    {
+     "label": "【見開き】天の川にかかる、かささぎの羽の橋。橋の真ん中で手を取り合うおりひめとひこぼし。歓声をあげる仲間たち",
+     "art": "a flock of magpies spreads their wings side by side to form a feathered bridge across the sparkling Milky Way; Orihime, a weaver princess in flowing pastel robes and Hikoboshi, a young cowherd in simple blue robes join hands in the middle of the bridge, while the child, Pola the little star child, Kachi, a small black-and-white magpie with a blue-tinged tail and the little glowing star children cheer from the boat. A grand, breathtaking wide view",
+     "text": [
+      "かささぎの はしで、ふたりが あえたね！",
+      "かささぎたちが いっせいに とんで きて、つばさを ならべて はしに なりました。おりひめさまと ひこぼしさまが、はしの まんなかで てを とりあいます。",
+      "ばさばさばさっ！雲《くも》の島《しま》から、何百《なんびゃく》ものかささぎがとんできました。カチの合図《あいず》で、鳥《とり》たちはつばさを広《ひろ》げて、天《あま》の川《がわ》にずらりとならびます。白《しろ》くかがやく、羽《はね》の橋《はし》のできあがりです。おりひめさまとひこぼしさまは、橋《はし》のまん中《なか》でかけより、そっと手《て》をとり合《あ》いました。星《ほし》たちが、いっせいにまたたきました。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "【ママ】ベランダで、ママの前で短冊を広げて読み上げる主人公。ささかざり",
+     "art": "back on the balcony beside the Tanabata bamboo decorations at night, the child proudly holds open a paper wish strip and reads it aloud to the mother, who smiles warmly",
+     "text": [
+      "ママの まえで、たんざくを よんだよ。",
+      "ベランダに もどると、ママが まって いました。{name}は たんざくに おおきく ねがいを かいて、こえに だして よみました。ママが にっこり。",
+      "ベランダにもどると、すいかを切《き》ったママが待《ま》っていました。「おかえり。どこへ行《い》ってたの？」{name}はにっこりわらって、まっ白《しろ》だったたんざくを広《ひろ》げました。そして、大《おお》きな字《じ》でねがいごとを書《か》くと、ママに聞《き》こえるように、声《こえ》に出《だ》して読《よ》み上《あ》げました。ママは目《め》を丸《まる》くして、それから、うれしそうにわらいました。"
+     ],
+     "withMom": true,
+     "withDad": false,
+     "withSidekick": false,
+     "alt": {
+      "both": {
+       "label": "ベランダで短冊を読み上げる主人公。にっこりするママと拍手するパパ。ささかざり",
+       "art": "back on the balcony beside the Tanabata bamboo decorations at night, the child proudly holds open a paper wish strip and reads it aloud, while the mother smiles warmly and the father claps",
+       "text": [
+        "ママと パパの まえで、たんざくを よんだよ。",
+        "ベランダに もどると、ママと パパが まって いました。{name}は たんざくに おおきく ねがいを かいて、こえに だして よみました。ママが にっこり。",
+        "ベランダにもどると、すいかを切《き》ったママと、うちわを持《も》ったパパが待《ま》っていました。「おかえり。どこへ行《い》ってたの？」{name}はにっこりわらって、まっ白《しろ》だったたんざくを広《ひろ》げました。そして、大《おお》きな字《じ》でねがいごとを書《か》くと、声《こえ》に出《だ》して読《よ》み上《あ》げました。ママは目《め》を丸《まる》くして、うれしそうにわらいました。パパも、大《おお》きくはくしゅしました。"
+       ],
+       "withMom": true,
+       "withDad": true,
+       "withSidekick": false
+      },
+      "dad": {
+       "label": "ベランダで、パパの前で短冊を広げて読み上げる主人公。ささかざり",
+       "art": "back on the balcony beside the Tanabata bamboo decorations at night, the child proudly holds open a paper wish strip and reads it aloud to the father, who smiles warmly",
+       "text": [
+        "パパの まえで、たんざくを よんだよ。",
+        "ベランダに もどると、パパが まって いました。{name}は たんざくに おおきく ねがいを かいて、こえに だして よみました。パパが にっこり。",
+        "ベランダにもどると、すいかを切《き》ったパパが待《ま》っていました。「おかえり。どこへ行《い》ってたの？」{name}はにっこりわらって、まっ白《しろ》だったたんざくを広《ひろ》げました。そして、大《おお》きな字《じ》でねがいごとを書《か》くと、パパに聞《き》こえるように、声《こえ》に出《だ》して読《よ》み上《あ》げました。パパは目《め》を丸《まる》くして、それから、うれしそうにわらいました。"
+       ],
+       "withMom": false,
+       "withDad": true,
+       "withSidekick": false
+      },
+      "none": {
+       "label": "ベランダで短冊を読み上げる主人公。ささの上のカチと、光るポラ",
+       "art": "on the balcony beside the Tanabata bamboo decorations at night, the child proudly reads a paper wish strip aloud, while Kachi, a small black-and-white magpie with a blue-tinged tail perches on the bamboo and Pola the little star child glows brightly nearby",
+       "text": [
+        "カチと ポラの まえで、たんざくを よんだよ。",
+        "ベランダに もどると、ささに カチが とまって いました。{name}は たんざくに おおきく ねがいを かいて、カチと ポラに こえに だして よみました。",
+        "ベランダにもどると、ささのてっぺんに、かささぎのカチがとまっていました。{name}はにっこりわらって、まっ白《しろ》だったたんざくを広《ひろ》げました。そして、大《おお》きな字《じ》でねがいごとを書《か》くと、カチとポラに聞《き》こえるように、声《こえ》に出《だ》して読《よ》み上《あ》げました。カチはうれしそうに羽《はね》を広《ひろ》げ、ポラはちかちか光《ひか》りました。"
+       ],
+       "withMom": false,
+       "withDad": false,
+       "withSidekick": true
+      }
+     }
+    },
+    {
+     "label": "窓の外で白いおだんごを見せるポラ。窓辺に2つのかけらの小びん",
+     "art": "outside the window Pola the little star child holds up a round white rice dumpling, and on the windowsill a small glass jar glows with two star fragments, one gold and one light blue",
+     "text": [
+      "かけらが 2つに なったよ。",
+      "こびんの かけらは 2つに なりました。おりひめさまが くれた、あまのがわの かけらです。ポラが しろい おだんごを みせました。「あきの おつきみに、つきの うさぎが こまってるんだって」",
+      "ねる前《まえ》、まどべの小《こ》びんを見《み》ると、かけらが2つにふえていました。おりひめさまがくれた、天《あま》の川《がわ》の水色《みずいろ》のかけらです。まどの外《そと》に、ポラがひょっこりあらわれました。手《て》には、まっ白《しろ》でまんまるのおだんご。「月《つき》のうさぎからとどいたの。秋《あき》のお月見《つきみ》の夜《よる》、こまったことが起《お》きそうなんだって」"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    }
+   ]
+  },
+  {
+   "no": 3,
+   "title": "つきの うさぎと まんまる おつきさま",
+   "outfits": "light autumn clothes in the same colors as the reference: a long-sleeved top and long pants",
+   "cover": {
+    "label": "月の上で、きねを持った月のうさぎ（モチ）とならぶ主人公。うすの横にポラ。",
+    "art": "on the glowing surface of the moon, the child stands side by side with Mochi, a small white moon rabbit with long ears, who holds a wooden mallet, and Pola the little star child sits beside a big wooden rice-cake mortar under a starry sky",
+    "withSidekick": true
+   },
+   "scenes": [
+    {
+     "label": "【ママ】えんがわでママとおだんご作り。でこぼこのおだんご。空にかけた月",
+     "art": "an autumn night on a Japanese wooden veranda with pampas grass in a vase; the child and the mother make rice dumplings together, but the child's dumplings are lumpy and uneven, and the mother looks up at the moon, which has a piece missing",
+     "text": [
+      "ママと おだんご。うまく まるく ならない。",
+      "じゅうごやの よる。ママと おだんごを つくりました。でも {name}の おだんごは でこぼこ。「もう やらない！」 ママが そらを みあげました。「あら、おつきさまが かけてる」",
+      "十五夜《じゅうごや》の夜《よる》。{name}はママと、お月見《つきみ》のおだんごを作《つく》りました。ママのおだんごは、つるんとまんまる。でも、{name}のは、でこぼこで、ひびわれています。「もうやらない！」{name}は、ぷいっと横《よこ》を向《む》きました。ママが空《そら》を見上《みあ》げて、首《くび》をかしげます。「あら。今夜《こんや》のおつきさま、なんだか、かけてるわね」"
+     ],
+     "withMom": true,
+     "withDad": false,
+     "withSidekick": false,
+     "alt": {
+      "both": {
+       "label": "えんがわでママ・パパとおだんご作り。ママが空を指さす。でこぼこのおだんご。空にかけた月",
+       "art": "an autumn night on a Japanese wooden veranda with pampas grass in a vase; the child makes rice dumplings with the mother and the father, the child's dumplings lumpy and uneven, and the mother points up at the moon, which has a piece missing",
+       "text": [
+        "ママと パパと おだんご。うまく まるく ならない。",
+        "じゅうごやの よる。ママと パパと おだんごを つくりました。でも {name}の おだんごは でこぼこ。「もう やらない！」 ママが そらを みあげました。「あら、おつきさまが かけてる」",
+        "十五夜《じゅうごや》の夜《よる》。{name}はママとパパと、お月見《つきみ》のおだんごを作《つく》りました。ママのも、パパのも、つるんとまんまる。でも、{name}のは、でこぼこで、ひびわれています。「もうやらない！」{name}は、ぷいっと横《よこ》を向《む》きました。ママが空《そら》を見上《みあ》げて、首《くび》をかしげます。「あら。今夜《こんや》のおつきさま、なんだか、かけてるわね」"
+       ],
+       "withMom": true,
+       "withDad": true,
+       "withSidekick": false
+      },
+      "dad": {
+       "label": "えんがわでパパとおだんご作り。でこぼこのおだんご。空にかけた月",
+       "art": "an autumn night on a Japanese wooden veranda with pampas grass in a vase; the child and the father make rice dumplings together, but the child's dumplings are lumpy and uneven, and the moon in the sky has a piece missing",
+       "text": [
+        "パパと おだんご。うまく まるく ならない。",
+        "じゅうごやの よる。パパと おだんごを つくりました。でも {name}の おだんごは でこぼこ。「もう やらない！」 パパが そらを みあげました。「あれ、おつきさまが かけてる」",
+        "十五夜《じゅうごや》の夜《よる》。{name}はパパと、お月見《つきみ》のおだんごを作《つく》りました。パパのおだんごは、つるんとまんまる。でも、{name}のは、でこぼこで、ひびわれています。「もうやらない！」{name}は、ぷいっと横《よこ》を向《む》きました。パパが空《そら》を見上《みあ》げて、首《くび》をかしげます。「あれ。今夜《こんや》のおつきさま、なんだか、かけてるぞ」"
+       ],
+       "withMom": false,
+       "withDad": true,
+       "withSidekick": false
+      },
+      "none": {
+       "label": "えんがわでひとりおだんご作り。でこぼこのおだんご。空にかけた月",
+       "art": "an autumn night on a Japanese wooden veranda with pampas grass in a vase; the child makes rice dumplings alone, frowning at the lumpy, uneven ones, and the moon in the sky has a piece missing",
+       "text": [
+        "おだんご、うまく まるく ならない。",
+        "じゅうごやの よる。{name}は おだんごを つくりました。でも おだんごは でこぼこ。「もう やらない！」 そらを みあげると、おつきさまも かけて いました。",
+        "十五夜《じゅうごや》の夜《よる》。{name}は、お月見《つきみ》のおだんごを作《つく》りました。でも、何度《なんど》まるめても、でこぼこで、ひびわれてしまいます。「もうやらない！」{name}は、ぷいっと横《よこ》を向《む》きました。ふと見上《みあ》げると、空《そら》のおつきさまも、なんだかかけています。「あれ？今夜《こんや》は、まんまるのはずなのに」"
+       ],
+       "withMom": false,
+       "withDad": false,
+       "withSidekick": false
+      }
+     }
+    },
+    {
+     "label": "すすきのかげから出てくるポラと、耳を下げた月のうさぎのモチ",
+     "art": "from behind swaying pampas grass, Pola the little star child appears leading Mochi, a small white moon rabbit with long ears, whose ears droop sadly",
+     "text": [
+      "ポラと つきの うさぎが きたよ。",
+      "ポラが、ちいさな うさぎを つれて きました。「つきの うさぎの モチだよ」 モチは なきそうな かお。「おもちが うまく つけなくて、おつきさまが まるく ならないの」",
+      "すすきのかげから、ポラが小《ちい》さなうさぎをつれて、とび出《だ》してきました。「月《つき》のうさぎの、モチだよ」モチは、耳《みみ》をしゅんと下《さ》げています。「十五夜《じゅうごや》には、月《つき》でおもちをついて、おつきさまをまんまるにするの。でも、ぼく、ぺったんがへたで……今年《ことし》は、ぼくの番《ばん》なのに」"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "月の上の大きなうすときね。一歩下がる主人公",
+     "art": "on the surface of the moon stands a huge wooden mortar with a big mallet; Mochi, a small white moon rabbit with long ears invites the child to help, and the child takes a nervous step back",
+     "text": [
+      "ほしの はしごで、おつきさまへ。",
+      "ほしの はしごを のぼって、おつきさまへ。「{name}も いっしょに ついて！」 「えっ、{name}も うまく できないよ……」",
+      "星《ほし》のはしごをのぼって、三人《さんにん》はおつきさまの上《うえ》に下《お》り立《た》ちました。おつきさまは「ようこそ」と、少《すこ》しつかれた声《こえ》で言《い》いました。大《おお》きなうすときねが、ぽつんと置《お》いてあります。「{name}もいっしょについて！」とモチ。「えっ、{name}も、上手《じょうず》にできないよ……」{name}は、思《おも》わず一歩《いっぽ》下《さ》がりました。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": false
+    },
+    {
+     "label": "うすからとび出して転がるおもち。追いかけるポラ",
+     "art": "with a slippery plop, a ball of sticky rice cake pops out of the big wooden mortar and rolls away across the moon; Pola the little star child chases after it while the child and Mochi, a small white moon rabbit with long ears look on in surprise",
+     "text": [
+      "ぺったん……つるっ！",
+      "モチが きねを ふりあげ、{name}が おもちを かえします。ぺったん……つるっ！ おもちは ころころ ころがって いきました。",
+      "モチがきねをふり上《あ》げ、{name}がおもちをひっくり返《かえ》す役《やく》です。「せーの、ぺったん！」ところが、タイミングが合《あ》わずに、つるっ！おもちは、うすからとび出《だ》して、月《つき》のでこぼこの上《うえ》を、ころころころがっていきました。ポラがあわてて追《お》いかけます。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "のびたおもちで手とモチの耳がつながった主人公とモチ",
+     "art": "the child and Mochi, a small white moon rabbit with long ears are both covered in stretchy rice cake, a long gooey strand connecting the child's hands to Mochi's ear, both looking startled",
+     "text": [
+      "べたべた。おもちが くっついた！",
+      "もう いちど。こんどは おもちが {name}の てに べったり。モチの みみにも べったり。ふたりとも おもちまみれです。",
+      "もう一度《いちど》。今度《こんど》は、おもちが{name}の手《て》にべったりくっついて、はなれません。ひっぱると、びよーんとのびて、モチの耳《みみ》にまでべったり。二人《ふたり》とも、おもちまみれになってしまいました。ポラはおもわずふき出《だ》しましたが、{name}はちっともわらえません。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": false
+    },
+    {
+     "label": "応援にかけつけたカチと星の子どもたち。かけが大きくなる月",
+     "art": "Kachi, a small black-and-white magpie with a blue-tinged tail and the little glowing star children (tiny smiling star-shaped kids) rush over to cheer on the child and Mochi, a small white moon rabbit with long ears at the mortar, but the shadow over the moon keeps growing and its light grows weaker",
+     "text": [
+      "カチも ほしの こどもたちも おうえん。",
+      "かささぎの カチと ほしの こどもたちが、おうえんに きて くれました。「がんばれー！」 でも、おつきさまの ひかりは どんどん よわく なって いきます。",
+      "「がんばれー！」天《あま》の川《がわ》から、かささぎのカチと、星《ほし》の子《こ》どもたちがおうえんにかけつけてくれました。でも、おつきさまのかけたところは、さっきより大《おお》きくなっています。月《つき》の光《ひかり》も、だんだん弱《よわ》くなってきました。地上《ちじょう》では、たくさんの人《ひと》が、お月見《つきみ》をしているのに。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": false
+    },
+    {
+     "label": "たおれたうす。すわりこむおもちだらけの主人公",
+     "art": "the big wooden mortar has tipped over, and the child sits slumped on the moon covered in rice cake, looking frustrated and ready to give up",
+     "text": [
+      "「もう やらない！」",
+      "3かいめ。きねが すべって、うすが ごろん。{name}は おもちを なげだしました。「もう やらない！ どうせ できないもん」",
+      "三回《さんかい》目《め》。今度《こんど》はきねがすべって、うすがごろんとたおれてしまいました。おもちは、べちゃっと地面《じめん》にはりつきます。「もうやらない！どうせ{name}には、できないもん！」{name}は、おもちだらけの手《て》をぶんぶんふって、その場《ば》にすわりこみました。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": false
+    },
+    {
+     "label": "消えかけた月の上で泣くモチ。はるか下に、空を見上げる地球の子ども",
+     "art": "on the fading, nearly dark moon Mochi, a small white moon rabbit with long ears sits crying, while far, far below the tiny lights of a town on Earth twinkle where someone looks up at the dark sky",
+     "text": [
+      "おつきさまの ひかりが きえそう。",
+      "モチも すわりこんで なきだしました。おつきさまの ひかりが、ふうっと きえそうに なります。したの ほうから、ちいさな こえ。「あれ？ おつきさま、みえないよう」",
+      "モチも、ぺたんとすわりこんで、ぽろぽろ泣《な》き出《だ》しました。おつきさまの光《ひかり》が、ふうっと、ろうそくのように小《ちい》さくなっていきます。足《あし》もとの地球《ちきゅう》から、かすかな声《こえ》が聞《き》こえました。「あれえ？おつきさま、見《み》えないよう」それは、お月見《つきみ》をしている、小《ちい》さな子《こ》の声《こえ》でした。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": false
+    },
+    {
+     "label": "声を合わせてもちをつく主人公とモチ。手びょうしをする仲間たち",
+     "art": "the child and Mochi, a small white moon rabbit with long ears pound rice cake together in rhythm, calling out in unison with determined smiles, while Kachi, a small black-and-white magpie with a blue-tinged tail, Pola the little star child and the little glowing star children clap along",
+     "text": [
+      "「きらり、きらり、とどけ、ひかり！」",
+      "{name}は たちあがりました。「きらり、きらり、とどけ、ひかり！ モチ、こえを あわせよう」「ぺったん！」「はい！」 ふたりは もう いちど つきはじめました。",
+      "{name}は、ぐいっと顔《かお》をふいて、立《た》ち上《あ》がりました。「きらり、きらり、とどけ、ひかり！モチ、もう一回《いっかい》。今度《こんど》は声《こえ》を合《あ》わせよう」モチがなみだをふいて、きねをにぎります。「ぺったん！」「はい！」「ぺったん！」「はい！」二人《ふたり》の声《こえ》に合《あ》わせて、みんなも手《て》びょうしを打《う》ちはじめました。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "【見開き】まんまるにかがやく満月の上で、おもちを掲げる主人公とモチ。銀の光がすすき野原と町にふりそそぐ",
+     "art": "on top of a perfectly round, brilliantly shining full moon, the child and Mochi, a small white moon rabbit with long ears lift a perfectly round glowing rice cake high, and silver moonlight pours down over fields of pampas grass and a sleeping town on Earth below. A grand, breathtaking wide view",
+     "text": [
+      "まんまるの おつきさま！",
+      "ぺったん、はい！ おもちが まんまるに ひかった とき、おつきさまも まんまるに なりました。ぎんいろの ひかりが、ちきゅうに ふりそそぎます。",
+      "ぺったん、はい！ぺったん、はい！おもちが、つるんとまんまるにかがやいたしゅんかん――ぱああっ！かけていたおつきさまが、みるみるまんまるの満月《まんげつ》になりました。銀色《ぎんいろ》の光《ひかり》が、地球《ちきゅう》のすすき野原《のはら》に、町《まち》に、まどべに、ふりそそぎます。「見《み》えた！おつきさまだ！」と、下《した》から声《こえ》がとどきました。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": false
+    },
+    {
+     "label": "【パパ】えんがわで主人公を肩車するパパ。手にまるいおだんご、空に満月",
+     "art": "on the wooden veranda under a bright full moon, the father carries the child on his shoulders, and the child proudly holds up a nicely round rice dumpling",
+     "text": [
+      "パパと もう いちど おだんご。まるく なった！",
+      "えんがわで パパが まって いました。{name}は でこぼこの おだんごを、もう いちど まるめなおします。「みて、まえより まるい！」 パパは {name}を かたぐるま しました。",
+      "えんがわにもどると、パパが待《ま》っていました。{name}は、さっき投《な》げ出《だ》したでこぼこのおだんごを手《て》にとって、もう一度《いちど》、くるくるまるめ直《なお》しました。一回《いっかい》、二回《にかい》、三回《さんかい》。「見《み》て、さっきよりまるいよ！」パパは「おお、まんまるだ」とわらって、{name}をかたぐるましてくれました。満月《まんげつ》が、ぐんと近《ちか》くに見《み》えました。"
+     ],
+     "withMom": false,
+     "withDad": true,
+     "withSidekick": false,
+     "alt": {
+      "both": {
+       "label": "えんがわでパパが主人公を肩車、横でママが拍手。手にまるいおだんご、空に満月",
+       "art": "on the wooden veranda under a bright full moon, the father carries the child on his shoulders while the mother claps beside them, and the child proudly holds up a nicely round rice dumpling",
+       "text": [
+        "パパと ママと もう いちど おだんご。まるく なった！",
+        "えんがわで パパと ママが まって いました。{name}は でこぼこの おだんごを、もう いちど まるめなおします。「みて、まえより まるい！」 パパは {name}を かたぐるま しました。",
+        "えんがわにもどると、パパとママが待《ま》っていました。{name}は、さっき投《な》げ出《だ》したでこぼこのおだんごを手《て》にとって、もう一度《いちど》、くるくるまるめ直《なお》しました。一回《いっかい》、二回《にかい》、三回《さんかい》。「見《み》て、さっきよりまるいよ！」パパは「おお、まんまるだ」とわらって、{name}をかたぐるましてくれました。ママも、にこにこ手《て》をたたいています。"
+       ],
+       "withMom": true,
+       "withDad": true,
+       "withSidekick": false
+      },
+      "mom": {
+       "label": "えんがわでママが主人公をハグ（肩車はしない）。手にまるいおだんご、空に満月",
+       "art": "on the wooden veranda under a bright full moon, the mother hugs the child warmly, and the child proudly holds up a nicely round rice dumpling",
+       "text": [
+        "ママと もう いちど おだんご。ぎゅっ！",
+        "えんがわで ママが まって いました。{name}は でこぼこの おだんごを、もう いちど まるめなおします。「みて、まえより まるい！」 ママは {name}を ぎゅっと だきしめました。",
+        "えんがわにもどると、ママが待《ま》っていました。{name}は、さっき投《な》げ出《だ》したでこぼこのおだんごを手《て》にとって、もう一度《いちど》、くるくるまるめ直《なお》しました。一回《いっかい》、二回《にかい》、三回《さんかい》。「見《み》て、さっきよりまるいよ！」ママは「まあ、まんまるね」とわらって、{name}をぎゅうっとだきしめてくれました。"
+       ],
+       "withMom": true,
+       "withDad": false,
+       "withSidekick": false
+      },
+      "none": {
+       "label": "えんがわで、頭にモチをのせて笑う主人公。手にまるいおだんご、空に満月",
+       "art": "on the wooden veranda under a bright full moon, the child laughs with Mochi, a small white moon rabbit with long ears sitting on top of their head, proudly holding up a nicely round rice dumpling",
+       "text": [
+        "モチと もう いちど おだんご。まるく なった！",
+        "えんがわに、モチが ついて きて いました。{name}は でこぼこの おだんごを、もう いちど まるめなおします。「みて、まえより まるい！」 モチは ぴょんぴょん はねました。",
+        "えんがわにもどると、モチがついて来《き》ていました。{name}は、さっき投《な》げ出《だ》したでこぼこのおだんごを手《て》にとって、もう一度《いちど》、くるくるまるめ直《なお》しました。一回《いっかい》、二回《にかい》、三回《さんかい》。「見《み》て、さっきよりまるいよ！」モチは「まんまるだ！」とぴょんぴょんはねて、{name}の頭《あたま》にとびのりました。"
+       ],
+       "withMom": false,
+       "withDad": false,
+       "withSidekick": false
+      }
+     }
+    },
+    {
+     "label": "窓の外でふるえるポラ。とんがりの先に雪のつぶ。窓辺に3つのかけらの小びん",
+     "art": "outside the window Pola the little star child shivers, a tiny snowflake on the tip of one of his points, and on the windowsill a small glass jar glows with three star fragments: gold, light blue and silver",
+     "text": [
+      "かけらが 3つ。ポラが ぶるっ。",
+      "こびんの かけらは 3つ。モチが くれた、つきの かけらです。ポラが まどで ふるえました。「ふゆに なると、おおきな ゆきぐもが きて、ほしが おうちに かえれなく なるの」",
+      "その夜《よる》、小《こ》びんのかけらは3つになっていました。モチがくれた、月《つき》の銀色《ぎんいろ》のかけらです。まどの外《そと》で、ポラがぶるっとふるえました。とんがりの先《さき》に、白《しろ》い雪《ゆき》のつぶが一《ひと》つ、のっています。「冬《ふゆ》になると、北《きた》の空《そら》から大《おお》きな雪《ゆき》ぐもが来《く》るの。そうすると、星《ほし》がおうちに帰《かえ》れなくなっちゃうんだ」"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    }
+   ]
+  },
+  {
+   "no": 4,
+   "title": "ゆきぐもの なみだ",
+   "outfits": "warm winter clothes in the same colors as the reference: a puffy coat, knit scarf and mittens",
+   "cover": {
+    "label": "雪のふる夜空で、3つのかけらが光る小びんをかかげる主人公。後ろに、大きくてやさしい顔の雪ぐも。",
+    "art": "in a snowy night sky, the child holds up a small glass jar glowing with three star fragments (gold, light blue and silver), and behind them looms Yukin, a huge fluffy white snow cloud with a big gentle face",
+    "withSidekick": false
+   },
+   "scenes": [
+    {
+     "label": "【パパ】雪のベランダでパパと望遠鏡。ほっぺをふくらませる主人公。空は一面の雪ぐも",
+     "art": "a snowy balcony on a winter night; the father sets up a telescope with the child, who puffs out their cheeks in a pout because the whole sky is covered by thick white snow clouds",
+     "text": [
+      "パパと ぼうえんきょう。ほしが みえない。",
+      "ふゆの よる。パパと ぼうえんきょうで ほしを みようと しました。でも そらは ゆきぐもで まっしろ。「いじわるな くも！」",
+      "冬《ふゆ》の夜《よる》。{name}はパパと、ベランダにぼうえんきょうを出《だ》しました。今夜《こんや》は、一年《いちねん》でいちばん星《ほし》がきれいに見《み》える夜《よる》のはずです。ところが、空《そら》はぶあつい雪《ゆき》ぐもで、まっ白《しろ》。「いじわるなくも！」{name}がほっぺをふくらませると、パパは{name}の手《て》を温《あたた》めながら、だまって空《そら》を見上《みあ》げました。"
+     ],
+     "withMom": false,
+     "withDad": true,
+     "withSidekick": false,
+     "alt": {
+      "both": {
+       "label": "雪のベランダでパパと望遠鏡、ママがマフラーをまく。ほっぺをふくらませる主人公。空は一面の雪ぐも",
+       "art": "a snowy balcony on a winter night; the father sets up a telescope while the mother wraps a scarf around the child, who puffs out their cheeks in a pout because the whole sky is covered by thick white snow clouds",
+       "text": [
+        "パパと ママと ぼうえんきょう。ほしが みえない。",
+        "ふゆの よる。パパと ママと ぼうえんきょうで ほしを みようと しました。でも そらは ゆきぐもで まっしろ。「いじわるな くも！」",
+        "冬《ふゆ》の夜《よる》。{name}はパパとママと、ベランダにぼうえんきょうを出《だ》しました。今夜《こんや》は、一年《いちねん》でいちばん星《ほし》がきれいに見《み》える夜《よる》のはずです。ところが、空《そら》はぶあつい雪《ゆき》ぐもで、まっ白《しろ》。「いじわるなくも！」{name}がほっぺをふくらませると、パパは{name}の手《て》を温《あたた》めながら、だまって空《そら》を見上《みあ》げました。ママは、マフラーをまいてくれました。"
+       ],
+       "withMom": true,
+       "withDad": true,
+       "withSidekick": false
+      },
+      "mom": {
+       "label": "雪のベランダでママと望遠鏡。ほっぺをふくらませる主人公。空は一面の雪ぐも",
+       "art": "a snowy balcony on a winter night; the mother sets up a telescope with the child, who puffs out their cheeks in a pout because the whole sky is covered by thick white snow clouds",
+       "text": [
+        "ママと ぼうえんきょう。ほしが みえない。",
+        "ふゆの よる。ママと ぼうえんきょうで ほしを みようと しました。でも そらは ゆきぐもで まっしろ。「いじわるな くも！」",
+        "冬《ふゆ》の夜《よる》。{name}はママと、ベランダにぼうえんきょうを出《だ》しました。今夜《こんや》は、一年《いちねん》でいちばん星《ほし》がきれいに見《み》える夜《よる》のはずです。ところが、空《そら》はぶあつい雪《ゆき》ぐもで、まっ白《しろ》。「いじわるなくも！」{name}がほっぺをふくらませると、ママは{name}の手《て》を温《あたた》めながら、だまって空《そら》を見上《みあ》げました。"
+       ],
+       "withMom": true,
+       "withDad": false,
+       "withSidekick": false
+      },
+      "none": {
+       "label": "雪のベランダで望遠鏡をのぞく主人公。空は一面の雪ぐも。窓辺の小びんが光る",
+       "art": "a snowy balcony on a winter night; the child peers through a telescope at a sky completely covered in thick white snow clouds, while a small glass jar of glowing star fragments shines on the windowsill",
+       "text": [
+        "ぼうえんきょう。ほしが みえない。",
+        "ふゆの よる。{name}は ぼうえんきょうで ほしを みようと しました。でも そらは ゆきぐもで まっしろ。「いじわるな くも！」",
+        "冬《ふゆ》の夜《よる》。{name}は、ベランダにぼうえんきょうを出《だ》しました。今夜《こんや》は、一年《いちねん》でいちばん星《ほし》がきれいに見《み》える夜《よる》のはずです。ところが、空《そら》はぶあつい雪《ゆき》ぐもで、まっ白《しろ》。「いじわるなくも！」{name}がほっぺをふくらませると、まどべの小《こ》びんのかけらが、なだめるように、ぽうっと光《ひか》りました。"
+       ],
+       "withMom": false,
+       "withDad": false,
+       "withSidekick": false
+      }
+     }
+    },
+    {
+     "label": "雪まみれで窓をたたくポラ。とんがりにつらら",
+     "art": "covered in snow and shivering, Pola the little star child taps on the frosty window, a tiny icicle hanging from the tip of one of his points",
+     "text": [
+      "ポラが ふるえて やって きた。",
+      "ポラが ふるえながら やって きました。「ゆきぐもが そらを ふさいで、ほしの こどもたちが おうちに かえれないの」",
+      "雪《ゆき》まみれのポラが、ぶるぶるふるえながら、まどをたたきました。「たいへん！大《おお》きな雪《ゆき》ぐもが空《そら》をふさいで、星《ほし》の子《こ》どもたちが、おうちに帰《かえ》れないの。みんな、雲《くも》の上《うえ》でこごえてる」ポラのとんがりの先《さき》に、小《ちい》さなつららがさがっていました。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "雪の中、星のはしごを勢いよくのぼる主人公。追いかけるポラ",
+     "art": "through falling snow, the child climbs a ladder of twinkling stars with determined energy, a small glowing glass jar in their coat pocket, and Pola the little star child hurries after them",
+     "text": [
+      "「ゆきぐもを、やっつけて やる！」",
+      "「ゆきぐもなんか、やっつけて やる！」 {name}は かけらの こびんを ポケットに いれて、ほしの はしごを のぼりました。",
+      "「そんなの、ひどい！雪《ゆき》ぐもなんか、やっつけてやる！」{name}は、かけらが3つ入《はい》った小《こ》びんをポケットにつっこむと、まどの外《そと》の星《ほし》のはしごを、いきおいよくのぼりはじめました。雪《ゆき》が、ぴしぴしと顔《かお》に当《あ》たります。ポラが、あわてて後《あと》を追《お》いかけました。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "身を寄せ合う星の子どもたちに、ほかほかのおもちを配るモチ",
+     "art": "on top of the snowy clouds the little glowing star children (tiny smiling star-shaped kids) huddle together shivering, and Mochi, a small white moon rabbit with long ears hands out warm, steaming rice cakes",
+     "text": [
+      "ほしの こどもたちが こごえてる。",
+      "くもの うえで、ほしの こどもたちが ふるえて いました。つきの うさぎの モチが、あつあつの おもちを くばって います。",
+      "雲《くも》の上《うえ》では、星《ほし》の子《こ》どもたちが、ひとかたまりになってふるえていました。光《ひかり》もすっかり弱《よわ》くなっています。そこへ、月《つき》のうさぎのモチが、ほかほかのおもちをかかえてやって来《き》ました。「さあ、温《あたた》かいうちに食《た》べて」一口《ひとくち》食《た》べると、星《ほし》の子《こ》どもたちの光《ひかり》が、ほんの少《すこ》しもどりました。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": false
+    },
+    {
+     "label": "山のように大きな雪ぐもを羽で指すカチ。小びんをにぎる主人公",
+     "art": "Kachi, a small black-and-white magpie with a blue-tinged tail points with his wing toward an enormous snow cloud as big as a mountain, and the child grips the small glowing glass jar tightly",
+     "text": [
+      "カチが ゆきぐもへ あんない。",
+      "かささぎの カチが とんで きました。「ゆきぐもは、あの いちばん おおきな くもだよ」 みんなで ゆきぐもへ むかいました。",
+      "「雪《ゆき》ぐもは、あっちだよ！」かささぎのカチが、雪《ゆき》をはらいながらとんで来《き》ました。カチの羽《はね》の先《さき》には、山《やま》のように大《おお》きな、どんよりした雲《くも》がうずまいています。「近《ちか》づくと、ふぶきでとばされるから、気《き》をつけて」{name}はポケットの小《こ》びんを、ぎゅっとにぎりしめました。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": false
+    },
+    {
+     "label": "雪ぐもに向かってさけぶ主人公。ふき出す猛ふぶき",
+     "art": "the child shouts angrily up at an enormous snow cloud, and the cloud blows out a fierce, swirling blizzard",
+     "text": [
+      "「どいてよ！」 ふぶきが ごうごう。",
+      "「どいてよ、いじわる！」 {name}が さけぶと、ゆきぐもは ごうごうと ふぶきを ふきだしました。",
+      "「どいてよ、いじわるぐも！みんなが帰《かえ》れないでしょ！」{name}が大《おお》きな声《こえ》でさけぶと、雪《ゆき》ぐもは、ぐおおっとうなりました。そして、さっきよりもっと強《つよ》いふぶきを、ごうごうとふき出《だ》したのです。前《まえ》も見《み》えないほどの雪《ゆき》が、{name}たちにふきつけました。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": false
+    },
+    {
+     "label": "ふぶきに転がる主人公とポラ。雪にうもれていく小びん",
+     "art": "swept by the swirling blizzard, the child and Pola the little star child tumble into soft deep snow, and the small glass jar flies out of the child's pocket and sinks into the snow",
+     "text": [
+      "ころん。こびんが おちちゃった。",
+      "ひゅうう！ {name}は ゆきの なかに ころがりました。ポケットから こびんが とびだして、ゆきに うもれて しまいます。",
+      "ひゅうううっ！{name}とポラは、ふぶきにとばされて、雪《ゆき》の中《なか》へころがりました。そのはずみで、ポケットから小《こ》びんがとび出《だ》し、雪《ゆき》の中《なか》に、ずぼっとうまってしまいました。手《て》さぐりでさがしても、つめたい雪《ゆき》しかありません。指《ゆび》の先《さき》が、じんじんいたくなってきました。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "ふぶきの奥で泣く雪ぐもの大きな顔。雪の中で顔を上げる主人公",
+     "art": "deep in the blizzard the big face of Yukin, a huge fluffy white snow cloud with a big gentle face appears, crying lonely tears, and the child lifts their head from the snow to look up in surprise",
+     "text": [
+      "ゆきぐもが ないて いたよ。",
+      "そのとき、なく こえが きこえました。ゆきぐもです。「みんな ぼくを みると、さむいって にげるんだ。ずっと ひとりぼっち……」",
+      "そのとき、ふぶきのおくから、しくしく、しくしく、泣《な》く声《こえ》が聞《き》こえてきました。雪《ゆき》ぐもの声《こえ》です。「みんな、ぼくを見《み》ると『寒《さむ》い』ってにげていく。だれも、ぼくと遊《あそ》んでくれない。ずっと、ひとりぼっちなんだ……」ふってくる雪《ゆき》は、雪《ゆき》ぐものなみだだったのです。{name}は、にぎっていたこぶしを、そっとひらきました。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": false
+    },
+    {
+     "label": "光る小びんを高くかかげ、雪ぐもに話しかける主人公",
+     "art": "the child holds the small glass jar high above their head, glowing warmly with three star fragments, and speaks kindly up to Yukin, a huge fluffy white snow cloud with a big gentle face as the light shines through the blizzard",
+     "text": [
+      "「きらり、きらり、とどけ、ひかり！」",
+      "{name}は ゆきの なかから こびんを ほりだし、たかく かかげました。「きらり、きらり、とどけ、ひかり！ ゆきぐもさん、ごめんね。いっしょに あそぼう！」",
+      "{name}は、つめたい雪《ゆき》を両手《りょうて》でほって、小《こ》びんを見《み》つけ出《だ》しました。3つのかけらが、ぽうっと温《あたた》かく光《ひか》っています。{name}は小《こ》びんを高《たか》くかかげました。「きらり、きらり、とどけ、ひかり！」そして、ふぶきの向《む》こうへ、そっと話《はな》しかけました。「いじわるって言《い》って、ごめんね。ねえ、いっしょに遊《あそ》ぼうよ」"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": false
+    },
+    {
+     "label": "【見開き】笑顔の雪ぐも（ユキン）の上をそりですべる主人公と仲間たち。星明かりにきらめくこな雪と晴れた星空",
+     "art": "the child, Pola the little star child, Kachi, a small black-and-white magpie with a blue-tinged tail, Mochi, a small white moon rabbit with long ears and the little glowing star children ride sleds down the back of a smiling Yukin, a huge fluffy white snow cloud with a big gentle face; sparkling powder snow glitters in the starlight and the clear starry sky peeks through the clouds. A grand, breathtaking wide view",
+     "text": [
+      "ゆきぐもが わらった！ ゆきが きらきら。",
+      "ゆきぐもが「うん！」と わらいました。ふぶきは きらきらの こなゆきに かわり、くもの すきまから ほしが いっせいに かおを だしました。",
+      "「……ほんと？」雪《ゆき》ぐもが、ぴたりと泣《な》きやみました。そして、ふわあっとわらうと、ふぶきは、きらきら光《ひか》るこな雪《ゆき》にかわりました。雲《くも》のすきまから、星《ほし》たちがいっせいに顔《かお》を出《だ》します。みんなで、雪《ゆき》ぐもの上《うえ》をそりですべりました。雪《ゆき》ぐもは、うれしそうに「ぼく、ユキン」と名《な》のりました。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "【ママ】毛布にくるまってミルクを飲む主人公。手を温めるママ。窓の外は晴れた星空",
+     "art": "a warm, cozy room at night; the child sits wrapped in a fluffy blanket sipping warm milk while the mother holds and warms the child's hands, and a clear starry sky shines outside the window",
+     "text": [
+      "ママの もうふで ぬくぬく。",
+      "いえに かえると、ママが あったかい ミルクを いれて くれました。「ゆきぐもね、さびしかったんだって」 ママは {name}を もうふで つつみました。",
+      "家《いえ》に帰《かえ》ると、ママが温《あたた》かいミルクを用意《ようい》して待《ま》っていました。「まあ、こんなに冷《つめ》たくなって」ママは{name}を、ふかふかのもうふでつつんでくれます。「あのね、雪《ゆき》ぐもは、いじわるじゃなかったの。さびしかっただけなんだって」{name}が言《い》うと、ママは「そうだったのね」と、{name}の手《て》を両手《りょうて》で温《あたた》めてくれました。"
+     ],
+     "withMom": true,
+     "withDad": false,
+     "withSidekick": false,
+     "alt": {
+      "both": {
+       "label": "毛布にくるまる主人公、ママが手を温め、パパがミルクを運ぶ。窓の外は晴れた星空",
+       "art": "a warm, cozy room at night; the child sits wrapped in a fluffy blanket while the mother holds and warms the child's hands and the father brings a cup of warm milk, and a clear starry sky shines outside the window",
+       "text": [
+        "ママと パパと ぬくぬく。",
+        "いえに かえると、ママと パパが まって いました。「ゆきぐもね、さびしかったんだって」 ママは {name}を もうふで つつみ、パパは ミルクを いれて くれました。",
+        "家《いえ》に帰《かえ》ると、ママとパパが待《ま》っていました。「まあ、こんなに冷《つめ》たくなって」ママは{name}を、ふかふかのもうふでつつんでくれます。パパは、温《あたた》かいミルクを入《い》れてくれました。「あのね、雪《ゆき》ぐもは、いじわるじゃなかったの。さびしかっただけなんだって」{name}が言《い》うと、ママは「そうだったのね」と、{name}の手《て》を両手《りょうて》で温《あたた》めてくれました。"
+       ],
+       "withMom": true,
+       "withDad": true,
+       "withSidekick": false
+      },
+      "dad": {
+       "label": "毛布にくるまってミルクを飲む主人公。手を温めるパパ。窓の外は晴れた星空",
+       "art": "a warm, cozy room at night; the child sits wrapped in a fluffy blanket sipping warm milk while the father holds and warms the child's hands, and a clear starry sky shines outside the window",
+       "text": [
+        "パパの もうふで ぬくぬく。",
+        "いえに かえると、パパが あったかい ミルクを いれて くれました。「ゆきぐもね、さびしかったんだって」 パパは {name}を もうふで つつみました。",
+        "家《いえ》に帰《かえ》ると、パパが温《あたた》かいミルクを用意《ようい》して待《ま》っていました。「おや、こんなに冷《つめ》たくなって」パパは{name}を、ふかふかのもうふでつつんでくれます。「あのね、雪《ゆき》ぐもは、いじわるじゃなかったの。さびしかっただけなんだって」{name}が言《い》うと、パパは「そうだったのか」と、{name}の手《て》を両手《りょうて》で温《あたた》めてくれました。"
+       ],
+       "withMom": false,
+       "withDad": true,
+       "withSidekick": false
+      },
+      "none": {
+       "label": "毛布にもぐる主人公の胸の上で丸くなって光るポラ。窓の外は晴れた星空",
+       "art": "a warm, cozy room at night; the child snuggles under a fluffy blanket while Pola the little star child curls up glowing softly on the child's chest, and a clear starry sky shines outside the window",
+       "text": [
+        "ポラと もうふで ぬくぬく。",
+        "いえに かえると、{name}は ふかふかの もうふに もぐりこみました。ポラも いっしょ。「ゆきぐもね、さびしかったんだね」「{name}が きづいたから、ともだちに なれたね」",
+        "家《いえ》に帰《かえ》ると、{name}は、ふかふかのもうふにもぐりこみました。ポラも、{name}のむねの上《うえ》で、まるくなります。「雪《ゆき》ぐもは、いじわるじゃなかったね。さびしかっただけなんだ」{name}が言《い》うと、ポラはちかちかと光《ひか》りました。「{name}が気《き》づいてくれたから、ユキンと友《とも》だちになれたんだよ」"
+       ],
+       "withMom": false,
+       "withDad": false,
+       "withSidekick": true
+      }
+     }
+    },
+    {
+     "label": "窓の外で緊張した顔のポラ。窓辺に4つのかけらの小びん。澄んだ星空",
+     "art": "outside the window under a crystal-clear starry sky, Pola the little star child looks nervous, and on the windowsill a small glass jar glows with four star fragments: gold, light blue, silver and white",
+     "text": [
+      "かけらが 4つ。はるは ほしまつり！",
+      "こびんの かけらは 4つ。ユキンが くれた、ゆきの かけらです。ポラが いいました。「はるの ほしまつりで、ぼく、ほんものの ほしに なれるか ためされるんだ」",
+      "ねる前《まえ》、小《こ》びんのかけらは4つになっていました。ユキンがくれた、六《ろっ》かくの雪《ゆき》のもようの、白《しろ》いかけらです。まどの外《そと》で、ポラが少《すこ》しきんちょうした顔《かお》で言《い》いました。「春《はる》の星《ほし》まつりでね、ぼく、本物《ほんもの》の星《ほし》になれるか、ためされるんだ。でも、ぼくの光《ひかり》、まだ小《ちい》さいまま……」"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    }
+   ]
+  },
+  {
+   "no": 5,
+   "title": "ポラの ほしまつり",
+   "outfits": null,
+   "cover": {
+    "label": "春の星空に新しくかがやく大きな星（ポラ）。見上げる主人公と、これまでの仲間全員。",
+    "art": "in a spring night sky a big, newly born star shines brilliantly: Pola the star child, now grown into a large radiant star with his gentle face; the child looks up joyfully together with all their friends: the Moon, a huge round glowing moon with a kind smiling face, Kachi, a small black-and-white magpie with a blue-tinged tail, Mochi, a small white moon rabbit with long ears, Yukin, a huge fluffy white snow cloud with a big gentle face and the little glowing star children",
+    "withSidekick": true
+   },
+   "scenes": [
+    {
+     "label": "【ママ】第1話と同じ構図の子ども部屋。今度は主人公がママの手を引いて星のはしごへ。窓辺に4つのかけらの小びん",
+     "art": "the same child's bedroom at night as on the first night; this time the child leads the mother by the hand toward a ladder of twinkling stars stretching from the open window into the sky, and a small glass jar with four glowing star fragments sits on the windowsill",
+     "text": [
+      "こんどは {name}が「いっしょに いってみる？」",
+      "また はるの よる。こんどは {name}が ママの てを ひきました。「いっしょに いってみる？」 まどから、ほしの はしごが のびて いました。",
+      "また、春《はる》の夜《よる》がやって来《き》ました。あの日《ひ》と同《おな》じように、まどの外《そと》に星《ほし》のはしごがのびています。でも、今夜《こんや》の{name}は、もう暗《くら》い部屋《へや》もこわくありません。{name}はママの手《て》を引《ひ》いて、にっこりわらいました。「ママ、いっしょに行《い》ってみる？」ママは目《め》を丸《まる》くして、それから、うれしそうにうなずきました。"
+     ],
+     "withMom": true,
+     "withDad": false,
+     "withSidekick": false,
+     "alt": {
+      "both": {
+       "label": "第1話と同じ構図の子ども部屋。主人公がママの手を引いて星のはしごへ、下ではしごをささえるパパ。窓辺に4つのかけらの小びん",
+       "art": "the same child's bedroom at night as on the first night; the child leads the mother by the hand toward a ladder of twinkling stars stretching from the open window into the sky while the father holds the ladder steady from below, and a small glass jar with four glowing star fragments sits on the windowsill",
+       "text": [
+        "こんどは {name}が「いっしょに いってみる？」",
+        "また はるの よる。こんどは {name}が ママの てを ひきました。「いっしょに いってみる？」 パパが したで、ほしの はしごを ささえて くれました。",
+        "また、春《はる》の夜《よる》がやって来《き》ました。あの日《ひ》と同《おな》じように、まどの外《そと》に星《ほし》のはしごがのびています。でも、今夜《こんや》の{name}は、もう暗《くら》い部屋《へや》もこわくありません。{name}はママの手《て》を引《ひ》いて、にっこりわらいました。「ママ、いっしょに行《い》ってみる？」ママはうれしそうにうなずき、パパは下《した》で、はしごをささえてくれました。"
+       ],
+       "withMom": true,
+       "withDad": true,
+       "withSidekick": false
+      },
+      "dad": {
+       "label": "第1話と同じ構図の子ども部屋。主人公がパパの手を引いて星のはしごへ。窓辺に4つのかけらの小びん",
+       "art": "the same child's bedroom at night as on the first night; this time the child leads the father by the hand toward a ladder of twinkling stars stretching from the open window into the sky, and a small glass jar with four glowing star fragments sits on the windowsill",
+       "text": [
+        "こんどは {name}が「いっしょに いってみる？」",
+        "また はるの よる。こんどは {name}が パパの てを ひきました。「いっしょに いってみる？」 まどから、ほしの はしごが のびて いました。",
+        "また、春《はる》の夜《よる》がやって来《き》ました。あの日《ひ》と同《おな》じように、まどの外《そと》に星《ほし》のはしごがのびています。でも、今夜《こんや》の{name}は、もう暗《くら》い部屋《へや》もこわくありません。{name}はパパの手《て》を引《ひ》いて、にっこりわらいました。「パパ、いっしょに行《い》ってみる？」パパは目《め》を丸《まる》くして、それから、うれしそうにうなずきました。"
+       ],
+       "withMom": false,
+       "withDad": true,
+       "withSidekick": false
+      },
+      "none": {
+       "label": "第1話と同じ構図の子ども部屋。小びんをかかえて、自分で窓を開ける主人公",
+       "art": "the same child's bedroom at night as on the first night; hugging a small glass jar with four glowing star fragments, the child opens the window by themselves, and a ladder of twinkling stars stretches up into the sky",
+       "text": [
+        "こんどは じぶんで、ほしの はしごへ。",
+        "また はるの よる。まどから、ほしの はしごが のびて いました。もう くらいのは こわく ありません。{name}は じぶんで まどを あけました。",
+        "また、春《はる》の夜《よる》がやって来《き》ました。あの日《ひ》と同《おな》じように、まどの外《そと》に星《ほし》のはしごがのびています。でも、今夜《こんや》の{name}は、もう暗《くら》い部屋《へや》もこわくありません。{name}は、自分《じぶん》でまどを開《あ》けて、小《こ》びんをだきかかえました。「よし、行《い》ってみよう」一《ひと》だん、また一《ひと》だん。はしごをのぼる足《あし》どりは、とても軽《かる》やかでした。"
+       ],
+       "withMom": false,
+       "withDad": false,
+       "withSidekick": false
+      }
+     }
+    },
+    {
+     "label": "雲の上で待つ、どきどきした顔のポラ。かけてくる主人公",
+     "art": "on top of the fluffy clouds Pola the little star child waits with a nervous, flickering glow, as the child comes running toward him",
+     "text": [
+      "ポラが どきどき して いるよ。",
+      "くもの うえで ポラが まって いました。「きょうは ほしまつり。そらの てっぺんで ひかれたら、ほんものの ほしに なれるんだ」 ポラの ひかりは ちかちか ふるえて います。",
+      "雲《くも》の上《うえ》で、ポラが待《ま》っていました。「来《き》てくれたんだね！」今夜《こんや》は、年《とし》に一度《いちど》の春《はる》の星《ほし》まつり。星《ほし》の子《こ》どもたちは、空《そら》のてっぺんで光《ひか》ることができたら、本物《ほんもの》の星《ほし》になれるのです。「でも、ぼく、ちゃんと光《ひか》れるかなあ」ポラのとんがりが、ちかちか、ふるえていました。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "ほほえむおつきさま。小びんを見つめるポラと、小びんを抱きしめる主人公",
+     "art": "the Moon, a huge round glowing moon with a kind smiling face smiles down on the clouds; Pola the little star child gazes at the small glass jar of four glowing star fragments, which the child hugs tightly to their chest",
+     "text": [
+      "こびんは {name}の たからもの。",
+      "おつきさまが「ようこそ」と ほほえみました。ポラは {name}の こびんを みて「きれいだね」。{name}は こびんを ぎゅっと だきしめました。「これは {name}の たからものだもん」",
+      "「ようこそ、一年《いちねん》ぶりだね」おつきさまが、まんまるの顔《かお》でほほえみました。ポラは、{name}がかかえた小《こ》びんを、じっと見《み》つめています。中《なか》では、4つのかけらが、色《いろ》とりどりに光《ひか》っていました。「きれいだなあ」{name}は小《こ》びんを、ぎゅっとだきしめました。「これは、{name}のたからものだもん」"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "第1〜4話の仲間が全員集合。星の花火が上がるお祭りの雲の広場",
+     "art": "a festive cloud plaza under bursting star fireworks; the child and Pola the little star child join all their friends gathered for the star festival: Kachi, a small black-and-white magpie with a blue-tinged tail, Mochi, a small white moon rabbit with long ears, Yukin, a huge fluffy white snow cloud with a big gentle face and the little glowing star children (tiny smiling star-shaped kids)",
+     "text": [
+      "みんなが あつまって、ほしまつり！",
+      "カチ、モチ、ユキン、ほしの こどもたち。いちねんで であった みんなが あつまって、ほしまつりが はじまりました。",
+      "「{name}！」「ポラ、がんばって！」かささぎのカチ、月《つき》のうさぎのモチ、雪《ゆき》ぐものユキン、そして星《ほし》の子《こ》どもたち。一年《いちねん》のあいだに出会《であ》ったなかまが、みんなおうえんに集《あつ》まってきました。おりひめさまとひこぼしさまも、ならんで手《て》をふっています。ぽん、ぽんと星《ほし》の花火《はなび》が上《あ》がって、星《ほし》まつりのはじまりです。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "空のてっぺんへのびる光の階段。てっぺんで星になって光る星の子ども",
+     "art": "a staircase of light stretches up to the very top of the night sky; one by one the little glowing star children (tiny smiling star-shaped kids) climb it and, at the top, burst into shining real stars",
+     "text": [
+      "ほしの こたちが、つぎつぎ ほしに。",
+      "ひかりの かいだんを、ほしの こどもたちが のぼって いきます。てっぺんで ぴかっ！ ひとり、また ひとりと、ほんものの ほしに なりました。",
+      "空《そら》のてっぺんまで、光《ひかり》のかいだんがのびていきます。星《ほし》の子《こ》どもたちが、一人《ひとり》ずつのぼっていって――てっぺんで、ぴかっ！夜空《よぞら》に、新《あたら》しい星《ほし》が一《ひと》つ、また一《ひと》つとうまれていきます。そのたびに、下《した》から大《おお》きなはくしゅがわきました。いよいよ、次《つぎ》はポラの番《ばん》です。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": false
+    },
+    {
+     "label": "光の階段のとちゅうで見送る主人公。ひとりでてっぺんへのぼる小さなポラ",
+     "art": "partway up the staircase of light, the child stops and watches as small Pola the little star child climbs on alone toward the top",
+     "text": [
+      "ポラの ばん。とちゅうまで いっしょ。",
+      "いよいよ ポラの ばん。{name}は とちゅうまで いっしょに のぼりました。「ここからは、ひとりで いかなきゃ」 ポラは てっぺんへ むかいます。",
+      "「いっしょに来《き》て」とポラに言《い》われて、{name}は小《こ》びんをかかえたまま、とちゅうまでいっしょにのぼりました。かいだんは、上《うえ》へ行《い》くほど風《かぜ》が強《つよ》くなります。「ここからは、ひとりで行《い》かなきゃ」ポラはちょっとだけふり返《かえ》って、てっぺんへのぼっていきました。小《ちい》さな光《ひかり》が、ゆらゆらと遠《とお》ざかっていきます。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "階段のてっぺんで光が消え、うずくまるポラ。静まりかえる仲間たち",
+     "art": "at the top of the staircase of light the glow of Pola the little star child has gone out, and he crouches small and dim while the friends below fall silent",
+     "text": [
+      "ポラの ひかりが きえちゃった。",
+      "てっぺんで、ポラは ちからいっぱい ひかろうと しました。でも、ちかっ……ふっ。ポラの ひかりは、きえて しまいました。",
+      "てっぺんにたどり着《つ》いたポラは、目《め》をぎゅっとつぶって、力《ちから》いっぱい光《ひか》ろうとしました。ちかっ……ちかっ……ふっ。ポラの光《ひかり》は、ろうそくをふき消《け》したように、消《き》えてしまいました。下《した》のみんなが、しいんと静《しず》まりかえります。「やっぱり、ぼくには、むりだったんだ」ポラの小《ちい》さな声《こえ》が、風《かぜ》にのって聞《き》こえました。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "小びんを見つめる主人公。4つのかけらに各話の思い出が小さく映る",
+     "art": "the child gazes into the small glass jar in their hands, where the four glowing star fragments (gold, light blue, silver and white) each show a tiny glimmering memory: a shooting star, the Milky Way, the full moon and falling snow",
+     "text": [
+      "{name}は こびんを みつめたよ。",
+      "{name}は こびんを みつめました。ながれぼし、あまのがわ、おつきさま、ゆき。ぜんぶ だいじな たからものです。",
+      "{name}は、うでの中《なか》の小《こ》びんを見《み》つめました。ポラと出会《であ》った夜《よる》の、流《なが》れ星《ぼし》のかけら。大《おお》きな声《こえ》を出《だ》せた、天《あま》の川《がわ》のかけら。何度《なんど》もやり直《なお》した、月《つき》のかけら。友《とも》だちになれた、雪《ゆき》のかけら。どれも、{name}が一年《いちねん》かけて集《あつ》めた、大切《たいせつ》なたからものです。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": false
+    },
+    {
+     "label": "階段のてっぺんで小びんのふたを開け、ポラに4つのかけらをおくる主人公",
+     "art": "at the top of the staircase of light, the child opens the lid of the small glass jar and offers the four star fragments to Pola the little star child, as gold, light blue, silver and white lights float toward him",
+     "text": [
+      "「きらり、きらり、とどけ、ひかり！」",
+      "{name}は てっぺんまで かけのぼり、こびんの ふたを あけました。「ポラ、これ あげる。きらり、きらり、とどけ、ひかり！」",
+      "{name}は、かいだんをいちばん上《うえ》までかけのぼりました。そして、ポラの前《まえ》で、小《こ》びんのふたを開《あ》けました。「ポラ、これ、あげる。一年《いちねん》いっしょにいてくれて、ありがとう」4つのかけらを、ポラのまわりにそっとうかべると、{name}は空《そら》いっぱいに声《こえ》をひびかせました。「きらり、きらり、とどけ、ひかり！」"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "【見開き】金・水色・銀・白の光がまざり、夜空でいちばん大きくかがやく星になったポラ。見上げて喜ぶ主人公と仲間全員。第1話の流れ星の場面と対になる構図",
+     "art": "gold, light blue, silver and white lights swirl together as Pola the star child becomes the biggest, brightest star in the night sky, still showing his gentle face, while below the child and all the friends (the Moon, a huge round glowing moon with a kind smiling face, Kachi, a small black-and-white magpie with a blue-tinged tail, Mochi, a small white moon rabbit with long ears, Yukin, a huge fluffy white snow cloud with a big gentle face and the little glowing star children) look up and cheer, mirroring the shooting-star scene of the very first night. A grand, breathtaking wide view",
+     "text": [
+      "ポラが おおきな ほしに なった！",
+      "ぱああっ！ 4つの かけらが ポラに すいこまれ、ポラは よぞらで いちばん かがやく ほしに なりました。みんなの かんせいが、そらいっぱいに ひびきます。",
+      "ぱああっ！4つのかけらが、ポラのむねにすいこまれていきました。金色《きんいろ》、水色《みずいろ》、銀色《ぎんいろ》、そして白《しろ》。光《ひかり》がまざり合《あ》って、ポラは夜空《よぞら》でいちばんかがやく、大《おお》きな星《ほし》になりました。「やったあ！」みんなの声《こえ》が、空《そら》いっぱいにひびきます。一年《いちねん》前《まえ》のひみつのおねがいが、今《いま》、かなった気《き》がしました。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "【ママ・パパ】雲の上で新しい星を見上げる家族。主人公の小びんに光のつぶが落ちる",
+     "art": "on top of the fluffy clouds the child, the mother and the father look up together at a brilliant new star in the spring night sky, and a single drop of light falls gently into the empty glass jar in the child's hands",
+     "text": [
+      "ママと パパも、あたらしい ほしを みあげたよ。",
+      "くもの うえで、ママと パパが まって いました。「あたらしい ほし、きれいね」 からっぽの こびんに、ひかりの つぶが ひとつ、ぽとんと おちて きました。",
+      "雲《くも》の上《うえ》にもどると、ママと、むかえに来《き》たパパが、空《そら》を見上《みあ》げて待《ま》っていました。「見《み》て、あんなにきれいな星《ほし》、はじめて」とママ。そのとき、からっぽの小《こ》びんの中《なか》に、空《そら》から光《ひかり》のつぶが一《ひと》つ、ぽとんと落《お》ちてきました。ポラからの、ありがとうの光《ひかり》です。小《こ》びんは、前《まえ》よりもっと温《あたた》かく光《ひか》りました。"
+     ],
+     "withMom": true,
+     "withDad": true,
+     "withSidekick": false,
+     "alt": {
+      "mom": {
+       "label": "雲の上でママと新しい星を見上げる主人公。小びんに光のつぶが落ちる",
+       "art": "on top of the fluffy clouds the child and the mother look up together at a brilliant new star in the spring night sky, and a single drop of light falls gently into the empty glass jar in the child's hands",
+       "text": [
+        "ママも、あたらしい ほしを みあげたよ。",
+        "くもの うえで、ママが まって いました。「あたらしい ほし、きれいね」 からっぽの こびんに、ひかりの つぶが ひとつ、ぽとんと おちて きました。",
+        "雲《くも》の上《うえ》にもどると、ママが、空《そら》を見上《みあ》げて待《ま》っていました。「見《み》て、あんなにきれいな星《ほし》、はじめて」とママ。そのとき、からっぽの小《こ》びんの中《なか》に、空《そら》から光《ひかり》のつぶが一《ひと》つ、ぽとんと落《お》ちてきました。ポラからの、ありがとうの光《ひかり》です。小《こ》びんは、前《まえ》よりもっと温《あたた》かく光《ひか》りました。"
+       ],
+       "withMom": true,
+       "withDad": false,
+       "withSidekick": false
+      },
+      "dad": {
+       "label": "雲の上でパパと新しい星を見上げる主人公。小びんに光のつぶが落ちる",
+       "art": "on top of the fluffy clouds the child and the father look up together at a brilliant new star in the spring night sky, and a single drop of light falls gently into the empty glass jar in the child's hands",
+       "text": [
+        "パパも、あたらしい ほしを みあげたよ。",
+        "くもの うえで、パパが まって いました。「あたらしい ほし、きれいだね」 からっぽの こびんに、ひかりの つぶが ひとつ、ぽとんと おちて きました。",
+        "雲《くも》の上《うえ》にもどると、パパが、空《そら》を見上《みあ》げて待《ま》っていました。「見《み》てごらん、あんなにきれいな星《ほし》、はじめてだ」とパパ。そのとき、からっぽの小《こ》びんの中《なか》に、空《そら》から光《ひかり》のつぶが一《ひと》つ、ぽとんと落《お》ちてきました。ポラからの、ありがとうの光《ひかり》です。小《こ》びんは、前《まえ》よりもっと温《あたた》かく光《ひか》りました。"
+       ],
+       "withMom": false,
+       "withDad": true,
+       "withSidekick": false
+      },
+      "none": {
+       "label": "雲の上でおつきさまや仲間たちと新しい星を見上げる主人公。小びんに光のつぶが落ちる",
+       "art": "on top of the fluffy clouds the child looks up at a brilliant new star in the spring night sky together with the Moon, a huge round glowing moon with a kind smiling face, Kachi, a small black-and-white magpie with a blue-tinged tail, Mochi, a small white moon rabbit with long ears, Yukin, a huge fluffy white snow cloud with a big gentle face and the little glowing star children, and a single drop of light falls gently into the empty glass jar in the child's hands",
+       "text": [
+        "みんなで、あたらしい ほしを みあげたよ。",
+        "くもの うえで、おつきさまが ほほえみました。「あたらしい ほし、きれいだね」 からっぽの こびんに、ひかりの つぶが ひとつ、ぽとんと おちて きました。",
+        "雲《くも》の上《うえ》で、おつきさまと仲間《なかま》たちが、空《そら》を見上《みあ》げていました。「あんなにきれいな星《ほし》は、はじめてだよ」とおつきさま。そのとき、からっぽの小《こ》びんの中《なか》に、空《そら》から光《ひかり》のつぶが一《ひと》つ、ぽとんと落《お》ちてきました。ポラからの、ありがとうの光《ひかり》です。小《こ》びんは、前《まえ》よりもっと温《あたた》かく光《ひか》りました。"
+       ],
+       "withMom": false,
+       "withDad": false,
+       "withSidekick": false
+      }
+     }
+    },
+    {
+     "label": "【パパ】ベランダでパパに肩車された主人公。家の真上に光るポラの星、夜空を横切るほうきぼし",
+     "art": "on the balcony on a spring night the father carries the child on his shoulders; directly above the house a bright new star twinkles, and a comet with a long glowing tail streaks across the night sky",
+     "text": [
+      "パパの かたぐるまで、ほうきぼしが みえたよ。",
+      "ベランダで、パパが かたぐるま して くれました。ポラの ほしが ちかちか。そこへ ほうきぼしが すうっと。「らいねんは、あれに のって とおくへ いこう！」",
+      "家《いえ》にもどると、パパがベランダで{name}をかたぐるましてくれました。{name}の家《いえ》の真上《まうえ》で、ポラの星《ほし》が、ちかちかとあいさつしています。そのとき、長《なが》いしっぽをひいたほうきぼしが、すうっと夜空《よぞら》を横切《よこぎ》りました。ポラの声《こえ》が聞《き》こえます。「ねえ、{name}。来年《らいねん》は、あのほうきぼしにのって、もっと遠《とお》くの星《ほし》へ行《い》ってみない？」"
+     ],
+     "withMom": false,
+     "withDad": true,
+     "withSidekick": false,
+     "alt": {
+      "both": {
+       "label": "ベランダでパパに肩車された主人公、となりにママ。家の真上に光るポラの星、夜空を横切るほうきぼし",
+       "art": "on the balcony on a spring night the father carries the child on his shoulders with the mother beside them; directly above the house a bright new star twinkles, and a comet with a long glowing tail streaks across the night sky",
+       "text": [
+        "パパの かたぐるまで、ほうきぼしが みえたよ。",
+        "ベランダで、パパが かたぐるま して くれました。となりで ママが「きれいね」。そこへ ほうきぼしが すうっと。「らいねんは、あれに のって とおくへ いこう！」",
+        "家《いえ》にもどると、パパがベランダで{name}をかたぐるましてくれました。となりには、ママがならんでいます。{name}の家《いえ》の真上《まうえ》で、ポラの星《ほし》が、ちかちかとあいさつしています。そのとき、ほうきぼしが、すうっと夜空《よぞら》を横切《よこぎ》りました。ポラの声《こえ》が聞《き》こえます。「ねえ、{name}。来年《らいねん》は、あのほうきぼしにのって、もっと遠《とお》くの星《ほし》へ行《い》ってみない？」"
+       ],
+       "withMom": true,
+       "withDad": true,
+       "withSidekick": false
+      },
+      "mom": {
+       "label": "ベランダでママが主人公をハグ（肩車はしない）。家の真上に光るポラの星、夜空を横切るほうきぼし",
+       "art": "on the balcony on a spring night the mother hugs the child warmly as they look up; directly above the house a bright new star twinkles, and a comet with a long glowing tail streaks across the night sky",
+       "text": [
+        "ママと ぎゅっ。ほうきぼしが みえたよ。",
+        "ベランダで、ママが ぎゅっと だきしめて くれました。ポラの ほしが ちかちか。そこへ ほうきぼしが すうっと。「らいねんは、あれに のって とおくへ いこう！」",
+        "家《いえ》にもどると、ママがベランダで{name}をぎゅっとだきしめてくれました。{name}の家《いえ》の真上《まうえ》で、ポラの星《ほし》が、ちかちかとあいさつしています。そのとき、長《なが》いしっぽをひいたほうきぼしが、すうっと夜空《よぞら》を横切《よこぎ》りました。ポラの声《こえ》が聞《き》こえます。「ねえ、{name}。来年《らいねん》は、あのほうきぼしにのって、もっと遠《とお》くの星《ほし》へ行《い》ってみない？」"
+       ],
+       "withMom": true,
+       "withDad": false,
+       "withSidekick": false
+      },
+      "none": {
+       "label": "ベランダでひとり夜空を見上げる主人公。家の真上に光るポラの星、夜空を横切るほうきぼし",
+       "art": "on the balcony on a spring night the child looks up at the sky alone; directly above the house a bright new star twinkles, and a comet with a long glowing tail streaks across the night sky",
+       "text": [
+        "ベランダから、ほうきぼしが みえたよ。",
+        "ベランダに でると、ポラの ほしが ちかちか。そこへ ほうきぼしが すうっと。「らいねんは、あれに のって とおくへ いこう！」",
+        "家《いえ》にもどると、{name}はベランダに出《で》て、夜空《よぞら》を見上《みあ》げました。{name}の家《いえ》の真上《まうえ》で、ポラの星《ほし》が、ちかちかとあいさつしています。そのとき、長《なが》いしっぽをひいたほうきぼしが、すうっと夜空《よぞら》を横切《よこぎ》りました。ポラの声《こえ》が聞《き》こえます。「ねえ、{name}。来年《らいねん》は、あのほうきぼしにのって、もっと遠《とお》くの星《ほし》へ行《い》ってみない？」"
+       ],
+       "withMom": false,
+       "withDad": false,
+       "withSidekick": false
+      }
+     }
+    }
+   ]
+  }
+ ]
+}

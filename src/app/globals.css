@@ -212,11 +212,19 @@ button, input { font-family: inherit; }
   transition: transform 0.1s ease, box-shadow 0.1s ease;
   -webkit-tap-highlight-color: transparent;
 }
-.choice[aria-pressed="true"] { border: 3px solid var(--coral); margin: 0; }
+.choice[aria-pressed="true"], .choice[aria-checked="true"] { border: 3px solid var(--coral); margin: 0; }
 .taste-choice { flex-direction: column; align-items: stretch; gap: 12px; padding: 12px; }
 .taste-art { position: relative; height: 190px; border-radius: 14px; overflow: hidden; display: flex; align-items: center; justify-content: center; font-size: 11px; color: var(--sub); }
 .taste-check { position: absolute; top: 10px; right: 10px; width: 32px; height: 32px; border-radius: 16px; box-shadow: 0 0 0 3px #fff; }
 .point { font-size: 12px; font-weight: 700; padding: 3px 10px; border-radius: 12px; background: #f3eee4; color: var(--sub); }
+.section-label { margin: 8px 0 0; font-size: 16px; font-weight: 800; color: var(--navy); }
+.section-lead { margin: -4px 0 0; font-size: 13px; line-height: 1.6; color: var(--sub); }
+.episode-list { display: flex; flex-direction: column; gap: 8px; padding-left: 14px; border-left: 3px solid var(--line); margin-left: 8px; }
+.episode-choice { padding: 10px; gap: 12px; border-radius: 18px; }
+.choice:disabled { cursor: default; opacity: 0.6; box-shadow: 0 2px 0 var(--card-shadow); transform: none; }
+.soon { font-size: 11px; font-weight: 700; padding: 1px 8px; border-radius: 10px; background: #ECE8E1; color: var(--sub); }
+.level-row { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.level-choice { flex-direction: column; align-items: flex-start; gap: 6px; padding: 12px 10px; border-radius: 18px; }
 .choice-title { font-size: 17px; font-weight: 800; color: var(--navy); }
 .choice-desc { font-size: 13px; line-height: 1.6; color: var(--sub); }
 .check {

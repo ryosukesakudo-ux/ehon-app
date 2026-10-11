@@ -26,9 +26,10 @@ const NO_LINE_START = "、。，．」』）！？ーっゃゅょ";
 const FONT_DIR = path.join(process.cwd(), "assets/fonts");
 
 export type BookPdfInput = {
-  storyName: string;
+  /** 表紙・扉の題名（lead は上の小さい行、main は大きい行） */
+  title: { lead: string; main: string };
   childName: string;
-  texts: string[]; // 場面ごとの文章（12）
+  texts: string[]; // 場面ごとの文章（12）。漢字《かな》 はふりがなとして漢字の上に小さく入れる
   images: Buffer[]; // 場面ごとの絵（12、正方形）
   coverImage: Buffer; // 表紙の絵（横長 3:2）
   trimMm: number; // 仕上がりの1辺
@@ -47,7 +48,8 @@ export async function buildBookPdfs(input: BookPdfInput) {
 
   const size = mm(input.trimMm + BLEED_MM * 2);
   const scale = input.trimMm / 210; // 21cm角を基準に文字の大きさをそろえる
-  const title = `${input.childName}の`;
+  const { lead, main } = input.title;
+  const textWidth = mm(input.trimMm - SAFE_MM * 2);
 
   async function newDoc() {
     const doc = await PDFDocument.create();
@@ -55,7 +57,7 @@ export async function buildBookPdfs(input: BookPdfInput) {
     // 日本語は部分埋め込みにすると文字が欠けるため、フォントをまるごと埋め込む
     const body = await doc.embedFont(bodyFontBytes, { subset: false });
     const bold = await doc.embedFont(titleFontBytes, { subset: false });
-    doc.setTitle(`${title}${input.storyName}`);
+    doc.setTitle(`${lead}${main}`);
     doc.setCreator("えほん Only Yours");
     return { doc, body, bold };
   }
@@ -71,15 +73,15 @@ export async function buildBookPdfs(input: BookPdfInput) {
   // 1 扉
   {
     const page = blank();
-    drawCentered(page, title, bold, 18 * scale, NAVY, size / 2 + 26 * scale);
-    drawCentered(page, input.storyName, bold, 30 * scale, NAVY, size / 2 - 12 * scale);
+    drawCentered(page, lead, bold, fitSize(lead, bold, 18 * scale, textWidth), NAVY, size / 2 + 26 * scale);
+    drawCentered(page, main, bold, fitSize(main, bold, 30 * scale, textWidth), NAVY, size / 2 - 12 * scale);
     drawCentered(page, "えほん Only Yours", body, 10 * scale, CORAL, mm(BLEED_MM + SAFE_MM));
   }
 
   // 2〜25 見開き（左：文章 / 右：絵）
   for (let i = 0; i < input.texts.length; i++) {
     const textPage = blank();
-    drawParagraph(textPage, input.texts[i], body, 18 * scale, size, mm(input.trimMm * 0.68));
+    drawParagraph(textPage, input.texts[i], body, 18 * scale, size, mm(input.trimMm * 0.68), mm(input.trimMm * 0.72));
     const pageNo = 2 + i * 2;
     drawCentered(textPage, String(pageNo), body, 9 * scale, INK, mm(BLEED_MM + 8));
 
@@ -95,7 +97,7 @@ export async function buildBookPdfs(input: BookPdfInput) {
     const page = blank();
     const d = input.issuedAt;
     const lines = [
-      `${title}${input.storyName}`,
+      `${lead}${main}`,
       `しゅじんこう：${input.childName}`,
       "え・ぶん：えほん Only Yours（AIでえがきました）",
       `${d.getFullYear()}年${d.getMonth() + 1}月${d.getDate()}日 発行`,
@@ -122,12 +124,12 @@ export async function buildBookPdfs(input: BookPdfInput) {
     // 上1/3の帯にタイトル（絵とは重ねない）
     const bandBottom = artHeight;
     const bandTop = size - mm(BLEED_MM);
-    const leadSize = 20 * scale;
-    const titleSize = fitSize(input.storyName, cover.bold, 34 * scale, mm(input.trimMm - SAFE_MM * 2));
+    const leadSize = fitSize(lead, cover.bold, 20 * scale, textWidth);
+    const titleSize = fitSize(main, cover.bold, 34 * scale, textWidth);
     const blockHeight = leadSize + titleSize * 1.4;
     const blockTop = (bandTop + bandBottom) / 2 + blockHeight / 2;
-    drawCentered(page, title, cover.bold, leadSize, CORAL, blockTop - leadSize);
-    drawCentered(page, input.storyName, cover.bold, titleSize, NAVY, blockTop - leadSize - titleSize * 1.4);
+    drawCentered(page, lead, cover.bold, leadSize, CORAL, blockTop - leadSize);
+    drawCentered(page, main, cover.bold, titleSize, NAVY, blockTop - leadSize - titleSize * 1.4);
     // 右下に巻数（絵の上に、小さなクリーム色の札を置いて書く）
     const vol = `Vol.${input.volume}`;
     const volSize = 11 * scale;
@@ -157,39 +159,116 @@ function fitSize(text: string, font: PDFFont, size: number, maxWidth: number) {
 }
 
 // 文章をページの中央に置く。分かち書きの空白で改行し、それでも長いときは文字単位で折り返す。
-function drawParagraph(page: PDFPage, text: string, font: PDFFont, size: number, pageSize: number, maxWidth: number) {
-  const lines = wrap(text, font, size, maxWidth);
-  const lineHeight = size * 2;
-  const blockHeight = lineHeight * (lines.length - 1) + size;
-  const blockWidth = Math.max(...lines.map((l) => font.widthOfTextAtSize(l, size)));
-  const x = (pageSize - blockWidth) / 2;
-  let y = pageSize / 2 + blockHeight / 2 - size;
+// 漢字《かな》 は、かなを漢字の上に小さく置く（ふりがな）。行の間は広めにとってあるので、ふりがなが前の行に重ならない。
+// 長い文（文の量「多い」）で枠に収まらないときは、収まるまで文字を小さくする。
+function drawParagraph(page: PDFPage, text: string, font: PDFFont, size: number, pageSize: number, maxWidth: number, maxHeight: number) {
+  const units = toUnits(pdfSafe(text));
+  let s = size;
+  let lines = wrap(units, font, s, maxWidth);
+  while (s > 10 && lines.length * s * 2 > maxHeight) {
+    s -= 0.5;
+    lines = wrap(units, font, s, maxWidth);
+  }
+  const lineHeight = s * 2;
+  const blockHeight = lineHeight * (lines.length - 1) + s;
+  const blockWidth = Math.max(...lines.map((l) => lineWidth(l, font, s)));
+  const x0 = (pageSize - blockWidth) / 2;
+  let y = pageSize / 2 + blockHeight / 2 - s;
   for (const line of lines) {
-    page.drawText(line, { x, y, size, font, color: INK });
+    let x = x0;
+    for (const u of trimLine(line)) {
+      const w = unitWidth(u, font, s);
+      const bw = font.widthOfTextAtSize(u.base, s);
+      page.drawText(u.base, { x: x + (w - bw) / 2, y, size: s, font, color: INK });
+      if (u.ruby) {
+        const rs = s * RUBY_SCALE;
+        const rw = font.widthOfTextAtSize(u.ruby, rs);
+        page.drawText(u.ruby, { x: x + (w - rw) / 2, y: y + s * 1.02, size: rs, font, color: INK });
+      }
+      x += w;
+    }
     y -= lineHeight;
   }
 }
 
-function wrap(text: string, font: PDFFont, size: number, maxWidth: number) {
-  const fits = (s: string) => font.widthOfTextAtSize(s, size) <= maxWidth;
-  const lines: string[] = [];
-  let line = "";
-  for (const word of text.split(/(?<= )/)) {
-    if (fits(line + word.trimEnd())) {
-      line += word;
-      continue;
-    }
-    if (line) lines.push(line.trimEnd());
-    line = "";
-    for (const ch of word) {
-      // 句読点やとじかっこは行頭に置かない
-      if (!fits(line + ch) && line && !NO_LINE_START.includes(ch)) {
-        lines.push(line);
-        line = "";
-      }
-      line += ch;
+const RUBY_SCALE = 0.48;
+
+// フォントに無い文字を、形の近い文字に置きかえる（「――」の横棒はこのフォントに無い）
+function pdfSafe(text: string) {
+  return text.replaceAll("―", "—");
+}
+
+/** 1文字、または ふりがな付きの漢字のまとまり */
+type Unit = { base: string; ruby?: string };
+
+const KANJI = /[\u4e00-\u9fff々〆ヶ]/;
+
+export function toUnits(text: string): Unit[] {
+  const units: Unit[] = [];
+  const re = /《([^》]*)》/g;
+  let last = 0;
+  for (let m = re.exec(text); m; m = re.exec(text)) {
+    const before = [...text.slice(last, m.index)];
+    // 《》の直前に続く漢字が、ふりがなの付く文字
+    let k = before.length;
+    while (k > 0 && KANJI.test(before[k - 1])) k--;
+    for (const ch of before.slice(0, k)) units.push({ base: ch });
+    const base = before.slice(k).join("");
+    if (base) units.push({ base, ruby: m[1] });
+    else units.push(...[...m[1]].map((ch) => ({ base: ch })));
+    last = m.index + m[0].length;
+  }
+  for (const ch of text.slice(last)) units.push({ base: ch });
+  return units;
+}
+
+function unitWidth(u: Unit, font: PDFFont, size: number) {
+  const bw = font.widthOfTextAtSize(u.base, size);
+  return u.ruby ? Math.max(bw, font.widthOfTextAtSize(u.ruby, size * RUBY_SCALE)) : bw;
+}
+
+function lineWidth(line: Unit[], font: PDFFont, size: number) {
+  return trimLine(line).reduce((w, u) => w + unitWidth(u, font, size), 0);
+}
+
+function trimLine(line: Unit[]) {
+  let end = line.length;
+  while (end > 0 && line[end - 1].base === " ") end--;
+  return line.slice(0, end);
+}
+
+function wrap(units: Unit[], font: PDFFont, size: number, maxWidth: number) {
+  const fits = (l: Unit[]) => lineWidth(l, font, size) <= maxWidth;
+  // 分かち書きの空白のあとで区切った「ことば」
+  const words: Unit[][] = [];
+  let cur: Unit[] = [];
+  for (const u of units) {
+    cur.push(u);
+    if (u.base === " ") {
+      words.push(cur);
+      cur = [];
     }
   }
-  if (line.trim()) lines.push(line.trimEnd());
+  if (cur.length) words.push(cur);
+
+  const lines: Unit[][] = [];
+  let line: Unit[] = [];
+  for (const word of words) {
+    if (fits([...line, ...word])) {
+      line.push(...word);
+      continue;
+    }
+    if (line.length) lines.push(line);
+    line = [];
+    for (const u of word) {
+      // 句読点やとじかっこは行頭に置かない
+      if (!fits([...line, u]) && line.length && !NO_LINE_START.includes(u.base)) {
+        lines.push(line);
+        line = [];
+      }
+      line.push(u);
+    }
+  }
+  if (trimLine(line).length) lines.push(line);
   return lines;
 }

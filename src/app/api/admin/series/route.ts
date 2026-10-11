@@ -1,7 +1,8 @@
 import { toFile } from "openai";
 import { illustrateSeries, makeSeriesSheet } from "@/lib/illustrate";
 import { characterSheetPath } from "@/lib/samples";
-import { getEpisode, getSeries, seriesImagePath, seriesSheetPath, type SeriesId } from "@/lib/series";
+import { seriesImagePath, seriesSheetPath } from "@/lib/series";
+import { getStudioSeries } from "@/lib/series-studio";
 import { SAMPLE_BUCKET, getSupabase } from "@/lib/services";
 
 export const maxDuration = 300;
@@ -11,8 +12,7 @@ export const maxDuration = 300;
 // kind=sheet：シリーズの設定画（作例の設定画＋相棒） / それ以外：その話の表紙（page=0）か場面（1〜12）
 export async function POST(request: Request) {
   const body = await request.json().catch(() => null);
-  const id = String(body?.series ?? "") as SeriesId;
-  const series = getSeries(id);
+  const series = getStudioSeries(String(body?.series ?? ""));
   if (!series) return Response.json({ error: "指定が正しくありません" }, { status: 400 });
   const db = getSupabase();
   if (!db) return Response.json({ error: "Supabase が未設定のため、絵を保存できません" }, { status: 503 });
@@ -32,22 +32,23 @@ export async function POST(request: Request) {
 
   try {
     if (body?.kind === "sheet") {
-      const family = await load(characterSheetPath(series.story), "family.png");
-      if (!family) return Response.json({ error: "先に作例スタジオで、このお話のキャラクター設定画を作ってください" }, { status: 400 });
-      await save(seriesSheetPath(id), await makeSeriesSheet(id, family, note));
+      // 作例スタジオに家族の設定画があるお話はそれに相棒を足す。無いシリーズ（海・恐竜）は文章から描く
+      const family = series.familyStory ? await load(characterSheetPath(series.familyStory), "family.png") : null;
+      if (series.familyStory && !family) return Response.json({ error: "先に作例スタジオで、このお話のキャラクター設定画を作ってください" }, { status: 400 });
+      await save(seriesSheetPath(series.id), await makeSeriesSheet(series, family, note));
       return Response.json({ ok: true });
     }
 
-    const episode = getEpisode(id, Number(body?.episode));
+    const episode = series.episodes.find((e) => e.no === Number(body?.episode));
     const page = Number(body?.page);
     const scene = !episode || !Number.isInteger(page) ? null : page === 0 ? episode.cover : episode.scenes[page - 1];
     if (!episode || !scene) return Response.json({ error: "指定が正しくありません" }, { status: 400 });
-    const sheet = await load(seriesSheetPath(id), "characters.png");
+    const sheet = await load(seriesSheetPath(series.id), "characters.png");
     if (!sheet) return Response.json({ error: "先に登場人物の設定画を作ってください" }, { status: 400 });
     const quality = body?.quality === "preview" ? "preview" : "final";
     await save(
-      seriesImagePath(id, episode.no, page),
-      await illustrateSeries({ id, scene, cover: page === 0, outfits: episode.outfits, note, quality, sheet }),
+      seriesImagePath(series.id, episode.no, page),
+      await illustrateSeries({ series, scene, cover: page === 0, outfits: episode.outfits, note, quality, sheet }),
     );
     return Response.json({ ok: true });
   } catch (e) {

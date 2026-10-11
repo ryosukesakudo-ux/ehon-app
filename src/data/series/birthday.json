@@ -1,0 +1,1168 @@
+{
+ "id": "birthday",
+ "name": "たんじょうびのまほう",
+ "sidekick": "Mint, a small white cat wizard about half the child's height, with big green eyes, wearing an oversized mint-green pointed hat decorated with golden stars that droops over his ears, and holding a little star-tipped wand",
+ "sidekickLabel": "相棒のねこのまほうつかい「ミント」",
+ "episodes": [
+  {
+   "no": 1,
+   "title": "おかしの まちの ごしょうたい",
+   "outfits": null,
+   "cover": {
+    "label": "おかしの町の門の前で、ミント色の星のぼうしをかぶった白ねこ（ミント）と並んで、光る招待状を持つ主人公。",
+    "art": "in front of the gate of a sweets town made of cookie houses and chocolate roofs, the child stands beside Mint the white cat in an oversized mint-green star hat, holding a glowing invitation letter in both hands and smiling with wonder",
+    "withSidekick": true
+   },
+   "scenes": [
+    {
+     "label": "【ママ】朝の寝室。ベッドの主人公を抱きしめるママ。枕元に光る封筒",
+     "art": "a cozy bedroom in the morning; the mother hugs the child tightly in bed, and a sparkling, glowing envelope rests on the pillow beside them",
+     "text": [
+      "たんじょうびの あさ。ママが「おめでとう」。",
+      "たんじょうびの あさ。ママが「{name}、おたんじょうび おめでとう」と ぎゅっと しました。まくらもとには、きらきら ひかる ふしぎな てがみ。",
+      "今日《きょう》は{name}のたんじょう日《び》。「おはよう、{name}。おたんじょう日《び》おめでとう！」ママはぎゅっとだきしめて、朝《あさ》ごはんのしたくに行《い》きました。ふと見《み》ると、まくらもとに、きらきら光《ひか》るふうとうがおいてあります。だれが、いつおいたのでしょう。"
+     ],
+     "withMom": true,
+     "withDad": false,
+     "withSidekick": false,
+     "alt": {
+      "both": {
+       "label": "朝の寝室。主人公を抱きしめるママ、後ろで笑うパパ。枕元に光る封筒",
+       "art": "a cozy bedroom in the morning; the mother hugs the child tightly in bed while the father smiles warmly behind them, and a sparkling, glowing envelope rests on the pillow",
+       "text": [
+        "たんじょうびの あさ。ママと パパが「おめでとう」。",
+        "たんじょうびの あさ。ママが「{name}、おたんじょうび おめでとう」と ぎゅっと しました。パパも にっこり。まくらもとには、きらきら ひかる ふしぎな てがみ。",
+        "今日《きょう》は{name}のたんじょう日《び》。「おはよう、{name}。おたんじょう日《び》おめでとう！」ママがぎゅっとだきしめると、パパも後《うし》ろでにっこりわらいました。二人《ふたり》が朝《あさ》ごはんのしたくに行《い》くと、まくらもとに、きらきら光《ひか》るふうとうがおいてありました。だれが、いつおいたのでしょう。"
+       ],
+       "withMom": true,
+       "withDad": true,
+       "withSidekick": false
+      },
+      "dad": {
+       "label": "朝の寝室。ベッドの主人公を抱きしめるパパ。枕元に光る封筒",
+       "art": "a cozy bedroom in the morning; the father hugs the child tightly in bed, and a sparkling, glowing envelope rests on the pillow beside them",
+       "text": [
+        "たんじょうびの あさ。パパが「おめでとう」。",
+        "たんじょうびの あさ。パパが「{name}、おたんじょうび おめでとう」と ぎゅっと しました。まくらもとには、きらきら ひかる ふしぎな てがみ。",
+        "今日《きょう》は{name}のたんじょう日《び》。「おはよう、{name}。おたんじょう日《び》おめでとう！」パパはぎゅっとだきしめて、朝《あさ》ごはんのしたくに行《い》きました。ふと見《み》ると、まくらもとに、きらきら光《ひか》るふうとうがおいてあります。だれが、いつおいたのでしょう。"
+       ],
+       "withMom": false,
+       "withDad": true,
+       "withSidekick": false
+      },
+      "none": {
+       "label": "朝の寝室。窓辺で歌う小鳥（ピピ）。枕元に光る封筒",
+       "art": "a cozy bedroom in the morning; the child sits up in bed smiling at Pipi, a small yellow songbird mail carrier with a tiny satchel, singing on the windowsill, while a sparkling, glowing envelope rests on the pillow",
+       "text": [
+        "たんじょうびの あさ。ことりが「おめでとう」。",
+        "たんじょうびの あさ。まどべで ことりが「おめでとう」と うたいました。まくらもとには、きらきら ひかる ふしぎな てがみ。",
+        "今日《きょう》は{name}のたんじょう日《び》。目《め》をさますと、まどべで小鳥《ことり》が「おめでとう、おめでとう」と、楽《たの》しそうにうたっていました。小鳥《ことり》がとび立《た》ったあと、ふと見《み》ると、まくらもとに、きらきら光《ひか》るふうとうがおいてあります。だれが、いつおいたのでしょう。"
+       ],
+       "withMom": false,
+       "withDad": false,
+       "withSidekick": false
+      }
+     }
+    },
+    {
+     "label": "光る星もようの手紙。壁に現れた金色の小さな扉",
+     "art": "in the bedroom, the child holds an opened letter decorated with glowing star patterns; on the wall a small golden door has magically appeared, light and a sweet scent drifting through its gap",
+     "text": [
+      "「{name}さま、まほうの パーティーへ ごしょうたい」",
+      "ふうとうを あけると、ほしの もようの てがみ。「{name}さま、まほうの パーティーへ ごしょうたい」 てがみが ひかって、かべに とびらが あらわれました。",
+      "ふうとうを開《ひら》くと、星《ほし》のもようの手紙《てがみ》が出《で》てきました。「{name}さま　まほうのパーティーへ、ごしょうたいします」読《よ》み終《お》わったとたん、手紙《てがみ》がぱあっと光《ひか》り、へやのかべに、小《ちい》さな金色《きんいろ》のとびらがあらわれました。すきまから、あまいにおいがしてきます。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": false
+    },
+    {
+     "label": "お菓子の町の入口。ミント色の星の帽子をかぶった白猫ミントがお辞儀",
+     "art": "through the golden door lies a sweets town of cookie houses, chocolate roofs and candy flowers; Mint the white cat, wearing an oversized mint-green star hat and holding a little wand, bows politely to the amazed child",
+     "text": [
+      "とびらの むこうは、おかしの まち！",
+      "とびらの むこうは、おかしの まち。「ようこそ！ ぼく、まほうつかいの ミント。でも たいへん、パーティーの じゅんびが まにあわないの」",
+      "とびらをくぐると、そこはおかしの町《まち》でした。クッキーの家《いえ》に、チョコレートの屋根《やね》、キャンディの花《はな》。「ようこそ、{name}！」大《おお》きな星《ほし》のぼうしをかぶった白《しろ》ねこが、ぺこりとおじぎをしました。「ぼく、まほうつかいのミント。でもたいへん。きみのパーティーのじゅんびが、まにあわないんだ」"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "ケーキの周りにクッキーの星を並べるこぐまのポム。ウインクするミント、星をひとつ置く主人公",
+     "art": "in the town square, Pom, a little brown bear cub pastry chef in a white chef's hat and apron lines up cookie stars around a cake; Mint the white cat winks at the child, who carefully places one cookie star of their own",
+     "text": [
+      "クッキーの ほしを、ならべて かざろう。",
+      "こぐまの ポムが「{name}は ちいさいから、みてて いいよ」。ミントが いいました。「ひとつ おおきく なったから、きっと できる！ たんじょうびの まほうの ことばだよ」",
+      "広場《ひろば》では、こぐまのパティシエ・ポムが、ケーキのまわりにクッキーの星《ほし》をならべていました。「{name}はまだ小《ちい》さいから、見《み》ていていいよ」{name}がうなずきかけると、ミントがウインクしました。「たんじょう日《び》の子《こ》には、まほうの言葉《ことば》があるんだ。ひとつおおきくなったから、きっとできる！」{name}も、そっと星《ほし》を一《ひと》つならべてみました。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "色とりどりの風船につかまって空へ浮かぶ主人公とミント。眼下にお菓子の町",
+     "art": "the child and Mint the white cat hold onto a bunch of colorful balloons and float up into the sky; far below, the sweets town looks as small as a toy",
+     "text": [
+      "ふうせんに のって、そらの さんぽ。",
+      "「あとは ろうそくの ひ。そらの ほしの ひを とりに いこう」 ふうせんに つかまって、ふわり。おかしの まちが ちいさく みえます。",
+      "「あとは、ろうそくにともす火《ひ》だけ。空《そら》の上《うえ》の『星《ほし》の火《ひ》』をとってこなくちゃ」ミントがつえをふると、色《いろ》とりどりのふうせんがあらわれました。{name}とミントがひもをにぎると、体《からだ》がふわり。下《した》を見《み》ると、おかしの町《まち》が、おもちゃのように小《ちい》さくなっていきます。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "綿あめの雲の上。小鳥ピピが星の火をランタンに入れる",
+     "art": "on top of fluffy cotton-candy clouds where tiny stars twinkle, Pipi, a small yellow songbird mail carrier with a tiny satchel gently places a tiny star flame into a glass lantern, while the child and Mint the white cat watch from their balloons",
+     "text": [
+      "わたあめの くもで、ほしの ひを みつけた。",
+      "わたあめの くもの うえで、ちいさな ほしが ひかって いました。ことりの ゆうびんやさん ピピが、ランタンに ほしの ひを いれて くれました。",
+      "わたあめの雲《くも》をいくつもこえると、小《ちい》さな星《ほし》が、ちかちかとまたたいていました。小鳥《ことり》のゆうびんやさん・ピピがとんできて、言《い》いました。「あの手紙《てがみ》をとどけたの、わたしなのよ」ピピは星《ほし》の火《ひ》を、そっとガラスのランタンに入《い》れてくれました。「風《かぜ》がふく前《まえ》に、早《はや》く帰《かえ》ってね」"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "強風でくるくる回る風船。ランタンを抱きしめる主人公",
+     "art": "a sudden strong wind spins the balloons round and round; the child squeezes their eyes shut and hugs the glass lantern tightly, and Mint the white cat clutches his star hat",
+     "text": [
+      "びゅうっ！ かぜで ふうせんが くるくる。",
+      "びゅうっ！ つよい かぜで、ふうせんが くるくる まわりました。やっと まちに もどると、ランタンの ほしの ひは、こんなに ちいさく なって いました。",
+      "びゅううっ！とつぜん、強《つよ》い風《かぜ》がふいてきました。ふうせんはくるくる回《まわ》り、{name}は目《め》をぎゅっとつぶって、ランタンをだきしめました。やっとの思《おも》いで町《まち》へもどると、ランタンの中《なか》の星《ほし》の火《ひ》は、今《いま》にも消《き》えそうなほど、小《ちい》さくなっていました。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "見上げるほど巨大なケーキ。弱々しいランタンの火。うつむく主人公",
+     "art": "in the town square stands a gigantic cake towering up toward the clouds, its top candle far out of reach; Mint the white cat waves his wand and Pom, a little brown bear cub pastry chef in a white chef's hat and apron stretches up on tiptoe, while the child looks down sadly at the lantern's weak, flickering flame",
+     "text": [
+      "ケーキが たかくて、とどかない……。",
+      "ひろばには、くもまで とどきそうな おおきな ケーキ。ミントの まほうでも、てっぺんに とどきません。「やっぱり {name}は ちいさいから、むりだよ……」",
+      "広場《ひろば》には、雲《くも》までとどきそうな、大《おお》きな大《おお》きなケーキができあがっていました。でも、ろうそくはいちばん上《うえ》。ミントがつえをふっても、ポムがせのびをしても、とどきません。ランタンの火《ひ》が、ふるふるとゆれました。「やっぱり{name}は小《ちい》さいから、むりだよ……」{name}は、下《した》をむいてしまいました。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "クッキーの星の階段を、ランタンを持って登る主人公。下で見守るミントとポム",
+     "art": "the child climbs a spiral staircase of cookie stars winding around the giant cake, holding the lantern with a determined look, while Mint the white cat and Pom, a little brown bear cub pastry chef in a white chef's hat and apron watch hopefully from below",
+     "text": [
+      "「ひとつ おおきく なったから、きっと できる！」",
+      "そのとき、さっき ならべた クッキーの ほしが、かいだんに みえました。「ひとつ おおきく なったから、きっと できる！」 {name}は ひとつずつ のぼりました。",
+      "そのとき、{name}の目《め》に、さっきならべたクッキーの星《ほし》が見《み》えました。ケーキのまわりを、ぐるりとかいだんのようにまいています。{name}は顔《かお》を上《あ》げて、ランタンをにぎりしめました。「ひとつおおきくなったから、きっとできる！」クッキーの星《ほし》を一《ひと》つ、また一《ひと》つ。{name}は、てっぺんめざしてのぼっていきました。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "【見開き】ろうそくが一斉に灯る巨大ケーキの頂上に主人公。キャンディの花火、歓声をあげる町の住人",
+     "art": "at the very top of the gigantic cake, the child lights the candle and flames spread across every candle at once; candy fireworks burst in the sky, and Mint the white cat, Pom, a little brown bear cub pastry chef in a white chef's hat and apron and the townsfolk of the sweets town cheer below. A grand, breathtaking wide view",
+     "text": [
+      "ろうそくが ともった！ おめでとう！",
+      "てっぺんの ろうそくに ほしの ひを うつすと、ぽ、ぽ、ぽっと ぜんぶの ろうそくが ともりました。「おたんじょうび おめでとう！」 まちじゅうの こえが ひびきます。",
+      "てっぺんのろうそくに、そっと星《ほし》の火《ひ》をうつすと――ぽっ。小《ちい》さな火《ひ》はたちまち大《おお》きくなって、ぽ、ぽ、ぽっと、ケーキじゅうのろうそくにともっていきました。空《そら》には、キャンディの花火《はなび》がどどーん！「{name}、おたんじょう日《び》おめでとう！」おかしの町《まち》のみんなの声《こえ》が、一《ひと》つになってひびきました。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "【パパ】ケーキの前で主人公を肩車するパパ。ミントが赤いリボンの本を差し出す",
+     "art": "in front of the giant glowing cake, the father carries the child on his shoulders, and Mint the white cat pulls a book tied with a red ribbon out of his star hat and holds it out to the child",
+     "text": [
+      "パパも かけつけて、かたぐるま！",
+      "とびらから パパが かけつけて きました。「すごいぞ、{name}！」 パパの かたぐるまで、ミントから まほうの プレゼント。たからものの ほんです。",
+      "そのとき、金色《きんいろ》のとびらが開《ひら》いて、パパがかけつけてきました。「すごいぞ、{name}！あんなに高《たか》い所《ところ》まで！」パパは{name}を、ひょいとかたぐるましました。ミントがぼうしの中《なか》から、赤《あか》いリボンの本《ほん》を取《と》り出《だ》します。「まほうのプレゼントだよ。たからもののほん」"
+     ],
+     "withMom": false,
+     "withDad": true,
+     "withSidekick": true,
+     "alt": {
+      "both": {
+       "label": "パパが主人公を肩車、横でママが拍手。ミントが赤いリボンの本を差し出す",
+       "art": "in front of the giant glowing cake, the father carries the child on his shoulders while the mother claps beside them, and Mint the white cat holds out a book tied with a red ribbon to the child",
+       "text": [
+        "ママと パパも かけつけて、かたぐるま！",
+        "とびらから ママと パパが かけつけて きました。「すごいぞ、{name}！」 パパの かたぐるまで、ミントから まほうの プレゼント。たからものの ほんです。",
+        "そのとき、金色《きんいろ》のとびらが開《ひら》いて、ママとパパがかけつけてきました。「すごいぞ、{name}！あんなに高《たか》い所《ところ》まで！」パパは{name}を、ひょいとかたぐるましました。ママも、にこにこ手《て》をたたいています。ミントがぼうしの中《なか》から、赤《あか》いリボンの本《ほん》を取《と》り出《だ》します。「まほうのプレゼントだよ。たからもののほん」"
+       ],
+       "withMom": true,
+       "withDad": true,
+       "withSidekick": true
+      },
+      "mom": {
+       "label": "ケーキの前でママが主人公をハグ（肩車はしない）。ミントが赤いリボンの本を差し出す",
+       "art": "in front of the giant glowing cake, the mother hugs the child warmly, and Mint the white cat holds out a book tied with a red ribbon to the child",
+       "text": [
+        "ママが かけつけて、ぎゅうっ！",
+        "とびらから ママが かけつけて きました。「すごいね、{name}！」 ママに ぎゅうっと だっこされて、ミントから まほうの プレゼント。たからものの ほんです。",
+        "そのとき、金色《きんいろ》のとびらが開《ひら》いて、ママがかけつけてきました。「すごいね、{name}！あんなに高《たか》い所《ところ》まで！」ママは{name}を、ぎゅうっとだきしめました。ミントがぼうしの中《なか》から、赤《あか》いリボンの本《ほん》を取《と》り出《だ》します。「まほうのプレゼントだよ。たからもののほん」"
+       ],
+       "withMom": true,
+       "withDad": false,
+       "withSidekick": true
+      },
+      "none": {
+       "label": "こぐまのポムに肩車される主人公、拍手する町の住人。ミントが赤いリボンの本を差し出す",
+       "art": "in front of the giant glowing cake, Pom, a little brown bear cub pastry chef in a white chef's hat and apron carries the child on his shoulders while the townsfolk clap, and Mint the white cat holds out a book tied with a red ribbon to the child",
+       "text": [
+        "ポムが かたぐるま して くれた！",
+        "「すごいぞ、{name}！」 こぐまの ポムが {name}を かたぐるま。ミントから まほうの プレゼント。たからものの ほんです。",
+        "「すごいぞ、{name}！あんなに高《たか》い所《ところ》まで！」こぐまのポムが、{name}をひょいとかたぐるましました。町《まち》のみんなも、手《て》をたたいてよろこんでいます。ミントがぼうしの中《なか》から、赤《あか》いリボンの本《ほん》を取《と》り出《だ》します。「まほうのプレゼントだよ。たからもののほん」"
+       ],
+       "withMom": false,
+       "withDad": false,
+       "withSidekick": true
+      }
+     }
+    },
+    {
+     "label": "夜の寝室。宝物の本を開く主人公。次のページに雲と羊の絵がうっすら。窓の外にミント",
+     "art": "a bedroom at night; the child sits in bed with the treasure book open, the next page faintly showing a fluffy cloud and a small lamb, while Mint the white cat smiles at the moonlit window",
+     "text": [
+      "ほんに、きょうの えが 1ページ。",
+      "その よる、ほんを ひらくと、きょうの えが 1ページ。つぎの ページには、くもと ひつじが うっすら。{name}の あたらしい いちねんが はじまります。",
+      "その夜《よる》、たからもののほんを開《ひら》くと、一《いち》ページ目《め》に、ケーキのてっぺんでわらう{name}の絵《え》がありました。つぎのページには、ふわふわの雲《くも》と小《ちい》さなひつじが、うっすらうかんでいます。まどの外《そと》から、ミントの声《こえ》。「また来年《らいねん》ね」{name}の新《あたら》しい一年《いちねん》が、はじまります。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    }
+   ]
+  },
+  {
+   "no": 2,
+   "title": "くもの まちと ひつじの モコ",
+   "outfits": null,
+   "cover": {
+    "label": "雲の上の町で、大きなにじの前に立つ主人公と、雲でできたひつじ（モコ）とミント。",
+    "art": "in a town on top of the clouds, the child stands in front of a huge rainbow with Moko, a small fluffy lamb made of white cloud and Mint the white cat in his oversized mint-green star hat, all smiling",
+    "withSidekick": true
+   },
+   "scenes": [
+    {
+     "label": "【パパ】柱の前で主人公の背を測るパパ。本棚の宝物の本が光る",
+     "art": "at home in the morning, the father marks the child's height on a wooden pillar above last year's mark, both laughing, while the treasure book on the bookshelf glows brightly",
+     "text": [
+      "パパと せくらべ。また のびたね！",
+      "たんじょうびの あさ。パパが はしらで せの たかさを はかりました。「また のびたね！」 そのとき、たからものの ほんが ぴかっと ひかりました。",
+      "今日《きょう》は、また{name}のたんじょう日《び》。パパが、はしらに{name}のせの高《たか》さのしるしをつけてくれました。「おっ、去年《きょねん》より、こんなにのびたぞ！」去年《きょねん》のしるしの上《うえ》に、新《あたら》しい線《せん》が一本《いっぽん》ふえました。二人《ふたり》でわらっていると、本《ほん》だなのたからもののほんが、ぴかっと光《ひか》りました。"
+     ],
+     "withMom": false,
+     "withDad": true,
+     "withSidekick": false,
+     "alt": {
+      "both": {
+       "label": "柱の前で主人公の背を測るパパ、のぞきこむママ。本棚の宝物の本が光る",
+       "art": "at home in the morning, the father marks the child's height on a wooden pillar above last year's mark while the mother leans in to look, and the treasure book on the bookshelf glows brightly",
+       "text": [
+        "パパと せくらべ。ママも「のびたね！」",
+        "たんじょうびの あさ。パパが はしらで せの たかさを はかりました。「また のびたね！」と ママも にっこり。そのとき、たからものの ほんが ぴかっと ひかりました。",
+        "今日《きょう》は、また{name}のたんじょう日《び》。パパが、はしらに{name}のせの高《たか》さのしるしをつけてくれました。「おっ、去年《きょねん》より、こんなにのびたぞ！」のぞきこんだママも、「ほんとうね」とにっこり。三人《さんにん》でわらっていると、本《ほん》だなのたからもののほんが、ぴかっと光《ひか》りました。"
+       ],
+       "withMom": true,
+       "withDad": true,
+       "withSidekick": false
+      },
+      "mom": {
+       "label": "柱の前で主人公の背を測るママ。本棚の宝物の本が光る",
+       "art": "at home in the morning, the mother marks the child's height on a wooden pillar above last year's mark, both smiling, while the treasure book on the bookshelf glows brightly",
+       "text": [
+        "ママと せくらべ。また のびたね！",
+        "たんじょうびの あさ。ママが はしらで せの たかさを はかりました。「また のびたね！」 そのとき、たからものの ほんが ぴかっと ひかりました。",
+        "今日《きょう》は、また{name}のたんじょう日《び》。ママが、はしらに{name}のせの高《たか》さのしるしをつけてくれました。「わあ、去年《きょねん》より、こんなにのびたね！」去年《きょねん》のしるしの上《うえ》に、新《あたら》しい線《せん》が一本《いっぽん》ふえました。二人《ふたり》でわらっていると、本《ほん》だなのたからもののほんが、ぴかっと光《ひか》りました。"
+       ],
+       "withMom": true,
+       "withDad": false,
+       "withSidekick": false
+      },
+      "none": {
+       "label": "柱の前で自分の頭に手を当てて印をつける主人公。本棚の宝物の本が光る",
+       "art": "at home in the morning, the child stands tall against a wooden pillar, hand on their head, marking their own height above last year's mark, while the treasure book on the bookshelf glows brightly",
+       "text": [
+        "はしらで せくらべ。また のびたよ！",
+        "たんじょうびの あさ。{name}は はしらの まえで せのびして、じぶんで しるしを つけました。「また のびた！」 そのとき、たからものの ほんが ぴかっと ひかりました。",
+        "今日《きょう》は、また{name}のたんじょう日《び》。{name}ははしらの前《まえ》にまっすぐ立《た》って、頭《あたま》の上《うえ》に、自分《じぶん》でしるしをつけました。「やった、去年《きょねん》より、こんなにのびた！」去年《きょねん》のしるしの上《うえ》に、新《あたら》しい線《せん》が一本《いっぽん》ふえました。うれしくてとびはねていると、本《ほん》だなのたからもののほんが、ぴかっと光《ひか》りました。"
+       ],
+       "withMom": false,
+       "withDad": false,
+       "withSidekick": false
+      }
+     }
+    },
+    {
+     "label": "窓辺で手紙をくわえるピピ。窓の外へ伸びる雲の階段、上で手を振るミント",
+     "art": "Pipi, a small yellow songbird mail carrier with a tiny satchel perches on the windowsill holding a letter in her beak; outside the window a fluffy staircase of clouds stretches up into the sky, and at its top Mint the white cat waves",
+     "text": [
+      "ピピが、しょうたいじょうを もって きた。",
+      "まどを こつこつ。ことりの ピピです。「{name}さま、くもの まちの パーティーへ ごしょうたい」 てがみが ひかると、まどの そとに くもの かいだんが のびました。",
+      "まどを、こつ、こつ。小鳥《ことり》のゆうびんやさん・ピピが、手紙《てがみ》をくわえていました。「{name}さま　雲《くも》の町《まち》のパーティーへ、ごしょうたいします」手紙《てがみ》が光《ひか》ると、まどの外《そと》に、ふわふわの雲《くも》のかいだんが、空《そら》までのびていきました。そのてっぺんで、ミントが手《て》をふっています。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "雲の町に並ぶ旗。金の冠をかぶって胸を張る主人公とミント",
+     "art": "a bustling town on the clouds decorated with colorful pennant flags fluttering in the wind; the child proudly puffs out their chest wearing a golden crown, walking beside Mint the white cat",
+     "text": [
+      "くもの まちで、きんの かんむり！",
+      "くもの まちには「{name} おたんじょうび おめでとう」の はた。きんの かんむりを かぶって、{name}は むねを はりました。「きょうの しゅやくは {name}だよ！」",
+      "雲《くも》の町《まち》は、パーティーのじゅんびでにぎやかでした。「{name}おたんじょう日《び》おめでとう」の旗《はた》が、風《かぜ》にはためいています。ミントが、金色《きんいろ》のかんむりを{name}の頭《あたま》にのせてくれました。「今日《きょう》の主人公《しゅじんこう》は、{name}だよ」{name}はうれしくて、むねをはって歩《ある》きました。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "雲の陰からのぞく雲の羊モコ。冠を押さえて口をとがらせる主人公",
+     "art": "Moko, a small fluffy lamb made of white cloud peeks shyly from behind a cloud, while the child, wearing a golden crown, holds it down with both hands and pouts",
+     "text": [
+      "ひつじの モコも、たんじょうび？",
+      "くもの かげから、ちいさな ひつじが のぞきました。「ぼく モコ。ぼくも きょうが たんじょうびなの」 {name}は くちを とがらせました。「でも きょうは {name}の ひだよ」",
+      "雲《くも》のかげから、小《ちい》さなひつじが、もじもじと顔《かお》を出《だ》しました。体《からだ》が雲《くも》でできた、ひつじぐものモコです。「あのね……ぼくも、今日《きょう》がたんじょう日《び》なの」{name}はかんむりをぎゅっとおさえて、口《くち》をとがらせました。「でも、今日《きょう》は{name}の日《ひ》だよ。旗《はた》にも、{name}って書《か》いてあるもん」"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": false
+    },
+    {
+     "label": "雲のトランポリンで高く跳ぶ主人公。後ろで順番を待つモコ、帽子をかぶりなおすミント",
+     "art": "the child bounces high on a springy cloud trampoline again and again, while Moko, a small fluffy lamb made of white cloud waits for a turn far behind, and Mint the white cat quietly adjusts his star hat",
+     "text": [
+      "くもの トランポリン、いちばんは {name}！",
+      "くもの トランポリンで あそびました。「つぎも {name}！」 なんかい とんでも、{name}が さき。モコは うしろで、ずっと まって いました。",
+      "雲《くも》のトランポリンで、ぴょーん、ぴょーん。「つぎも{name}！その次《つぎ》も{name}！」{name}はだれよりも高《たか》く、何回《なんかい》もとびました。気《き》がつくと、モコはずっと後《うし》ろで、自分《じぶん》の番《ばん》を待《ま》っていました。ミントは何《なに》か言《い》いかけて、だまってぼうしをかぶりなおしました。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "虹色のケーキ。苺を自分の皿に山盛りにする主人公、空っぽのモコの皿",
+     "art": "a rainbow-colored cake topped with shiny red strawberries; the child, wearing a golden crown, piles strawberries high on their own plate, while Moko, a small fluffy lamb made of white cloud's plate beside them stays empty",
+     "text": [
+      "いちごは ぜんぶ {name}の！",
+      "にじいろの ケーキが はこばれて きました。「いちごは ぜんぶ {name}の！」 モコの おさらには、なにも のって いません。",
+      "いよいよ、にじ色《いろ》のケーキが運《はこ》ばれてきました。上《うえ》には、つやつやの赤《あか》いいちごが、ずらりとならんでいます。「いちごは、ぜんぶ{name}の！」{name}は、いちごを自分《じぶん》のお皿《さら》にどんどんのせました。となりのモコのお皿《さら》は、からっぽのままでした。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": false
+    },
+    {
+     "label": "灰色になって泣くモコ。土砂降りの雲の町",
+     "art": "Moko, a small fluffy lamb made of white cloud, now turned gray, cries big tears as heavy rain pours down over the cloud town, soaking the flags and the cake, while the child looks on in surprise",
+     "text": [
+      "モコが ないて、あめが ざあざあ。",
+      "「ぼくの たんじょうびは、だれも おいわい して くれない」 モコが なきだすと、くもから あめが ざあざあ ふって きました。",
+      "「ぼくのたんじょう日《び》は、やっぱりだれもおいわいしてくれないんだ」モコの目《め》から、ぽろぽろなみだがこぼれました。すると、モコの体《からだ》がはいいろになって、雲《くも》の町《まち》じゅうに、ざあざあ雨《あめ》がふりはじめました。旗《はた》もケーキも、びしょびしょです。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": false
+    },
+    {
+     "label": "雨の中ひとりぼっちの主人公。重そうな冠と山盛りの苺",
+     "art": "in the pouring rain the child stands all alone in the empty cloud town, a wet golden crown on their head that looks heavy and a plate piled with strawberries in their arms, looking lonely",
+     "text": [
+      "ひとりぼっちの かんむり。",
+      "みんな あまやどりに いって しまいました。ぬれた かんむりは、なんだか おもたい。ひとりで たべる いちごは、ちっとも おいしく ありません。",
+      "みんなは雨《あめ》をよけて、あちこちへ走《はし》っていってしまいました。のこったのは、{name}と、山《やま》もりのいちごだけ。ぬれた金《きん》のかんむりが、なんだかとても重《おも》く感《かん》じます。一《ひと》つ口《くち》に入《い》れたいちごは、ちっともあまくありませんでした。遠《とお》くで、モコのなき声《ごえ》が聞《き》こえます。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": false
+    },
+    {
+     "label": "冠をモコの頭にそっとのせる主人公。苺の皿を抱えている",
+     "art": "in the rain, the child, holding the plate of strawberries, gently places the golden crown on the head of the gray, teary Moko, a small fluffy lamb made of white cloud",
+     "text": [
+      "「ひとつ おおきく なったから、きっと できる！」",
+      "{name}は モコの ところへ はしりました。「ひとつ おおきく なったから、きっと できる！」 かんむりを モコに かぶせて、「ごめんね。いっしょに おいわい しよう」",
+      "{name}は、いちごのお皿《さら》をかかえて、モコのところへ走《はし》りました。言《い》いにくい言葉《ことば》が、のどでつかえます。{name}は大《おお》きくいきをすいました。「ひとつおおきくなったから、きっとできる！」そして、金《きん》のかんむりを、モコの頭《あたま》にそっとのせました。「ごめんね。今日《きょう》は、二人《ふたり》のたんじょう日《び》にしよう」"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": false
+    },
+    {
+     "label": "【見開き】雲の町に大きな虹。二人の名前の旗、苺を分け合う主人公とモコ、歓声をあげる住人",
+     "art": "the rain stops and a huge rainbow arches over the cloud town; Moko, a small fluffy lamb made of white cloud, white and fluffy again and wearing the golden crown, shares strawberries with the child under colorful flags, while Mint the white cat and the cloud townsfolk cheer. A grand, breathtaking wide view",
+     "text": [
+      "にじが でた！ ふたりで おめでとう！",
+      "あめが やんで、おおきな にじが かかりました。はたには {name}と モコの なまえ。「ふたりとも、おたんじょうび おめでとう！」",
+      "モコの体《からだ》が、ふわっとまっ白《しろ》にもどりました。雨《あめ》はぴたりとやみ、雲《くも》の町《まち》いっぱいに大《おお》きなにじがかかりました。旗《はた》には、いつのまにか、{name}とモコ、二《ふた》つの名前《なまえ》がならんでいます。「二人《ふたり》とも、おたんじょう日《び》おめでとう！」分《わ》け合《あ》ったいちごは、今日《きょう》いちばんあまい味《あじ》がしました。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "【ママ】食卓のケーキ。ママの皿に苺をのせる主人公、笑うママ",
+     "art": "at home at the dining table with a birthday cake, the child places a big strawberry on the mother's plate, and the mother laughs happily with surprise",
+     "text": [
+      "ママの ケーキ。いちごを どうぞ。",
+      "いえに かえると、ママが ケーキを よういして いました。{name}は いちごを ひとつ とって、ママの おさらに のせました。「はい、ママにも」",
+      "雲《くも》のかいだんをおりてへやにもどると、ママがケーキを用意《ようい》して待《ま》っていました。「おかえり、{name}。さあ、おいわいしよう」{name}は、いちばん大《おお》きないちごをつまんで、ママのお皿《さら》にのせました。「はい、ママにもおすそわけ」ママは目《め》をまるくして、それから、とてもうれしそうにわらいました。"
+     ],
+     "withMom": true,
+     "withDad": false,
+     "withSidekick": false,
+     "alt": {
+      "both": {
+       "label": "食卓のケーキ。ママとパパの皿に苺をのせる主人公、笑うママと頭をなでるパパ",
+       "art": "at home at the dining table with a birthday cake, the child places strawberries on the mother's and the father's plates; the mother laughs and the father pats the child's head",
+       "text": [
+        "ママと パパと ケーキ。いちごを どうぞ。",
+        "いえに かえると、ママと パパが ケーキを よういして いました。{name}は いちごを とって、ママと パパの おさらに のせました。「はい、どうぞ」",
+        "雲《くも》のかいだんをおりてへやにもどると、ママとパパがケーキを用意《ようい》して待《ま》っていました。「おかえり、{name}。さあ、おいわいしよう」{name}は大《おお》きないちごを二《ふた》つつまんで、ママとパパのお皿《さら》に一《ひと》つずつのせました。「はい、おすそわけ」ママは目《め》をまるくして、とてもうれしそうにわらいました。パパも、{name}の頭《あたま》をなでました。"
+       ],
+       "withMom": true,
+       "withDad": true,
+       "withSidekick": false
+      },
+      "dad": {
+       "label": "食卓のケーキ。パパの皿に苺をのせる主人公、笑うパパ",
+       "art": "at home at the dining table with a birthday cake, the child places a big strawberry on the father's plate, and the father laughs happily",
+       "text": [
+        "パパの ケーキ。いちごを どうぞ。",
+        "いえに かえると、パパが ケーキを よういして いました。{name}は いちごを ひとつ とって、パパの おさらに のせました。「はい、パパにも」",
+        "雲《くも》のかいだんをおりてへやにもどると、パパがケーキを用意《ようい》して待《ま》っていました。「おかえり、{name}。さあ、おいわいしよう」{name}は、いちばん大《おお》きないちごをつまんで、パパのお皿《さら》にのせました。「はい、パパにもおすそわけ」パパは目《め》をまるくして、それから、とてもうれしそうにわらいました。"
+       ],
+       "withMom": false,
+       "withDad": true,
+       "withSidekick": false
+      },
+      "none": {
+       "label": "部屋の小さなケーキ。ミントとピピの皿に苺をのせる主人公、笑うミント",
+       "art": "in the child's room with a small birthday cake, the child places strawberries on the plates of Mint the white cat and Pipi, a small yellow songbird mail carrier with a tiny satchel, and Mint the white cat laughs happily",
+       "text": [
+        "ミントと ケーキ。いちごを どうぞ。",
+        "いえに かえると、ミントと ピピが ちいさな ケーキを もって きて くれました。{name}は いちごを ふたりの おさらに のせました。「はい、どうぞ」",
+        "雲《くも》のかいだんをおりてへやにもどると、ミントとピピが、小《ちい》さなケーキを持《も》って待《ま》っていました。「おかえり、{name}。もう一回《いっかい》、おいわいしよう」{name}は、いちごを二《ふた》つつまんで、ミントとピピのお皿《さら》に一《ひと》つずつのせました。「はい、おすそわけ」ミントは目《め》をまるくして、とてもうれしそうにわらいました。"
+       ],
+       "withMom": false,
+       "withDad": false,
+       "withSidekick": true
+      }
+     }
+    },
+    {
+     "label": "夜の寝室。2ページになった本。次のページに泡とタツノオトシゴがうっすら。窓辺のミント",
+     "art": "a bedroom at night; the treasure book lies open at its second page, and the next page faintly shows bubbles and a seahorse with a curled tail, while Mint the white cat sits on the windowsill talking to the child",
+     "text": [
+      "ほんが 2ページに なったよ。",
+      "その よる、ほんは 2ページに なりました。つぎの ページには、あわと タツノオトシゴが うっすら。「らいねんは うみの そこだよ」と ミント。",
+      "その夜《よる》、たからもののほんは、二《に》ページにふえていました。にじの下《した》でわらう、{name}とモコの絵《え》です。つぎのページには、ぶくぶくのあわと、しっぽをまいたタツノオトシゴが、うっすらうかんでいます。まどべのミントが言《い》いました。「にじのはしっこは、海《うみ》のそこにつながっているんだ。来年《らいねん》は、海《うみ》のおしろだよ」"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    }
+   ]
+  },
+  {
+   "no": 3,
+   "title": "うみの そこの あわの まほう",
+   "outfits": null,
+   "cover": {
+    "label": "海の底のさんごのおしろの前で、光るあわに囲まれて小さなつえをかまえる主人公と、ミント、タツノオトシゴのシャル。",
+    "art": "in front of a coral castle at the bottom of the sea, the child holds up a small wand surrounded by glowing bubbles, with Mint the white cat in his oversized mint-green star hat and Shar, a little pink seahorse with a curled tail beside them",
+    "withSidekick": true
+   },
+   "scenes": [
+    {
+     "label": "【ママ】朝、主人公を抱きしめて頬をくっつけるママ。窓辺に手紙入りのガラス瓶",
+     "art": "in the morning at home, the mother hugs the child and presses her cheek to theirs, while a small glass bottle with a rolled-up letter inside sparkles on the windowsill",
+     "text": [
+      "ママと「おめでとう」の ぎゅう。",
+      "たんじょうびの あさ。ママが「また ひとつ おおきく なったね」と ぎゅっと しました。まどべには、てがみの はいった ガラスの びんが ひかって います。",
+      "たんじょう日《び》の朝《あさ》。「おめでとう、{name}。また一《ひと》つ、大《おお》きくなったね」ママは{name}をぎゅっとだきしめて、ほっぺをくっつけました。そのとき、まどべで何《なに》かがきらりと光《ひか》りました。小《ちい》さなガラスのびんです。中《なか》には、くるくるまいた手紙《てがみ》が入《はい》っていました。"
+     ],
+     "withMom": true,
+     "withDad": false,
+     "withSidekick": false,
+     "alt": {
+      "both": {
+       "label": "朝、ママが主人公を抱きしめ、パパが二人ごと抱きしめる。窓辺に手紙入りのガラス瓶",
+       "art": "in the morning at home, the mother hugs the child and the father wraps his arms around them both, while a small glass bottle with a rolled-up letter inside sparkles on the windowsill",
+       "text": [
+        "ママと パパと「おめでとう」の ぎゅう。",
+        "たんじょうびの あさ。ママが「また ひとつ おおきく なったね」と ぎゅっと しました。パパも いっしょに ぎゅっ。まどべには、てがみの はいった ガラスの びんが ひかって います。",
+        "たんじょう日《び》の朝《あさ》。「おめでとう、{name}。また一《ひと》つ、大《おお》きくなったね」ママが{name}をぎゅっとだきしめると、パパも二人《ふたり》まとめて、ぎゅっとだきしめました。そのとき、まどべで何《なに》かがきらりと光《ひか》りました。小《ちい》さなガラスのびんです。中《なか》には、くるくるまいた手紙《てがみ》が入《はい》っていました。"
+       ],
+       "withMom": true,
+       "withDad": true,
+       "withSidekick": false
+      },
+      "dad": {
+       "label": "朝、主人公を抱きしめて頬をくっつけるパパ。窓辺に手紙入りのガラス瓶",
+       "art": "in the morning at home, the father hugs the child and presses his cheek to theirs, while a small glass bottle with a rolled-up letter inside sparkles on the windowsill",
+       "text": [
+        "パパと「おめでとう」の ぎゅう。",
+        "たんじょうびの あさ。パパが「また ひとつ おおきく なったね」と ぎゅっと しました。まどべには、てがみの はいった ガラスの びんが ひかって います。",
+        "たんじょう日《び》の朝《あさ》。「おめでとう、{name}。また一《ひと》つ、大《おお》きくなったな」パパは{name}をぎゅっとだきしめて、ほっぺをくっつけました。そのとき、まどべで何《なに》かがきらりと光《ひか》りました。小《ちい》さなガラスのびんです。中《なか》には、くるくるまいた手紙《てがみ》が入《はい》っていました。"
+       ],
+       "withMom": false,
+       "withDad": true,
+       "withSidekick": false
+      },
+      "none": {
+       "label": "朝、窓辺で歌う小鳥（ピピ）。その横に手紙入りのガラス瓶",
+       "art": "in the morning at home, Pipi, a small yellow songbird mail carrier with a tiny satchel sings on the windowsill next to a small sparkling glass bottle with a rolled-up letter inside, while the child looks on happily",
+       "text": [
+        "ことりが「おめでとう」と うたったよ。",
+        "たんじょうびの あさ。まどべで ことりが「また ひとつ おおきく なったね」と うたいました。そこには、てがみの はいった ガラスの びんが ひかって います。",
+        "たんじょう日《び》の朝《あさ》。まどべで小鳥《ことり》が、「おめでとう、また一《ひと》つ大《おお》きくなったね」と楽《たの》しそうにうたっていました。小鳥《ことり》がとび立《た》ったあと、まどべで何《なに》かがきらりと光《ひか》りました。小《ちい》さなガラスのびんです。中《なか》には、くるくるまいた手紙《てがみ》が入《はい》っていました。"
+       ],
+       "withMom": false,
+       "withDad": false,
+       "withSidekick": false
+      }
+     }
+    },
+    {
+     "label": "瓶からあふれる泡で部屋が海に変わる。泡の中からミントが顔を出す",
+     "art": "bubbles pour out of the open glass bottle and the child's room turns into a blue sea; Mint the white cat pokes his head out of a big bubble and beckons the delighted child",
+     "text": [
+      "びんの てがみ。「うみの パーティーへ ごしょうたい」",
+      "「{name}さま、うみの そこの パーティーへ ごしょうたい」 びんを あけると、あわが ぶくぶく。へやが うみに なって、ミントが かおを だしました。",
+      "びんのふたを開《あ》けて、手紙《てがみ》を読《よ》みました。「{name}さま　海《うみ》のそこのおしろのパーティーへ、ごしょうたいします」すると、びんの口《くち》から、あわがぶくぶくあふれ出《だ》しました。あわはどんどんふえて、へやじゅうが青《あお》い海《うみ》になっていきます。大《おお》きなあわの中《なか》から、ミントが顔《かお》を出《だ》しました。「さあ、行《い》こう！」"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "珊瑚の城の門。お辞儀するタツノオトシゴのシャル。ミントが主人公に小さな杖を渡す",
+     "art": "at the gate of a coral castle on the seabed, Shar, a little pink seahorse with a curled tail bows with a twirl while Mint the white cat hands the child a small wand",
+     "text": [
+      "うみの おしろで、シャルが まってたよ。",
+      "うみの そこの おしろで、タツノオトシゴの シャルが まって いました。「パーティーの あかりに、あわの ランタンが いるの」 ミントが いいました。「{name}、まほう、やって みる？」",
+      "海《うみ》のそこには、さんごでできたおしろがありました。門《もん》の前《まえ》で、タツノオトシゴのシャルが、くるんとおじぎをします。「ようこそ！でもこまったの。深《ふか》い海《うみ》は暗《くら》いから、パーティーには光《ひか》るあわのランタンがいるの」ミントは、{name}に小《ちい》さなつえをわたしました。「{name}、はじめてのまほう、やってみる？」"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "杖をくるりと回す主人公。生まれてすぐ割れる泡。ミントの杖の先には光る泡",
+     "art": "under the sea, the child twirls the small wand and a tiny bubble pops before it can glow, while a glowing bubble floats from the tip of Mint the white cat's wand and he smiles kindly",
+     "text": [
+      "つえを ふると、あわが ぱちん。",
+      "「つえを くるりと まわして、『ぷくぷく ぴかり』」 {name}が まねすると、あわが でて……ぱちん！ すぐに われて しまいました。",
+      "「つえを、くるりと一回《いっかい》まわして、『ぷくぷく、ぴかり』」ミントのつえの先《さき》から、光《ひか》るあわがぽわんと生《う》まれました。{name}もまねをして、つえをくるり。「ぷくぷく、ぴかり！」小《ちい》さなあわが出《で》てきて――ぱちん。光《ひか》る前《まえ》に、われてしまいました。「さいしょは、そんなものだよ」とミントはわらいました。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "少しだけ光る泡。ひれで拍手する魚たち、しっぽを巻いて喜ぶシャル",
+     "art": "under the sea, the child's bubble glows just a little; dancing fish clap with their fins and Shar, a little pink seahorse with a curled tail swirls her tail happily, while Mint the white cat looks on",
+     "text": [
+      "もう いっかい。ちょっぴり ひかった！",
+      "もう いっかい。「ぷくぷく ぴかり！」 こんどは、ほんの すこし ひかりました。おどりの れんしゅうを して いた さかなたちが、ひれで はくしゅ。",
+      "もう一回《いっかい》。「ぷくぷく、ぴかり！」今度《こんど》のあわは、ほんの少《すこ》しだけ、ぽうっと光《ひか》りました。おどりの練習《れんしゅう》をしていた魚《さかな》たちが、ひれでぱちぱちとはくしゅします。シャルも、しっぽをくるくるさせてよろこびました。「すごい！パーティーでは、みんなの前《まえ》で、大《おお》きいのをおねがいね」"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "暗い大広間に集まる亀・蟹・クラゲたち。注目の中、杖を握る主人公",
+     "art": "in a dim great hall of the coral castle, turtles, crabs and jellyfish crowd together and all eyes turn to the child, who grips the small wand nervously, with Shar, a little pink seahorse with a curled tail beside them",
+     "text": [
+      "パーティーの はじまり。どきどき。",
+      "パーティーが はじまりました。くらい ひろまに、うみの なかまが ぎっしり。「さあ、{name}の まほうで あかりを つけて！」 みんなが {name}を みつめます。",
+      "いよいよ、パーティーのはじまりです。暗《くら》い大広間《おおひろま》に、カメやカニ、クラゲたちが、ぎっしり集《あつ》まってきました。「さあ、{name}のまほうで、明《あ》かりをつけて！」シャルの声《こえ》に、みんなの目《め》がいっせいに{name}を見《み》つめます。つえをにぎる手《て》が、じんわりあせばんできました。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": false
+    },
+    {
+     "label": "大きな泡が割れて飛び散り、泡だらけの海の仲間たち。顔を赤くする主人公",
+     "art": "a big bubble bursts into a shower of foam over the sea creatures, covering crab claws and jellyfish heads with bubbles; the child blushes bright red with embarrassment",
+     "text": [
+      "ぱちーん！ みんな あわだらけ。",
+      "「ぷくぷく ぴかり！」 おおきな あわが ふくらんで……ぱちーん！ みんな あわだらけに なりました。くすくす わらう こえが きこえます。",
+      "「ぷくぷく、ぴかり！」大《おお》きなあわが、むくむくふくらんで――ぱちーん！あわはこなごなのしぶきになって、みんなの頭《あたま》にふりかかりました。カニのはさみも、クラゲのかさも、あわだらけ。どこかで、くすくすとわらう声《こえ》がしました。{name}の顔《かお》が、かあっと赤《あか》くなりました。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": false
+    },
+    {
+     "label": "大きな貝殻にこもる主人公。隣に座り、焦げて穴のあいた帽子の端を見せるミント",
+     "art": "the child hides curled up inside a big seashell, and Mint the white cat sits beside them, gently showing the scorched edge of his star hat with a small burnt hole",
+     "text": [
+      "かいがらに かくれて、しょんぼり。",
+      "{name}は おおきな かいがらに かくれました。「もう まほうなんか やらない」 ミントが となりで、こげた ぼうしの はしを みせました。「ぼくの さいしょの まほうの あと」",
+      "{name}は大広間《おおひろま》をとび出《だ》して、大《おお》きな貝《かい》がらの中《なか》にかくれました。「もう、まほうなんか、やらない」そばに、ミントがそっとすわりました。ミントは、大《おお》きなぼうしのはしっこを見《み》せました。黒《くろ》くこげて、あながあいています。「これ、ぼくがはじめてまほうを使《つか》った日《ひ》のあと。そのあとも、何回《なんかい》もこがしたんだ」"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "真っ暗な海で、貝殻から出て杖を構える主人公。怖がる小魚たち",
+     "art": "in the pitch-dark sea, the child climbs out of the big seashell and holds the small wand up bravely, while frightened little fish huddle nearby",
+     "text": [
+      "「ひとつ おおきく なったから、きっと できる！」",
+      "おしろの あかりが ぜんぶ きえて、ちいさな さかなが ないて います。{name}は かいがらから でました。「ひとつ おおきく なったから、きっと できる！」 つえを くるり。",
+      "そのとき、大広間《おおひろま》から、小《ちい》さな魚《さかな》たちのなき声《ごえ》が聞《き》こえてきました。のこっていたわずかな明《あ》かりも消《き》えて、海《うみ》はまっ暗《くら》です。{name}は貝《かい》がらから出《で》て、つえを強《つよ》くにぎりました。「ひとつおおきくなったから、きっとできる！」ゆっくり、ていねいに、つえをくるり。「ぷくぷく、ぴかり！」"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": false
+    },
+    {
+     "label": "【見開き】無数の光る泡のランタンが浮かぶ海、虹色に輝く珊瑚の城。魚のパレードと歓声",
+     "art": "hundreds of glowing bubble lanterns float across the sea, the coral castle shines in rainbow colors, and a joyful parade of fish swims around the child, Mint the white cat and Shar, a little pink seahorse with a curled tail. A grand, breathtaking wide view",
+     "text": [
+      "ぴかぴかの あわが、うみ いっぱい！",
+      "つえの さきから、ひかる あわが ぽわん、ぽわん。うみ いっぱいに うかんで、おしろが きらきら かがやきました。「おたんじょうび おめでとう！」",
+      "つえの先《さき》から、光《ひか》るあわが、ぽわん、ぽわん、ぽわん。一《ひと》つ生《う》まれるたびに、あわは大《おお》きく、明《あか》るくなっていきます。やがて海《うみ》いっぱいに、何百《なんびゃく》ものあわのランタンがうかび、さんごのおしろがにじ色《いろ》にかがやきました。「{name}、おたんじょう日《び》おめでとう！」魚《さかな》たちのパレードがはじまりました。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "【パパ】夕焼けの庭で主人公を肩車するパパ。空へ昇る大きなしゃぼん玉",
+     "art": "a garden at sunset; the father carries the child on his shoulders as the child blows a big soap bubble that floats up into the glowing evening sky",
+     "text": [
+      "パパと しゃぼんだま、たかく とんだよ。",
+      "いえに かえると、パパが しゃぼんだまを くれました。さいしょは すぐ われたけど、{name}は なんども ふきました。パパの かたぐるまで ふくと、そらまで とんで いきました。",
+      "夕方《ゆうがた》、パパが、しゃぼん玉《だま》のセットを買《か》ってきてくれました。さいしょのしゃぼん玉《だま》は、ふくらむ前《まえ》にぱちん。でも{name}は、「もう一回《いっかい》！」と何度《なんど》もふきました。「よし、もっと高《たか》くからふいてみよう」パパが{name}をかたぐるますると、大《おお》きなしゃぼん玉《だま》が、夕《ゆう》やけの空《そら》へ、ふわりととんでいきました。"
+     ],
+     "withMom": false,
+     "withDad": true,
+     "withSidekick": false,
+     "alt": {
+      "both": {
+       "label": "夕焼けの庭で主人公を肩車するパパ、拍手するママ。空へ昇る大きなしゃぼん玉",
+       "art": "a garden at sunset; the father carries the child on his shoulders while the mother claps, and a big soap bubble floats up into the glowing evening sky",
+       "text": [
+        "パパの かたぐるまで しゃぼんだま。",
+        "いえに かえると、パパが しゃぼんだまを くれました。さいしょは すぐ われたけど、{name}は なんども ふきました。パパの かたぐるまで ふくと、ママが「わあ、たかい！」",
+        "夕方《ゆうがた》、パパが、しゃぼん玉《だま》のセットを買《か》ってきてくれました。さいしょのしゃぼん玉《だま》は、ふくらむ前《まえ》にぱちん。でも{name}は、「もう一回《いっかい》！」と何度《なんど》もふきました。「よし、もっと高《たか》くからふいてみよう」パパが{name}をかたぐるますると、大《おお》きなしゃぼん玉《だま》が、夕《ゆう》やけの空《そら》へふわり。ママが「わあ、高《たか》い！」と手《て》をたたきました。"
+       ],
+       "withMom": true,
+       "withDad": true,
+       "withSidekick": false
+      },
+      "mom": {
+       "label": "夕焼けの庭でママが主人公をハグ（肩車はしない）。空へ昇る大きなしゃぼん玉",
+       "art": "a garden at sunset; the mother hugs the child warmly as a big soap bubble the child blew floats up into the glowing evening sky",
+       "text": [
+        "ママと しゃぼんだま。とんだら ぎゅうっ！",
+        "いえに かえると、ママが しゃぼんだまを くれました。さいしょは すぐ われたけど、{name}は なんども ふきました。おおきな しゃぼんだまが とぶと、ママが ぎゅうっ！",
+        "夕方《ゆうがた》、ママが、しゃぼん玉《だま》のセットを買《か》ってきてくれました。さいしょのしゃぼん玉《だま》は、ふくらむ前《まえ》にぱちん。でも{name}は、「もう一回《いっかい》！」と何度《なんど》もふきました。そして、とうとう大《おお》きなしゃぼん玉《だま》が、夕《ゆう》やけの空《そら》へ、ふわりととんでいきました。「やったね！」ママは{name}を、ぎゅうっとだきしめました。"
+       ],
+       "withMom": true,
+       "withDad": false,
+       "withSidekick": false
+      },
+      "none": {
+       "label": "夕焼けの公園、滑り台の上でしゃぼん玉を吹く主人公とミント。空へ昇る大きなしゃぼん玉",
+       "art": "a park at sunset; the child and Mint the white cat blow soap bubbles from the top of a slide, and a big bubble floats up into the glowing evening sky",
+       "text": [
+        "ミントと しゃぼんだま、たかく とんだよ。",
+        "いえに かえると、ミントが しゃぼんだまを だして くれました。さいしょは すぐ われたけど、{name}は なんども ふきました。すべりだいの うえから ふくと、そらまで とんで いきました。",
+        "夕方《ゆうがた》、ミントがぼうしの中《なか》から、しゃぼん玉《だま》のセットを出《だ》してくれました。さいしょのしゃぼん玉《だま》は、ふくらむ前《まえ》にぱちん。でも{name}は、「もう一回《いっかい》！」と何度《なんど》もふきました。すべり台《だい》のてっぺんからふいてみると、大《おお》きなしゃぼん玉《だま》が、夕《ゆう》やけの空《そら》へ、ふわりととんでいきました。"
+       ],
+       "withMom": false,
+       "withDad": false,
+       "withSidekick": true
+      }
+     }
+    },
+    {
+     "label": "夜の寝室。3ページになった本から落ちる星形の切符。裏にシャルの小さな文字",
+     "art": "a bedroom at night; the treasure book lies open at its third page, and a star-shaped ticket flutters out from between the pages with tiny unreadable handwriting on its back, while the child watches in surprise",
+     "text": [
+      "ほしの かたちの きっぷが ひらり。",
+      "ほんは 3ページに なりました。ページの あいだから、ほしの かたちの きっぷが ひらり。「ほしの きしゃ つきゆき」と かいて ありました。",
+      "その夜《よる》、たからもののほんは三《さん》ページになっていました。光《ひか》るあわにかこまれた、{name}の絵《え》です。ページの間《あいだ》から、何《なに》かがひらりと落《お》ちました。星《ほし》の形《かたち》のきっぷです。「ほしのきしゃ　つきゆき　{name}さま」うらには、シャルの小《ちい》さな字《じ》。「月《つき》のパーティーの明《あ》かりが、だれかにもっていかれちゃうんだって。たすけてあげて」"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": false
+    }
+   ]
+  },
+  {
+   "no": 4,
+   "title": "ほしの きしゃと ちびドラゴン",
+   "outfits": null,
+   "cover": {
+    "label": "夜空を走る星の汽車の窓から月を見上げる主人公とミント。月の岩山に小さなドラゴンの影。",
+    "art": "a star train races across the night sky; through its window the child and Mint the white cat in his oversized mint-green star hat look up at the moon, where the shadow of a small dragon sits on a rocky peak",
+    "withSidekick": true
+   },
+   "scenes": [
+    {
+     "label": "【パパ】夜のベランダで並んで星を見るパパと主人公。ポケットの切符が光る",
+     "art": "on a balcony at night, the father and the child stand side by side looking at the stars, and a star-shaped ticket glows in the child's pocket",
+     "text": [
+      "パパと ほしを みたよ。",
+      "たんじょうびの よる。パパと ベランダで ほしを みました。「ことしも おおきく なったなあ」 すると、ポケットの きっぷが ぴかっと ひかりました。",
+      "たんじょう日《び》の夜《よる》。{name}はパパといっしょに、ベランダで星《ほし》を見《み》ていました。「去年《きょねん》より、手《て》すりから、ずいぶん顔《かお》が出《で》るようになったなあ」パパがわらいます。そのとき、ポケットの星《ほし》のきっぷが、ぴかっと光《ひか》りました。遠《とお》くの空《そら》から、ポーッと汽笛《きてき》が聞《き》こえます。"
+     ],
+     "withMom": false,
+     "withDad": true,
+     "withSidekick": false,
+     "alt": {
+      "both": {
+       "label": "夜のベランダで並んで星を見るパパ・ママ・主人公。ポケットの切符が光る",
+       "art": "on a balcony at night, the father, the mother and the child stand side by side looking at the stars, and a star-shaped ticket glows in the child's pocket",
+       "text": [
+        "パパと ママと ほしを みたよ。",
+        "たんじょうびの よる。パパと ママと ベランダで ほしを みました。「ことしも おおきく なったなあ」と パパ。すると、ポケットの きっぷが ぴかっと ひかりました。",
+        "たんじょう日《び》の夜《よる》。{name}はパパとママといっしょに、ベランダで星《ほし》を見《み》ていました。「去年《きょねん》より、手《て》すりから、ずいぶん顔《かお》が出《で》るようになったなあ」パパがわらうと、ママもうなずきました。そのとき、ポケットの星《ほし》のきっぷが、ぴかっと光《ひか》りました。遠《とお》くの空《そら》から、ポーッと汽笛《きてき》が聞《き》こえます。"
+       ],
+       "withMom": true,
+       "withDad": true,
+       "withSidekick": false
+      },
+      "mom": {
+       "label": "夜のベランダで並んで星を見るママと主人公。ポケットの切符が光る",
+       "art": "on a balcony at night, the mother and the child stand side by side looking at the stars, and a star-shaped ticket glows in the child's pocket",
+       "text": [
+        "ママと ほしを みたよ。",
+        "たんじょうびの よる。ママと ベランダで ほしを みました。「ことしも おおきく なったね」 すると、ポケットの きっぷが ぴかっと ひかりました。",
+        "たんじょう日《び》の夜《よる》。{name}はママといっしょに、ベランダで星《ほし》を見《み》ていました。「去年《きょねん》より、手《て》すりから、ずいぶん顔《かお》が出《で》るようになったね」ママがわらいます。そのとき、ポケットの星《ほし》のきっぷが、ぴかっと光《ひか》りました。遠《とお》くの空《そら》から、ポーッと汽笛《きてき》が聞《き》こえます。"
+       ],
+       "withMom": true,
+       "withDad": false,
+       "withSidekick": false
+      },
+      "none": {
+       "label": "夜のベランダで手すりにあごをのせて星を見る主人公。ポケットの切符が光る",
+       "art": "on a balcony at night, the child rests their chin on the railing gazing at the stars, and a star-shaped ticket glows in their pocket",
+       "text": [
+        "ベランダで ほしを みたよ。",
+        "たんじょうびの よる。{name}は ベランダで ほしを みました。てすりから、きょねんより かおが でます。すると、ポケットの きっぷが ぴかっと ひかりました。",
+        "たんじょう日《び》の夜《よる》。{name}はベランダに出《で》て、星《ほし》を見《み》ていました。手《て》すりにあごをのせると、去年《きょねん》より、ずいぶん顔《かお》が出《で》るようになっています。そのとき、ポケットの星《ほし》のきっぷが、ぴかっと光《ひか》りました。遠《とお》くの空《そら》から、ポーッと汽笛《きてき》が聞《き》こえます。"
+       ],
+       "withMom": false,
+       "withDad": false,
+       "withSidekick": false
+      }
+     }
+    },
+    {
+     "label": "ベランダ前に止まる星の汽車。車掌帽のミントが窓から手招き",
+     "art": "a sparkling star train on rails of light stops right in front of the balcony at night; Mint the white cat, wearing a little conductor's cap, leans out of the window and beckons to the child",
+     "text": [
+      "ほしの きしゃが きた！",
+      "ポーッ！ ほしの きしゃが、ベランダの まえに とまりました。「つきの パーティーへ ごしょうたい！」 しゃしょうさんの ぼうしの ミントが てまねき します。",
+      "ポーッ！光《ひかり》のレールの上《うえ》を走《はし》って、星《ほし》の汽車《きしゃ》がベランダの前《まえ》に止《と》まりました。まどから顔《かお》を出《だ》したのは、しゃしょうさんのぼうしをかぶったミントです。「{name}さま、月《つき》のパーティーへごしょうたい！」{name}が乗《の》りこむと、汽車《きしゃ》は夜空《よぞら》へかけ上《あ》がりました。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "半分暗い月のパーティー会場。耳を垂らした月のうさぎたち",
+     "art": "at the moon station, the child and Mint the white cat arrive at a party venue that is half dark; star lanterns are going out one by one, and moon rabbits with drooping ears look worried",
+     "text": [
+      "つきの パーティーが まっくら。",
+      "つきに つくと、パーティーの ちょうちんが どんどん きえて いました。「よるに なると、だれかが ほしの あかりを もって いっちゃうの」",
+      "月《つき》の駅《えき》に着《つ》くと、パーティー会場《かいじょう》は半分《はんぶん》まっ暗《くら》でした。かざってあった星《ほし》のちょうちんが、一《ひと》つ、また一《ひと》つ、消《き》えていきます。「たいへんなの」月《つき》のうさぎたちが、耳《みみ》をたらして言《い》いました。「毎《まい》ばん、だれかが星《ほし》の明《あ》かりを持《も》っていっちゃうの。このままじゃ、パーティーができない」"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "月の砂に続く大きな爪の足跡。ミントのしっぽを握る主人公",
+     "art": "on the white sand of the moon, a trail of big footprints with sharp claws leads toward dark rocky mountains; the child nervously grips Mint the white cat's tail",
+     "text": [
+      "おおきな あしあと、みつけた。",
+      "あかりを さがしに いくと、つきの すなに おおきな あしあとが ありました。{name}は ミントの しっぽを ぎゅっと にぎりました。",
+      "{name}とミントは、明《あ》かりをさがしに出《で》かけました。月《つき》の白《しろ》いすなの上《うえ》に、するどいつめのある足《あし》あとが、てんてんとつづいています。「大《おお》きい……」{name}は、ミントのしっぽをぎゅっとにぎりました。足《あし》あとは、月《つき》のうらがわの、黒《くろ》い岩山《いわやま》へむかっていました。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "岩山の上で翼を広げるドラゴンの大きな影。逃げる主人公とミント",
+     "art": "on top of a dark rocky mountain on the moon, a huge shadow of a dragon spreads its wings with two glowing eyes, while the child and Mint the white cat run away in a hurry",
+     "text": [
+      "ドラゴン！ こわくて にげたよ。",
+      "いわやまの うえに、ぎょろりと ひかる め。「ガオーッ！」 ドラゴンです。{name}は ミントの うしろに かくれて、いちもくさんに にげだしました。",
+      "岩山《いわやま》のてっぺんで、ぎょろりと光《ひか》る目《め》が二《ふた》つ。「ガオーッ！」つばさを広《ひろ》げたかげは、岩山《いわやま》よりも大《おお》きく見《み》えました。ドラゴンです！するどい歯《は》が、ぎらりと光《ひか》ります。{name}はミントの後《うし》ろにさっとかくれて、そのままいちもくさんににげ出《だ》しました。「こ、こわかった……」"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "岩陰からのぞく主人公とミント。洞穴で星の明かりを抱く小さなドラゴン（ガオ）",
+     "art": "the child and Mint the white cat peek from behind a rock into a cave, where Gao, a small round green baby dragon with tiny wings, about the same size as the child, hugs a pile of collected star lights and looks lonely",
+     "text": [
+      "ほんとうは、ちいさな ドラゴン。",
+      "いわの かげから のぞくと、それは ちいさな ちびドラゴン。ほしの あかりを だいて、つぶやいて います。「ぼくも パーティー、いって みたいな」",
+      "岩《いわ》のかげから、そうっとのぞいてみると――大《おお》きく見《み》えたのは、かげだけでした。そこにいたのは、{name}と同《おな》じくらいの、小《ちい》さなちびドラゴン。集《あつ》めた星《ほし》の明《あ》かりをだきしめて、つぶやいています。「ぼくも、パーティーに行《い》ってみたいなあ。でも、だれもぼくをよんでくれないんだ」"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "驚いて火を吹くちびドラゴン。飛び散って消える星の明かり",
+     "art": "startled, Gao, a small round green baby dragon with tiny wings puffs out a burst of fire and the collected star lights scatter and go out, while the child and Mint the white cat jump back in surprise; the moon grows dark",
+     "text": [
+      "ボッ！ あかりが ぜんぶ きえた。",
+      "「だれだっ！」 びっくりした ドラゴンが ひを ふくと、ほしの あかりが ぜんぶ とびちって きえました。きしゃの あかりまで まっくらです。",
+      "そのとき、ミントの足《あし》が小石《こいし》をけって、からん、と音《おと》がしました。「だれだっ！」びっくりしたちびドラゴンがボッと火《ひ》をはくと、集《あつ》めていた明《あ》かりが、ぱらぱらととびちって消《き》えてしまいました。駅《えき》の汽車《きしゃ》の明《あ》かりまで、ふっと消《き》えました。月《つき》は、まっ暗《くら》です。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "暗闇でしゃがむ主人公。開いた宝物の本の3ページがぽうっと光る",
+     "art": "in the darkness on the moon, the child crouches down sadly, and the treasure book open in their hands glows softly, its pages showing smiling pictures of past friends",
+     "text": [
+      "まっくら。かえれない……。",
+      "まっくらで、きしゃも うごきません。{name}は しゃがみこみました。すると、かばんの たからものの ほんが ぽうっと ひかりました。ポムや モコや シャルが わらって います。",
+      "まっ暗《くら》で、汽車《きしゃ》も動《うご》きません。「どうしよう、もう帰《かえ》れない……」{name}は、その場《ば》にしゃがみこんでしまいました。そのとき、かばんの中《なか》で、たからもののほんがぽうっと光《ひか》りました。開《ひら》くと、ポムやモコやシャルの絵《え》が、にこにことわらっています。みんな、さいしょは知《し》らない子《こ》だったっけ。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": false
+    },
+    {
+     "label": "ちびドラゴンに星の切符を差し出す主人公。少し震えるひざ",
+     "art": "the child steps up to Gao, a small round green baby dragon with tiny wings with slightly trembling knees and bravely holds out the star-shaped ticket with a kind smile",
+     "text": [
+      "「ひとつ おおきく なったから、きっと できる！」",
+      "{name}は ドラゴンの まえへ あるいて いきました。「ひとつ おおきく なったから、きっと できる！」 ほしの きっぷを さしだして、「いっしょに パーティー、いこう」",
+      "{name}は立《た》ち上《あ》がり、ちびドラゴンの前《まえ》へ、一歩《いっぽ》ずつ歩《ある》いていきました。ひざが、まだ少《すこ》しふるえています。「ひとつおおきくなったから、きっとできる！」{name}は、星《ほし》のきっぷをさし出《だ》しました。「{name}の名前《なまえ》の下《した》に、きみの名前《なまえ》も書《か》いていいよ。いっしょにパーティーに行《い》こう」"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": false
+    },
+    {
+     "label": "【見開き】ガオが優しい火を吹き、月面のちょうちんが一斉に灯る。輝く星の汽車と歓声をあげる月のうさぎたち",
+     "art": "Gao, a small round green baby dragon with tiny wings breathes a gentle stream of fire into the sky and all the star lanterns across the moon light up at once; the star train glows golden, and moon rabbits cheer with the child and Mint the white cat. A grand, breathtaking wide view",
+     "text": [
+      "ガオの ひで、ほしが ぴかぴか！",
+      "「ぼく、ガオ」 ちびドラゴンが ふうっと やさしい ひを ふくと、ほしの あかりが いっせいに ともりました。つきの パーティーの はじまりです！",
+      "ちびドラゴンはなみだをぽろりとこぼして、きっぷに「ガオ」と書《か》きました。それから、空《そら》にむかって、ふうっとやさしい火《ひ》をふきました。すると、とびちった星《ほし》の明《あ》かりが、ぽ、ぽ、ぽっと、いっせいにともりはじめました。月《つき》の会場《かいじょう》も汽車《きしゃ》も、金色《きんいろ》にかがやきます。「ようこそ、{name}、ガオ！」月《つき》のパーティーのはじまりです。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "【ママ】夜のベランダ。毛布で主人公を包むママ。空に遠ざかる星の汽車",
+     "art": "on the balcony at night, the mother wraps the child snugly in a blanket and hugs them, while the star train glides away across the sky",
+     "text": [
+      "ママが ベランダで まってたよ。",
+      "きしゃで かえると、ママが ベランダで まって いました。「おかえり」 {name}は いいました。「あたらしい ともだちが できたよ。ドラゴンの ガオ！」",
+      "ガオに手《て》をふって、汽車《きしゃ》でベランダへ帰《かえ》ると、ママが毛《もう》ふを持《も》って待《ま》っていました。「おかえり、{name}。夜風《よかぜ》でひえちゃったでしょう」ママは{name}を毛《もう》ふごと、ぎゅっとつつみました。「あのね、ママ。ドラゴンの友《とも》だちができたんだよ。さいしょはこわかったけど、話《はな》したら、ぜんぜんこわくなかった」"
+     ],
+     "withMom": true,
+     "withDad": false,
+     "withSidekick": false,
+     "alt": {
+      "both": {
+       "label": "夜のベランダ。毛布で主人公を包むママ、隣で笑うパパ。空に遠ざかる星の汽車",
+       "art": "on the balcony at night, the mother wraps the child snugly in a blanket while the father smiles beside them, and the star train glides away across the sky",
+       "text": [
+        "ママと パパが まってたよ。",
+        "きしゃで かえると、ママと パパが ベランダで まって いました。「おかえり」 {name}は いいました。「あたらしい ともだちが できたよ。ドラゴンの ガオ！」",
+        "ガオに手《て》をふって、汽車《きしゃ》でベランダへ帰《かえ》ると、ママとパパが毛《もう》ふを持《も》って待《ま》っていました。「おかえり、{name}。夜風《よかぜ》でひえちゃったでしょう」ママは{name}を毛《もう》ふごと、ぎゅっとつつみました。パパも、となりでにっこり。「あのね、ドラゴンの友《とも》だちができたんだよ。さいしょはこわかったけど、話《はな》したら、ぜんぜんこわくなかった」"
+       ],
+       "withMom": true,
+       "withDad": true,
+       "withSidekick": false
+      },
+      "dad": {
+       "label": "夜のベランダ。毛布で主人公を包むパパ。空に遠ざかる星の汽車",
+       "art": "on the balcony at night, the father wraps the child snugly in a blanket and hugs them, while the star train glides away across the sky",
+       "text": [
+        "パパが ベランダで まってたよ。",
+        "きしゃで かえると、パパが ベランダで まって いました。「おかえり」 {name}は いいました。「あたらしい ともだちが できたよ。ドラゴンの ガオ！」",
+        "ガオに手《て》をふって、汽車《きしゃ》でベランダへ帰《かえ》ると、パパが毛《もう》ふを持《も》って待《ま》っていました。「おかえり、{name}。夜風《よかぜ》でひえちゃっただろう」パパは{name}を毛《もう》ふごと、ぎゅっとつつみました。「あのね、パパ。ドラゴンの友《とも》だちができたんだよ。さいしょはこわかったけど、話《はな》したら、ぜんぜんこわくなかった」"
+       ],
+       "withMom": false,
+       "withDad": true,
+       "withSidekick": false
+      },
+      "none": {
+       "label": "夜のベランダ。帽子から出した毛布で主人公を包むミント。空に遠ざかる星の汽車",
+       "art": "on the balcony at night, Mint the white cat wraps the child in a blanket he pulled out of his star hat, while the star train glides away across the sky",
+       "text": [
+        "ミントが もうふを かけて くれたよ。",
+        "きしゃで かえると、ミントが もうふを かけて くれました。{name}は いいました。「あたらしい ともだちが できたね。ドラゴンの ガオ！」",
+        "ガオに手《て》をふって、汽車《きしゃ》でベランダへ帰《かえ》ると、ミントがぼうしの中《なか》から毛《もう》ふを出《だ》しました。「夜風《よかぜ》でひえちゃったでしょう」ミントは{name}を毛《もう》ふごと、ぎゅっとつつみました。「あのね、ミント。ガオって、さいしょはこわかったけど、話《はな》したら、ぜんぜんこわくなかったね」"
+       ],
+       "withMom": false,
+       "withDad": false,
+       "withSidekick": true
+      }
+     }
+    },
+    {
+     "label": "夜の窓辺。帽子を深くかぶり寂しげに笑うミント。開いた本の真っ白な5ページ目",
+     "art": "at the window at night, Mint the white cat pulls his star hat down low and smiles a little sadly, while the child holds the treasure book open to a blank white fifth page",
+     "text": [
+      "ミントの たんじょうびは、いつ？",
+      "ほんは 4ページに なりました。「ねえ ミント、ミントの たんじょうびは いつ？」 ミントは すこし さみしそうに いいました。「……わすれちゃった」",
+      "たからもののほんは、四《よん》ページになりました。ガオと月《つき》でおどる絵《え》です。まどべに来《き》たミントに、{name}はたずねました。「ねえミント。ミントのたんじょう日《び》は、いつなの？」ミントはぼうしを深《ふか》くかぶって、少《すこ》しさみしそうにわらいました。「……ずっと昔《むかし》のことだから、わすれちゃった」五《ご》ページ目《め》は、まっ白《しろ》なままでした。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    }
+   ]
+  },
+  {
+   "no": 5,
+   "title": "ミントの たんじょうび",
+   "outfits": null,
+   "cover": {
+    "label": "おかしの町の広場で、5ページの宝物の本を開いて、ミントに手書きの招待状を見せる主人公。後ろにポム・ピピ・モコ・シャル・ガオ。",
+    "art": "in the town square of the sweets town, the child holds open the treasure book and shows a handmade invitation to Mint the white cat in his oversized mint-green star hat; behind them gather Pom, a little brown bear cub pastry chef in a white chef's hat and apron, Pipi, a small yellow songbird mail carrier with a tiny satchel, Moko, a small fluffy lamb made of white cloud, Shar, a little pink seahorse with a curled tail and Gao, a small round green baby dragon with tiny wings",
+    "withSidekick": true
+   },
+   "scenes": [
+    {
+     "label": "【ママ】朝の寝室。抱きしめるママの腕の中から、枕元をのぞく主人公。第1話の場面1と同じ構図",
+     "art": "a cozy bedroom in the morning, the same view as on the child's first magical birthday; from inside the mother's warm hug, the child peeks at the pillow, where no letter can be found",
+     "text": [
+      "たんじょうびの あさ。てがみが ない？",
+      "たんじょうびの あさ。ママが「おめでとう」と ぎゅっと しました。でも、まくらもとを みても、まどべを みても、きょうは ふしぎな てがみが ありません。",
+      "たんじょう日《び》の朝《あさ》。「おめでとう、{name}。ベッドが小《ちい》さく見《み》えるくらい、大《おお》きくなったね」ママがぎゅっとだきしめてくれました。{name}は、まくらもとを見《み》ました。まどべも、本《ほん》だなも、ポケットの中《なか》も。でも今年《ことし》は、どこにもふしぎな手紙《てがみ》がありません。"
+     ],
+     "withMom": true,
+     "withDad": false,
+     "withSidekick": false,
+     "alt": {
+      "both": {
+       "label": "朝の寝室。抱きしめるママ、頭をなでるパパ。枕元をのぞく主人公",
+       "art": "a cozy bedroom in the morning; the mother hugs the child and the father pats their head, while the child peeks at the pillow, where no letter can be found",
+       "text": [
+        "たんじょうびの あさ。てがみが ない？",
+        "たんじょうびの あさ。ママが「おめでとう」と ぎゅっと して、パパも あたまを なでました。でも、まくらもとを みても、きょうは ふしぎな てがみが ありません。",
+        "たんじょう日《び》の朝《あさ》。「おめでとう、{name}。ベッドが小《ちい》さく見《み》えるくらい、大《おお》きくなったね」ママがぎゅっとだきしめて、パパが頭《あたま》をなでてくれました。{name}は、まくらもとを見《み》ました。まどべも、本《ほん》だなも、ポケットの中《なか》も。でも今年《ことし》は、どこにもふしぎな手紙《てがみ》がありません。"
+       ],
+       "withMom": true,
+       "withDad": true,
+       "withSidekick": false
+      },
+      "dad": {
+       "label": "朝の寝室。抱きしめるパパの腕の中から、枕元をのぞく主人公",
+       "art": "a cozy bedroom in the morning; from inside the father's warm hug, the child peeks at the pillow, where no letter can be found",
+       "text": [
+        "たんじょうびの あさ。てがみが ない？",
+        "たんじょうびの あさ。パパが「おめでとう」と ぎゅっと しました。でも、まくらもとを みても、まどべを みても、きょうは ふしぎな てがみが ありません。",
+        "たんじょう日《び》の朝《あさ》。「おめでとう、{name}。ベッドが小《ちい》さく見《み》えるくらい、大《おお》きくなったな」パパがぎゅっとだきしめてくれました。{name}は、まくらもとを見《み》ました。まどべも、本《ほん》だなも、ポケットの中《なか》も。でも今年《ことし》は、どこにもふしぎな手紙《てがみ》がありません。"
+       ],
+       "withMom": false,
+       "withDad": true,
+       "withSidekick": false
+      },
+      "none": {
+       "label": "朝の寝室。窓辺で歌う小鳥（手紙は持っていない）。枕元をのぞく主人公",
+       "art": "a cozy bedroom in the morning; Pipi, a small yellow songbird mail carrier with a tiny satchel sings on the windowsill without any letter, while the child peeks at the empty pillow",
+       "text": [
+        "たんじょうびの あさ。てがみが ない？",
+        "たんじょうびの あさ。ことりが「おめでとう」と うたいました。でも、まくらもとを みても、まどべを みても、きょうは ふしぎな てがみが ありません。",
+        "たんじょう日《び》の朝《あさ》。まどべで小鳥《ことり》が「おめでとう、おめでとう」とうたっています。でも、小鳥《ことり》は何《なに》も持《も》っていません。{name}はベッドからとび起《お》きて、まくらもとを見《み》ました。まどべも、本《ほん》だなも、ポケットの中《なか》も。でも今年《ことし》は、どこにもふしぎな手紙《てがみ》がありません。"
+       ],
+       "withMom": false,
+       "withDad": false,
+       "withSidekick": false
+      }
+     }
+    },
+    {
+     "label": "窓辺で待つ主人公。開いた本の真っ白な5ページ目",
+     "art": "late in the afternoon, the child waits by the window holding the treasure book open, its first four pages full of pictures and the fifth page completely blank",
+     "text": [
+      "まっても まっても、てがみが こない。",
+      "おひるに なっても、てがみは きません。ほんの 5ページめは まっしろ。{name}は おもいだしました。ミントは じぶんの たんじょうびを わすれて いたのです。",
+      "お昼《ひる》になっても、夕方《ゆうがた》近《ちか》くなっても、手紙《てがみ》はとどきません。{name}は、たからもののほんを開《ひら》きました。ポム、モコ、シャル、ガオ。四《よっ》つのたんじょう日《び》の思《おも》い出《で》。そして、五《ご》ページ目《め》はまっ白《しろ》です。{name}は思《おも》い出《だ》しました。「ミントは、自分《じぶん》のたんじょう日《び》を、わすれちゃったんだ」"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": false
+    },
+    {
+     "label": "本の5ページ目にクレヨンで招待状を書く主人公。壁に第1話と同じ金色の扉",
+     "art": "the child carefully draws on the blank fifth page of the treasure book with crayons, its scribbles not readable, as a small golden door appears glowing on the bedroom wall",
+     "text": [
+      "こんどは {name}が てがみを かく！",
+      "「こんどは {name}が しょうたいじょうを かこう！」 「ミントさま、まほうの パーティーへ ごしょうたい」 かきおわると、かべに あの きんいろの とびらが あらわれました。",
+      "「そうだ。今度《こんど》は、{name}がしょうたいじょうを書《か》こう！」{name}はクレヨンをにぎって、五《ご》ページ目《め》にていねいに書《か》きました。「ミントさま　まほうのパーティーへ、ごしょうたいします　{name}より」書《か》き終《お》わったとたん、ページがぱあっと光《ひか》り、へやのかべに、あの日《ひ》と同《おな》じ金色《きんいろ》のとびらがあらわれました。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": false
+    },
+    {
+     "label": "第1話のお菓子の町。ポムとケーキを作り、先頭でクッキーの星を並べる主人公",
+     "art": "back in the sweets town of cookie houses, the child leads the way placing cookie stars around a cake, while Pom, a little brown bear cub pastry chef in a white chef's hat and apron helps happily",
+     "text": [
+      "ポム、ケーキを いっしょに つくろう！",
+      "とびらの むこうは、なつかしい おかしの まち。「ポム、ミントに ないしょで パーティーを したいの」「まかせて！」 こんどは {name}が さきに たって、クッキーの ほしを ならべます。",
+      "とびらの向《む》こうは、なつかしいおかしの町《まち》でした。「ポム、ひさしぶり！ミントにないしょで、パーティーをしたいの。ケーキを手《て》つだってくれる？」こぐまのポムは目《め》をかがやかせました。「もちろん！」今度《こんど》は{name}が先《さき》に立《た》って、クッキーの星《ほし》をならべていきます。前《まえ》は見《み》ているだけだった、あの星《ほし》です。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": false
+    },
+    {
+     "label": "3通の招待状をくわえて飛び立つピピ。見送る主人公",
+     "art": "in the sweets town, Pipi, a small yellow songbird mail carrier with a tiny satchel flies high into the sky carrying three envelopes in her beak, while the child waves goodbye",
+     "text": [
+      "ピピ、みんなに とどけて！",
+      "ことりの ピピに、しょうたいじょうを たのみました。「モコと シャルと ガオに とどけて！」 ピピは 3まいの てがみを くわえて、そらへ とびたちました。",
+      "{name}はもう三《さん》まいしょうたいじょうを書《か》いて、小鳥《ことり》のピピにわたしました。「雲《くも》の町《まち》のモコと、海《うみ》のシャルと、月《つき》のガオに、とどけてくれる？」「まかせて。とどけるのは、わたしの仕事《しごと》だもの」ピピは手紙《てがみ》をくわえて、空《そら》高《たか》くとび立《た》ちました。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": false
+    },
+    {
+     "label": "広場に集まるモコ・シャル・ガオ。虹の飾り、泡のランタン、星の明かり",
+     "art": "the town square of the sweets town becomes a magical party venue: Moko, a small fluffy lamb made of white cloud hangs rainbow decorations, Shar, a little pink seahorse with a curled tail floats in on a bubble with glowing bubble lanterns, and Gao, a small round green baby dragon with tiny wings carries star lights, while the child welcomes them",
+     "text": [
+      "みんな、きて くれた！",
+      "モコは にじの かざり、シャルは あわの ランタン、ガオは ほしの あかり。みんなで パーティーの じゅんびが できました。",
+      "しばらくすると、雲《くも》のかいだんからモコが、あわに乗《の》ってシャルが、星《ほし》の汽車《きしゃ》からガオがやって来《き》ました。モコはにじのかざりを、シャルは光《ひか》るあわのランタンを、ガオは星《ほし》の明《あ》かりを。おかしの町《まち》の広場《ひろば》は、四《よっ》つの国《くに》をまぜたような、ふしぎなパーティー会場《かいじょう》になりました。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": false
+    },
+    {
+     "label": "町はずれの小さな塔の家。招待状を見せる主人公、うつむくミント",
+     "art": "at a little tower house at the edge of the sweets town, the child shows the handmade invitation in the treasure book to Mint the white cat, who looks down sadly in the doorway",
+     "text": [
+      "ミント、パーティーに きて！",
+      "ミントの いえの とびらを たたきました。「ミント、パーティーに きて！」 でも ミントは うつむきました。「ぼくには、たんじょうびが ないんだ。だから、いいよ」",
+      "{name}は、町《まち》はずれのミントの家《いえ》へ行《い》き、とびらをとん、とん、とたたきました。顔《かお》を出《だ》したミントに、五《ご》ページ目《め》のしょうたいじょうを見《み》せます。ミントは目《め》を丸《まる》くしましたが、すぐにうつむきました。「ありがとう。でもね、ぼくには、たんじょう日《び》がないんだ。いつ生《う》まれたのか、だれも知《し》らないの。だから……いいんだ」"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "灯りの消えたケーキ。しょんぼり集まる仲間たち、招待状を握りしめる主人公",
+     "art": "in the town square, the cake's candles have gone out and Pom, a little brown bear cub pastry chef in a white chef's hat and apron, Pipi, a small yellow songbird mail carrier with a tiny satchel, Moko, a small fluffy lamb made of white cloud, Shar, a little pink seahorse with a curled tail and Gao, a small round green baby dragon with tiny wings gather looking worried under a sky turning slightly gray, while the child holds the invitation tightly",
+     "text": [
+      "とびらが しまって、しょんぼり。",
+      "ぱたん。とびらが しまりました。ひろばに もどると、みんな しょんぼり。ケーキの ろうそくも、ふっと きえて しまいました。",
+      "ぱたん。とびらは、しずかにしまってしまいました。{name}が広場《ひろば》へもどると、みんなが心配《しんぱい》そうに集《あつ》まってきました。ガオがともしたろうそくも、ふっと消《き》えてしまいます。「ミントが来《こ》ないなら、パーティーはできないね」モコがつぶやくと、空《そら》がうっすらはいいろになりかけました。{name}は、しょうたいじょうをぎゅっとにぎりしめました。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": false
+    },
+    {
+     "label": "扉の前で大きな声で呼びかける主人公。扉のすき間から光が漏れる",
+     "art": "in front of the closed door of the little tower house, the child calls out loudly and bravely, and warm light spills from the gap of the door",
+     "text": [
+      "「ひとつ おおきく なったから、きっと できる！」",
+      "{name}は もう いちど とびらの まえへ。「ひとつ おおきく なったから、きっと できる！」「ミント、きょうを ミントの たんじょうびに しよう。{name}と おなじ ひだよ！」",
+      "{name}は、もう一度《いちど》ミントの家《いえ》へ走《はし》りました。今度《こんど》は、待《ま》っているだけじゃない。「ひとつおおきくなったから、きっとできる！」{name}はとびらの前《まえ》で、大《おお》きな声《こえ》で言《い》いました。「ミント！たんじょう日《び》がないなら、今日《きょう》をミントのたんじょう日《び》にしよう。{name}と同《おな》じ日《ひ》だよ。毎年《まいとし》、いっしょにおいわいできるよ！」"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": false
+    },
+    {
+     "label": "【見開き】二人の名前のケーキを囲む全員（ポム・ピピ・モコ・シャル・ガオ）。虹と泡と星の明かりが一度に輝き、泣き笑いのミント。第1話のケーキ場面と対になる構図",
+     "art": "in the town square, everyone gathers around a big birthday cake topped with little sugar figures of the child and a white cat; Gao, a small round green baby dragon with tiny wings lights the candles, and a rainbow, glowing bubbles and star lights shine all at once, while Mint the white cat laughs through happy tears beside the child, with Pom, a little brown bear cub pastry chef in a white chef's hat and apron, Pipi, a small yellow songbird mail carrier with a tiny satchel, Moko, a small fluffy lamb made of white cloud and Shar, a little pink seahorse with a curled tail cheering. A grand, breathtaking wide view",
+     "text": [
+      "ふたりで「おたんじょうび おめでとう！」",
+      "とびらが ひらいて、ミントが とびだして きました。にじと あわと ほしが いっぺんに かがやきます。「ミント、{name}、おたんじょうび おめでとう！」",
+      "とびらがばたんと開《ひら》いて、なみだでくしゃくしゃのミントがとび出《だ》してきました。広場《ひろば》では、ガオがケーキのろうそくに火《ひ》をともし、モコのにじと、シャルのあわと、星《ほし》の明《あ》かりが、いっぺんにかがやきました。ケーキには、二《ふた》つの名前《なまえ》。「ミント、{name}、おたんじょう日《び》おめでとう！」ミントのはじめてのたんじょう日会《びかい》です。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "【パパ】パパに肩車されて乾杯する主人公。周りで笑う仲間たちとミント",
+     "art": "at the party in the sweets town square, the father carries the child on his shoulders as the child raises a cup high for a toast, surrounded by laughing Mint the white cat, Pom, a little brown bear cub pastry chef in a white chef's hat and apron, Pipi, a small yellow songbird mail carrier with a tiny satchel, Moko, a small fluffy lamb made of white cloud, Shar, a little pink seahorse with a curled tail and Gao, a small round green baby dragon with tiny wings",
+     "text": [
+      "パパの かたぐるまで、かんぱい！",
+      "とびらから パパも かけつけました。「ことしは {name}が パーティーを ひらいたんだね」 パパの かたぐるまで、{name}は みんなと かんぱいしました。",
+      "そのとき、金色《きんいろ》のとびらが開《ひら》いて、パパがやって来《き》ました。「すごいなあ。今年《ことし》は、{name}がパーティーを開《ひら》いたんだね」パパは{name}をかたぐるましました。高《たか》い所《ところ》から見《み》わたすと、これまでに出会《であ》った友《とも》だちが、みんなわらっています。「かんぱーい！」{name}のコップが、いちばん高《たか》い所《ところ》でかがやきました。"
+     ],
+     "withMom": false,
+     "withDad": true,
+     "withSidekick": true,
+     "alt": {
+      "both": {
+       "label": "パパに肩車されて乾杯する主人公、ジュースを配るママ。周りで笑う仲間たちとミント",
+       "art": "at the party in the sweets town square, the father carries the child on his shoulders for a toast while the mother hands out cups of juice, surrounded by laughing Mint the white cat, Pom, a little brown bear cub pastry chef in a white chef's hat and apron, Pipi, a small yellow songbird mail carrier with a tiny satchel, Moko, a small fluffy lamb made of white cloud, Shar, a little pink seahorse with a curled tail and Gao, a small round green baby dragon with tiny wings",
+       "text": [
+        "ママと パパも きたよ。かんぱい！",
+        "とびらから ママと パパも かけつけました。「ことしは {name}が パーティーを ひらいたんだね」 パパの かたぐるまで、{name}は みんなと かんぱいしました。",
+        "そのとき、金色《きんいろ》のとびらが開《ひら》いて、ママとパパがやって来《き》ました。「すごいなあ。今年《ことし》は、{name}がパーティーを開《ひら》いたんだね」パパは{name}をかたぐるましました。ママも、にこにこジュースをくばっています。高《たか》い所《ところ》から見《み》わたすと、これまでに出会《であ》った友《とも》だちが、みんなわらっています。「かんぱーい！」"
+       ],
+       "withMom": true,
+       "withDad": true,
+       "withSidekick": true
+      },
+      "mom": {
+       "label": "ママが主人公をハグ（肩車はしない）。乾杯する仲間たちとミント",
+       "art": "at the party in the sweets town square, the mother hugs the child warmly while Mint the white cat, Pom, a little brown bear cub pastry chef in a white chef's hat and apron, Pipi, a small yellow songbird mail carrier with a tiny satchel, Moko, a small fluffy lamb made of white cloud, Shar, a little pink seahorse with a curled tail and Gao, a small round green baby dragon with tiny wings raise their cups in a toast around them",
+       "text": [
+        "ママも きたよ。ぎゅうっ！",
+        "とびらから ママが かけつけました。「ことしは {name}が パーティーを ひらいたんだね」 ママに ぎゅうっと されて、{name}は みんなと かんぱいしました。",
+        "そのとき、金色《きんいろ》のとびらが開《ひら》いて、ママがやって来《き》ました。「すごいね。今年《ことし》は、{name}がパーティーを開《ひら》いたんだね」ママは{name}を、ぎゅうっとだきしめました。ママのうでの中《なか》から見《み》わたすと、これまでに出会《であ》った友《とも》だちが、みんなわらっています。「かんぱーい！」{name}のコップが、きらきらかがやきました。"
+       ],
+       "withMom": true,
+       "withDad": false,
+       "withSidekick": true
+      },
+      "none": {
+       "label": "こぐまのポムに肩車されて乾杯する主人公。周りで笑う仲間たちとミント",
+       "art": "at the party in the sweets town square, Pom, a little brown bear cub pastry chef in a white chef's hat and apron carries the child on his shoulders as the child raises a cup high for a toast, surrounded by laughing Mint the white cat, Pipi, a small yellow songbird mail carrier with a tiny satchel, Moko, a small fluffy lamb made of white cloud, Shar, a little pink seahorse with a curled tail and Gao, a small round green baby dragon with tiny wings",
+       "text": [
+        "ポムの かたぐるまで、かんぱい！",
+        "「ことしは {name}が パーティーを ひらいたんだね」 ミントが いうと、ポムが {name}を かたぐるま。{name}は みんなと かんぱいしました。",
+        "「すごいなあ。今年《ことし》は、{name}がパーティーを開《ひら》いたんだね」ミントがしみじみ言《い》うと、こぐまのポムが{name}を、ひょいとかたぐるましてくれました。高《たか》い所《ところ》から見《み》わたすと、これまでに出会《であ》った友《とも》だちが、みんなわらっています。「かんぱーい！」{name}のコップが、いちばん高《たか》い所《ところ》でかがやきました。"
+       ],
+       "withMom": false,
+       "withDad": false,
+       "withSidekick": true
+      }
+     }
+    },
+    {
+     "label": "夜の寝室。5ページで完成した本。枕元に白く光る封筒、窓辺でウインクするミント。第1話の場面1と対になる構図",
+     "art": "a bedroom at night, mirroring the first birthday morning; the completed treasure book lies open beside the child, a white glowing envelope rests on the pillow, and Mint the white cat winks from the windowsill",
+     "text": [
+      "ミントから、まっしろな しょうたいじょう。",
+      "ほんは 5ページで いっぱいに なりました。ミントが まっしろな ふうとうを くれました。「らいねんは、{name}が だれかを しょうたいする ばんだよ」",
+      "その夜《よる》、たからもののほんは、五《ご》ページでぴったりいっぱいになりました。さいごのページでは、{name}とミントがならんで、ろうそくをふいています。まどべに来《き》たミントが、まっ白《しろ》なふうとうを一《ひと》つ、まくらもとにおきました。あの日《ひ》とそっくりの、きらきら光《ひか》るふうとうです。「来年《らいねん》は、{name}が、だれかをしょうたいする番《ばん》だよ。さあ、だれにする？」"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    }
+   ]
+  }
+ ]
+}

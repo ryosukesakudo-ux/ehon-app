@@ -1,0 +1,1206 @@
+{
+ "id": "forest",
+ "name": "もりのだいぼうけん",
+ "sidekick": "Pokke, a small reddish-brown squirrel about the size of the child's forearm, with big round puffed-out cheeks (he keeps treasures in them), a fluffy curled tail, large friendly eyes and a tiny green leaf-shaped scarf",
+ "sidekickLabel": "相棒のりす「ポッケ」",
+ "episodes": [
+  {
+   "no": 1,
+   "title": "ひかる たねと おじいの き",
+   "outfits": null,
+   "cover": {
+    "label": "森の入口で、ほっぺのふくらんだりす（ポッケ）と並んで、光る種を見つめる主人公。",
+    "art": "at the entrance of a sunny spring forest, the child and Pokke the squirrel sit side by side looking in wonder at a small glowing seed resting in the child's hands; tall trees and a winding path into the forest behind them",
+    "withSidekick": true
+   },
+   "scenes": [
+    {
+     "label": "【ママ】森の入口の草原でシートに座る主人公とママ。奥に深い森  ママだけを取り込んだらママだけ、パパだけをアップすればパパだけ、2人アップしたら2人登場させてほしい。セリフはママ優先で、パパだけを取り込んだときだけパパに変更。",
+     "art": "a spring picnic on a blanket in a meadow at the edge of a deep forest; the mother points toward the forest while unpacking a lunch box, and the child gazes curiously into the forest",
+     "text": [
+      "{name}は ママと もりへ ピクニック。",
+      "はるの にちようび。{name}は ママと もりの いりぐちへ ピクニックに きました。「もりの おくには、なんでも しっている おおきな きが あるんだって」",
+      "ぽかぽかあたたかい春《はる》の日曜日《にちようび》。{name}はママといっしょに、森《もり》の入《い》り口《ぐち》へピクニックに来《き》ました。おべんとうを広《ひろ》げながら、ママが言《い》いました。「この森《もり》のいちばんおくにはね、なんでも知《し》っている『おじいの木《き》』があるんだって」{name}は森《もり》のおくを、じっと見《み》つめました。"
+     ],
+     "withMom": true,
+     "withDad": false,
+     "withSidekick": false,
+     "alt": {
+      "both": {
+       "label": "草原のシートに主人公・ママ・パパ。ママが森の奥を指さし、パパがお弁当を広げる",
+       "art": "a spring picnic on a blanket in a meadow at the edge of a deep forest; the mother points toward the forest while the father unpacks a lunch box, and the child gazes curiously into the forest",
+       "text": [
+        "{name}は ママと パパと もりへ ピクニック。",
+        "はるの にちようび。{name}は ママと パパと もりの いりぐちへ ピクニックに きました。ママが いいました。「もりの おくには、なんでも しっている おおきな きが あるんだって」",
+        "ぽかぽかあたたかい春《はる》の日曜日《にちようび》。{name}はママとパパといっしょに、森《もり》の入《い》り口《ぐち》へピクニックに来《き》ました。パパがおべんとうを広《ひろ》げると、ママが言《い》いました。「この森《もり》のいちばんおくにはね、なんでも知《し》っている『おじいの木《き》』があるんだって」{name}は森《もり》のおくを、じっと見《み》つめました。"
+       ],
+       "withMom": true,
+       "withDad": true,
+       "withSidekick": false
+      },
+      "dad": {
+       "label": "草原のシートに座る主人公とパパ。奥に深い森",
+       "art": "a spring picnic on a blanket in a sunny meadow at the edge of a deep forest; the father unpacks a lunch box and points toward the forest, and the child sitting beside him gazes curiously into the deep woods",
+       "text": [
+        "{name}は パパと もりへ ピクニック。",
+        "はるの にちようび。{name}は パパと もりの いりぐちへ ピクニックに きました。「もりの おくには、なんでも しっている おおきな きが あるんだって」",
+        "ぽかぽかあたたかい春《はる》の日曜日《にちようび》。{name}はパパといっしょに、森《もり》の入《い》り口《ぐち》へピクニックに来《き》ました。おべんとうを広《ひろ》げながら、パパが言《い》いました。「この森《もり》のいちばんおくにはね、なんでも知《し》っている『おじいの木《き》』があるんだって」{name}は森《もり》のおくを、じっと見《み》つめました。"
+       ],
+       "withMom": false,
+       "withDad": true,
+       "withSidekick": false
+      },
+      "none": {
+       "label": "草原で蝶を追う主人公。肩に蝶がとまる。奥に深い森",
+       "art": "in a sunny spring meadow at the edge of a deep forest, the child chases a fluttering butterfly; a butterfly has landed on the child's shoulder as if whispering, and the child gazes curiously toward the deep woods",
+       "text": [
+        "{name}は もりの いりぐちで ちょうちょと あそんだよ。",
+        "はるの にちようび。{name}は もりの いりぐちの くさはらで、ちょうちょを おいかけて いました。ちょうちょが ささやきます。「もりの おくには、なんでも しっている おおきな きが あるんだよ」",
+        "ぽかぽかあたたかい春《はる》の日曜日《にちようび》。{name}は森《もり》の入《い》り口《ぐち》の草原《くさはら》で、ちょうちょをおいかけていました。ちょうちょは{name}のかたにとまって、ささやきました。「この森《もり》のいちばんおくにはね、なんでも知《し》っている『おじいの木《き》』があるんだよ」{name}は森《もり》のおくを、じっと見《み》つめました。"
+       ],
+       "withMom": false,
+       "withDad": false,
+       "withSidekick": false
+      }
+     }
+    },
+    {
+     "label": "茂みで泣く子りす、のぞきこむ主人公",
+     "art": "the child crouches and peeks into a leafy bush where Pokke the little squirrel sits crying with tears on his puffed cheeks",
+     "text": [
+      "しげみで だれかが ないて いるよ。",
+      "がさがさっ。しげみの なかで、ちいさな りすが ないて いました。ほっぺが ぷっくり ふくらんだ りすです。",
+      "そのとき、しげみががさがさっとゆれました。のぞいてみると、小《ちい》さなりすがしくしく泣《な》いています。ほっぺがまんまるにふくらんだ、ふしぎなりすでした。「どうしたの？」と{name}が聞《き》くと、りすはなみだをふいて、顔《かお》を上《あ》げました。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "ポッケのほっぺから光る種。胸をたたく主人公",
+     "art": "Pokke pulls a softly glowing seed out of his puffed cheek, and the child taps their own chest with a determined, brave smile",
+     "text": [
+      "「ひかる たねを とどけたいの」",
+      "「ぼく、ポッケ。この ひかる たねを、おじいの きに とどけたいの。でも、ひとりじゃ こわくて」 「じゃあ、いっしょに いこう！」",
+      "「ぼく、ポッケ。春《はる》になったら、この光《ひか》る種《たね》をおじいの木《き》にとどけるのが、ぼくの仕事《しごと》なんだ。でも、道《みち》のとちゅうに真《ま》っ暗《くら》なトンネルがあって……」ポッケのほっぺから、ぽうっと光《ひか》る種《たね》が出《で》てきました。{name}はむねをどんとたたいて言《い》いました。「じゃあ、いっしょに行《い》こう！」"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "小川の飛び石を渡る主人公とポッケ",
+     "art": "the child carefully hops across stepping stones over a sparkling small stream, arms out for balance, with Pokke riding on the child's shoulder",
+     "text": [
+      "いしの うえを、いっぽずつ。",
+      "ちいさな かわに、ぐらぐら ゆれる いし。ポッケが ふるえる こえで いいました。「だいじょうぶ、だいじょうぶ、いっぽずつ……って、おばあちゃんが いってた」",
+      "しばらく歩《ある》くと、小《ちい》さな川《かわ》に出《で》ました。川《かわ》の中《なか》に、石《いし》がとびとびにならんでいます。乗《の》るとぐらぐらゆれる石《いし》ばかり。ポッケがふるえる声《こえ》で言《い》いました。「だいじょうぶ、だいじょうぶ、いっぽずつ。……おばあちゃんが、いつも言《い》ってた言葉《ことば》なんだ」二人《ふたり》は一歩《いっぽ》ずつ、向《む》こう岸《ぎし》へわたりました。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "葉っぱのボールで遊ぶうさぎの兄弟が道を指さす",
+     "art": "two rabbit siblings playing with a ball made of leaves point the way down a forest path; the child and Pokke wave to them",
+     "text": [
+      "うさぎさん、みちを おしえて。",
+      "むこうぎしで、うさぎの きょうだいに あいました。「おじいの きなら、ひかる きのこの みちを まっすぐ だよ」",
+      "向《む》こう岸《ぎし》では、うさぎの兄弟《きょうだい》が、葉《は》っぱのボールで遊《あそ》んでいました。「おじいの木《き》はどっち？」と聞《き》くと、いちばん小《ちい》さなうさぎが、耳《みみ》をぴんと立《た》てました。「光《ひか》るきのこをたどっていけば着《つ》くよ。でも、とちゅうのトンネルは、だれも通《とお》れないんだ」"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "光るきのこの道を跳ねながら進む",
+     "art": "the child skips happily along a path lined with softly glowing mushrooms, Pokke bouncing beside them",
+     "text": [
+      "きのこの みち、ぽわん ぽわん。",
+      "きのこの みちは、あるくたびに ぽわん、ぽわんと ひかります。{name}と ポッケは うたいながら すすみました。",
+      "きのこの道《みち》は、ふしぎな道《みち》でした。足《あし》をのせると、きのこがぽわん、ぽわんと光《ひか》って、小《ちい》さな音楽《おんがく》が鳴《な》るのです。{name}とポッケはうれしくなって、リズムに合《あ》わせてはねながら進《すす》みました。「この調子《ちょうし》なら、すぐ着《つ》くね！」"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "木の根のトンネルの暗い入口。立ち止まる二人",
+     "art": "the child and Pokke stop in front of the dark entrance of a tunnel formed by huge tangled tree roots; the child looks nervous and Pokke clings to the child's leg",
+     "text": [
+      "まっくらな トンネル。どきどき。",
+      "ところが、きのこの みちは まっくらな トンネルの まえで おわって いました。ひゅうっと つめたい かぜ。ポッケは {name}の うしろに かくれました。",
+      "ところが、光《ひか》るきのこは、真《ま》っ暗《くら》なトンネルの前《まえ》で、ぷつりととぎれていました。おくから、ひゅうう、と冷《つめ》たい風《かぜ》がふいてきます。ポッケはしっぽを丸《まる》めて、{name}の後《うし》ろにかくれました。{name}の足《あし》も、ぴたりと止《と》まってしまいました。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "振り返る主人公。ポッケのほっぺが内側から光る",
+     "art": "the child turns back away from the dark root tunnel, looking discouraged, while Pokke's puffed cheeks glow warmly from the inside with the seed's light",
+     "text": [
+      "「やっぱり かえろうか……」",
+      "「やっぱり、かえろうか」 {name}が ふりかえった とき、ポッケの ほっぺの なかで、たねが ちかっと ひかりました。",
+      "「……やっぱり、帰《かえ》ろうか」{name}は小《ちい》さな声《こえ》で言《い》いました。ポッケもだまってうなずきました。ふり返《かえ》ると、ピクニックをしていた草原《くさはら》が、遠《とお》くに見《み》えます。そのとき、ポッケのほっぺの中《なか》で、種《たね》がちかっ、ちかっと光《ひか》りました。まるで「こっちだよ」と言《い》っているみたいに。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "種をかかげてトンネルを進む。壁に二人の影",
+     "art": "inside the root tunnel the child bravely walks forward holding the glowing seed high like a lantern, Pokke on their shoulder; their two shadows stretch along the curved root walls",
+     "text": [
+      "「だいじょうぶ、いっぽずつ！」",
+      "{name}は たねを たかく かかげました。「だいじょうぶ、だいじょうぶ、いっぽずつ！」 いっぽ すすむと、たねの ひかりが すこし おおきく なりました。",
+      "{name}はポッケから種《たね》を受《う》け取《と》って、高《たか》くかかげました。そして、川《かわ》で習《なら》った言葉《ことば》を、今度《こんど》は自分《じぶん》で言《い》いました。「だいじょうぶ、だいじょうぶ、いっぽずつ！」一歩《いっぽ》進《すす》むと、種《たね》の光《ひかり》がひとまわり大《おお》きくなりました。もう一歩《いっぽ》。また大《おお》きく。トンネルのかべに、二人《ふたり》のかげがゆらゆらおどりました。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "【見開き】巨木が一斉に満開。光が幹を駆け上がり、見上げる二人",
+     "art": "a giant ancient tree in a sunny clearing bursts into full bloom all at once; streams of light race up its trunk and pink blossoms fill the branches, and the small child and Pokke look up in awe from below. A grand, breathtaking wide view",
+     "text": [
+      "おおきな きに、はなが いっぱい！",
+      "トンネルを ぬけると、おじいの きが ありました。たねを ねもとに うめると、えだと いう えだに、はなが いっせいに さきました。",
+      "トンネルをぬけた先《さき》に、空《そら》までとどきそうなおじいの木《き》が立《た》っていました。でも、えだはまだはだかで、なんだか寒《さむ》そうです。{name}とポッケが根《ね》もとに種《たね》をうめると――ぱあっ！光《ひかり》がみきをかけ上《のぼ》り、えだというえだに、もも色《いろ》の花《はな》がいっせいにさきました。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "【パパ】森の入口で主人公を肩車するパパ。胸に葉っぱのバッジ  ママだけを取り込んだらママだけ、パパだけをアップすればパパだけ、2人アップしたら2人登場させてほしい。セリフはパパ優先で、ママだけを取り込んだときだけママに変更。ママだけの場合肩車じゃなくてハグにして。",
+     "art": "back at the forest entrance at golden sunset, the father carries the child on his shoulders, both smiling; a small glowing leaf badge is pinned on the child's chest",
+     "text": [
+      "パパが むかえに きたよ。",
+      "おじいの きから もらった はっぱの バッジを むねに つけて、もりの いりぐちへ もどると、パパが むかえに きて いました。「すごいね！」 パパは {name}を たかい たかい しました。",
+      "「ありがとう、小《ちい》さな勇者《ゆうしゃ》」おじいの木《き》は、光《ひか》る葉《は》っぱのバッジを、{name}のむねにつけてくれました。森《もり》の入《い》り口《ぐち》へもどると、パパがむかえに来《き》ていました。{name}がぼうけんの話《はなし》をすると、パパは「すごいなあ！」と、{name}を高《たか》くかたぐるましました。"
+     ],
+     "withMom": false,
+     "withDad": true,
+     "withSidekick": false,
+     "alt": {
+      "both": {
+       "label": "パパが主人公を肩車、横でママが拍手。胸に葉っぱのバッジ",
+       "art": "back at the forest entrance at golden sunset, the father carries the child high on his shoulders while the mother claps happily beside them; a small glowing leaf badge is pinned on the child's chest",
+       "text": [
+        "ママと パパが むかえに きたよ。",
+        "おじいの きから もらった はっぱの バッジを むねに つけて、もりの いりぐちへ もどると、ママと パパが むかえに きて いました。「すごいね！」 パパは {name}を たかい たかい しました。",
+        "「ありがとう、小《ちい》さな勇者《ゆうしゃ》」おじいの木《き》は、光《ひか》る葉《は》っぱのバッジを、{name}のむねにつけてくれました。森《もり》の入《い》り口《ぐち》へもどると、ママとパパがむかえに来《き》ていました。{name}がぼうけんの話《はなし》をすると、パパは「すごいなあ！」と、{name}を高《たか》くかたぐるましました。ママも、にこにこ手《て》をたたいています。"
+       ],
+       "withMom": true,
+       "withDad": true,
+       "withSidekick": false
+      },
+      "mom": {
+       "label": "森の入口でママが主人公をハグ（肩車はしない）。胸に葉っぱのバッジ",
+       "art": "back at the forest entrance at golden sunset, the mother kneels and hugs the child tightly with a proud smile; a small glowing leaf badge is pinned on the child's chest",
+       "text": [
+        "ママが むかえに きたよ。ぎゅうっ。",
+        "おじいの きから もらった はっぱの バッジを むねに つけて、もりの いりぐちへ もどると、ママが むかえに きて いました。「すごいね！」 ママは {name}を ぎゅうっと だきしめました。",
+        "「ありがとう、小《ちい》さな勇者《ゆうしゃ》」おじいの木《き》は、光《ひか》る葉《は》っぱのバッジを、{name}のむねにつけてくれました。森《もり》の入《い》り口《ぐち》へもどると、ママがむかえに来《き》ていました。{name}がぼうけんの話《はなし》をすると、ママは「すごいね！」と、{name}をぎゅうっとだきしめました。"
+       ],
+       "withMom": true,
+       "withDad": false,
+       "withSidekick": false
+      },
+      "none": {
+       "label": "うさぎの兄弟とポッケが主人公を胴上げ。胸に葉っぱのバッジ",
+       "art": "back at the forest entrance at golden sunset, the two rabbit siblings, small light-brown rabbits with long ears, and Pokke the squirrel cheerfully toss the laughing child up into the air in celebration; a small glowing leaf badge is pinned on the child's chest",
+       "text": [
+        "うさぎさんたちが まってたよ。",
+        "おじいの きから もらった はっぱの バッジを むねに つけて、もりの いりぐちへ もどると、うさぎの きょうだいが まって いました。「すごいね！」 みんなで {name}を わっしょい わっしょい。",
+        "「ありがとう、小《ちい》さな勇者《ゆうしゃ》」おじいの木《き》は、光《ひか》る葉《は》っぱのバッジを、{name}のむねにつけてくれました。森《もり》の入《い》り口《ぐち》へもどると、うさぎの兄弟《きょうだい》が待《ま》っていました。{name}がぼうけんの話《はなし》をすると、みんなは「すごいなあ！」と、{name}をわっしょい、わっしょいとかつぎ上《あ》げました。"
+       ],
+       "withMom": false,
+       "withDad": false,
+       "withSidekick": true
+      }
+     }
+    },
+    {
+     "label": "夜の寝室。窓の外で地図を見せるポッケ。枕元にバッジ",
+     "art": "night in the child's cozy bedroom; outside the window Pokke holds up a small hand-drawn map of a summer river, and the glowing leaf badge rests beside the child's pillow as the child sits up in bed, smiling",
+     "text": [
+      "まどの そとで、ポッケが ちずを ふって いるよ。",
+      "その よる。まどの そとで ポッケが てを ふって いました。ほっぺから のぞいたのは、かわの えが かいて ある ちいさな ちず。「なつに なったら、また ぼうけんだよ！」",
+      "その夜《よる》、{name}がバッジをまくらもとにおいてねようとすると、まどをとん、とん、とたたく音《おと》がしました。ポッケです。「今日《きょう》はありがとう。ぼく、もうトンネルこわくないよ」ほっぺから、小《ちい》さな地図《ちず》がのぞきました。ほたると長《なが》い川《かわ》の絵《え》がかいてあります。「夏《なつ》になったら、この川《かわ》へ行《い》こうね。たいへんなことが起《お》きてるんだ」"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    }
+   ]
+  },
+  {
+   "no": 2,
+   "title": "ほたるの かわの ひみつ",
+   "outfits": "light summer clothes in the same colors as the reference: the child in a short-sleeved T-shirt and shorts, the parents in short sleeves",
+   "cover": {
+    "label": "夜の川辺で、ほたるの光に囲まれて笑う主人公とポッケ。",
+    "art": "on a summer night by a forest river, the child and Pokke the squirrel laugh happily, surrounded by countless glowing fireflies whose lights reflect on the water",
+    "withSidekick": true
+   },
+   "scenes": [
+    {
+     "label": "【パパ】パパと二人でテントを張る。主人公の胸のバッジが光る",
+     "art": "summer camping at the edge of the forest; the father and the child pull a rope together to put up a small tent, and the leaf badge on the child's chest suddenly sparkles",
+     "text": [
+      "パパと キャンプ。テントが たったよ。",
+      "なつやすみ。{name}は パパと もりの そばで キャンプを しました。テントが たつと、むねの バッジが ぴかっと ひかりました。",
+      "夏休《なつやす》み。{name}はパパといっしょに、森《もり》のそばでキャンプをしました。二人《ふたり》でロープを引《ひ》っぱって、テントがぴんと立《た》ったそのとき。むねの葉《は》っぱのバッジが、ぴかっ、と光《ひか》りました。「ポッケがよんでる！」パパは笑《わら》って言《い》いました。「夕《ゆう》ごはんまでに、もどっておいで」"
+     ],
+     "withMom": false,
+     "withDad": true,
+     "withSidekick": false,
+     "alt": {
+      "both": {
+       "label": "パパと主人公がテントを張り、ママは夕ごはんの支度。主人公の胸のバッジが光る",
+       "art": "summer camping at the edge of the forest; the father and the child pull a rope together to put up a small tent while the mother prepares dinner at a camp table nearby, and the leaf badge on the child's chest suddenly sparkles",
+       "text": [
+        "パパと ママと キャンプ。テントが たったよ。",
+        "なつやすみ。{name}は パパと ママと もりの そばで キャンプを しました。テントが たつと、むねの バッジが ぴかっと ひかりました。",
+        "夏休《なつやす》み。{name}はパパとママといっしょに、森《もり》のそばでキャンプをしました。パパと二人《ふたり》でロープを引《ひ》っぱって、テントがぴんと立《た》ったそのとき。むねの葉《は》っぱのバッジが、ぴかっ、と光《ひか》りました。「ポッケがよんでる！」パパは笑《わら》って言《い》いました。「夕《ゆう》ごはんまでに、もどっておいで」"
+       ],
+       "withMom": true,
+       "withDad": true,
+       "withSidekick": false
+      },
+      "mom": {
+       "label": "ママと二人でテントを張る。主人公の胸のバッジが光る",
+       "art": "summer camping at the edge of the forest; the mother and the child pull a rope together to put up a small tent, and the leaf badge on the child's chest suddenly sparkles",
+       "text": [
+        "ママと キャンプ。テントが たったよ。",
+        "なつやすみ。{name}は ママと もりの そばで キャンプを しました。テントが たつと、むねの バッジが ぴかっと ひかりました。",
+        "夏休《なつやす》み。{name}はママといっしょに、森《もり》のそばでキャンプをしました。二人《ふたり》でロープを引《ひ》っぱって、テントがぴんと立《た》ったそのとき。むねの葉《は》っぱのバッジが、ぴかっ、と光《ひか》りました。「ポッケがよんでる！」ママは笑《わら》って言《い》いました。「夕《ゆう》ごはんまでに、もどっておいで」"
+       ],
+       "withMom": true,
+       "withDad": false,
+       "withSidekick": false
+      },
+      "none": {
+       "label": "うさぎの兄弟と葉っぱのテントを立てる主人公。胸のバッジが光る",
+       "art": "on a summer afternoon at the edge of the forest, the child and the two rabbit siblings, small light-brown rabbits with long ears, set up a tent made of big green leaves, and the leaf badge on the child's chest suddenly sparkles",
+       "text": [
+        "うさぎさんと はっぱの テント。",
+        "なつやすみ。{name}は うさぎの きょうだいと、もりの そばに はっぱの テントを たてました。すると、むねの バッジが ぴかっと ひかりました。",
+        "夏休《なつやす》み。{name}は、うさぎの兄弟《きょうだい》といっしょに、森《もり》のそばに大《おお》きな葉《は》っぱのテントを作《つく》りました。テントがぴんと立《た》ったそのとき。むねの葉《は》っぱのバッジが、ぴかっ、と光《ひか》りました。「ポッケがよんでる！」うさぎたちは手《て》をふりました。「夕《ゆう》ごはんまでに、もどっておいでね」"
+       ],
+       "withMom": false,
+       "withDad": false,
+       "withSidekick": false
+      }
+     }
+    },
+    {
+     "label": "慌てて駆けてくるポッケ。地図の川上に×印",
+     "art": "Pokke the squirrel rushes out of a bush in a panic toward the child, holding up a small hand-drawn map of a river with an X mark at its upper end",
+     "text": [
+      "「ほたるが ひからないの」",
+      "ポッケが はしって きました。「たいへん！ かわの ほたるが ひからなく なっちゃった。こんやは ほたるの おまつりなのに」",
+      "しげみから、ポッケがとび出《だ》してきました。「たいへん、たいへん！川《かわ》のほたるが、ぜんぜん光《ひか》らなくなっちゃったんだ。今夜《こんや》は、ほたるのお祭《まつ》りなのに……」ポッケのほっぺから、春《はる》に見《み》せたあの地図《ちず》が出《で》てきました。川《かわ》のいちばん上《うえ》に、ばつじるしがついています。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "地図を握って走り出す主人公、追いかけるポッケ",
+     "art": "the child runs off confidently upstream along the riverbank clutching the map, while Pokke hurries behind trying to catch up",
+     "text": [
+      "「まかせて！」",
+      "「まかせて！ すぐ なおして くるね」 {name}は ちずを にぎって、かわの うえへ はしりだしました。",
+      "「まかせて！春《はる》のトンネルだって通《とお》れたんだもん。今度《こんど》もへっちゃらだよ」{name}は地図《ちず》をにぎりしめ、ポッケを追《お》いこすいきおいで、川《かわ》を上《のぼ》りはじめました。後《うし》ろからポッケがさけびます。「待《ま》ってよう！」"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "細い川。草の葉で光の消えたほたるたち",
+     "art": "a forest river with only a thin trickle of water; on the grass blades along the bank tired fireflies sit with their lights out and wings folded, and the child and Pokke look at them with worry",
+     "text": [
+      "ほたるさん、げんきが ないね。",
+      "かわの みずは ちょろちょろ。くさの はの ほたるたちは、ぐったりして います。「みずが こなくて、ひかる げんきが でないの」",
+      "川《かわ》の水《みず》は、いつもよりずっと少《すく》なく、ちょろちょろとしか流《なが》れていません。草《くさ》の葉《は》にとまったほたるたちは、ぐったりと羽《はね》をたたんでいます。「川《かわ》の上《うえ》で、水《みず》が止《と》まってしまったの。のどがからからで、光《ひか》る元気《げんき》が出《で》ないの」と、ほたるのおばあさんが、かすれた声《こえ》で言《い》いました。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "石と枝の山で塞がれた川。困り顔のビーバーの子ども3匹",
+     "art": "the river is completely blocked by a big pile of stones and branches; three little beaver children stand beside it with troubled faces, and the child and Pokke arrive",
+     "text": [
+      "おおきな いしの やまが あったよ。",
+      "ばつじるしの ばしょには、いしと えだが やまのように つみあがって いました。ビーバーの こどもたちが あそびで つくった ダムです。",
+      "地図《ちず》のばつじるしの場所《ばしょ》に着《つ》くと、川《かわ》は石《いし》とえだで、すっかりふさがれていました。そばで、ビーバーの子《こ》どもたちが、こまった顔《かお》でならんでいます。「ひみつきちを作《つく》っていたら、大《おお》きくなりすぎちゃって……もう、どかせないんだ」"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "顔を真っ赤にして大きな石を押す主人公",
+     "art": "the child pushes the biggest stone of the dam with both hands with all their might, face bright red from effort, while Pokke reaches out to help and is waved away",
+     "text": [
+      "うーん！ ひとりじゃ うごかない。",
+      "「みてて！」 {name}は いちばん おおきな いしを おしました。うーん、うーん……。いしは びくとも しません。",
+      "「見《み》てて、一人《ひとり》でどかしてみせる！」{name}は、いちばん大《おお》きな石《いし》に両手《りょうて》をかけて、力《ちから》いっぱいおしました。うーん、うーん……！顔《かお》が真《ま》っ赤《か》になっても、石《いし》はびくともしません。ポッケが手《て》つだおうとすると、{name}は言《い》いました。「だいじょうぶ、一人《ひとり》でできるから！」"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "夕焼けの川で尻もちをつき、涙ぐむ主人公",
+     "art": "under an orange sunset sky the child has slipped and sits in the shallow river, clothes soaked, with tears welling up in their eyes",
+     "text": [
+      "どぼん！ かわに おっこちた。",
+      "つるっ！ {name}は あしを すべらせて、どぼんと かわに おちて しまいました。そらは もう ゆうやけいろ です。",
+      "つるっ！ぬれた石《いし》で足《あし》がすべって、{name}はどぼん、と川《かわ》にしりもちをつきました。服《ふく》はびしょびしょ。空《そら》はもう夕焼《ゆうや》け色《いろ》で、お祭《まつ》りの時間《じかん》が近《ちか》づいています。「どうしよう……間《ま》に合《あ》わないよ」{name}の目《め》に、なみだがにじみました。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": false
+    },
+    {
+     "label": "手を差し出すポッケ。後ろに心配そうな仲間たち",
+     "art": "Pokke gently holds out his little paw to the child sitting in the river; behind him the beaver children and the two rabbit siblings watch with concern",
+     "text": [
+      "ポッケが てを のばして くれたよ。",
+      "「いっしょに やろうよ」 ポッケが ちいさな てを さしだしました。ビーバーたちも、うさぎの きょうだいも、かけよって きます。",
+      "そのとき、小《ちい》さな手《て》が、すっとのびてきました。ポッケです。「一人《ひとり》でがんばらなくていいんだよ。春《はる》のとき、{name}はぼくといっしょにいてくれたでしょ」ふり返《かえ》ると、ビーバーの子《こ》どもたちも、春《はる》に会《あ》ったうさぎの兄弟《きょうだい》も、心配《しんぱい》そうにこちらを見《み》ていました。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "一列に並んで石を手渡しする動物たちと主人公",
+     "art": "the child, Pokke, the beaver children and the rabbit siblings stand in a line passing stones from hand to hand to clear the dam, working together cheerfully",
+     "text": [
+      "みんなで せーの！",
+      "「みんなで やろう！」 みんなは いちれつに ならんで、いしを てわたしで はこびました。「せーの！」「よいしょ！」",
+      "「……みんな、手《て》つだってくれる？」{name}が言《い》うと、みんなはいっせいにうなずきました。一列《いちれつ》にならんで、石《いし》を手《て》から手《て》へ運《はこ》びます。「せーの！」「よいしょ！」最後《さいご》の大《おお》きな石《いし》は、全員《ぜんいん》でロープを引《ひ》っぱりました。「だいじょうぶ、だいじょうぶ、いっぽずつ！」"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "【見開き】川一面に光るほたる。歓声をあげる仲間たち",
+     "art": "the river flows again and the whole river is filled with thousands of glowing fireflies lighting up the night; the child, Pokke and all the animal friends cheer with joy. A grand, breathtaking wide view",
+     "text": [
+      "ほたるが ぴかぴか ひかったよ！",
+      "ざああっ！ かわに みずが もどると、ほたるたちが いっせいに ひかりました。よぞらの ほしが、かわに おりて きた みたいです。",
+      "ざあああっ！いきおいよく水《みず》が流《なが》れ出《だ》しました。草《くさ》の葉《は》でねむっていたほたるたちが、一《ひと》つ、また一《ひと》つと目《め》をさまし――やがて川《かわ》全体《ぜんたい》が、きらきらと光《ひか》りはじめました。夜空《よぞら》の星《ほし》がまるごとおりてきたような、ほたるのお祭《まつ》りのはじまりです。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "【ママ】テントの前でタオルにくるまれる主人公。ほたるの光の道",
+     "art": "at night in front of the tent the mother wraps the soaked child in a fluffy towel and hugs them; a path of firefly lights leads back from the forest",
+     "text": [
+      "ママが テントで まってたよ。",
+      "ほたるたちが ひかりの みちを つくって、テントまで おくって くれました。ママが タオルで ぎゅっと つつんで くれました。",
+      "帰《かえ》り道《みち》は、ほたるたちが光《ひかり》の道《みち》になって、案内《あんない》してくれました。テントにもどると、後《あと》から来《き》たママが待《ま》っていました。「まあ、びしょびしょ！」ママは{name}をふかふかのタオルで、ぎゅっとつつみました。「あのね、一人《ひとり》じゃできなかったけど、みんなとならできたんだよ」"
+     ],
+     "withMom": true,
+     "withDad": false,
+     "withSidekick": false,
+     "alt": {
+      "both": {
+       "label": "テント前でママがタオルで包み、パパがたき火でミルクを温める。ほたるの光の道",
+       "art": "at night in front of the tent the mother wraps the soaked child in a fluffy towel and hugs them while the father warms milk in a pot over a small campfire; a path of firefly lights leads back from the forest",
+       "text": [
+        "ママと パパが テントで まってたよ。",
+        "ほたるたちが ひかりの みちを つくって、テントまで おくって くれました。ママが タオルで ぎゅっと つつんで くれました。パパも「よく がんばったね」と にっこり。",
+        "帰《かえ》り道《みち》は、ほたるたちが光《ひかり》の道《みち》になって、案内《あんない》してくれました。テントにもどると、ママとパパが待《ま》っていました。「まあ、びしょびしょ！」ママは{name}をふかふかのタオルで、ぎゅっとつつみました。パパは、たき火《び》でミルクを温《あたた》めています。「あのね、一人《ひとり》じゃできなかったけど、みんなとならできたんだよ」"
+       ],
+       "withMom": true,
+       "withDad": true,
+       "withSidekick": false
+      },
+      "dad": {
+       "label": "テント前でパパがタオルで包む。ほたるの光の道",
+       "art": "at night in front of the tent the father wraps the soaked child in a fluffy towel and hugs them; a path of firefly lights leads back from the forest",
+       "text": [
+        "パパが テントで まってたよ。",
+        "ほたるたちが ひかりの みちを つくって、テントまで おくって くれました。パパが タオルで ぎゅっと つつんで くれました。",
+        "帰《かえ》り道《みち》は、ほたるたちが光《ひかり》の道《みち》になって、案内《あんない》してくれました。テントにもどると、パパが待《ま》っていました。「おや、びしょびしょだ！」パパは{name}をふかふかのタオルで、ぎゅっとつつみました。「あのね、一人《ひとり》じゃできなかったけど、みんなとならできたんだよ」"
+       ],
+       "withMom": false,
+       "withDad": true,
+       "withSidekick": false
+      },
+      "none": {
+       "label": "葉っぱのテント前でポッケが小さなタオルで主人公をふく。うさぎの兄弟、ほたるの光の道",
+       "art": "at night in front of a tent made of big green leaves, Pokke the squirrel stands on a log and rubs the soaked child's hair with a tiny towel while the two rabbit siblings, small light-brown rabbits with long ears, giggle beside them; a path of firefly lights leads back from the forest",
+       "text": [
+        "ほたるが テントまで おくって くれたよ。",
+        "ほたるたちが ひかりの みちを つくって、テントまで おくって くれました。ポッケが ほっぺから タオルを だして、ごしごし ふいて くれました。",
+        "帰《かえ》り道《みち》は、ほたるたちが光《ひかり》の道《みち》になって、案内《あんない》してくれました。テントにもどると、うさぎの兄弟《きょうだい》が待《ま》っていました。「わあ、びしょびしょ！」ポッケがほっぺから小《ちい》さなタオルを出《だ》して、{name}のかみをごしごしふいてくれました。「あのね、一人《ひとり》じゃできなかったけど、みんなとならできたんだよ」"
+       ],
+       "withMom": false,
+       "withDad": false,
+       "withSidekick": true
+      }
+     }
+    },
+    {
+     "label": "テントの入口で金色のどんぐりを見せるポッケ",
+     "art": "the child lies in a sleeping bag inside the tent with two leaf badges on their chest; at the tent entrance Pokke shows a shining golden acorn from his cheek",
+     "text": [
+      "バッジが 2まいに なったよ。",
+      "むねの バッジが、2まいに ふえて いました。ポッケが ほっぺから だしたのは、きんいろの どんぐり。「あきは、どんぐりまつりだよ！」",
+      "ねぶくろに入《はい》ると、むねのバッジが2まいにふえていました。ほたるの光《ひかり》がやどった、夏《なつ》の葉《は》っぱです。テントの外《そと》から、ポッケの声《こえ》。「ねえ、見《み》て」ほっぺから出《で》てきたのは、ぴかぴか光《ひか》る金色《きんいろ》のどんぐり。「秋《あき》になったら、どんぐり祭《まつ》りがあるんだ。このどんぐりをめぐって、すごいことが起《お》きるんだよ」"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    }
+   ]
+  },
+  {
+   "no": 3,
+   "title": "きんの どんぐりと チッチ",
+   "outfits": "autumn clothes in the same colors as the reference: long sleeves and light jackets, the child in a cozy sweater",
+   "cover": {
+    "label": "落ち葉の広場で、星のかんむりをかぶった主人公と小さなねずみのチッチ、肩にポッケ。",
+    "art": "in a forest clearing covered with red and yellow fallen leaves, the child wearing a sparkling star crown stands smiling next to Chicchi, a tiny gray mouse also wearing a star crown, with Pokke the squirrel on the child's shoulder",
+    "withSidekick": true
+   },
+   "scenes": [
+    {
+     "label": "【ママ】紅葉の公園で落ち葉を拾う主人公とママ。手紙つきのどんぐり",
+     "art": "an autumn park with red and yellow trees; the mother and the child pick up fallen leaves, and the mother reads a tiny letter tucked into the cap of an acorn",
+     "text": [
+      "ママと おちばを ひろったよ。",
+      "あきの こうえん。ママと おちばを ひろって いると、どんぐりの ぼうしに はさまった てがみが ころがって きました。",
+      "赤《あか》や黄色《きいろ》の葉《は》っぱが、ひらひら落《お》ちる秋《あき》の日《ひ》。{name}がママと公園《こうえん》で落《お》ち葉《ば》を拾《ひろ》っていると、ころころっと、どんぐりが転《ころ》がってきました。ぼうしのところに、小《ちい》さな手紙《てがみ》がはさまっています。ママが読《よ》んでくれました。「『どんぐり祭《まつ》りへようこそ。ポッケより』ですって」"
+     ],
+     "withMom": true,
+     "withDad": false,
+     "withSidekick": false,
+     "alt": {
+      "both": {
+       "label": "紅葉の公園で落ち葉を拾う主人公・ママ・パパ。ママが手紙つきのどんぐりを読む",
+       "art": "an autumn park with red and yellow trees; the mother, the father and the child pick up fallen leaves together, and the mother reads a tiny folded letter tucked into the cap of an acorn",
+       "text": [
+        "ママと パパと おちばを ひろったよ。",
+        "あきの こうえん。ママと パパと おちばを ひろって いると、どんぐりの ぼうしに はさまった てがみが ころがって きました。",
+        "赤《あか》や黄色《きいろ》の葉《は》っぱが、ひらひら落《お》ちる秋《あき》の日《ひ》。{name}がママとパパと公園《こうえん》で落《お》ち葉《ば》を拾《ひろ》っていると、ころころっと、どんぐりが転《ころ》がってきました。ぼうしのところに、小《ちい》さな手紙《てがみ》がはさまっています。ママが読《よ》んでくれました。「『どんぐり祭《まつ》りへようこそ。ポッケより』ですって」"
+       ],
+       "withMom": true,
+       "withDad": true,
+       "withSidekick": false
+      },
+      "dad": {
+       "label": "紅葉の公園で落ち葉を拾う主人公とパパ。手紙つきのどんぐり",
+       "art": "an autumn park with red and yellow trees; the father and the child pick up fallen leaves, and the father reads a tiny folded letter tucked into the cap of an acorn",
+       "text": [
+        "パパと おちばを ひろったよ。",
+        "あきの こうえん。パパと おちばを ひろって いると、どんぐりの ぼうしに はさまった てがみが ころがって きました。",
+        "赤《あか》や黄色《きいろ》の葉《は》っぱが、ひらひら落《お》ちる秋《あき》の日《ひ》。{name}がパパと公園《こうえん》で落《お》ち葉《ば》を拾《ひろ》っていると、ころころっと、どんぐりが転《ころ》がってきました。ぼうしのところに、小《ちい》さな手紙《てがみ》がはさまっています。パパが読《よ》んでくれました。「『どんぐり祭《まつ》りへようこそ。ポッケより』だって」"
+       ],
+       "withMom": false,
+       "withDad": true,
+       "withSidekick": false
+      },
+      "none": {
+       "label": "紅葉の公園で、手紙つきのどんぐりを拾う主人公",
+       "art": "an autumn park with red and yellow trees; the child crouches among the fallen leaves and picks up a rolling acorn with a tiny folded letter tucked into its cap, eyes shining with curiosity",
+       "text": [
+        "おちばの なかから てがみが でてきたよ。",
+        "あきの こうえん。{name}が おちばを ひろって いると、どんぐりの ぼうしに はさまった てがみが ころがって きました。",
+        "赤《あか》や黄色《きいろ》の葉《は》っぱが、ひらひら落《お》ちる秋《あき》の日《ひ》。{name}が公園《こうえん》で落《お》ち葉《ば》を拾《ひろ》っていると、ころころっと、どんぐりが転《ころ》がってきました。ぼうしのところに、小《ちい》さな手紙《てがみ》がはさまっています。ひらいてみると、ぐにゃぐにゃの字《じ》で書《か》いてありました。「『どんぐり祭《まつ》りへようこそ。ポッケより』だって！」"
+       ],
+       "withMom": false,
+       "withDad": false,
+       "withSidekick": false
+      }
+     }
+    },
+    {
+     "label": "にぎやかな森の秋祭り。ステージにふくろうの村長と星のかんむり",
+     "art": "a lively autumn festival in a forest clearing full of animals, with chestnut cakes and a pinecone ring-toss game; on a small wooden stage an owl village chief spreads his wings beside a sparkling star crown; the child and Pokke look on excitedly",
+     "text": [
+      "どんぐりまつりが はじまるよ！",
+      "もりの ひろばは どうぶつで いっぱい。「きんの どんぐりを みつけた ひとが、ことしの『まつりの ほし』です！」",
+      "森《もり》の広場《ひろば》は、動物《どうぶつ》たちでいっぱいでした。くりのケーキに、まつぼっくりのわなげ。ステージの上《うえ》で、ふくろうの村長《そんちょう》が羽《はね》を広《ひろ》げました。「さあ、どんぐりさがしのはじまりじゃ！金《きん》のどんぐりを見《み》つけたものが、今年《ことし》の『祭《まつ》りの星《ほし》』じゃよ」星《ほし》のかんむりが、きらきら光《ひか》っています。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "落ち葉の山に飛びこむ主人公とポッケ。走り出す仲間たち",
+     "art": "the child and Pokke jump joyfully into a big pile of fallen leaves while the animal friends run off in all directions to search for acorns",
+     "text": [
+      "「ぜったい みつける！」",
+      "{name}の めが かがやきました。「ぜったい いちばんに みつける！」 ポッケと いっしょに、おちばの やまへ とびこみました。",
+      "「ぜったい、いちばんに見《み》つける！」{name}は、かんむりから目《め》がはなせません。うさぎの兄弟《きょうだい》も、ビーバーも、もう走《はし》り出《だ》しています。{name}はポッケの手《て》を引《ひ》っぱって、いちばん大《おお》きな落《お》ち葉《ば》の山《やま》へ、とびこみました。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "いろいろな形の茶色いどんぐりを並べて首をかしげる",
+     "art": "the child kneels on the leaf-covered ground with many brown acorns of different shapes lined up, tilting their head in puzzlement, Pokke beside them",
+     "text": [
+      "ちゃいろ、ちゃいろ、また ちゃいろ。",
+      "ちゃいろの どんぐり。また ちゃいろ。もひとつ ちゃいろ。きんいろは なかなか みつかりません。",
+      "がさがさ、ほりほり。出《で》てくるのは、茶色《ちゃいろ》のどんぐりばかり。ぼうしつきのどんぐり、長《なが》いどんぐり、まんまるのどんぐり。でも、金色《きんいろ》は、どこにもありません。ほかの動物《どうぶつ》たちも、首《くび》をかしげています。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "木の根元で土を掘る、鼻が泥だらけの小さなねずみ",
+     "art": "at the root of a big tree, Chicchi, a tiny gray mouse with a muddy nose, digs the soil with great effort while the child watches",
+     "text": [
+      "ちいさな ねずみの チッチも さがしてる。",
+      "ねっこの そばで、ちいさな ねずみの チッチが いっしょうけんめい ほって いました。「ぼく、ちいさいから、いつも びりなんだ。いちどで いいから かちたいな」",
+      "大《おお》きな根《ね》っこのかげで、小《ちい》さなねずみが、一生《いっしょう》けんめい土《つち》をほっていました。チッチという名前《なまえ》です。「ぼく、体《からだ》が小《ちい》さいから、かけっこもかくれんぼも、いつもびりなんだ。一度《いちど》でいいから、『祭《まつ》りの星《ほし》』になってみたいの」チッチの鼻《はな》は、どろだらけでした。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": false
+    },
+    {
+     "label": "穴の奥から金色のどんぐりを取り出す主人公。背を向けて掘るチッチ",
+     "art": "the child reaches into the hole Chicchi dug and pulls out a heavy shining golden acorn, eyes wide, while Chicchi digs at another spot with his back turned",
+     "text": [
+      "あった！ きんの どんぐり！",
+      "そのとき、チッチが ほった あなの おくで、なにかが きらっ。{name}が てを のばすと――きんの どんぐりです！",
+      "そのとき、チッチがほったあなのおくで、何《なに》かがきらりと光《ひか》りました。チッチがべつの場所《ばしょ》をほっているあいだに、{name}はそっと手《て》をのばしました。つかんでみると……ずっしり重《おも》くて、ぴかぴかの、金《きん》のどんぐり！「あった……！」"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": false
+    },
+    {
+     "label": "どんぐりをポケットに隠す主人公。笑顔のチッチ",
+     "art": "the child secretly slips the golden acorn into their pocket with a guilty face, while Chicchi smiles innocently at them",
+     "text": [
+      "ポケットに ないしょ……。",
+      "「なにか あった？」 チッチが ききました。{name}は どんぐりを ポケットに かくして、「ううん」と いいました。",
+      "「何《なに》か見《み》つかった？」チッチがふり返《かえ》りました。{name}は、とっさにどんぐりをポケットにおしこんで、「……ううん、何《なに》も」と答《こた》えました。チッチは「そっか」と笑《わら》って、また、あなをほりはじめました。ポケットの中《なか》のどんぐりが、なんだかとても重《おも》く感《かん》じました。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": false
+    },
+    {
+     "label": "ステージ前でポケットを握る主人公。後ろで背伸びするチッチ",
+     "art": "in front of the festival stage the child stands clutching their pocket with an uneasy look; behind the crowd little Chicchi stands on tiptoe trying to see",
+     "text": [
+      "むねが ちくちく する。",
+      "ステージの まえで、{name}は ポケットを にぎりしめました。うしろで チッチが どろだらけの かおで わらって います。むねが ちくちく しました。",
+      "「金《きん》のどんぐりを見《み》つけたものは、いるかの？」村長《そんちょう》の声《こえ》がひびきます。{name}はポケットをにぎりしめて、前《まえ》に出《で》ようとしました。でも、ふと見《み》ると、いちばん後《うし》ろで、チッチがどろだらけの顔《かお》で、せのびをしていました。むねのおくが、ちくちく、ちくちくいたみました。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": false
+    },
+    {
+     "label": "ステージ上でどんぐりを掲げる主人公、驚くチッチ。静まる広場",
+     "art": "on the stage the child holds the golden acorn high while holding Chicchi's hand; Chicchi looks surprised and the crowd of animals is silent",
+     "text": [
+      "「チッチが みつけたんだよ」",
+      "{name}は チッチの てを ひいて ステージに あがりました。「これ、チッチが ほった あなに あったの。チッチが みつけたんだよ」",
+      "{name}は深《ふか》く息《いき》をすって、チッチの手《て》を引《ひ》きました。そして、ステージの上《うえ》で、金《きん》のどんぐりを高《たか》くかかげました。「これは、チッチがほったあなの中《なか》にあったの。さっき、うそをついてごめんね。見《み》つけたのは、チッチだよ」広場《ひろば》が、しーんと静《しず》まりました。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": false
+    },
+    {
+     "label": "【見開き】二つに分かれた星のかんむりをかぶる二人。落ち葉の紙吹雪",
+     "art": "on the stage the star crown has split into two, one on the child's head and one on Chicchi's; the owl chief spreads his wings and confetti of colorful autumn leaves swirls over the cheering crowd. A grand, breathtaking wide view",
+     "text": [
+      "ふたり いっしょに「まつりの ほし」！",
+      "チッチは にっこり。「ふたりで みつけたんだよ」 そんちょうが かんむりを のせると、かんむりは ふたつに わかれて、ふたりの あたまで ひかりました。",
+      "チッチは目《め》を丸《まる》くして、それから、にっこり笑《わら》いました。「ちがうよ。二人《ふたり》で見《み》つけたんだよ」ふくろうの村長《そんちょう》が「ほう！」と羽《はね》を広《ひろ》げ、星《ほし》のかんむりを二人《ふたり》の頭《あたま》にのせました。すると、かんむりはぱあっと二《ふた》つに分《わ》かれ、広場《ひろば》じゅうに落《お》ち葉《ば》の紙《かみ》ふぶきが、まい上《あ》がりました。わあっと、はくしゅがわき起《お》こります。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "【パパ】パパと一緒に落ち葉の山に飛びこむ主人公",
+     "art": "in the evening park the father and the child dive together into a big pile of fallen leaves, laughing, leaves flying everywhere",
+     "text": [
+      "パパと おちばの やまに ダイブ！",
+      "ゆうがた、パパが むかえに きました。ふたりで おちばの やまに ダイブ！「きょうは いい かおを してるね」",
+      "夕方《ゆうがた》、パパがむかえに来《き》ました。帰《かえ》り道《みち》、公園《こうえん》の大《おお》きな落《お》ち葉《ば》の山《やま》を見《み》つけると、パパと{name}は顔《かお》を見合《みあ》わせて――「せーの！」ばさあっと、二人《ふたり》でダイブ。落《お》ち葉《ば》まみれの{name}を見《み》て、パパが笑《わら》いました。「なんだか今日《きょう》は、すっきりした顔《かお》をしてるね」"
+     ],
+     "withMom": false,
+     "withDad": true,
+     "withSidekick": false,
+     "alt": {
+      "both": {
+       "label": "パパと主人公が落ち葉の山にダイブ、ママが落ち葉を降らせる",
+       "art": "in the evening park the father and the child dive together into a big pile of fallen leaves, laughing, while the mother showers them with an armful of leaves; leaves fly everywhere",
+       "text": [
+        "パパと ママと おちばの やまに ダイブ！",
+        "ゆうがた、パパと ママが むかえに きました。みんなで おちばの やまに ダイブ！「きょうは いい かおを してるね」",
+        "夕方《ゆうがた》、パパとママがむかえに来《き》ました。帰《かえ》り道《みち》、公園《こうえん》の大《おお》きな落《お》ち葉《ば》の山《やま》を見《み》つけると、パパと{name}は顔《かお》を見合《みあ》わせて――「せーの！」ばさあっと、二人《ふたり》でダイブ。ママも笑《わら》いながら、落《お》ち葉《ば》のシャワーをふらせます。落《お》ち葉《ば》まみれの{name}を見《み》て、パパが言《い》いました。「なんだか今日《きょう》は、すっきりした顔《かお》をしてるね」"
+       ],
+       "withMom": true,
+       "withDad": true,
+       "withSidekick": false
+      },
+      "mom": {
+       "label": "ママと一緒に落ち葉の山に飛びこむ主人公",
+       "art": "in the evening park the mother and the child dive together into a big pile of fallen leaves, laughing, leaves flying everywhere",
+       "text": [
+        "ママと おちばの やまに ダイブ！",
+        "ゆうがた、ママが むかえに きました。ふたりで おちばの やまに ダイブ！「きょうは いい かおを してるね」",
+        "夕方《ゆうがた》、ママがむかえに来《き》ました。帰《かえ》り道《みち》、公園《こうえん》の大《おお》きな落《お》ち葉《ば》の山《やま》を見《み》つけると、ママと{name}は顔《かお》を見合《みあ》わせて――「せーの！」ばさあっと、二人《ふたり》でダイブ。落《お》ち葉《ば》まみれの{name}を見《み》て、ママが笑《わら》いました。「なんだか今日《きょう》は、すっきりした顔《かお》をしてるね」"
+       ],
+       "withMom": true,
+       "withDad": false,
+       "withSidekick": false
+      },
+      "none": {
+       "label": "チッチと一緒に落ち葉の山に飛びこむ主人公",
+       "art": "in the evening park the child and Chicchi, a tiny gray mouse, dive together into a big pile of fallen leaves, laughing with leaves stuck all over them, leaves flying everywhere",
+       "text": [
+        "チッチと おちばの やまに ダイブ！",
+        "ゆうがた、チッチが もりの でぐちまで おくって くれました。ふたりで おちばの やまに ダイブ！「きょうは いちばん たのしい おまつりだったね」",
+        "夕方《ゆうがた》、チッチが森《もり》の出口《でぐち》まで送《おく》ってくれました。公園《こうえん》の大《おお》きな落《お》ち葉《ば》の山《やま》を見《み》つけると、チッチと{name}は顔《かお》を見合《みあ》わせて――「せーの！」ばさあっと、二人《ふたり》でダイブ。落《お》ち葉《ば》まみれの顔《かお》で、二人《ふたり》は笑《わら》い合《あ》いました。「ねえ、{name}。今年《ことし》のお祭《まつ》りが、いちばん楽《たの》しかったよ」"
+       ],
+       "withMom": false,
+       "withDad": false,
+       "withSidekick": false
+      }
+     }
+    },
+    {
+     "label": "窓辺であくびをするポッケ、白い小さな羽を手渡す",
+     "art": "night in the child's bedroom; three leaf badges on the child's pajamas; at the window Pokke yawns sleepily and hands over a small pure-white feather",
+     "text": [
+      "バッジが 3まい。ポッケは ふゆの おやすみ。",
+      "バッジは 3まいに なりました。ポッケは おおきな あくび。「ふゆは ねむるんだ。この しろい はねを もってて。ゆきの よるに はねが ひかったら、だれかが こまってる しるしだよ」",
+      "その夜《よる》、むねのバッジは3まいになっていました。黄金色《こがねいろ》にそまった、秋《あき》の葉《は》っぱです。まどべに来《き》たポッケが、ふわあ、と大《おお》きなあくびをしました。「ぼく、そろそろ冬《ふゆ》の、長《なが》いお休《やす》みなんだ」そして、ほっぺから、真《ま》っ白《しろ》な小《ちい》さな羽《はね》を一《ひと》つ、取《と》り出《だ》しました。「雪《ゆき》の夜《よる》に、この羽《はね》が光《ひか》ったら……だれかが助《たす》けを待《ま》ってるしるしだよ」"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    }
+   ]
+  },
+  {
+   "no": 4,
+   "title": "ゆきの よるの まいごの ふくろう",
+   "outfits": "warm winter clothes in the same colors as the reference: puffy coats, knitted hats, scarves and mittens",
+   "cover": {
+    "label": "雪の夜の森で、コートからふくろうの赤ちゃんが顔を出し、胸の3枚のバッジが光る主人公。",
+    "art": "in a snowy forest at night, a round fluffy baby owl peeks out from the front of the child's coat, and three leaf badges on the child's chest glow softly; Pokke sits on the child's shoulder",
+    "withSidekick": true
+   },
+   "scenes": [
+    {
+     "label": "【パパ】雪の庭でパパが雪だるまの頭をのせる。口をとがらせて見上げる主人公",
+     "art": "a snowy garden; the tall father places the head on top of a big snowman, while the small child looks up pouting",
+     "text": [
+      "パパと ゆきだるま。てっぺんに とどかない。",
+      "ゆきの ひ。パパと ゆきだるまを つくりました。てっぺんに あたまを のせるのは、せの たかい パパの しごと。「ちいさいと、なんにも できないや」",
+      "一面《いちめん》の雪景色《ゆきげしき》。{name}はパパと、大《おお》きな雪《ゆき》だるまを作《つく》りました。最後《さいご》に頭《あたま》をのせるのは、せの高《たか》いパパの役目《やくめ》です。「いいなあ。{name}も大《おお》きかったら、何《なん》でもできるのに」{name}が口《くち》をとがらせると、パパは雪《ゆき》のついた手《て》で、{name}の頭《あたま》をなでました。"
+     ],
+     "withMom": false,
+     "withDad": true,
+     "withSidekick": false,
+     "alt": {
+      "both": {
+       "label": "パパが雪だるまの頭をのせ、ママが手ぶくろをつける。口をとがらせて見上げる主人公",
+       "art": "a snowy garden; the tall father places the head on top of a big snowman while the mother helps the child put on mittens, and the small child looks up pouting",
+       "text": [
+        "パパと ママと ゆきだるま。てっぺんに とどかない。",
+        "ゆきの ひ。パパと ママと ゆきだるまを つくりました。てっぺんに あたまを のせるのは、せの たかい パパの しごと。「ちいさいと、なんにも できないや」",
+        "一面《いちめん》の雪景色《ゆきげしき》。{name}はパパとママと、大《おお》きな雪《ゆき》だるまを作《つく》りました。ママが手《て》ぶくろをつけてあげて、最後《さいご》に頭《あたま》をのせるのは、せの高《たか》いパパの役目《やくめ》です。「いいなあ。{name}も大《おお》きかったら、何《なん》でもできるのに」{name}が口《くち》をとがらせると、パパは雪《ゆき》のついた手《て》で、{name}の頭《あたま》をなでました。"
+       ],
+       "withMom": true,
+       "withDad": true,
+       "withSidekick": false
+      },
+      "mom": {
+       "label": "ママが雪だるまの頭をのせる。口をとがらせて見上げる主人公",
+       "art": "a snowy garden; the mother lifts and places the head on top of a big snowman, while the small child looks up pouting",
+       "text": [
+        "ママと ゆきだるま。てっぺんに とどかない。",
+        "ゆきの ひ。ママと ゆきだるまを つくりました。てっぺんに あたまを のせるのは、せの たかい ママの しごと。「ちいさいと、なんにも できないや」",
+        "一面《いちめん》の雪景色《ゆきげしき》。{name}はママと、大《おお》きな雪《ゆき》だるまを作《つく》りました。最後《さいご》に頭《あたま》をのせるのは、せの高《たか》いママの役目《やくめ》です。「いいなあ。{name}も大《おお》きかったら、何《なん》でもできるのに」{name}が口《くち》をとがらせると、ママは雪《ゆき》のついた手《て》で、{name}の頭《あたま》をなでました。"
+       ],
+       "withMom": true,
+       "withDad": false,
+       "withSidekick": false
+      },
+      "none": {
+       "label": "庭で、雪だるまの頭を持ち上げようと背伸びする主人公。枝から雪が落ちる",
+       "art": "a snowy garden; the small child stands on tiptoe straining to lift a snowball head onto a big snowman that is too tall, pouting, as a clump of snow slides softly off a tree branch above",
+       "text": [
+        "ゆきだるま。てっぺんに とどかない。",
+        "ゆきの ひ。{name}は にわで ゆきだるまを つくりました。でも、てっぺんに あたまを のせようと しても、せが とどきません。「ちいさいと、なんにも できないや」",
+        "一面《いちめん》の雪景色《ゆきげしき》。{name}は庭《にわ》で、大《おお》きな雪《ゆき》だるまを作《つく》りました。最後《さいご》に頭《あたま》をのせようとしましたが、何度《なんど》せのびをしても、てっぺんにとどきません。「いいなあ。{name}も大《おお》きかったら、何《なん》でもできるのに」{name}が口《くち》をとがらせると、木《き》のえだから雪《ゆき》がぽふっと落《お》ちて、{name}の頭《あたま》をなでるように、すべっていきました。"
+       ],
+       "withMom": false,
+       "withDad": false,
+       "withSidekick": false
+      }
+     }
+    },
+    {
+     "label": "夜の寝室で光りだす白い羽。コートを羽織る主人公",
+     "art": "night in the child's bedroom; the small white feather by the pillow starts to blink with light, and the child puts on a winter coat with three leaf badges on the chest",
+     "text": [
+      "よる、しろい はねが ひかったよ。",
+      "その よる。まくらもとの しろい はねが、ちかちかと ひかりだしました。「だれかが たすけを まってる！」",
+      "その夜《よる》。ねむろうとしたとき、まくらもとの白《しろ》い羽《はね》が、ちかっ、ちかっと光《ひか》り出《だ》しました。ポッケが言《い》っていた、助《たす》けを待《ま》っているしるしです。{name}はコートをはおり、3まいのバッジをむねにつけて、そっととびらを開《あ》けました。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": false
+    },
+    {
+     "label": "雪の中で震えるまん丸のふくろうの赤ちゃん。木の穴から寝ぐせのポッケ",
+     "art": "in the snowy night forest a round fluffy baby owl shivers in the snow; the child crouches beside it, and a sleepy Pokke with messy bed-head fur peeks out of a hole in a tree",
+     "text": [
+      "ふくろうの あかちゃんが ふるえてる。",
+      "ゆきの なかで、ふくろうの あかちゃんが ふるえて いました。「ママの きが わからないの」 ねぼけた ポッケも、あなから かおを だしました。",
+      "羽《はね》が光《ひか》るほうへ進《すす》むと、雪《ゆき》の中《なか》で、まんまるのふくろうの赤《あか》ちゃんが、ふるえていました。「とぶ練習《れんしゅう》をしていたら、ふぶきで、ママのいる木《き》がわからなくなっちゃったの」そこへ、ねぐせだらけのポッケが、木《き》のあなから顔《かお》を出《だ》しました。「ふわあ……{name}？もう春《はる》？」"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "コートの胸元から赤ちゃんが顔を出す。肩にポッケ",
+     "art": "the child walks through the snowy forest with the baby owl tucked inside the front of their coat, its face peeking out, and Pokke on the child's shoulder",
+     "text": [
+      "コートに いれて、あったかいね。",
+      "{name}は あかちゃんを コートの なかに いれました。「だいじょうぶ。いっしょに ママを さがそう」",
+      "{name}は、ふくろうの赤《あか》ちゃんを、そっとコートの中《なか》に入《い》れてあげました。こごえていた体《からだ》が、少《すこ》しずつ温《あたた》まっていきます。「だいじょうぶ。いっしょにママをさがそうね」ポッケも、ねむい目《め》をこすって、{name}のかたにとびのりました。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "雪に埋もれた巣穴から顔を出すうさぎの兄弟",
+     "art": "the two rabbit siblings poke their heads out of a burrow buried in snow, pointing the way for the child and Pokke",
+     "text": [
+      "「いちばん たかい まつの き だよ」",
+      "ゆきの したの うさぎの いえで きくと、「ふくろうの いえは、もりで いちばん たかい まつの き だよ」",
+      "雪《ゆき》にうもれたうさぎの家《いえ》を、とんとんたたくと、ねぼけまなこのうさぎの兄弟《きょうだい》が出《で》てきました。「ふくろうの家《いえ》？森《もり》でいちばん高《たか》い、松《まつ》の木《き》のてっぺんだよ。でも、こんなふぶきじゃ……」冬《ふゆ》の森《もり》は、夏《なつ》とはまるでちがう顔《かお》をしていました。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "吹雪で真っ白な森。消えていく足あと。立ちすくむ主人公",
+     "art": "a blizzard turns the forest completely white; the child's footprints disappear behind them and the child stands frozen, unsure where to go, holding the baby owl in their coat",
+     "text": [
+      "ふぶきで みちが きえちゃった。",
+      "ごうごう ふぶき。あしあとが どんどん きえて いきます。どっちから きたのかも、わからなく なりました。",
+      "ひゅうう、ごうごう。ふぶきは、どんどん強《つよ》くなりました。ふり返《かえ》ると、自分《じぶん》たちの足《あし》あとが、みるみる雪《ゆき》に消《き》えていきます。前《まえ》も後《うし》ろも、真《ま》っ白《しろ》。{name}は立《た》ち止《ど》まりました。どっちへ進《すす》めばいいのか、もうわかりません。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "吹雪の中でコートごしに赤ちゃんを抱きしめる主人公",
+     "art": "in the howling blizzard the child hugs the baby owl tightly through their coat to keep it warm, eyes closed with determination",
+     "text": [
+      "「やっぱり、むりかなあ……」",
+      "「やっぱり、ちいさい {name}には むりなのかな……」 コートの なかで、あかちゃんが「ママ」と ないて います。",
+      "「やっぱり、小《ちい》さい{name}には、むりなのかな……」泣《な》きそうになったとき、コートの中《なか》で、赤《あか》ちゃんが小《ちい》さく泣《な》いているのが聞《き》こえました。「ママ……」{name}よりも、ずっと小《ちい》さな声《こえ》でした。{name}はコートの上《うえ》から、赤《あか》ちゃんをぎゅっとだきしめました。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "胸の3枚の葉っぱバッジがそれぞれの色（桃・緑・金）で光る",
+     "art": "close-up of the child in the snow as the three leaf badges on their chest glow, each in its own color: pink, green and gold",
+     "text": [
+      "むねの バッジが ぽうっと ひかった。",
+      "そのとき、むねの 3まいの バッジが ぽうっと ひかりました。はるの ひかり、なつの ひかり、あきの ひかり。",
+      "そのとき、むねのバッジが、ぽうっと光《ひか》りました。トンネルを照《て》らした、春《はる》の光《ひかり》。川《かわ》をうめつくした、夏《なつ》のほたるの光《ひかり》。お祭《まつ》りのかんむりの、秋《あき》の光《ひかり》。3まいの葉《は》っぱが、まるで「思《おも》い出《だ》して」と言《い》うように、ちかちかとまたたいています。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "雪の上に光の粒が一列にともり、吹雪の中に道ができる",
+     "art": "the child takes a step forward and grains of light spill from the badges onto the snow, lighting up one by one in a line that forms a glowing path through the blizzard",
+     "text": [
+      "「だいじょうぶ、いっぽずつ！」",
+      "「だいじょうぶ、だいじょうぶ、いっぽずつ！」 {name}が あるきだすと、バッジの ひかりが まえへ まえへと のびて、みちに なりました。",
+      "{name}は顔《かお》を上《あ》げました。「だいじょうぶ、だいじょうぶ、いっぽずつ！」一歩《いっぽ》ふみ出《だ》すと、バッジから光《ひかり》のつぶがこぼれて、雪《ゆき》の上《うえ》に、ぽつ、ぽつとともりました。もう一歩《いっぽ》。また一《ひと》つ。光《ひかり》のつぶは前《まえ》へ前《まえ》へとならんで、ふぶきの中《なか》に、ひとすじの道《みち》を作《つく》りました。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "【見開き】巨大な松の木、翼を広げて舗い降りる母ふくろう。晴れた星空",
+     "art": "at the end of the path of light stands a huge pine tree; a big mother owl swoops down with her wings spread wide to embrace the baby owl jumping out of the child's coat; the blizzard has stopped and the sky is full of stars. A grand, breathtaking wide view",
+     "text": [
+      "ママの ふくろうと あえたね！",
+      "ひかりの みちの さきに、いちばん たかい まつの き。ママの ふくろうが まいおりて きて、あかちゃんを つばさで つつみました。",
+      "光《ひかり》の道《みち》のおわりに、そびえ立《た》つ松《まつ》の木《き》が見《み》えました。てっぺんから、大《おお》きなふくろうがつばさを広《ひろ》げて、まいおりてきます。「ああ、よかった……！」ママのふくろうは、コートからとび出《だ》した赤《あか》ちゃんを、大《おお》きなつばさで、すっぽりつつみこみました。いつのまにかふぶきはやみ、空《そら》には星《ほし》がまたたいていました。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "【ママ】毛布にくるまれてココアを飲む主人公とママ。窓の外は雪",
+     "art": "back home by the window, the child wrapped in a fluffy blanket drinks hot cocoa with the mother; snow falls outside the window",
+     "text": [
+      "ママの ココア、あったかい。",
+      "いえに かえると、ママが まどべで まって いました。あったかい ココアと ふかふかの もうふ。「よく がんばったね」",
+      "家《いえ》に帰《かえ》ると、ママがまどべで待《ま》っていました。何《なに》も聞《き》かずに、{name}をふかふかのもうふでくるんで、あまいココアを入《い》れてくれます。「小《ちい》さなふくろうさんを、助《たす》けてきたの」{name}が言《い》うと、ママはにっこり笑《わら》いました。「{name}だから、小《ちい》さな声《こえ》に気《き》づけたんだね」"
+     ],
+     "withMom": true,
+     "withDad": false,
+     "withSidekick": false,
+     "alt": {
+      "both": {
+       "label": "毛布にくるまる主人公、ママが寄りそい、パパがココアを運ぶ。窓の外は雪",
+       "art": "back home by the window, the child is wrapped in a fluffy blanket with the mother snuggled close beside them, while the father brings over a mug of hot cocoa; snow falls outside the window",
+       "text": [
+        "ママと パパの ココア、あったかい。",
+        "いえに かえると、ママと パパが まどべで まって いました。あったかい ココアと ふかふかの もうふ。「よく がんばったね」",
+        "家《いえ》に帰《かえ》ると、ママとパパが、まどべで待《ま》っていました。何《なに》も聞《き》かずに、ママは{name}をふかふかのもうふでくるんで、パパはあまいココアを入《い》れてくれます。「小《ちい》さなふくろうさんを、助《たす》けてきたの」{name}が言《い》うと、ママはにっこり笑《わら》いました。「{name}だから、小《ちい》さな声《こえ》に気《き》づけたんだね」"
+       ],
+       "withMom": true,
+       "withDad": true,
+       "withSidekick": false
+      },
+      "dad": {
+       "label": "毛布にくるまれてココアを飲む主人公とパパ。窓の外は雪",
+       "art": "back home by the window, the child wrapped in a fluffy blanket drinks hot cocoa with the father; snow falls outside the window",
+       "text": [
+        "パパの ココア、あったかい。",
+        "いえに かえると、パパが まどべで まって いました。あったかい ココアと ふかふかの もうふ。「よく がんばったね」",
+        "家《いえ》に帰《かえ》ると、パパがまどべで待《ま》っていました。何《なに》も聞《き》かずに、{name}をふかふかのもうふでくるんで、あまいココアを入《い》れてくれます。「小《ちい》さなふくろうさんを、助《たす》けてきたの」{name}が言《い》うと、パパはにっこり笑《わら》いました。「{name}だから、小《ちい》さな声《こえ》に気《き》づけたんだね」"
+       ],
+       "withMom": false,
+       "withDad": true,
+       "withSidekick": false
+      },
+      "none": {
+       "label": "毛布にもぐる主人公の胸の上で丸くなるポッケ。窓の外は雪",
+       "art": "back home, the child burrows under a fluffy blanket by the window, smiling, while Pokke the squirrel curls up in a ball on the child's chest; snow falls outside the window",
+       "text": [
+        "もうふの なかで ポッケと ぬくぬく。",
+        "いえに かえると、{name}は ふかふかの もうふに もぐりこみました。ポッケも いっしょに まるく なります。「よく がんばったね」",
+        "家《いえ》に帰《かえ》ると、{name}は、ふかふかのもうふにもぐりこみました。ポッケも、{name}のむねの上《うえ》で、まるくなります。「小《ちい》さなふくろうさんを、助《たす》けたね」ポッケが言《い》うと、{name}はにっこり笑《わら》いました。「小《ちい》さいからこそ、小《ちい》さな声《こえ》に気《き》づけたんだよ」"
+       ],
+       "withMom": false,
+       "withDad": false,
+       "withSidekick": true
+      }
+     }
+    },
+    {
+     "label": "窓の外の枝に母ふくろう。枕元に4枚目の雪の結晶模様のバッジ",
+     "art": "night in the child's bedroom; on a snowy branch outside the window the mother owl perches and speaks; beside the pillow a fourth leaf badge with a silver snowflake pattern shines",
+     "text": [
+      "バッジは 4まい。はるが まちどおしいね。",
+      "バッジは 4まいに なりました。まどの そとで、ママの ふくろうが いいました。「はるに、おじいの きの 100さいの おたんじょうびが あるのよ」",
+      "ねむる前《まえ》、むねのバッジが4まいになっていることに、気《き》がつきました。雪《ゆき》のけっしょうのもようがついた、冬《ふゆ》の葉《は》っぱです。まどの外《そと》のえだに、ママのふくろうがとまっていました。「ありがとう。お礼《れい》に一《ひと》つ、ひみつを教《おし》えるわ。春《はる》に、おじいの木《き》の100さいの、おたんじょう日《び》があるの。でも、おじいの木《き》は、少《すこ》し元気《げんき》がないみたいなの」"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": false
+    }
+   ]
+  },
+  {
+   "no": 5,
+   "title": "おじいの きの たんじょうび",
+   "outfits": null,
+   "cover": {
+    "label": "満開のおじいの木の下、これまでの仲間全員に囲まれた主人公とポッケ。",
+    "art": "under a giant ancient tree in full bloom with pink, green, gold and silver leaves, the child and Pokke the squirrel stand happily surrounded by all their forest friends: two rabbit siblings, three beaver children, a tiny gray mouse, an owl chief and an owl mother with her baby",
+    "withSidekick": true
+   },
+   "scenes": [
+    {
+     "label": "【ママ】第1話と同じ構図の草原。少し背が伸びた主人公とママ、胸に4枚のバッジ",
+     "art": "a spring picnic on a blanket in a meadow at the edge of a deep forest, the same view as a year ago; the mother points at the child's long shadow; the child, a little taller now, wears four leaf badges on their chest",
+     "text": [
+      "また はる。ママと ピクニック。",
+      "また はるが きました。ママと、きょねんと おなじ くさはらで ピクニック。「{name}、すこし おおきく なったね」",
+      "また、春《はる》がやって来《き》ました。{name}はママといっしょに、去年《きょねん》と同《おな》じ森《もり》の入《い》り口《ぐち》で、ピクニックをしています。「ほら、{name}のかげ。去年《きょねん》より、ずっと長《なが》いよ」ママに言《い》われて見《み》ると、本当《ほんとう》です。むねでは、4まいの葉《は》っぱのバッジが、そよ風《かぜ》にゆれていました。"
+     ],
+     "withMom": true,
+     "withDad": false,
+     "withSidekick": false,
+     "alt": {
+      "both": {
+       "label": "第1話と同じ構図の草原。少し背が伸びた主人公とママ・パパ、胸に4枚のバッジ",
+       "art": "a spring picnic on a blanket in a meadow at the edge of a deep forest, the same view as a year ago; the mother points at the child's long shadow and the father nods happily; the child, a little taller now, wears four leaf badges on their chest",
+       "text": [
+        "また はる。ママと パパと ピクニック。",
+        "また はるが きました。ママと パパと、きょねんと おなじ くさはらで ピクニック。「{name}、すこし おおきく なったね」",
+        "また、春《はる》がやって来《き》ました。{name}はママとパパといっしょに、去年《きょねん》と同《おな》じ森《もり》の入《い》り口《ぐち》で、ピクニックをしています。「ほら、{name}のかげ。去年《きょねん》より、ずっと長《なが》いよ」ママに言《い》われて見《み》ると、本当《ほんとう》です。パパも、うれしそうにうなずきました。むねでは、4まいの葉《は》っぱのバッジが、そよ風《かぜ》にゆれていました。"
+       ],
+       "withMom": true,
+       "withDad": true,
+       "withSidekick": false
+      },
+      "dad": {
+       "label": "第1話と同じ構図の草原。少し背が伸びた主人公とパパ、胸に4枚のバッジ",
+       "art": "a spring picnic on a blanket in a meadow at the edge of a deep forest, the same view as a year ago; the father points at the child's long shadow; the child, a little taller now, wears four leaf badges on their chest",
+       "text": [
+        "また はる。パパと ピクニック。",
+        "また はるが きました。パパと、きょねんと おなじ くさはらで ピクニック。「{name}、すこし おおきく なったね」",
+        "また、春《はる》がやって来《き》ました。{name}はパパといっしょに、去年《きょねん》と同《おな》じ森《もり》の入《い》り口《ぐち》で、ピクニックをしています。「ほら、{name}のかげ。去年《きょねん》より、ずっと長《なが》いよ」パパに言《い》われて見《み》ると、本当《ほんとう》です。むねでは、4まいの葉《は》っぱのバッジが、そよ風《かぜ》にゆれていました。"
+       ],
+       "withMom": false,
+       "withDad": true,
+       "withSidekick": false
+      },
+      "none": {
+       "label": "第1話と同じ構図の草原。少し背が伸びた主人公と蝶、胸に4枚のバッジ",
+       "art": "a sunny spring meadow at the edge of a deep forest, the same view as a year ago; a butterfly flutters around the child, who looks down at their own long shadow; the child, a little taller now, wears four leaf badges on their chest swaying in the breeze",
+       "text": [
+        "また はる。もりの いりぐちに きたよ。",
+        "また はるが きました。{name}は きょねんと おなじ もりの いりぐちへ やって きました。ちょうちょが いいました。「{name}、すこし おおきく なったね」",
+        "また、春《はる》がやって来《き》ました。{name}は、去年《きょねん》と同《おな》じ森《もり》の入《い》り口《ぐち》の草原《くさはら》に来《き》ています。去年《きょねん》のちょうちょが、ひらひらとんできて言《い》いました。「ほら、{name}のかげ。去年《きょねん》より、ずっと長《なが》いよ」見《み》ると、本当《ほんとう》です。むねでは、4まいの葉《は》っぱのバッジが、そよ風《かぜ》にゆれていました。"
+       ],
+       "withMom": false,
+       "withDad": false,
+       "withSidekick": false
+      }
+     }
+    },
+    {
+     "label": "草むらから飛び出す、少しふっくらしたポッケ",
+     "art": "Pokke the squirrel, a little plumper after his winter sleep, leaps out of the grass toward the child, waving excitedly",
+     "text": [
+      "ポッケと おいわいに いこう！",
+      "「{name}！」 ポッケが とんで きました。「きょうは おじいの きの 100さいの おたんじょうび。みんなで おいわいするんだ！」",
+      "「{name}、ひさしぶり！」ポッケが、草《くさ》の中《なか》からとび出《だ》してきました。冬《ふゆ》のあいだに、少《すこ》しふっくらしたようです。「今日《きょう》は、おじいの木《き》の100さいのおたんじょう日《び》なんだ。みんな、プレゼントを持《も》って集《あつ》まってるよ」ポッケのほっぺは、プレゼントでぱんぱんにふくらんでいました。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "空っぽのポケットを裏返して困る主人公",
+     "art": "the child turns their empty pockets inside out with a troubled face, having no birthday present, while Pokke looks on",
+     "text": [
+      "あれ？ プレゼントが ない……。",
+      "「プレゼント……！」 {name}は ポケットを さがしました。でも、なにも もって いません。",
+      "「プレゼント！？」{name}は、あわててポケットをさがしました。出《で》てきたのは、くしゃくしゃのハンカチだけ。「どうしよう、何《なに》も持《も》ってこなかった」ポッケは「気持《きも》ちがあれば、だいじょうぶだよ」と言《い》いましたが、{name}の足《あし》どりは、重《おも》くなりました。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "第1話のトンネルを笑顔で歩く二人。出口で手を振るうさぎの兄弟",
+     "art": "the child and Pokke walk smiling through the same root tunnel as before, now bright and familiar; at the exit the two rabbit siblings wave to them",
+     "text": [
+      "トンネルも、もう へっちゃら。",
+      "きょねん こわかった トンネルも、いまは へっちゃら。ぬけた さきで、うさぎの きょうだいが てを ふりました。",
+      "去年《きょねん》は、あんなにこわかったトンネルも、今日《きょう》はポッケとおしゃべりしながら、すいすい通《とお》れました。ぬけた先《さき》では、うさぎの兄弟《きょうだい》が、葉《は》っぱのボールをかかえて待《ま》っていました。「おじいの木《き》に、ボール遊《あそ》びを見《み》せてあげるんだ！」"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "大きな木の周りに第2〜4話の仲間が贈り物を並べる。後ろでもじもじする主人公",
+     "art": "around the giant ancient tree the forest friends line up presents: the beaver children with a handmade wooden chair, the tiny gray mouse with acorn bread, the owl mother and baby singing; the child fidgets shyly at the back",
+     "text": [
+      "みんな プレゼントを もってきた。",
+      "ビーバーは きの いす、チッチは どんぐりの パン、ふくろうの おやこは うたの プレゼント。{name}は うしろで もじもじ。",
+      "おじいの木《き》のまわりには、なつかしい顔《かお》が集《あつ》まっていました。ビーバーの子《こ》どもたちは、手《て》づくりの木《き》のいす。チッチは、どんぐりのこなで焼《や》いたパン。ふくろうの親子《おやこ》は、二人《ふたり》で練習《れんしゅう》した歌《うた》。みんながプレゼントをならべる中《なか》、{name}は後《うし》ろのほうで、もじもじしていました。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "花も葉もない寂しげな大きな木。見上げる動物たち",
+     "art": "the giant ancient tree stands bare with no flowers or leaves, looking lonely and tired; the animals and the child look up at it quietly",
+     "text": [
+      "おじいの き、げんきが ないね。",
+      "でも、おじいの きは しずかな まま。えだには、はなも はっぱも ほとんど ありません。",
+      "ところが、プレゼントがいくつならんでも、おじいの木《き》は、静《しず》かなままでした。去年《きょねん》あんなにさいた花《はな》は、一《ひと》つもなく、えだには、かれた葉《は》っぱが少《すこ》しゆれているだけ。「おじいの木《き》、どうしちゃったの？」チッチが、心配《しんぱい》そうに見上《みあ》げました。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "大きな木の幹にうっすら優しい顔。耳をすます主人公",
+     "art": "a faint, gentle old face appears in the bark of the giant tree's trunk; the child puts a hand on the trunk and listens closely",
+     "text": [
+      "「わしの はっぱが たりないんじゃ」",
+      "「ありがとう、みんな」 おじいの きが かすかな こえで いいました。「でも わしは つかれて しまった。わしの はっぱは、もりじゅうに とんで いって しまったんじゃ」",
+      "「みんな、ありがとう」おじいの木《き》の、かすかな声《こえ》がひびきました。「じつはのう、わしは少《すこ》しつかれてしまった。わしの葉《は》っぱは、一年《いちねん》かけて、森《もり》のあちこちへとんでいった。川《かわ》へ、広場《ひろば》へ、雪《ゆき》の中《なか》へ……。だれかを助《たす》けるためにな」"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "胸の4枚のバッジに手を当てる主人公。各葉に各話の思い出が小さく映る",
+     "art": "the child places a hand over the four leaf badges on their chest (pink, green, gold and silver); tiny memories glow inside each leaf: a root tunnel, fireflies over a river, a star crown, a snowy path of light",
+     "text": [
+      "むねの バッジを みつめたよ。",
+      "{name}は むねの バッジを みつめました。はる、なつ、あき、ふゆ。だいじな だいじな たからものです。",
+      "{name}は、はっとして、むねのバッジに手《て》を当《あ》てました。トンネルを照《て》らしてくれた、春《はる》の葉《は》っぱ。ほたるがやどった、夏《なつ》の葉《は》っぱ。チッチと分《わ》け合《あ》った、秋《あき》の葉《は》っぱ。ふぶきの中《なか》で道《みち》を作《つく》った、冬《ふゆ》の葉《は》っぱ。全部《ぜんぶ》、おじいの木《き》からもらったものでした。でも、どれも{name}の、大事《だいじ》なたからものです。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "根元に4枚のバッジをそっと置く主人公。見守る仲間たち",
+     "art": "the child gently lays the four leaf badges at the roots of the giant tree as a present, while all the forest friends watch warmly",
+     "text": [
+      "「これ、おかえしするね」",
+      "{name}は 4まいの バッジを はずして、おじいの きの ねもとに おきました。「これが プレゼント。いちねん、ありがとう」",
+      "{name}はゆっくりと、4まいのバッジを外《はず》しました。手《て》のひらの上《うえ》で、葉《は》っぱたちが、あたたかく光《ひか》っています。「これが、{name}からのプレゼント。一年《いちねん》、ずっといっしょにいてくれて、ありがとう」そっと根《ね》もとにおくと、ポッケも、チッチも、みんなも、だまって見守《みまも》りました。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "【見開き】四季の色（桃・緑・金・銀）が一度に咲く大きな木。第1話の満開場面と対になる構図",
+     "art": "the giant ancient tree bursts into bloom all at once in the colors of the four seasons, pink, green, gold and silver, light racing up its trunk; the small child, Pokke and all the friends look up from below cheering. A grand, breathtaking wide view",
+     "text": [
+      "おじいの きに、はなが いっぱい！",
+      "ぱああっ！ ひかりが みきを かけのぼり、おじいの きは まんかいの はなと はっぱで いっぱいに なりました。",
+      "ぱああっ！4まいの葉《は》っぱから光《ひかり》があふれ、みきをかけ上《のぼ》りました。春《はる》のもも色《いろ》、夏《なつ》の緑《みどり》、秋《あき》の黄金《こがね》、冬《ふゆ》の銀色《ぎんいろ》。えだというえだに、花《はな》と葉《は》っぱがいっせいに開《ひら》き、おじいの木《き》は、森《もり》でいちばんかがやく木《き》になりました。「おたんじょう日《び》、おめでとう！」みんなの声《こえ》が、空《そら》にひびきました。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true
+    },
+    {
+     "label": "【ママ・パパ】満開の木の下で家族と仲間がたんじょうび会。主人公の手に名前入りの葉",
+     "art": "a joyful birthday party under the blooming giant tree with the mother, the father and all the forest friends; a new glowing leaf floats down into the child's palm",
+     "text": [
+      "ママと パパも いっしょに おいわい。",
+      "ママと パパも かけつけました。おじいの きは、あたらしい はっぱを 1まい、{name}の てに おとしました。はっぱには、{name}の なまえが うかんで いました。",
+      "「{name}！」ママとパパが、おべんとうをかかえて、かけつけてきました。みんなでおじいの木《き》をかこんで、大《おお》きなたんじょう日会《びかい》のはじまりです。そのとき、ひらり。おじいの木《き》から、まあたらしい葉《は》っぱが1まい、{name}の手《て》のひらに落《お》ちてきました。葉《は》っぱには、きらきらした文字《もじ》で、{name}の名前《なまえ》がうかんでいました。"
+     ],
+     "withMom": true,
+     "withDad": true,
+     "withSidekick": true,
+     "alt": {
+      "mom": {
+       "label": "満開の木の下でママと仲間がたんじょう日会。主人公の手に名前入りの葉",
+       "art": "a joyful birthday party under the blooming giant tree; the mother arrives carrying a lunch box, and the child, Pokke the squirrel and all the forest friends gather around; a new glowing leaf sparkling with light floats down into the child's palm",
+       "text": [
+        "ママも いっしょに おいわい。",
+        "ママも かけつけました。おじいの きは、あたらしい はっぱを 1まい、{name}の てに おとしました。はっぱには、{name}の なまえが うかんで いました。",
+        "「{name}！」ママが、おべんとうをかかえて、かけつけてきました。みんなでおじいの木《き》をかこんで、大《おお》きなたんじょう日会《びかい》のはじまりです。そのとき、ひらり。おじいの木《き》から、まあたらしい葉《は》っぱが1まい、{name}の手《て》のひらに落《お》ちてきました。葉《は》っぱには、きらきらした文字《もじ》で、{name}の名前《なまえ》がうかんでいました。"
+       ],
+       "withMom": true,
+       "withDad": false,
+       "withSidekick": true
+      },
+      "dad": {
+       "label": "満開の木の下でパパと仲間がたんじょう日会。主人公の手に名前入りの葉",
+       "art": "a joyful birthday party under the blooming giant tree; the father arrives carrying a lunch box, and the child, Pokke the squirrel and all the forest friends gather around; a new glowing leaf sparkling with light floats down into the child's palm",
+       "text": [
+        "パパも いっしょに おいわい。",
+        "パパも かけつけました。おじいの きは、あたらしい はっぱを 1まい、{name}の てに おとしました。はっぱには、{name}の なまえが うかんで いました。",
+        "「{name}！」パパが、おべんとうをかかえて、かけつけてきました。みんなでおじいの木《き》をかこんで、大《おお》きなたんじょう日会《びかい》のはじまりです。そのとき、ひらり。おじいの木《き》から、まあたらしい葉《は》っぱが1まい、{name}の手《て》のひらに落《お》ちてきました。葉《は》っぱには、きらきらした文字《もじ》で、{name}の名前《なまえ》がうかんでいました。"
+       ],
+       "withMom": false,
+       "withDad": true,
+       "withSidekick": true
+      },
+      "none": {
+       "label": "満開の木の下で仲間たちとたんじょう日会。主人公の手に名前入りの葉",
+       "art": "a joyful birthday party under the blooming giant tree with Pokke the squirrel and all the forest friends: the two rabbit siblings, the beaver children, Chicchi the tiny gray mouse and the owls; a new glowing leaf sparkling with light floats down into the child's palm",
+       "text": [
+        "みんなで いっしょに おいわい。",
+        "みんなで おいわいの うたを うたいました。おじいの きは、あたらしい はっぱを 1まい、{name}の てに おとしました。はっぱには、{name}の なまえが うかんで いました。",
+        "「{name}、こっちこっち！」うさぎの兄弟《きょうだい》が、手《て》まねきしました。みんなでおじいの木《き》をかこんで、大《おお》きなたんじょう日会《びかい》のはじまりです。そのとき、ひらり。おじいの木《き》から、まあたらしい葉《は》っぱが1まい、{name}の手《て》のひらに落《お》ちてきました。葉《は》っぱには、きらきらした文字《もじ》で、{name}の名前《なまえ》がうかんでいました。"
+       ],
+       "withMom": false,
+       "withDad": false,
+       "withSidekick": true
+      }
+     }
+    },
+    {
+     "label": "【パパ】夕暮れ、パパに肩車された主人公と肩のポッケ。森の向こうに光る海",
+     "art": "at sunset on a hill, the father carries the child on his shoulders with Pokke on the child's shoulder; far beyond the forest a sparkling sea shines on the horizon, and a glowing leaf is in the child's hand",
+     "text": [
+      "パパの かたぐるまで、うみが みえたよ。",
+      "かえりみち、パパの かたぐるまで みた もりの むこうに、きらきら ひかる うみが みえました。ポッケが ささやきます。「つぎは、あそこへ いこう」",
+      "帰《かえ》り道《みち》、{name}はパパに、かたぐるましてもらいました。高《たか》いところから見《み》ると、森《もり》のずっと向《む》こうに、きらきら光《ひか》る海《うみ》が見《み》えました。{name}のかたの上《うえ》のポッケが、そっとささやきます。「ねえ、{name}。来年《らいねん》は、あの海《うみ》の向《む》こうへ、行《い》ってみない？」手《て》のひらで、名前《なまえ》の葉《は》っぱが、ちかっと光《ひか》りました。"
+     ],
+     "withMom": false,
+     "withDad": true,
+     "withSidekick": true,
+     "alt": {
+      "both": {
+       "label": "夕暮れ、パパに肩車された主人公と肩のポッケ、となりを歩くママ。森の向こうに光る海",
+       "art": "at sunset on a hill, the father carries the child on his shoulders with Pokke the squirrel on the child's shoulder while the mother walks alongside; far beyond the forest a sparkling sea shines on the horizon, and a glowing leaf is in the child's hand",
+       "text": [
+        "パパの かたぐるまで、うみが みえたよ。",
+        "かえりみち、パパの かたぐるまで みた もりの むこうに、きらきら ひかる うみが みえました。となりで ママが「きれいね」。ポッケが ささやきます。「つぎは、あそこへ いこう」",
+        "帰《かえ》り道《みち》、{name}はパパに、かたぐるましてもらいました。となりを、ママが歩《ある》いています。高《たか》いところから見《み》ると、森《もり》のずっと向《む》こうに、きらきら光《ひか》る海《うみ》が見《み》えました。{name}のかたの上《うえ》のポッケが、そっとささやきます。「ねえ、{name}。来年《らいねん》は、あの海《うみ》の向《む》こうへ、行《い》ってみない？」手《て》のひらで、名前《なまえ》の葉《は》っぱが、ちかっと光《ひか》りました。"
+       ],
+       "withMom": true,
+       "withDad": true,
+       "withSidekick": true
+      },
+      "mom": {
+       "label": "夕暮れの丘の上でママが主人公をハグ（肩車はしない）。肩にポッケ、森の向こうに光る海",
+       "art": "at sunset on a hilltop, the mother hugs the child tightly, with Pokke the squirrel on the child's shoulder; far beyond the forest a sparkling sea shines on the horizon, and a glowing leaf is in the child's hand",
+       "text": [
+        "ママと ぎゅっ。おかの うえから うみが みえたよ。",
+        "かえりみち、おかの うえで ママと ぎゅっと だきあうと、もりの むこうに、きらきら ひかる うみが みえました。ポッケが ささやきます。「つぎは、あそこへ いこう」",
+        "帰《かえ》り道《みち》、おかの上《うえ》で、ママが{name}をぎゅっとだきしめてくれました。ママのうでの中《なか》から見《み》ると、森《もり》のずっと向《む》こうに、きらきら光《ひか》る海《うみ》が見《み》えました。{name}のかたの上《うえ》のポッケが、そっとささやきます。「ねえ、{name}。来年《らいねん》は、あの海《うみ》の向《む》こうへ、行《い》ってみない？」手《て》のひらで、名前《なまえ》の葉《は》っぱが、ちかっと光《ひか》りました。"
+       ],
+       "withMom": true,
+       "withDad": false,
+       "withSidekick": true
+      },
+      "none": {
+       "label": "夕暮れ、丘の上の大きな石に立つ主人公と肩のポッケ。森の向こうに光る海",
+       "art": "at sunset the child stands on top of a big rock on a hill with Pokke the squirrel on their shoulder; far beyond the forest a sparkling sea shines on the horizon, and a glowing leaf is in the child's hand",
+       "text": [
+        "おかの うえから、うみが みえたよ。",
+        "かえりみち、おかの うえの いしに のぼると、もりの むこうに、きらきら ひかる うみが みえました。ポッケが ささやきます。「つぎは、あそこへ いこう」",
+        "帰《かえ》り道《みち》、{name}は、おかの上《うえ》の大《おお》きな石《いし》にのぼりました。高《たか》いところから見《み》ると、森《もり》のずっと向《む》こうに、きらきら光《ひか》る海《うみ》が見《み》えました。{name}のかたの上《うえ》のポッケが、そっとささやきます。「ねえ、{name}。来年《らいねん》は、あの海《うみ》の向《む》こうへ、行《い》ってみない？」手《て》のひらで、名前《なまえ》の葉《は》っぱが、ちかっと光《ひか》りました。"
+       ],
+       "withMom": false,
+       "withDad": false,
+       "withSidekick": true
+      }
+     }
+    }
+   ]
+  }
+ ]
+}

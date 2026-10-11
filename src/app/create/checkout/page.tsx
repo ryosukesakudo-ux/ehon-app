@@ -9,13 +9,13 @@ import {
   extraCopyPrice,
   firstBookPrice,
   getSize,
-  getStory,
   getTaste,
   jstDate,
   orderTotal,
   yen,
 } from "@/lib/catalog";
 import type { Coupon } from "@/lib/coupons";
+import { levelLabel, storyLabel } from "@/lib/story-key";
 import { useFlow } from "../flow";
 import { NextButton, StepHeader, StepTitle } from "../step";
 
@@ -86,7 +86,8 @@ export default function CheckoutPage() {
         <StepTitle title="ご注文内容の確認" lead="お届け先とお支払い方法は、次の画面で入力します。" />
         <div className="card" style={{ padding: 18 }}>
           <div className="display" style={{ fontSize: 15, fontWeight: 800, color: "var(--navy)" }}>ご注文内容</div>
-          <div className="sum-row"><span>お話</span><span>{getStory(state.story)?.name}</span></div>
+          <div className="sum-row"><span>お話</span><span>{storyLabel(state.story)}</span></div>
+          {levelLabel(state.story) && <div className="sum-row"><span>文の量</span><span>{levelLabel(state.story)}</span></div>}
           <div className="sum-row"><span>テイスト</span><span>{getTaste(state.taste)?.name}</span></div>
           <div className="sum-row"><span>主人公</span><span>{state.childName}{state.childAge ? `（${state.childAge}さい）` : ""}</span></div>
           {state.childBirthday && <div className="sum-row"><span>お誕生日</span><span>{state.childBirthday.replaceAll("-", "/")}</span></div>}

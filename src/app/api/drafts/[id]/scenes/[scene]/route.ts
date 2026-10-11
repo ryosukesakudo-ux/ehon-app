@@ -1,4 +1,5 @@
-import { MEMBER_MONTHLY_PREVIEWS, PREVIEW_PACK, REDO_NOTE_MAX, REDO_OPTIONS, getStory, type RedoOptionId } from "@/lib/catalog";
+import { MEMBER_MONTHLY_PREVIEWS, PREVIEW_PACK, REDO_NOTE_MAX, REDO_OPTIONS, type RedoOptionId } from "@/lib/catalog";
+import { getBook } from "@/lib/book";
 import { draftPreviewScenes, generateScene, isDemoId, loadOwnedDraft } from "@/lib/drafts";
 import { getSupabase } from "@/lib/services";
 
@@ -20,7 +21,7 @@ export async function POST(request: Request, ctx: RouteContext<"/api/drafts/[id]
   }
   const redo = options.length || note ? { options, note } : null;
   const owned = await loadOwnedDraft(id);
-  if (!owned || !getStory(owned.draft.story)) {
+  if (!owned || !getBook(owned.draft.story)) {
     return Response.json({ error: "下書きが見つかりません" }, { status: 404 });
   }
   const { draft, user } = owned;

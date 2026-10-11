@@ -1,5 +1,7 @@
 import { randomUUID } from "node:crypto";
-import { ANON_TRIAL_IP_DAYS, CHILD_AGES, getStory, getTaste, previewScenes, type Person, type StoryId, type TasteId } from "@/lib/catalog";
+import { ANON_TRIAL_IP_DAYS, CHILD_AGES, getTaste, previewScenes, type Person, type TasteId } from "@/lib/catalog";
+import { comboOf, isStoryKey, parseSeriesKey, withoutCombo } from "@/lib/story-key";
+import { readyEpisodes } from "@/lib/series-studio";
 import { copySavedCharacters, demoDraftId, previewUrls, type Draft } from "@/lib/drafts";
 import { currentUser } from "@/lib/auth";
 import { ensureAnonId, ipHash } from "@/lib/anon";
@@ -19,7 +21,7 @@ function bad(message: string) {
 export async function POST(request: Request) {
   const form = await request.formData();
   const taste = String(form.get("taste") ?? "");
-  const story = String(form.get("story") ?? "");
+  const story = withoutCombo(String(form.get("story") ?? ""));
   const childName = String(form.get("childName") ?? "").trim();
   const childAge = Number(form.get("childAge"));
   const consent = form.get("consent") === "true";
@@ -35,7 +37,10 @@ export async function POST(request: Request) {
     dad: String(form.get("dadCharacterId") ?? ""),
   };
 
-  if (!getTaste(taste) || !getStory(story)) return bad("テイストとお話を選んでください");
+  if (!getTaste(taste) || !isStoryKey(story)) return bad("テイストとお話を選んでください");
+  // シリーズのお話は、見本の絵がそろった話だけ選べる
+  const series = parseSeriesKey(story);
+  if (series && !(await readyEpisodes())[series.series].includes(series.episode)) return bad("このお話はまだ準備中です。ほかのお話を選んでください");
   if (!childName || childName.length > 12) return bad("名前は12文字以内で入力してください");
   if (!CHILD_AGES.includes(childAge)) return bad("お子さまの年齢を選んでください");
   for (const f of [childPhoto, momPhoto, dadPhoto]) {
@@ -51,7 +56,7 @@ export async function POST(request: Request) {
     if (!(childPhoto instanceof File)) return bad("お子さまの写真を選んでください");
     const demoId = demoDraftId({
       taste: taste as TasteId,
-      story: story as StoryId,
+      story: series ? `${story}:${comboOf(momPhoto instanceof File, dadPhoto instanceof File)}` : story,
       childName,
       childAge,
       hasMom: momPhoto instanceof File,
@@ -138,7 +143,8 @@ export async function POST(request: Request) {
       user_id: user?.id ?? null,
       anon_id: anonId,
       taste,
-      story,
+      // シリーズは写真の組み合わせを足して保存する（写真を消したあとも、同じ本文で印刷できるように）
+      story: series ? `${story}:${comboOf(hasMom, hasDad)}` : story,
       child_name: childName,
       child_age: childAge,
       child_photo_path: childPath,
