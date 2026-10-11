@@ -178,6 +178,9 @@ export default function CheckoutPage() {
           <span>カード・Apple Pay・Google Pay・コンビニ払い・PayPay に対応。決済サービス（Stripe）の安全な画面で入力します</span>
         </div>
         <p style={{ margin: 0, fontSize: 12, lineHeight: 1.7, color: "var(--sub)" }}>
+          コンビニ払いは、お支払い番号が表示された画面で手続き完了です（このサイトには戻りません）。お支払い番号と手順はメールでもお送りし、マイページからも開けます。
+        </p>
+        <p style={{ margin: 0, fontSize: 12, lineHeight: 1.7, color: "var(--sub)" }}>
           ご注文前に<a href="/legal" target="_blank">特定商取引法に基づく表記</a>・<a href="/terms" target="_blank">利用規約</a>・<a href="/privacy" target="_blank">プライバシーポリシー</a>をご確認ください。お支払いに進むと、利用規約に同意したものとします。
         </p>
         {error && <p className="error" role="alert">{error}</p>}

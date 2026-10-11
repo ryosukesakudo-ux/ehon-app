@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { MEMBER_MONTHLY_PREVIEWS, PERSON_LABEL, RETENTION, getSize, getStory, getTaste, yen } from "@/lib/catalog";
 import { currentUser } from "@/lib/auth";
 import { listCharacters, listPhotos, previewQuota } from "@/lib/account";
+import { konbiniVoucher } from "@/lib/konbini";
 import { BuyPreviewsButton } from "@/components/buy-previews";
 import { BOOK_BUCKET, getSupabase } from "@/lib/services";
 import { PageHeader } from "@/components/page-header";
@@ -22,7 +23,7 @@ const ORDER_STATUS: Record<string, string> = {
   shipped: "発送済み",
 };
 
-type OrderRow = { id: string; status: string; size: string; amount: number; paid_at: string | null; checkout_completed_at: string | null; refunded_amount?: number | null };
+type OrderRow = { id: string; status: string; size: string; amount: number; paid_at: string | null; checkout_completed_at: string | null; refunded_amount?: number | null; stripe_payment_intent?: string | null };
 
 function date(d: Date | string) {
   return new Date(d).toLocaleDateString("ja-JP", { timeZone: "Asia/Tokyo", month: "numeric", day: "numeric" });
@@ -68,7 +69,15 @@ export default async function AccountPage({ searchParams }: PageProps<"/account"
       const keepUntil = paid?.paid_at
         ? new Date(new Date(paid.paid_at).getTime() + RETENTION.paidImageDays * DAY)
         : new Date(new Date(d.created_at).getTime() + RETENTION.unpaidImageDays * DAY);
-      return { draft: d, orders, paid, urls, keepUntil };
+      // コンビニ払いのお支払い待ちは、お支払い番号の画面を開けるようにする
+      const vouchers = Object.fromEntries(
+        await Promise.all(
+          orders
+            .filter((o) => o.status === "pending" && o.stripe_payment_intent)
+            .map(async (o) => [o.id, (await konbiniVoucher(o.stripe_payment_intent))?.url ?? null] as const),
+        ),
+      );
+      return { draft: d, orders, paid, urls, keepUntil, vouchers };
     }),
   );
 
@@ -122,7 +131,7 @@ export default async function AccountPage({ searchParams }: PageProps<"/account"
         <section style={{ display: "flex", flexDirection: "column", gap: 12 }}>
           <h2 className="display" style={{ margin: 0, fontSize: 19, color: "var(--navy)" }}>つくった絵本</h2>
           {books.length === 0 && <p className="step-lead">まだありません。</p>}
-          {books.map(({ draft: d, orders, paid, urls, keepUntil }) => (
+          {books.map(({ draft: d, orders, paid, urls, keepUntil, vouchers }) => (
             <article key={d.id} className="card" style={{ gap: 12 }}>
               <div style={{ display: "flex", justifyContent: "space-between", gap: 8, alignItems: "flex-start" }}>
                 <div>
@@ -150,6 +159,11 @@ export default async function AccountPage({ searchParams }: PageProps<"/account"
                   ご注文：{getSize(o.size)?.name}サイズ／{yen(o.amount)}
                   {o.paid_at ? `／${date(o.paid_at)} お支払い` : ""}
                   {o.refunded_amount ? `／${yen(o.refunded_amount)} 返金済み` : ""}
+                  {vouchers[o.id] && (
+                    <>
+                      ／<a href={vouchers[o.id]!} target="_blank" rel="noreferrer">コンビニのお支払い番号を見る</a>
+                    </>
+                  )}
                 </div>
               ))}
               {!d.images_deleted_at && urls.length > 0 && (
