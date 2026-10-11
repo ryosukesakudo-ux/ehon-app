@@ -2,12 +2,13 @@ import { bookScenes } from "@/lib/catalog";
 import { getBook } from "@/lib/book";
 import { generateScene, loadDraft } from "@/lib/drafts";
 import { getSupabase } from "@/lib/services";
+import { SERIES_NOTE_MAX } from "@/lib/series";
 
 export const maxDuration = 300;
 
 // 管理画面から、支払い済みの注文の挿絵を印刷用の高画質で作る（1場面ずつ）。
 // 制作完了のあとでも、発送前なら1ページずつ作り直せる（2026-10-11 森3話の絵の不具合の作り直し用）。
-export async function POST(_request: Request, ctx: RouteContext<"/api/admin/orders/[id]/scenes/[scene]">) {
+export async function POST(request: Request, ctx: RouteContext<"/api/admin/orders/[id]/scenes/[scene]">) {
   const { id, scene } = await ctx.params;
   const db = getSupabase();
   if (!db) return Response.json({ error: "Supabase が未設定です" }, { status: 503 });
@@ -24,7 +25,10 @@ export async function POST(_request: Request, ctx: RouteContext<"/api/admin/orde
   }
 
   try {
-    const url = await generateScene(draft, sceneIndex, "final");
+    // 作り直しのときは、管理画面で書いた指示（日本語でよい）を絵の指示に足す
+    const body = await request.json().catch(() => ({}));
+    const note = typeof body?.note === "string" ? body.note.trim().slice(0, SERIES_NOTE_MAX) : "";
+    const url = await generateScene(draft, sceneIndex, "final", note ? { options: [], note } : null);
     return Response.json({ url });
   } catch (e) {
     return Response.json({ error: e instanceof Error ? e.message : "生成に失敗しました" }, { status: 500 });

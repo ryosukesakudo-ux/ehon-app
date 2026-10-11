@@ -63,6 +63,12 @@ function sidekickName(sidekick: string) {
   return sidekick.split(/[ ,]/)[0];
 }
 
+// 台本のシリーズは、話ごとに服装（形と色）を決めてある。参考画像の服ではなくこの服で、全ページ同じにする。
+// 以前は「参考画像と同じ色の冬服」とだけ伝えていて、ページごとにコートの色や形が変わった（2026-10-11 作道さんの指摘）。
+function outfitsPrompt(outfits: string) {
+  return `Clothes in this book: ${outfits} Draw these exact clothes in these exact colors on every page instead of the clothes in the reference images, so each person looks the same throughout the book; change clothes only when the scene clearly says so (such as pajamas in bed or a towel).`;
+}
+
 /** 印刷用の本文の絵の大きさ（1辺のpx）。OPENAI_FINAL_SIZE（例 2048x2048）で変えられる */
 const FINAL_PX = Number((process.env.OPENAI_FINAL_SIZE ?? "2048x2048").split("x")[0]) || 2048;
 
@@ -164,7 +170,7 @@ export function buildPrompt(taste: TasteId, story: string, sceneIndex: number, r
     PICTURE_BOOK_CHARACTERS,
     "Make them look friendly and natural, never caricatured.",
     childAge ? ageBody(childAge) : "",
-    series?.outfits ? `In this story they wear: ${series.outfits}. Keep each person's own outfit colors from the references.` : "",
+    series?.outfits ? outfitsPrompt(series.outfits) : "",
     series
       ? scene.withSidekick
         ? `The sidekick of this picture book series appears: ${series.sidekick}. Keep the sidekick looking the same on every page.`
@@ -260,9 +266,9 @@ const SAMPLE_OUTFITS: Record<StoryId | "sea" | "dinosaur", Record<Person, string
   },
 };
 
-function sampleCast(story: keyof typeof SAMPLE_OUTFITS, people: Person[]) {
+function sampleCast(story: keyof typeof SAMPLE_OUTFITS, people: Person[], withOutfits = true) {
   const role: Record<Person, string> = { child: "The main character", mom: "The mother", dad: "The father" };
-  return people.map((p) => `${role[p]}: ${SAMPLE_CAST[p]}, wearing ${SAMPLE_OUTFITS[story][p]}.`).join(" ");
+  return people.map((p) => `${role[p]}: ${SAMPLE_CAST[p]}${withOutfits ? `, wearing ${SAMPLE_OUTFITS[story][p]}` : ""}.`).join(" ");
 }
 
 /** お話ごとのキャラクター設定画を作る（家族3人の全身・正面、白い背景）。 */
@@ -462,10 +468,12 @@ export function buildSeriesPrompt(series: StudioSeries, scene: SeriesScene, opts
   return [
     `${t.prompt}.`,
     "The reference image is the character sheet for this picture book series.",
-    "Draw exactly the same characters: the same faces, hairstyles, body proportions and outfit colors. Only the drawing style changes.",
+    opts.outfits
+      ? "Draw exactly the same characters: the same faces, hairstyles and body proportions. Only the drawing style and the clothes change."
+      : "Draw exactly the same characters: the same faces, hairstyles, body proportions and outfit colors. Only the drawing style changes.",
     STYLE_ONLY_FROM_TEXT,
-    sampleCast(series.id, people),
-    opts.outfits ? `In this episode they wear: ${opts.outfits}.` : "",
+    sampleCast(series.id, people, !opts.outfits),
+    opts.outfits ? outfitsPrompt(opts.outfits) : "",
     scene.withSidekick
       ? `The sidekick appears: ${series.sidekick}. Keep the sidekick exactly as on the character sheet.`
       : `Do not include ${sidekickName(series.sidekick)} (the sidekick) in this scene.`,
