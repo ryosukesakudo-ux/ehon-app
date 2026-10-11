@@ -166,6 +166,14 @@ create table if not exists mail_optouts (
 create index if not exists orders_status_idx on orders (status, created_at desc);
 create index if not exists orders_user_idx on orders (user_id, created_at desc);
 
+-- 管理画面のログイン失敗の回数とロック（1行だけ）。続けて10回まちがえると30分ロックする
+create table if not exists admin_login_guard (
+  id smallint primary key default 1 check (id = 1),
+  failures int not null default 0,
+  locked_until timestamptz,
+  updated_at timestamptz not null default now()
+);
+
 alter table drafts enable row level security;
 alter table user_photos enable row level security;
 alter table characters enable row level security;
@@ -177,6 +185,7 @@ alter table credit_purchases enable row level security;
 alter table coupons enable row level security;
 alter table birthday_notices enable row level security;
 alter table mail_optouts enable row level security;
+alter table admin_login_guard enable row level security;
 
 -- 下書きごとのプレビュー回数の確認と加算を一度に行う（登録前のお試し用）
 create or replace function claim_generation(p_id uuid, p_max int) returns boolean
@@ -266,12 +275,41 @@ begin
   return true;
 end $$;
 
+-- 管理画面のログインに失敗したとき：回数を足し、上限に届いたらロックする（ロックが明けたら数え直し）
+create or replace function admin_login_failed(p_max int, p_minutes int) returns timestamptz
+language plpgsql as $$
+declare
+  g admin_login_guard;
+begin
+  insert into admin_login_guard (id) values (1) on conflict (id) do nothing;
+  select * into g from admin_login_guard where id = 1 for update;
+  if g.locked_until is not null and g.locked_until <= now() then
+    g.failures := 0;
+    g.locked_until := null;
+  end if;
+  g.failures := g.failures + 1;
+  if g.failures >= p_max then
+    g.locked_until := now() + make_interval(mins => p_minutes);
+    g.failures := 0;
+  end if;
+  update admin_login_guard set failures = g.failures, locked_until = g.locked_until, updated_at = now() where id = 1;
+  return g.locked_until;
+end $$;
+
+-- 管理画面の二段階認証まで済んだとき：失敗の回数を0に戻す
+create or replace function admin_login_ok() returns void
+language sql as $$
+  update admin_login_guard set failures = 0, updated_at = now() where id = 1;
+$$;
+
 revoke execute on function claim_generation(uuid, int) from public, anon, authenticated;
 revoke execute on function refund_generation(uuid) from public, anon, authenticated;
 revoke execute on function claim_member_generation(uuid, uuid, int) from public, anon, authenticated;
 revoke execute on function refund_member_generation(uuid, uuid) from public, anon, authenticated;
 revoke execute on function claim_anon_trial(text, text, int) from public, anon, authenticated;
 revoke execute on function add_preview_credits(uuid) from public, anon, authenticated;
+revoke execute on function admin_login_failed(int, int) from public, anon, authenticated;
+revoke execute on function admin_login_ok() from public, anon, authenticated;
 
 -- ストレージ：顔写真と生成した絵は非公開、トップページなどの作例だけ公開
 insert into storage.buckets (id, name, public) values ('photos', 'photos', false) on conflict do nothing;

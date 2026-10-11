@@ -1,13 +1,14 @@
 import { redirect } from "next/navigation";
 import { MEMBER_MONTHLY_PREVIEWS, RETENTION } from "@/lib/catalog";
 import { authKeys, currentUser } from "@/lib/auth";
+import { safeNext } from "@/lib/safe-next";
 import { PageHeader } from "@/components/page-header";
 import { Check } from "@/components/icons";
 import { LoginForm } from "./form";
 
 export default async function LoginPage({ searchParams }: PageProps<"/login">) {
   const { next, error, reason } = await searchParams;
-  const nextPath = typeof next === "string" && next.startsWith("/") && !next.startsWith("//") ? next : "/account";
+  const nextPath = safeNext(next);
   if (await currentUser()) redirect(nextPath);
 
   const perks = [

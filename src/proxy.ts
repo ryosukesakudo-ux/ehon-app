@@ -1,7 +1,9 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { createServerClient } from "@supabase/ssr";
+import { ADMIN_2FA_COOKIE, adminLockedUntil, lockedMessage, recordAdminFailure, verify2faToken } from "@/lib/admin-guard";
 
 // 1. 管理画面と管理用APIをベーシック認証で守る（ユーザー名 admin、パスワードは ADMIN_PASSWORD）。
+//    そのあと認証アプリのコードでの二段階認証（/admin/2fa）も必要。続けて10回まちがえると30分ロックする。
 // 2. LINE のアプリ内ブラウザで開かれたページは、いつものブラウザ（Safari・Chrome）で開き直す。
 // 3. それ以外のページでは、会員のログイン状態（Cookie）を更新する。
 export async function proxy(request: NextRequest) {
@@ -26,18 +28,38 @@ function openInExternalBrowser(request: NextRequest) {
   return NextResponse.redirect(url);
 }
 
-function adminAuth(request: NextRequest) {
+async function adminAuth(request: NextRequest) {
+  const lockedUntil = await adminLockedUntil();
+  if (lockedUntil) {
+    return new NextResponse(lockedMessage(lockedUntil), { status: 423, headers: { "content-type": "text/plain; charset=utf-8" } });
+  }
+
   const password = process.env.ADMIN_PASSWORD;
   const header = request.headers.get("authorization") ?? "";
   const [scheme, encoded] = header.split(" ");
+  let ok = false;
   if (password && scheme === "Basic" && encoded) {
     const [user, ...rest] = atob(encoded).split(":");
-    if (user === "admin" && rest.join(":") === password) return NextResponse.next();
+    ok = user === "admin" && rest.join(":") === password;
+    if (!ok) await recordAdminFailure();
   }
-  return new NextResponse("認証が必要です", {
-    status: 401,
-    headers: { "WWW-Authenticate": 'Basic realm="admin", charset="UTF-8"' },
-  });
+  if (!ok) {
+    return new NextResponse("認証が必要です", {
+      status: 401,
+      headers: { "WWW-Authenticate": 'Basic realm="admin", charset="UTF-8"' },
+    });
+  }
+
+  // 二段階認証の画面とその確認APIは、コードを入れる前でも開ける
+  const path = request.nextUrl.pathname;
+  if (path === "/admin/2fa" || path === "/api/admin/2fa") return NextResponse.next();
+  if (await verify2faToken(request.cookies.get(ADMIN_2FA_COOKIE)?.value)) return NextResponse.next();
+
+  if (path.startsWith("/api/")) return Response.json({ error: "二段階認証が必要です。管理画面を開き直してください" }, { status: 401 });
+  const url = request.nextUrl.clone();
+  url.pathname = "/admin/2fa";
+  url.search = `?next=${encodeURIComponent(path + request.nextUrl.search)}`;
+  return NextResponse.redirect(url);
 }
 
 async function refreshSession(request: NextRequest) {
