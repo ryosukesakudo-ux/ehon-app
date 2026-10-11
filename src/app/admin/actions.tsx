@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { SERIES_NOTE_MAX } from "@/lib/series";
 
 export function OrderActions({
   orderId,
@@ -168,14 +169,20 @@ export function RedoSceneButton({ orderId, scene }: { orderId: string; scene: nu
   const router = useRouter();
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [note, setNote] = useState("");
   const redo = async () => {
     if (!confirm("この絵を作り直します。今の絵は上書きされます。よろしいですか？")) return;
     setBusy(true);
     setError(null);
     try {
-      const res = await fetch(`/api/admin/orders/${orderId}/scenes/${scene}`, { method: "POST" });
+      const res = await fetch(`/api/admin/orders/${orderId}/scenes/${scene}`, {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ note }),
+      });
       const json = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(json.error ?? `失敗しました (${res.status})`);
+      setNote("");
       router.refresh();
     } catch (e) {
       setError(e instanceof Error ? e.message : "失敗しました");
@@ -185,6 +192,15 @@ export function RedoSceneButton({ orderId, scene }: { orderId: string; scene: nu
   };
   return (
     <>
+      <textarea
+        value={note}
+        onChange={(e) => setNote(e.target.value)}
+        maxLength={SERIES_NOTE_MAX}
+        rows={2}
+        placeholder="作り直しの指示（任意）例：主人公の顔をもっと笑顔に"
+        aria-label="作り直しの指示"
+        style={{ width: "100%", fontSize: 12, marginTop: 4 }}
+      />
       <button type="button" className="ghost" disabled={busy} onClick={redo} style={{ fontSize: 12, padding: "2px 8px" }}>
         {busy ? "作り直し中…" : "この絵を作り直す"}
       </button>

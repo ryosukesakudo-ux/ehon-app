@@ -10,7 +10,7 @@
   {
    "no": 1,
    "title": "ひかる たねと おじいの き",
-   "outfits": null,
+   "outfits": "the child: a light-yellow long-sleeved shirt under a navy zip-up hoodie, beige pants and white sneakers; the mother: a light-green cardigan over a white blouse, beige wide pants and white sneakers; the father: a light-blue denim shirt with rolled sleeves, khaki pants and brown shoes. At night in bed the child wears plain light-blue pajamas instead.",
    "cover": {
     "label": "森の入口で、ほっぺのふくらんだりす（ポッケ）と並んで、光る種を見つめる主人公。",
     "art": "at the entrance of a sunny spring forest, the child and Pokke the squirrel sit side by side looking in wonder at a small glowing seed resting in the child's hands; tall trees and a winding path into the forest behind them",
@@ -261,7 +261,7 @@
   {
    "no": 2,
    "title": "ほたるの かわの ひみつ",
-   "outfits": "light summer clothes in the same colors as the reference: the child in a short-sleeved T-shirt and shorts, the parents in short sleeves",
+   "outfits": "the child: a white T-shirt with a small green leaf print, navy shorts and blue sneakers; the mother: a pale-yellow short-sleeved blouse and light denim pants; the father: a gray T-shirt and khaki shorts. At night in bed the child wears plain light-blue pajamas instead.",
    "cover": {
     "label": "夜の川辺で、ほたるの光に囲まれて笑う主人公とポッケ。",
     "art": "on a summer night by a forest river, the child and Pokke the squirrel laugh happily, surrounded by countless glowing fireflies whose lights reflect on the water",
@@ -527,7 +527,7 @@
   {
    "no": 3,
    "title": "きんの どんぐりと チッチ",
-   "outfits": "autumn clothes in the same colors as the reference: long sleeves and light jackets, the child in a cozy sweater",
+   "outfits": "the child: a mustard-yellow knit sweater, blue jeans and brown sneakers; the mother: a brown corduroy jacket over a cream sweater and dark jeans; the father: a navy jacket over a gray sweater and jeans. At night in bed the child wears plain light-blue pajamas instead.",
    "cover": {
     "label": "落ち葉の広場で、星のかんむりをかぶった主人公と、てのひらの小さなねずみのチッチ、肩にポッケ。",
     "art": "in a forest clearing covered with red and yellow fallen leaves, the child wearing a sparkling star crown stands smiling and holds out one open palm where Chicchi, a tiny gray mouse no bigger than the child's hand and wearing a tiny star crown, sits happily, with Pokke the squirrel on the child's shoulder",
@@ -778,7 +778,7 @@
   {
    "no": 4,
    "title": "ゆきの よるの まいごの ふくろう",
-   "outfits": "warm winter clothes in the same colors as the reference: puffy coats, knitted hats, scarves and mittens",
+   "outfits": "the child: a red puffy winter coat, a cream knitted hat with a pom-pom, a cream scarf, red mittens, blue jeans and brown snow boots; the mother: a long camel coat, a gray scarf and black boots; the father: a dark-green down jacket, a navy knitted hat and jeans. At night in bed the child wears plain light-blue pajamas instead.",
    "cover": {
     "label": "雪の夜の森で、コートからふくろうの赤ちゃんが顔を出し、胸の3枚のバッジが光る主人公。",
     "art": "in a snowy forest at night, a round fluffy baby owl peeks out from the front of the child's coat, and three leaf badges on the child's chest glow softly; Pokke sits on the child's shoulder",
