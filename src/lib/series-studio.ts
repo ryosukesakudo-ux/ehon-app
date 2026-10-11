@@ -37,7 +37,7 @@ export function getStudioSeries(id: string): StudioSeries | null {
       cover: ep.cover,
       scenes: ep.scenes.map((s) => {
         const v = s.alt?.both ?? s;
-        return { label: v.label, art: v.art, withMom: v.withMom, withDad: v.withDad, withSidekick: v.withSidekick };
+        return { label: v.label, art: v.art, withMom: v.withMom, withDad: v.withDad, withSidekick: v.withSidekick, camera: v.camera ?? s.camera };
       }),
     })),
   };

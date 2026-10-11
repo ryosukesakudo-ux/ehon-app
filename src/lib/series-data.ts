@@ -17,9 +17,13 @@ export type SeriesVersion = {
   withMom: boolean;
   withDad: boolean;
   withSidekick: boolean;
+  /** カメラの位置・構図（英語）。写真の組み合わせごとの版は、その版の人物に合わせて書いてある */
+  camera?: string;
 };
 
-export type SeriesSceneData = SeriesVersion & { alt?: Partial<Record<Combo, SeriesVersion>> };
+export type SeriesSceneData = SeriesVersion & {
+  alt?: Partial<Record<Combo, SeriesVersion>>;
+};
 
 export type SeriesData = {
   id: SeriesId;
@@ -30,7 +34,7 @@ export type SeriesData = {
     no: number;
     title: string;
     outfits: string | null;
-    cover: { label: string; art: string; withSidekick: boolean };
+    cover: { label: string; art: string; withSidekick: boolean; camera?: string };
     scenes: SeriesSceneData[];
   }[];
 };

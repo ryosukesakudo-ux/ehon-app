@@ -11,7 +11,8 @@
    "cover": {
     "label": "夏のいそで、ガラスのびんの中のまんまるなちびふぐ（プクル）を、のぞきこんで笑う主人公。",
     "art": "on a sunny summer rocky shore with tide pools and the sparkling sea behind, the child crouches and peeks, laughing, into a clear glass bottle of seawater held up in both hands, where Pukuru the baby pufferfish floats puffed up perfectly round",
-    "withSidekick": true
+    "withSidekick": true,
+    "camera": "Low three-quarter angle from beside the tide pool, looking slightly up at the laughing child's face lit through the raised glass bottle, the sparkling sea tilted on a gentle diagonal."
    },
    "scenes": [
     {
@@ -36,7 +37,8 @@
        ],
        "withMom": true,
        "withDad": true,
-       "withSidekick": false
+       "withSidekick": false,
+       "camera": "Over-the-shoulder view from behind the child, past the mother's pointing arm and the father planting the umbrella, toward the glittering tide pools and rocky shore in the distance."
       },
       "dad": {
        "label": "夏の砂浜にパラソル。パパが岩場を指さし、主人公が見つめる",
@@ -48,7 +50,8 @@
        ],
        "withMom": false,
        "withDad": true,
-       "withSidekick": false
+       "withSidekick": false,
+       "camera": "Over-the-shoulder view from behind the child, past the father's pointing arm, toward the glittering tide pools and rocky shore in the distance."
       },
       "none": {
        "label": "夏の砂浜でかもめを追う主人公。かもめが岩場のほうへ飛ぶ",
@@ -60,9 +63,11 @@
        ],
        "withMom": false,
        "withDad": false,
-       "withSidekick": false
+       "withSidekick": false,
+       "camera": "Over-the-shoulder view from behind the running child, following the seagull toward the glittering tide pools and rocky shore in the distance."
       }
-     }
+     },
+     "camera": "Over-the-shoulder view from behind the child, past the mother's pointing arm, toward the glittering tide pools and rocky shore in the distance."
     },
     {
      "label": "波打ち際でガラスのびんを拾う主人公。中に丸めた手紙と緑の葉っぱ",
@@ -74,7 +79,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": false
+     "withSidekick": false,
+     "camera": "Close-up at sand level on the child's hands lifting the glass bottle, the child's curious face leaning in at the top of the frame, foam sliding past."
     },
     {
      "label": "潮だまりで丸くふくらんだ子ふぐ。びんで水ごとすくう主人公",
@@ -86,7 +92,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "High angle looking down into the tide pool, the kneeling child and round Pukuru reflected in the water as the bottle scoops."
     },
     {
      "label": "岩を跳び渡る主人公。びんの中で目をつぶって唱えるプクル",
@@ -98,7 +105,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Dynamic low side view of the child mid-leap between rocks, spray bursting upward, tilted diagonal composition with flying droplets."
     },
     {
      "label": "潮だまりのヒトデやイソギンチャク。大岩を指さす、ふるえるやどかりたち",
@@ -110,7 +118,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Low shot from among the tide pool creatures, starfish and anemones large in the foreground, the crouching child listening in three-quarter view."
     },
     {
      "label": "大岩の上の巨大な赤いカニ。岩陰に隠れる主人公、びんの中で丸いプクル",
@@ -122,7 +131,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Wide shot from beside the hiding child, the child peeking around the rock in profile toward Don looming huge on the boulder, strong diagonal of the giant claws."
     },
     {
      "label": "ぬるぬるの岩場をそろそろ進む主人公。びんの中でへたるプクル",
@@ -134,7 +144,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Medium side view tracking the child creeping across slippery rocks with arms out, the horizon tilted to show the wobble."
     },
     {
      "label": "行き止まりの岩場。びんを抱きしめて立ちつくす主人公。奥に大岩とドンの影",
@@ -146,7 +157,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Wide shot from slightly above, the small child standing still among tall rocks hugging the bottle, Don's shadow on the distant boulder."
     },
     {
      "label": "岩陰から一歩出て、大きなドンを見上げて話しかける主人公",
@@ -158,7 +170,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Low angle from the ground beside the child, the child in profile looking up at Don who towers and leans down, strong upward perspective."
     },
     {
      "label": "【見開き】夕日の海。ドンのはさみに乗った主人公、波へ飛びこんで回るプクル",
@@ -170,7 +183,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Grand sweeping wide view from low over the waves, the child riding high on Don's claw against the huge orange sunset, Pukuru diving out in a splashing arc, strong diagonal motion."
     },
     {
      "label": "【パパ】夕方の砂浜で主人公を肩車するパパ。主人公の手に地図のかけら入りのびん",
@@ -194,7 +208,8 @@
        ],
        "withMom": true,
        "withDad": true,
-       "withSidekick": false
+       "withSidekick": false,
+       "camera": "Medium low angle looking up at the father with the child on his shoulders, the mother clapping beside them, the child turned toward the sea holding the bottle up to the sunset light."
       },
       "mom": {
        "label": "夕方の砂浜でママが主人公をハグ（肩車はしない）。手に地図のかけら入りのびん",
@@ -206,7 +221,8 @@
        ],
        "withMom": true,
        "withDad": false,
-       "withSidekick": false
+       "withSidekick": false,
+       "camera": "Medium low angle looking up at the mother hugging the child, the child turned toward the sea holding the bottle in the sunset light."
       },
       "none": {
        "label": "砂浜で喜ぶやどかりたち。ドンがはさみで主人公を高く持ち上げる",
@@ -218,9 +234,11 @@
        ],
        "withMom": false,
        "withDad": false,
-       "withSidekick": false
+       "withSidekick": false,
+       "camera": "Medium low angle looking up at the giant crab lifting the child high in one claw, hermit crabs cheering below, the child holding the bottle in the sunset light."
       }
-     }
+     },
+     "camera": "Medium low angle looking up at the father with the child on his shoulders, the child turned toward the sea holding the bottle up to the sunset light."
     },
     {
      "label": "夕暮れの波打ち際。波間でひれを振るプクル。主人公の手のかけらの裏にさんごの絵",
@@ -232,7 +250,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Close three-quarter view from the waterline, the child's face glowing in evening light looking down at Pukuru waving from the waves, map piece in hand."
     }
    ]
   },
@@ -243,7 +262,8 @@
    "cover": {
     "label": "色とりどりのさんごの海で、あわのヘルメットをかぶった主人公とプクル。さんごのかげから小さなタツノオトシゴがのぞく。",
     "art": "in a colorful coral sea, the child wearing a shimmering rainbow bubble helmet swims alongside Pukuru the baby pufferfish, while Piko, a tiny yellow seahorse with a curled tail, shyly peeks out from behind the coral",
-    "withSidekick": true
+    "withSidekick": true,
+    "camera": "Dynamic low three-quarter angle from below in the water, the child swimming on a diagonal with face clearly visible through the rainbow helmet, Pukuru alongside, Piko peeking from the coral at the frame edge."
    },
    "scenes": [
     {
@@ -268,7 +288,8 @@
        ],
        "withMom": true,
        "withDad": true,
-       "withSidekick": false
+       "withSidekick": false,
+       "camera": "Wide view from behind the child and father sitting side by side on the pier with the mother sketching beside them, the transparent autumn sea stretching out, the glass bottle flashing beside the child."
       },
       "mom": {
        "label": "秋の桟橋でママと並んで釣り。主人公のびんの中のかけらが光る",
@@ -280,7 +301,8 @@
        ],
        "withMom": true,
        "withDad": false,
-       "withSidekick": false
+       "withSidekick": false,
+       "camera": "Wide view from behind the child and mother sitting side by side on the pier, the transparent autumn sea stretching out, the glass bottle flashing beside the child."
       },
       "none": {
        "label": "秋の桟橋でドンと並んで日なたぼっこ。主人公のびんの中のかけらが光る",
@@ -292,9 +314,11 @@
        ],
        "withMom": false,
        "withDad": false,
-       "withSidekick": false
+       "withSidekick": false,
+       "camera": "Wide view from behind the child and the giant crab sunbathing side by side on the pier, the transparent autumn sea stretching out, the glass bottle flashing beside the child."
       }
-     }
+     },
+     "camera": "Wide view from behind the child and father sitting side by side on the pier, the transparent autumn sea stretching out, the glass bottle flashing beside the child."
     },
     {
      "label": "波から跳ねるプクル。しゃっくりの虹色の泡が主人公の頭をすっぽり包む",
@@ -306,7 +330,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Three-quarter close-up on the child's surprised face as the rainbow bubble wraps around the head, Pukuru mid-leap at the frame edge."
     },
     {
      "label": "泡のヘルメットで海へ飛びこむ主人公。慌てて追うプクル",
@@ -318,7 +343,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Dynamic side view of the child mid-dive into the sea, body on a steep diagonal, a burst of bubbles and splash, Pukuru flailing after."
     },
     {
      "label": "色とりどりのさんご礁。縞模様の魚の列の横を急いで泳ぐ主人公",
@@ -330,7 +356,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Low angle from the seabed looking up as the child swims fast overhead past the line of striped fish, sunlight shimmering above."
     },
     {
      "label": "さんごの陰から声をかける小さなタツノオトシゴ。振り向かずに泳ぎ去る主人公",
@@ -342,7 +369,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Medium shot from Piko's viewpoint beside the coral, the hopeful seahorse large in the foreground and the child swimming past in profile, Pukuru turning to look."
     },
     {
      "label": "砂けむりの中で夢中で砂を掘る主人公。逃げる魚、丸くふくらんだプクル",
@@ -354,7 +382,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Dynamic eye-level side view of the child digging furiously, a sand cloud billowing diagonally across the frame, fish darting away."
     },
     {
      "label": "同じ形のさんごが続く迷路。きょろきょろする主人公とプクル",
@@ -366,7 +395,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "High bird's-eye view over the maze of identical corals, the child and Pukuru small in the middle, looking around anxiously."
     },
     {
      "label": "砂の上に座りこんでうつむく主人公。そばで丸いまま浮かぶプクル",
@@ -378,7 +408,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Close three-quarter view of the child sitting with head bowed on the sand, Pukuru floating near, the dim sea fading around them."
     },
     {
      "label": "目をつぶり耳に手を当てる主人公。肩先にタツノオトシゴのピコ",
@@ -390,7 +421,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Medium side profile of the child with eyes closed and a hand cupped to the ear, Piko whispering on the shoulder in the foreground, Pukuru hovering near."
     },
     {
      "label": "【見開き】巨大な貝が開き、中で光るかけら。光がさんご礁全体を虹色に照らす",
@@ -402,7 +434,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Grand low wide-angle view from the reef floor looking up at the giant open shell, rainbow light radiating across the whole coral sea, the child in three-quarter view gazing up in awe with the friends."
     },
     {
      "label": "【ママ】桟橋でママがタオルで主人公を包む。話に耳を傾けるママ",
@@ -426,7 +459,8 @@
        ],
        "withMom": true,
        "withDad": true,
-       "withSidekick": false
+       "withSidekick": false,
+       "camera": "Medium three-quarter view from slightly above, the mother wrapping the towel around the child while the father pours warm soup from a thermos."
       },
       "dad": {
        "label": "桟橋でパパがタオルで主人公を包む。話に耳を傾けるパパ",
@@ -438,7 +472,8 @@
        ],
        "withMom": false,
        "withDad": true,
-       "withSidekick": false
+       "withSidekick": false,
+       "camera": "Medium three-quarter view from slightly above, the father wrapping the towel and leaning in toward the excitedly talking child."
       },
       "none": {
        "label": "桟橋でドンがふかふかの海そうで主人公の髪をふく",
@@ -450,9 +485,11 @@
        ],
        "withMom": false,
        "withDad": false,
-       "withSidekick": false
+       "withSidekick": false,
+       "camera": "Medium three-quarter view from slightly above, the giant crab drying the child's hair with seaweed and leaning in toward the excitedly talking child."
       }
-     }
+     },
+     "camera": "Medium three-quarter view from slightly above, the mother wrapping the towel and leaning in toward the excitedly talking child."
     },
     {
      "label": "夜の寝室。枕元のびんに2枚のかけら。新しいかけらに雪の灯台と「ナミ」の文字",
@@ -464,7 +501,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": false
+     "withSidekick": false,
+     "camera": "Close-up across the bedside table, the glowing bottle large in the foreground and the child's wondering face softly lit just beyond it."
     }
    ]
   },
@@ -475,7 +513,8 @@
    "cover": {
     "label": "雪のみさきに立つ白い灯台。てっぺんの光る星のガラスを見上げる主人公と、バケツの中のプクル。",
     "art": "a white lighthouse stands on a snowy cape above the winter sea; the child looks up at the rainbow-glowing star-shaped glass at its top, holding a small bucket of seawater where Pukuru the baby pufferfish peeks out",
-    "withSidekick": true
+    "withSidekick": true,
+    "camera": "Low angle from the snow at the child's side, three-quarter view of the child's upturned face, the lighthouse soaring up on a strong diagonal to the glowing star glass, snowflakes whirling."
    },
    "scenes": [
     {
@@ -500,7 +539,8 @@
        ],
        "withMom": true,
        "withDad": true,
-       "withSidekick": false
+       "withSidekick": false,
+       "camera": "High wide view from the lighthouse looking down the snowy cape path, the child small in the middle walking hand in hand with the mother and the father."
       },
       "dad": {
        "label": "雪の岬の道をパパと手をつないで歩く。奥に白い灯台",
@@ -512,7 +552,8 @@
        ],
        "withMom": false,
        "withDad": true,
-       "withSidekick": false
+       "withSidekick": false,
+       "camera": "High wide view from the lighthouse looking down the snowy cape path, the father and child small, walking hand in hand."
       },
       "none": {
        "label": "雪の岬の道を歩く主人公。頭上を旋回するかもめ、奥に白い灯台",
@@ -524,9 +565,11 @@
        ],
        "withMom": false,
        "withDad": false,
-       "withSidekick": false
+       "withSidekick": false,
+       "camera": "High wide view from the lighthouse looking down the snowy cape path, the child small and walking alone, a seagull circling overhead."
       }
-     }
+     },
+     "camera": "High wide view from the lighthouse looking down the snowy cape path, the mother and child small, walking hand in hand."
     },
     {
      "label": "灯台の赤い扉から顔を出す、船長帽の白髪のおばあさん。バケツの中のプクル",
@@ -538,7 +581,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Low angle from the doorstep, the red door swinging open in the foreground and Grandma Nami leaning out, the child looking up at her holding the bucket."
     },
     {
      "label": "らせん階段をのぼるナミばあさんと主人公。人差し指を立てて注意するナミばあさん",
@@ -550,7 +594,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Dizzying view straight down the spiral staircase from above, Grandma Nami turning with a raised finger toward the child climbing below, swirling spiral perspective."
     },
     {
      "label": "灯台のてっぺんの部屋。大きなランプの中心で虹色に光る星形のガラス、見とれる主人公",
@@ -562,7 +607,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Over-the-shoulder view from behind the child toward the dazzling star glass in the lamp, the snowy sea through the windows."
     },
     {
      "label": "外れた星のガラスを手のひらに受けて驚く主人公。バケツの中でふくらむプクル",
@@ -574,7 +620,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Close-up on the child's open palms catching the star glass, the startled face just above, Pukuru puffing up in the bucket at the frame edge."
     },
     {
      "label": "ポケットを押さえて目をそらす主人公。湯気の立つココアを差し出すナミばあさん",
@@ -586,7 +633,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Medium three-quarter side view, Grandma Nami holding out the steaming cocoa, the child turned away with a hand pressed to the pocket."
     },
     {
      "label": "ぼんやりした弱い光のランプ。床を探すナミばあさん、ポケットを押さえて黙る主人公",
@@ -598,7 +646,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Wide high angle over the dim lamp room, Grandma Nami bent searching the floor, the child standing silent in a corner."
     },
     {
      "label": "窓の外、吹雪の向こうにかすかな船の明かり。涙をこらえる主人公",
@@ -610,7 +659,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": false
+     "withSidekick": false,
+     "camera": "Close profile view of the child at the window, tears welling, the faint ship lights through the blizzard reflected on the glass."
     },
     {
      "label": "手のひらの星のガラスを差し出す主人公。見つめるナミばあさん",
@@ -622,7 +672,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Low three-quarter angle from beside the child's outstretched hand, the star glass glowing large in the foreground as Grandma Nami bends down toward it."
     },
     {
      "label": "【見開き】雪の夜の海を貫く灯台の光の帯。答えるように灯る船の明かり、手を重ねる二人",
@@ -634,7 +685,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Grand wide view from the sea at a low angle, the lighthouse beam slicing diagonally across the dark snowy sea with answering ship lights, snow streaking past, the child and Grandma Nami small at the lit top."
     },
     {
      "label": "【パパ】雪の灯台の下で主人公を肩車するパパ。海に光の道と港へ帰る船の列",
@@ -658,7 +710,8 @@
        ],
        "withMom": true,
        "withDad": true,
-       "withSidekick": false
+       "withSidekick": false,
+       "camera": "Medium low angle from the snow, the father striding with the child on his shoulders as the mother wraps a scarf around the child, all turned toward the sea where a road of light and a line of ships glide home, snowflakes swirling."
       },
       "mom": {
        "label": "雪の灯台の下でママが主人公をハグ（肩車はしない）。海に光の道と港へ帰る船の列",
@@ -670,7 +723,8 @@
        ],
        "withMom": true,
        "withDad": false,
-       "withSidekick": false
+       "withSidekick": false,
+       "camera": "Medium low angle from the snow, the mother hugging the child tightly, both turned toward the sea where a road of light and a line of ships glide home, snowflakes swirling."
       },
       "none": {
        "label": "雪の灯台の下で、雪をかぶったドンが主人公をはさみで持ち上げる。海に光の道と船の列",
@@ -682,9 +736,11 @@
        ],
        "withMom": false,
        "withDad": false,
-       "withSidekick": false
+       "withSidekick": false,
+       "camera": "Medium low angle from the snow, the snow-dusted giant crab lifting the child high in one claw, both turned toward the sea where a road of light and a line of ships glide home, snowflakes swirling."
       }
-     }
+     },
+     "camera": "Medium low angle from the snow, the father striding with the child on his shoulders, both turned toward the sea where a road of light and a line of ships glide home, snowflakes swirling."
     },
     {
      "label": "夜の寝室。ポケットから出たかけらとメモ。かけらに沈んだ船とくじらのしっぽの絵",
@@ -696,7 +752,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": false
+     "withSidekick": false,
+     "camera": "Close-up from slightly above on the child's hands unfolding the note beside the map piece, the child's curious face leaning in."
     }
    ]
   },
@@ -707,7 +764,8 @@
    "cover": {
     "label": "海のそこにしずんだ大きな船の前で、くじらの子ルルのせなかに乗る主人公とプクル。",
     "art": "on the sea floor in front of a large sunken old sailing ship, the child in a rainbow bubble helmet and Pukuru the baby pufferfish ride on the back of Lulu, a big baby blue-gray whale with a pale belly, sunbeams slanting down through the blue water",
-    "withSidekick": true
+    "withSidekick": true,
+    "camera": "Dynamic low angle from the sea floor, Lulu gliding overhead on a diagonal with the child riding on top and laughing in three-quarter view, sunbeams slanting through the water past the sunken ship."
    },
    "scenes": [
     {
@@ -732,7 +790,8 @@
        ],
        "withMom": true,
        "withDad": true,
-       "withSidekick": false
+       "withSidekick": false,
+       "camera": "Wide shot from low on the sand, the half-built sand castle large in the foreground with the mother adding seashells, the child pointing out to sea in profile and the father turning to look, a whale spout on the horizon."
       },
       "mom": {
        "label": "春の浜辺でママと砂の城づくり。沖にくじらの潮吹き",
@@ -744,7 +803,8 @@
        ],
        "withMom": true,
        "withDad": false,
-       "withSidekick": false
+       "withSidekick": false,
+       "camera": "Wide shot from low on the sand, the half-built sand castle large in the foreground, the child pointing out to sea in profile and the mother turning to look, a whale spout on the horizon."
       },
       "none": {
        "label": "春の浜辺でドンと砂の城づくり（ドンがはさみで堀を掘る）。沖にくじらの潮吹き",
@@ -756,9 +816,11 @@
        ],
        "withMom": false,
        "withDad": false,
-       "withSidekick": false
+       "withSidekick": false,
+       "camera": "Wide shot from low on the sand, the half-built sand castle large in the foreground with the giant crab digging its moat, the child pointing out to sea in profile, a whale spout on the horizon."
       }
-     }
+     },
+     "camera": "Wide shot from low on the sand, the half-built sand castle large in the foreground, the child pointing out to sea in profile and the father turning to look, a whale spout on the horizon."
     },
     {
      "label": "波から跳ねて慌てるプクル。主人公の頭に泡のヘルメット",
@@ -770,7 +832,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Dynamic close side view of Pukuru bursting from the wave in a splash as the bubble pops onto the startled child's head, tilted diagonal composition."
     },
     {
      "label": "泣いているくじらの子。その顔をなでる主人公とプクル",
@@ -782,7 +845,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Close-up on Lulu's huge teary eye and the child's small hand stroking the cheek, the child's gentle face in three-quarter view."
     },
     {
      "label": "ルルの背に乗って泳ぐ主人公。泡の輪をくぐって大笑い",
@@ -794,7 +858,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Wide side tracking shot of the child riding Lulu at speed through a ring of bubbles, streaks of bubbles and water on a strong diagonal."
     },
     {
      "label": "さんごの上で尾を振るピコ。耳を寄せて聞く主人公",
@@ -806,7 +871,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Medium shot from just above the coral, Piko waving its tail in the foreground and the child leaning in to listen, Lulu's big shape filling the far frame."
     },
     {
      "label": "斜めに沈んだ古い帆船。船長室の箱から光るかけらを取り出す主人公",
@@ -818,7 +884,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Tilted interior view of the slanted captain's cabin from low in a corner, the child lifting the glowing map piece with light on the face, Pukuru peering in beside."
     },
     {
      "label": "沈没船の甲板でルルに寄りかかる主人公。遠くに歌の波紋。目をそらす主人公",
@@ -830,7 +897,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Wide high view looking down on the tilted deck, the child leaning on Lulu and turned away, faint song ripples spreading across the far sea."
     },
     {
      "label": "遠くを見つめて涙の泡をためるルル。胸を押さえてうつむく主人公",
@@ -842,7 +910,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Close two-shot in profile, Lulu's teary eye gazing far away and the child below with head bowed, a hand on the chest."
     },
     {
      "label": "沈没船の鐘を鳴らし、遠くを指さす主人公。顔を上げるルル",
@@ -854,7 +923,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Over-the-shoulder view from behind the child ringing the bell and pointing to the distant sea, Lulu lifting its head at the side of the frame."
     },
     {
      "label": "【見開き】海面から並んでジャンプするくじらの親子と大きな虹。手を振る主人公とプクル",
@@ -866,7 +936,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Grand low wide angle from the waves looking up as the two whales leap side by side under a huge rainbow, sunlit spray everywhere, the child waving joyfully in three-quarter view at the frame edge."
     },
     {
      "label": "【ママ】春の浜辺でママに抱きつく主人公。背中をなでるママ、沖にくじらの潮",
@@ -890,7 +961,8 @@
        ],
        "withMom": true,
        "withDad": true,
-       "withSidekick": false
+       "withSidekick": false,
+       "camera": "Medium eye-level three-quarter view of the child hugging the mother, her hand gently stroking the child, the father sitting close beside them, a far whale spout over the sea."
       },
       "dad": {
        "label": "春の浜辺でパパに抱きつく主人公。背中をなでるパパ、沖にくじらの潮",
@@ -902,7 +974,8 @@
        ],
        "withMom": false,
        "withDad": true,
-       "withSidekick": false
+       "withSidekick": false,
+       "camera": "Medium eye-level three-quarter view of the child hugging the father, his hand gently stroking the child, a far whale spout over the sea."
       },
       "none": {
        "label": "春の浜辺に座る主人公。波打ち際で手にほほを寄せるプクル、隣に座るドン、沖にくじらの潮",
@@ -914,9 +987,11 @@
        ],
        "withMom": false,
        "withDad": false,
-       "withSidekick": true
+       "withSidekick": true,
+       "camera": "Medium eye-level three-quarter view of the teary child sitting on the sand, the baby pufferfish pressing against the child's hand and the giant crab beside them, a far whale spout over the sea."
       }
-     }
+     },
+     "camera": "Medium eye-level three-quarter view of the child hugging the mother, her hand gently stroking the child, a far whale spout over the sea."
     },
     {
      "label": "夜の机に並ぶ4枚のかけら。まん中だけ空いた地図。窓の外の月の海にくじらのしっぽ",
@@ -928,7 +1003,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": false
+     "withSidekick": false,
+     "camera": "High view over the desk at night, the four map pieces laid out in the foreground, the child's face lit by moonlight, a whale's tail rising beyond the window."
     }
    ]
   },
@@ -939,7 +1015,8 @@
    "cover": {
     "label": "海のそこで開いた古いたからばこ。まき貝の笛を吹く主人公のまわりに、プクル、ドン、ピコ、ルルの親子、上から差しこむ灯台の光。",
     "art": "on the deep seabed an old treasure chest stands open, and the child in a bubble helmet blows a small spiral seashell flute; gathered around are Pukuru the baby pufferfish, Don, a huge red crab with giant claws, Piko, a tiny yellow seahorse with a curled tail, and Lulu, a young blue-gray whale with a pale belly, with a huge gentle grown-up whale (Lulu's mama), while beams of lighthouse light shine down from above",
-    "withSidekick": true
+    "withSidekick": true,
+    "camera": "Low angle from the seabed looking up at the child in three-quarter view blowing the shell flute beside the open chest, sound rings rippling outward and the friends swirling around in a circle."
    },
    "scenes": [
     {
@@ -964,7 +1041,8 @@
        ],
        "withMom": true,
        "withDad": true,
-       "withSidekick": false
+       "withSidekick": false,
+       "camera": "Wide establishing shot matching the first episode's beach scene, the slightly taller child, the mother and the father standing small by the striped umbrella and tide pools."
       },
       "dad": {
        "label": "第1話と同じ構図の砂浜。少し背が伸びた主人公とパパ、手に4枚のかけら入りのびん",
@@ -976,7 +1054,8 @@
        ],
        "withMom": false,
        "withDad": true,
-       "withSidekick": false
+       "withSidekick": false,
+       "camera": "Wide establishing shot matching the first episode's beach scene, the slightly taller child and the father standing small by the striped umbrella and tide pools."
       },
       "none": {
        "label": "第1話と同じ構図の砂浜。少し背が伸びた主人公と、はさみで背を測るドン、手に4枚のかけら入りのびん",
@@ -988,9 +1067,11 @@
        ],
        "withMom": false,
        "withDad": false,
-       "withSidekick": false
+       "withSidekick": false,
+       "camera": "Wide establishing shot matching the first episode's beach scene, the slightly taller child and the giant crab measuring the child's height standing small by the tide pools."
       }
-     }
+     },
+     "camera": "Wide establishing shot matching the first episode's beach scene, the slightly taller child and the mother standing small by the striped umbrella and tide pools."
     },
     {
      "label": "浅瀬に来た少し大きくなったルル。頭の上にプクル。口から出てくる最後のかけら",
@@ -1002,7 +1083,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Low angle from the shallow water looking up at Lulu's huge head with Pukuru on top, the spout arching overhead and the last map piece floating down to the child's hands."
     },
     {
      "label": "5枚がつながって光る1枚の地図。金貨を想像して跳びはねる主人公（想像の吹き出し）",
@@ -1014,7 +1096,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Dynamic medium shot of the child mid-jump for joy, hair flying, the glowing map below and a dreamy thought cloud of gold coins above, tilted composition."
     },
     {
      "label": "ルルの背で出発する主人公。岩の上で手を振るドン、さんごの上で尾を振るピコ",
@@ -1026,7 +1109,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Wide side tracking view of the child riding Lulu out to sea with a splashing wake, Don waving from a rock and Piko from the coral as they pass."
     },
     {
      "label": "夏の灯台のてっぺんで手を振るナミばあさん。海に光の道、その上を進むルル",
@@ -1038,7 +1122,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "High bird's-eye view from above the lighthouse, Grandma Nami waving at the top and the shining path of light stretching across the sea with Lulu small upon it."
     },
     {
      "label": "深い青の海の底。光るくらげの明かりの中、白い砂の丘に古いたからばこ",
@@ -1050,7 +1135,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Over-the-shoulder view from behind the child approaching the old chest on the white dune, glowing jellyfish lighting the deep blue."
     },
     {
      "label": "錆びたふたを力を合わせて押し上げる主人公・プクル・ルル。すきまからこぼれる光",
@@ -1062,7 +1148,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Low close angle from the sand at the chest, the child straining in profile with Pukuru and Lulu pushing, light spilling from the creaking lid across their faces, strong diagonal."
     },
     {
      "label": "空っぽに近い箱の底に、小さなまき貝の笛と古い手紙。がっかりしてうつむく主人公",
@@ -1074,7 +1161,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "High angle looking down into the nearly empty chest, the small flute and letter at the bottom and the child's disappointed face above the rim."
     },
     {
      "label": "まき貝の笛を吹く主人公。笛から音の輪が海中へ広がる",
@@ -1086,7 +1174,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Close-up on the child's face in three-quarter view blowing the flute, rings of sound expanding outward, Pukuru listening at the edge."
     },
     {
      "label": "【見開き】笛の音に集まったドン・ピコと魚たち・くじらの親子が主人公を輪になって囲む。海底まで差しこむ灯台の光。第1話のいそ・第2話のさんごの色がそろう",
@@ -1098,7 +1187,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Grand wide circular view from above, the ring of friends, Don, Piko, fish schools and the whales, swirling around the child in the middle who looks up in joy."
     },
     {
      "label": "【パパ】夕方の浜辺でパパに肩車され、貝の笛を空へかかげる主人公。沖で潮を吹くルル",
@@ -1122,7 +1212,8 @@
        ],
        "withMom": true,
        "withDad": true,
-       "withSidekick": false
+       "withSidekick": false,
+       "camera": "Low angle from the sand looking up at the father with the child on his shoulders raising the flute to the sunset sky, the mother clapping beside them, Lulu's spout far out at sea."
       },
       "mom": {
        "label": "夕方の浜辺でママが主人公をハグ（肩車はしない）。主人公の手に貝の笛、沖で潮を吹くルル",
@@ -1134,7 +1225,8 @@
        ],
        "withMom": true,
        "withDad": false,
-       "withSidekick": false
+       "withSidekick": false,
+       "camera": "Low angle from the sand looking up at the mother hugging the child, who holds the flute up to show her against the sunset sky, Lulu's spout far out at sea."
       },
       "none": {
        "label": "夕方の浜辺でドンがはさみで主人公を持ち上げ、やどかりたちが喜ぶ。貝の笛、沖で潮を吹くルル",
@@ -1146,9 +1238,11 @@
        ],
        "withMom": false,
        "withDad": false,
-       "withSidekick": false
+       "withSidekick": false,
+       "camera": "Low angle from the sand looking up at the giant crab lifting the child high on one claw as the child raises the flute to the sunset sky, hermit crabs cheering, Lulu's spout far out at sea."
       }
-     }
+     },
+     "camera": "Low angle from the sand looking up at the father with the child on his shoulders raising the flute to the sunset sky, Lulu's spout far out at sea."
     },
     {
      "label": "夕暮れの波打ち際。手紙入りのびんを海へ流す主人公。空から舞い落ちる星の地図の光る羽、見上げるプクル",
@@ -1160,7 +1254,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Medium three-quarter side view at the waterline, the child watching the bottle drift away, the glowing star-map feather drifting down, Pukuru peeking from the waves."
     }
    ]
   }

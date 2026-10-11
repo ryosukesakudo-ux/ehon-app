@@ -11,7 +11,8 @@
    "cover": {
     "label": "おかしの町の門の前で、ミント色の星のぼうしをかぶった白ねこ（ミント）と並んで、光る招待状を持つ主人公。",
     "art": "in front of the gate of a sweets town made of cookie houses and chocolate roofs, the child stands beside Mint the white cat in an oversized mint-green star hat, holding a glowing invitation letter in both hands and smiling with wonder",
-    "withSidekick": true
+    "withSidekick": true,
+    "camera": "Low-angle three-quarter view looking up at the child mid-step toward the gate, Mint beside them, cookie houses towering overhead, the child's face clearly visible."
    },
    "scenes": [
     {
@@ -36,7 +37,8 @@
        ],
        "withMom": true,
        "withDad": true,
-       "withSidekick": false
+       "withSidekick": false,
+       "camera": "Close-up from slightly above the bed on the mother hugging the child cheek to cheek, the father leaning in smiling, the glowing envelope in the soft foreground."
       },
       "dad": {
        "label": "朝の寝室。ベッドの主人公を抱きしめるパパ。枕元に光る封筒",
@@ -48,7 +50,8 @@
        ],
        "withMom": false,
        "withDad": true,
-       "withSidekick": false
+       "withSidekick": false,
+       "camera": "Close-up from slightly above the bed on the father hugging the child cheek to cheek, the glowing envelope in the soft foreground."
       },
       "none": {
        "label": "朝の寝室。窓辺で歌う小鳥（ピピ）。枕元に光る封筒",
@@ -60,9 +63,11 @@
        ],
        "withMom": false,
        "withDad": false,
-       "withSidekick": false
+       "withSidekick": false,
+       "camera": "Close-up from slightly above the bed on the child sitting up smiling toward the songbird on the windowsill, the glowing envelope on the pillow in the soft foreground."
       }
-     }
+     },
+     "camera": "Close-up from slightly above the bed on the mother hugging the child cheek to cheek, the glowing envelope in the soft foreground."
     },
     {
      "label": "光る星もようの手紙。壁に現れた金色の小さな扉",
@@ -74,7 +79,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": false
+     "withSidekick": false,
+     "camera": "Medium three-quarter side view of the child turned toward the small golden door on the wall, letter in hand, light spilling across the room."
     },
     {
      "label": "お菓子の町の入口。ミント色の星の帽子をかぶった白猫ミントがお辞儀",
@@ -86,7 +92,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Over-the-shoulder view from behind the child at the golden doorway, looking past their head at the sweets town and Mint bowing."
     },
     {
      "label": "ケーキの周りにクッキーの星を並べるこぐまのポム。ウインクするミント、星をひとつ置く主人公",
@@ -98,7 +105,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Medium eye-level side view at the cake table, Pom and Mint watching as the child leans in to place a cookie star, everyone looking at the cake."
     },
     {
      "label": "色とりどりの風船につかまって空へ浮かぶ主人公とミント。眼下にお菓子の町",
@@ -110,7 +118,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "High bird's-eye view looking down past the floating child and Mint to the toy-sized sweets town far below."
     },
     {
      "label": "綿あめの雲の上。小鳥ピピが星の火をランタンに入れる",
@@ -122,7 +131,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Low-angle shot from beneath the cotton-candy clouds looking up at Pipi placing the star flame in the lantern, the child and Mint peering over from their balloons."
     },
     {
      "label": "強風でくるくる回る風船。ランタンを抱きしめる主人公",
@@ -134,7 +144,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Dynamic tilted diagonal shot of the spinning balloons, the child mid-twirl hugging the lantern, swirling wind lines, Mint's hat flapping."
     },
     {
      "label": "見上げるほど巨大なケーキ。弱々しいランタンの火。うつむく主人公",
@@ -146,7 +157,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Extreme low-angle shot from ground level, the gigantic cake towering out of frame, the child small at its base looking down at the flickering lantern."
     },
     {
      "label": "クッキーの星の階段を、ランタンを持って登る主人公。下で見守るミントとポム",
@@ -158,7 +170,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Dynamic diagonal view from slightly below as the child climbs the spiral cookie-star staircase mid-stride, Mint and Pom small on the ground looking up."
     },
     {
      "label": "【見開き】ろうそくが一斉に灯る巨大ケーキの頂上に主人公。キャンディの花火、歓声をあげる町の住人",
@@ -170,7 +183,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Grand wide low-angle panorama from below the cake, the child at the summit among the lit candles, candy fireworks bursting across the sky, the cheering crowd in the foreground."
     },
     {
      "label": "【パパ】ケーキの前で主人公を肩車するパパ。ミントが赤いリボンの本を差し出す",
@@ -194,7 +208,8 @@
        ],
        "withMom": true,
        "withDad": true,
-       "withSidekick": true
+       "withSidekick": true,
+       "camera": "Medium low-angle shot of the father with the child on his shoulders, the mother clapping beside them, the child turned toward Mint who holds out the ribboned book."
       },
       "mom": {
        "label": "ケーキの前でママが主人公をハグ（肩車はしない）。ミントが赤いリボンの本を差し出す",
@@ -206,7 +221,8 @@
        ],
        "withMom": true,
        "withDad": false,
-       "withSidekick": true
+       "withSidekick": true,
+       "camera": "Medium low-angle shot of the mother hugging the child, the child turned toward Mint who holds out the ribboned book."
       },
       "none": {
        "label": "こぐまのポムに肩車される主人公、拍手する町の住人。ミントが赤いリボンの本を差し出す",
@@ -218,9 +234,11 @@
        ],
        "withMom": false,
        "withDad": false,
-       "withSidekick": true
+       "withSidekick": true,
+       "camera": "Medium low-angle shot of the bear cub chef with the child on his shoulders, townsfolk clapping, the child turned toward Mint who holds out the ribboned book."
       }
-     }
+     },
+     "camera": "Medium low-angle shot of the father with the child on his shoulders, the child turned toward Mint who holds out the ribboned book."
     },
     {
      "label": "夜の寝室。宝物の本を開く主人公。次のページに雲と羊の絵がうっすら。窓の外にミント",
@@ -232,7 +250,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Close-up from the bedside on the child's face and hands over the open book in soft lamplight, Mint smiling at the moonlit window at the edge of the frame."
     }
    ]
   },
@@ -243,7 +262,8 @@
    "cover": {
     "label": "雲の上の町で、大きなにじの前に立つ主人公と、雲でできたひつじ（モコ）とミント。",
     "art": "in a town on top of the clouds, the child stands in front of a huge rainbow with Moko, a small fluffy lamb made of white cloud and Mint the white cat in his oversized mint-green star hat, all smiling",
-    "withSidekick": true
+    "withSidekick": true,
+    "camera": "Slightly low three-quarter view of the child mid-skip in front of the huge rainbow, Moko and Mint bouncing alongside, the child's face clearly visible as they turn toward Moko."
    },
    "scenes": [
     {
@@ -268,7 +288,8 @@
        ],
        "withMom": true,
        "withDad": true,
-       "withSidekick": false
+       "withSidekick": false,
+       "camera": "Medium side view at the wooden pillar, the father marking the height as the child stretches tall and the mother leans in, all laughing, the glowing book on the shelf in the distance."
       },
       "mom": {
        "label": "柱の前で主人公の背を測るママ。本棚の宝物の本が光る",
@@ -280,7 +301,8 @@
        ],
        "withMom": true,
        "withDad": false,
-       "withSidekick": false
+       "withSidekick": false,
+       "camera": "Medium side view at the wooden pillar, the mother marking the height as the child stretches tall, both turned to each other smiling, the glowing book on the shelf in the distance."
       },
       "none": {
        "label": "柱の前で自分の頭に手を当てて印をつける主人公。本棚の宝物の本が光る",
@@ -292,9 +314,11 @@
        ],
        "withMom": false,
        "withDad": false,
-       "withSidekick": false
+       "withSidekick": false,
+       "camera": "Medium side view at the wooden pillar, the child stretching tall with a hand on their head marking their own height, the glowing book on the shelf in the distance."
       }
-     }
+     },
+     "camera": "Medium side view at the wooden pillar, the father marking the height as the child stretches tall, both turned to each other laughing, the glowing book on the shelf in the distance."
     },
     {
      "label": "窓辺で手紙をくわえるピピ。窓の外へ伸びる雲の階段、上で手を振るミント",
@@ -306,7 +330,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Low-angle view from the floor near the window looking up at Pipi on the sill and the cloud staircase rising into the sky, Mint waving at its top."
     },
     {
      "label": "雲の町に並ぶ旗。金の冠をかぶって胸を張る主人公とミント",
@@ -318,7 +343,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Dynamic low tracking shot as the child strides along the cloud street chest puffed out, pennant flags snapping diagonally in the wind."
     },
     {
      "label": "雲の陰からのぞく雲の羊モコ。冠を押さえて口をとがらせる主人公",
@@ -330,7 +356,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": false
+     "withSidekick": false,
+     "camera": "Over-the-shoulder view from behind the pouting child holding down the crown, Moko peeking shyly from the cloud in front of them."
     },
     {
      "label": "雲のトランポリンで高く跳ぶ主人公。後ろで順番を待つモコ、帽子をかぶりなおすミント",
@@ -342,7 +369,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Dynamic low-angle shot of the child mid-bounce high above the cloud trampoline, arms flung out, motion lines, Moko tiny and waiting far off."
     },
     {
      "label": "虹色のケーキ。苺を自分の皿に山盛りにする主人公、空っぽのモコの皿",
@@ -354,7 +382,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": false
+     "withSidekick": false,
+     "camera": "High overhead view looking down on the table, the child's plate heaped with strawberries beside Moko's empty plate."
     },
     {
      "label": "灰色になって泣くモコ。土砂降りの雲の町",
@@ -366,7 +395,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": false
+     "withSidekick": false,
+     "camera": "Close-up on gray Moko's tearful face, rain streaking diagonally, the startled child at the edge of the frame."
     },
     {
      "label": "雨の中ひとりぼっちの主人公。重そうな冠と山盛りの苺",
@@ -378,7 +408,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": false
+     "withSidekick": false,
+     "camera": "Very wide high shot of the empty rain-soaked cloud town, the child small and alone in the middle with the heavy crown."
     },
     {
      "label": "冠をモコの頭にそっとのせる主人公。苺の皿を抱えている",
@@ -390,7 +421,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": false
+     "withSidekick": false,
+     "camera": "Close-up from the side at eye level on the child's hands gently setting the crown on Moko's head, rain dripping, the two looking at each other."
     },
     {
      "label": "【見開き】雲の町に大きな虹。二人の名前の旗、苺を分け合う主人公とモコ、歓声をあげる住人",
@@ -402,7 +434,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Grand wide low-angle panorama with the huge rainbow arching over the cloud town, the child and Moko sharing strawberries under the flags, townsfolk cheering."
     },
     {
      "label": "【ママ】食卓のケーキ。ママの皿に苺をのせる主人公、笑うママ",
@@ -426,7 +459,8 @@
        ],
        "withMom": true,
        "withDad": true,
-       "withSidekick": false
+       "withSidekick": false,
+       "camera": "Medium three-quarter view from across the dining table, the child leaning over to put strawberries on the plates as the mother laughs and the father pats the child's head."
       },
       "dad": {
        "label": "食卓のケーキ。パパの皿に苺をのせる主人公、笑うパパ",
@@ -438,7 +472,8 @@
        ],
        "withMom": false,
        "withDad": true,
-       "withSidekick": false
+       "withSidekick": false,
+       "camera": "Medium three-quarter view from across the dining table, the child leaning toward the father to put a strawberry on his plate as he laughs."
       },
       "none": {
        "label": "部屋の小さなケーキ。ミントとピピの皿に苺をのせる主人公、笑うミント",
@@ -450,9 +485,11 @@
        ],
        "withMom": false,
        "withDad": false,
-       "withSidekick": true
+       "withSidekick": true,
+       "camera": "Medium three-quarter view from across the small table in the child's room, the child leaning toward Mint and the songbird to put strawberries on their plates as Mint laughs."
       }
-     }
+     },
+     "camera": "Medium three-quarter view from across the dining table, the child leaning toward the mother to put a strawberry on her plate as she laughs."
     },
     {
      "label": "夜の寝室。2ページになった本。次のページに泡とタツノオトシゴがうっすら。窓辺のミント",
@@ -464,7 +501,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Gentle high three-quarter view from the ceiling corner down on the child in bed beside the open book, turned toward Mint on the windowsill."
     }
    ]
   },
@@ -475,7 +513,8 @@
    "cover": {
     "label": "海の底のさんごのおしろの前で、光るあわに囲まれて小さなつえをかまえる主人公と、ミント、タツノオトシゴのシャル。",
     "art": "in front of a coral castle at the bottom of the sea, the child holds up a small wand surrounded by glowing bubbles, with Mint the white cat in his oversized mint-green star hat and Shar, a little pink seahorse with a curled tail beside them",
-    "withSidekick": true
+    "withSidekick": true,
+    "camera": "Low-angle three-quarter view of the child raising the wand, glowing bubbles swirling upward, the coral castle towering above, the child's face clearly visible."
    },
    "scenes": [
     {
@@ -500,7 +539,8 @@
        ],
        "withMom": true,
        "withDad": true,
-       "withSidekick": false
+       "withSidekick": false,
+       "camera": "Close-up on the mother and child cheek to cheek, eyes closed in the hug, the father's arms wrapped around them both, the sparkling bottle softly blurred on the windowsill."
       },
       "dad": {
        "label": "朝、主人公を抱きしめて頬をくっつけるパパ。窓辺に手紙入りのガラス瓶",
@@ -512,7 +552,8 @@
        ],
        "withMom": false,
        "withDad": true,
-       "withSidekick": false
+       "withSidekick": false,
+       "camera": "Close-up on the father and child cheek to cheek, eyes closed in the hug, the sparkling bottle softly blurred on the windowsill."
       },
       "none": {
        "label": "朝、窓辺で歌う小鳥（ピピ）。その横に手紙入りのガラス瓶",
@@ -524,9 +565,11 @@
        ],
        "withMom": false,
        "withDad": false,
-       "withSidekick": false
+       "withSidekick": false,
+       "camera": "Close-up on the child smiling happily at the songbird singing beside the sparkling bottle on the windowsill."
       }
-     }
+     },
+     "camera": "Close-up on the mother and child cheek to cheek, eyes closed in the hug, the sparkling bottle softly blurred on the windowsill."
     },
     {
      "label": "瓶からあふれる泡で部屋が海に変わる。泡の中からミントが顔を出す",
@@ -538,7 +581,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Dynamic wide tilted view of the room flooding into sea, bubbles rushing diagonally across the frame, Mint popping out of a big bubble toward the delighted child."
     },
     {
      "label": "珊瑚の城の門。お辞儀するタツノオトシゴのシャル。ミントが主人公に小さな杖を渡す",
@@ -550,7 +594,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Over-the-shoulder view from behind the child at the coral gate, Shar mid-twirl bowing and Mint holding out the small wand toward them."
     },
     {
      "label": "杖をくるりと回す主人公。生まれてすぐ割れる泡。ミントの杖の先には光る泡",
@@ -562,7 +607,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Medium side view of the child twirling the wand as the tiny bubble pops, Mint's glowing bubble floating in the foreground."
     },
     {
      "label": "少しだけ光る泡。ひれで拍手する魚たち、しっぽを巻いて喜ぶシャル",
@@ -574,7 +620,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Low-angle view from the seabed looking up at the child's faintly glowing bubble, fish clapping in a circle above, Shar swirling."
     },
     {
      "label": "暗い大広間に集まる亀・蟹・クラゲたち。注目の中、杖を握る主人公",
@@ -586,7 +633,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": false
+     "withSidekick": false,
+     "camera": "High wide view from the ceiling of the dim great hall looking down on the crowd of sea creatures all turned toward the small child in the center."
     },
     {
      "label": "大きな泡が割れて飛び散り、泡だらけの海の仲間たち。顔を赤くする主人公",
@@ -598,7 +646,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": false
+     "withSidekick": false,
+     "camera": "Dynamic burst shot with foam exploding diagonally across the frame, crabs and jellyfish flinching, the blushing child in the middle."
     },
     {
      "label": "大きな貝殻にこもる主人公。隣に座り、焦げて穴のあいた帽子の端を見せるミント",
@@ -610,7 +659,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Close-up inside the seashell on the curled-up child's face, Mint leaning in from the side showing his scorched hat brim."
     },
     {
      "label": "真っ暗な海で、貝殻から出て杖を構える主人公。怖がる小魚たち",
@@ -622,7 +672,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": false
+     "withSidekick": false,
+     "camera": "Low-angle shot looking up at the child climbing out of the shell with the wand raised, small fish huddled in the dark foreground."
     },
     {
      "label": "【見開き】無数の光る泡のランタンが浮かぶ海、虹色に輝く珊瑚の城。魚のパレードと歓声",
@@ -634,7 +685,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Grand wide panorama from below, hundreds of glowing bubble lanterns rising over the rainbow coral castle, the fish parade circling the child, Mint and Shar."
     },
     {
      "label": "【パパ】夕焼けの庭で主人公を肩車するパパ。空へ昇る大きなしゃぼん玉",
@@ -658,7 +710,8 @@
        ],
        "withMom": true,
        "withDad": true,
-       "withSidekick": false
+       "withSidekick": false,
+       "camera": "Wide low-angle view in the sunset garden, the father with the child on his shoulders and the mother clapping, all gazing up at the big soap bubble floating into the sky."
       },
       "mom": {
        "label": "夕焼けの庭でママが主人公をハグ（肩車はしない）。空へ昇る大きなしゃぼん玉",
@@ -670,7 +723,8 @@
        ],
        "withMom": true,
        "withDad": false,
-       "withSidekick": false
+       "withSidekick": false,
+       "camera": "Wide low-angle view in the sunset garden, the mother hugging the child, both gazing up at the big soap bubble floating into the sky."
       },
       "none": {
        "label": "夕焼けの公園、滑り台の上でしゃぼん玉を吹く主人公とミント。空へ昇る大きなしゃぼん玉",
@@ -682,9 +736,11 @@
        ],
        "withMom": false,
        "withDad": false,
-       "withSidekick": true
+       "withSidekick": true,
+       "camera": "Wide low-angle view in the sunset park, the child and Mint at the top of the slide gazing up at the big soap bubble floating into the sky."
       }
-     }
+     },
+     "camera": "Wide low-angle view in the sunset garden, the father with the child on his shoulders, both gazing up at the big soap bubble floating into the sky."
     },
     {
      "label": "夜の寝室。3ページになった本から落ちる星形の切符。裏にシャルの小さな文字",
@@ -696,7 +752,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": false
+     "withSidekick": false,
+     "camera": "Medium high-angle view over the bed as the star-shaped ticket flutters from the book, the child leaning in to catch it in surprise."
     }
    ]
   },
@@ -707,7 +764,8 @@
    "cover": {
     "label": "夜空を走る星の汽車の窓から月を見上げる主人公とミント。月の岩山に小さなドラゴンの影。",
     "art": "a star train races across the night sky; through its window the child and Mint the white cat in his oversized mint-green star hat look up at the moon, where the shadow of a small dragon sits on a rocky peak",
-    "withSidekick": true
+    "withSidekick": true,
+    "camera": "Dramatic diagonal low-angle side view of the star train racing across the night sky, the child at the window in three-quarter view looking up at the moon with face clearly visible, the small dragon's silhouette on a distant peak."
    },
    "scenes": [
     {
@@ -732,7 +790,8 @@
        ],
        "withMom": true,
        "withDad": true,
-       "withSidekick": false
+       "withSidekick": false,
+       "camera": "Medium three-quarter side view of the father, the mother and the child at the balcony railing, the father pointing up at the stars, the ticket glowing in the child's pocket."
       },
       "mom": {
        "label": "夜のベランダで並んで星を見るママと主人公。ポケットの切符が光る",
@@ -744,7 +803,8 @@
        ],
        "withMom": true,
        "withDad": false,
-       "withSidekick": false
+       "withSidekick": false,
+       "camera": "Medium three-quarter side view of the mother and child at the balcony railing, the mother pointing up at the stars, the ticket glowing in the child's pocket."
       },
       "none": {
        "label": "夜のベランダで手すりにあごをのせて星を見る主人公。ポケットの切符が光る",
@@ -756,9 +816,11 @@
        ],
        "withMom": false,
        "withDad": false,
-       "withSidekick": false
+       "withSidekick": false,
+       "camera": "Medium three-quarter side view of the child at the balcony railing, chin resting on it gazing up at the stars, the ticket glowing in the child's pocket."
       }
-     }
+     },
+     "camera": "Medium three-quarter side view of the father and child at the balcony railing, the father pointing up at the stars, the ticket glowing in the child's pocket."
     },
     {
      "label": "ベランダ前に止まる星の汽車。車掌帽のミントが窓から手招き",
@@ -770,7 +832,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Low-angle shot from the balcony floor looking up at the sparkling star train on its rails of light, Mint leaning out of the window beckoning."
     },
     {
      "label": "半分暗い月のパーティー会場。耳を垂らした月のうさぎたち",
@@ -782,7 +845,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Wide view of the half-dark moon party venue, lanterns winking out across the frame, worried moon rabbits turned toward the arriving child and Mint."
     },
     {
      "label": "月の砂に続く大きな爪の足跡。ミントのしっぽを握る主人公",
@@ -794,7 +858,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Low over-the-shoulder view from behind the child gripping Mint's tail, the clawed footprints leading off toward the dark rocky mountains."
     },
     {
      "label": "岩山の上で翼を広げるドラゴンの大きな影。逃げる主人公とミント",
@@ -806,7 +871,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Dynamic diagonal chase shot, the child and Mint sprinting mid-stride with motion lines, the huge winged dragon shadow looming on the peak above."
     },
     {
      "label": "岩陰からのぞく主人公とミント。洞穴で星の明かりを抱く小さなドラゴン（ガオ）",
@@ -818,7 +884,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Medium shot from inside the cave looking out at the child and Mint peeking around the rock, Gao hugging the star lights in the foreground."
     },
     {
      "label": "驚いて火を吹くちびドラゴン。飛び散って消える星の明かり",
@@ -830,7 +897,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Dynamic tilted shot of Gao's puff of fire bursting across the frame, star lights scattering, the child and Mint leaping away mid-air."
     },
     {
      "label": "暗闇でしゃがむ主人公。開いた宝物の本の3ページがぽうっと光る",
@@ -842,7 +910,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": false
+     "withSidekick": false,
+     "camera": "Close-up on the crouching child's face lit softly from below by the glowing book in their hands, darkness all around."
     },
     {
      "label": "ちびドラゴンに星の切符を差し出す主人公。少し震えるひざ",
@@ -854,7 +923,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": false
+     "withSidekick": false,
+     "camera": "Medium eye-level side view of the child stepping toward Gao and holding out the star ticket, knees trembling, the two looking at each other."
     },
     {
      "label": "【見開き】ガオが優しい火を吹き、月面のちょうちんが一斉に灯る。輝く星の汽車と歓声をあげる月のうさぎたち",
@@ -866,7 +936,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Grand wide low-angle panorama of the moon, Gao's gentle fire streaming into the sky and every lantern blazing, the golden train arcing overhead and rabbits cheering."
     },
     {
      "label": "【ママ】夜のベランダ。毛布で主人公を包むママ。空に遠ざかる星の汽車",
@@ -890,7 +961,8 @@
        ],
        "withMom": true,
        "withDad": true,
-       "withSidekick": false
+       "withSidekick": false,
+       "camera": "Close-up of the mother wrapping the child in the blanket, the father smiling beside them, the child turned to gaze at the star train shrinking in the night sky."
       },
       "dad": {
        "label": "夜のベランダ。毛布で主人公を包むパパ。空に遠ざかる星の汽車",
@@ -902,7 +974,8 @@
        ],
        "withMom": false,
        "withDad": true,
-       "withSidekick": false
+       "withSidekick": false,
+       "camera": "Close-up of the father wrapping the child in the blanket, the child turned to gaze at the star train shrinking in the night sky."
       },
       "none": {
        "label": "夜のベランダ。帽子から出した毛布で主人公を包むミント。空に遠ざかる星の汽車",
@@ -914,9 +987,11 @@
        ],
        "withMom": false,
        "withDad": false,
-       "withSidekick": true
+       "withSidekick": true,
+       "camera": "Close-up of Mint wrapping the child in the blanket from his star hat, the child turned to gaze at the star train shrinking in the night sky."
       }
-     }
+     },
+     "camera": "Close-up of the mother wrapping the child in the blanket, the child turned to gaze at the star train shrinking in the night sky."
     },
     {
      "label": "夜の窓辺。帽子を深くかぶり寂しげに笑うミント。開いた本の真っ白な5ページ目",
@@ -928,7 +1003,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "High three-quarter view from above the window, Mint's sad smile under the lowered hat, the child holding up the blank fifth page toward him."
     }
    ]
   },
@@ -939,7 +1015,8 @@
    "cover": {
     "label": "おかしの町の広場で、5ページの宝物の本を開いて、ミントに手書きの招待状を見せる主人公。後ろにポム・ピピ・モコ・シャル・ガオ。",
     "art": "in the town square of the sweets town, the child holds open the treasure book and shows a handmade invitation to Mint the white cat in his oversized mint-green star hat; behind them gather Pom, a little brown bear cub pastry chef in a white chef's hat and apron, Pipi, a small yellow songbird mail carrier with a tiny satchel, Moko, a small fluffy lamb made of white cloud, Shar, a little pink seahorse with a curled tail and Gao, a small round green baby dragon with tiny wings",
-    "withSidekick": true
+    "withSidekick": true,
+    "camera": "Slightly low three-quarter view of the child mid-gesture holding the open book out to Mint, friends crowding happily around, the child's face clearly visible."
    },
    "scenes": [
     {
@@ -964,7 +1041,8 @@
        ],
        "withMom": true,
        "withDad": true,
-       "withSidekick": false
+       "withSidekick": false,
+       "camera": "Close-up from pillow level, the child peeking out from the mother's hug at the empty pillow, the father's hand on the child's head, mirroring the first birthday morning."
       },
       "dad": {
        "label": "朝の寝室。抱きしめるパパの腕の中から、枕元をのぞく主人公",
@@ -976,7 +1054,8 @@
        ],
        "withMom": false,
        "withDad": true,
-       "withSidekick": false
+       "withSidekick": false,
+       "camera": "Close-up from pillow level, the child peeking out from the father's hug at the empty pillow, mirroring the first birthday morning."
       },
       "none": {
        "label": "朝の寝室。窓辺で歌う小鳥（手紙は持っていない）。枕元をのぞく主人公",
@@ -988,9 +1067,11 @@
        ],
        "withMom": false,
        "withDad": false,
-       "withSidekick": false
+       "withSidekick": false,
+       "camera": "Close-up from pillow level, the child peeking at the empty pillow, the songbird singing on the windowsill without a letter, mirroring the first birthday morning."
       }
-     }
+     },
+     "camera": "Close-up from pillow level, the child peeking out from the mother's hug at the empty pillow, mirroring the first birthday morning."
     },
     {
      "label": "窓辺で待つ主人公。開いた本の真っ白な5ページ目",
@@ -1002,7 +1083,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": false
+     "withSidekick": false,
+     "camera": "Medium side view of the child at the window in late-afternoon light, gazing out, the open book in their lap with its blank fifth page."
     },
     {
      "label": "本の5ページ目にクレヨンで招待状を書く主人公。壁に第1話と同じ金色の扉",
@@ -1014,7 +1096,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": false
+     "withSidekick": false,
+     "camera": "High angle looking down at the child kneeling over the book with crayons, the golden door glowing on the wall."
     },
     {
      "label": "第1話のお菓子の町。ポムとケーキを作り、先頭でクッキーの星を並べる主人公",
@@ -1026,7 +1109,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": false
+     "withSidekick": false,
+     "camera": "Dynamic diagonal medium shot of the child hurrying around the cake placing cookie stars, Pom bustling alongside."
     },
     {
      "label": "3通の招待状をくわえて飛び立つピピ。見送る主人公",
@@ -1038,7 +1122,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": false
+     "withSidekick": false,
+     "camera": "Low-angle shot from the square looking up at Pipi soaring high with the envelopes, the child waving up at her in the foreground."
     },
     {
      "label": "広場に集まるモコ・シャル・ガオ。虹の飾り、泡のランタン、星の明かり",
@@ -1050,7 +1135,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": false
+     "withSidekick": false,
+     "camera": "Wide high view over the town square as Moko, Shar and Gao arrive from all sides with rainbows, bubble lanterns and star lights, the child welcoming them."
     },
     {
      "label": "町はずれの小さな塔の家。招待状を見せる主人公、うつむくミント",
@@ -1062,7 +1148,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Over-the-shoulder view from behind the child at the tower house door, the invitation held out toward Mint looking down in the doorway."
     },
     {
      "label": "灯りの消えたケーキ。しょんぼり集まる仲間たち、招待状を握りしめる主人公",
@@ -1074,7 +1161,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": false
+     "withSidekick": false,
+     "camera": "Medium shot from slightly above, the friends huddled around the dark cake under a graying sky, the child clutching the invitation."
     },
     {
      "label": "扉の前で大きな声で呼びかける主人公。扉のすき間から光が漏れる",
@@ -1086,7 +1174,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": false
+     "withSidekick": false,
+     "camera": "Dynamic low-angle shot of the child leaning toward the closed door calling out, warm light spilling diagonally from the gap."
     },
     {
      "label": "【見開き】二人の名前のケーキを囲む全員（ポム・ピピ・モコ・シャル・ガオ）。虹と泡と星の明かりが一度に輝き、泣き笑いのミント。第1話のケーキ場面と対になる構図",
@@ -1098,7 +1187,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Grand wide low-angle panorama around the big cake, rainbow, bubbles and star lights bursting at once, Mint laughing through tears beside the child amid cheering friends."
     },
     {
      "label": "【パパ】パパに肩車されて乾杯する主人公。周りで笑う仲間たちとミント",
@@ -1122,7 +1212,8 @@
        ],
        "withMom": true,
        "withDad": true,
-       "withSidekick": true
+       "withSidekick": true,
+       "camera": "Medium low-angle view of the father with the child on his shoulders raising a cup high mid-toast, the mother handing out juice, friends laughing and looking up at them."
       },
       "mom": {
        "label": "ママが主人公をハグ（肩車はしない）。乾杯する仲間たちとミント",
@@ -1134,7 +1225,8 @@
        ],
        "withMom": true,
        "withDad": false,
-       "withSidekick": true
+       "withSidekick": true,
+       "camera": "Medium low-angle view of the mother hugging the child mid-toast, friends laughing and raising their cups around them."
       },
       "none": {
        "label": "こぐまのポムに肩車されて乾杯する主人公。周りで笑う仲間たちとミント",
@@ -1146,9 +1238,11 @@
        ],
        "withMom": false,
        "withDad": false,
-       "withSidekick": true
+       "withSidekick": true,
+       "camera": "Medium low-angle view of the bear cub chef with the child on his shoulders raising a cup high mid-toast, friends laughing and looking up at them."
       }
-     }
+     },
+     "camera": "Medium low-angle view of the father with the child on his shoulders raising a cup high mid-toast, friends laughing and looking up at them."
     },
     {
      "label": "夜の寝室。5ページで完成した本。枕元に白く光る封筒、窓辺でウインクするミント。第1話の場面1と対になる構図",
@@ -1160,7 +1254,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Close-up from the bedside on the completed book and the glowing envelope on the pillow, the child turning toward Mint winking at the window."
     }
    ]
   }
