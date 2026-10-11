@@ -9,6 +9,7 @@ import { BOOK_BUCKET, getSupabase } from "@/lib/services";
 import { PageHeader } from "@/components/page-header";
 import { FLOW_STEPS, getFlowSave } from "@/lib/flow-save";
 import { DeletePhotoButton } from "./delete-photo";
+import { FacePhoto } from "@/components/face-photo";
 import { DeleteSaveButton } from "./delete-save";
 import { SyncLocalFlow } from "./local-flow";
 import { storyLabel } from "@/lib/story-key";
@@ -208,8 +209,7 @@ export default async function AccountPage({ searchParams }: PageProps<"/account"
           <div style={{ display: "grid", gridTemplateColumns: "repeat(3, minmax(0, 1fr))", gap: 10 }}>
             {photos.map((p) => (
               <div key={p.id} style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-                {/* eslint-disable-next-line @next/next/no-img-element -- 署名付きURLの一時画像 */}
-                <img src={p.url} alt="保存している写真" style={{ width: "100%", aspectRatio: "1 / 1", objectFit: "cover", borderRadius: 12 }} />
+                <FacePhoto src={p.url} alt="保存している写真" face={p.face} fit="cover" style={{ aspectRatio: "1 / 1", height: "auto", borderRadius: 12, overflow: "hidden" }} />
                 <DeletePhotoButton id={p.id} />
               </div>
             ))}

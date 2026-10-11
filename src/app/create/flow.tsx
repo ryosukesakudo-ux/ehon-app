@@ -3,10 +3,11 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
 import { clampCopies, getSize, type SizeId, type TasteId } from "@/lib/catalog";
 import { isStoryKey, parseSeriesKey, withoutCombo } from "@/lib/story-key";
-import { readLocalFlow, writeLocalFlow } from "./flow-storage";
+import type { Face } from "@/lib/face";
+import { readLocalFlow, readLocalPhotos, writeLocalFlow, writeLocalPhotos } from "./flow-storage";
 
 // 注文フローの入力内容。ページをまたいで保持し、ログインや再読み込みに備えてブラウザ（localStorage）にも残す。
-// 写真ファイル自体はメモリ上だけで持つ（ブラウザに保存しない）。
+// 選んだ写真は、送るまでこのブラウザの IndexedDB に残す（ログインから戻っても選び直さなくて済むように）。
 export type FlowState = {
   taste: TasteId;
   /** お話の番号（旧版のお話 "forest" か、シリーズの "forest:2:n"。story-key.ts） */
@@ -49,7 +50,13 @@ const initial: FlowState = {
   path: "/create/taste",
 };
 
-export type Photos = { child: File | null; mom: File | null; dad: File | null };
+export type Photos = {
+  child: File | null;
+  mom: File | null;
+  dad: File | null;
+  /** 顔を囲んだ位置（何人か写っている写真で、どの人を選んだか分かるように表示する） */
+  faces?: Partial<Record<"child" | "mom" | "dad", Face | null>>;
+};
 
 type Ctx = {
   state: FlowState;
@@ -64,7 +71,11 @@ const FlowContext = createContext<Ctx | null>(null);
 
 export function FlowProvider({ children }: { children: ReactNode }) {
   const [state, setState] = useState<FlowState>(initial);
-  const [photos, setPhotos] = useState<Photos>({ child: null, mom: null, dad: null });
+  const [photos, setPhotosState] = useState<Photos>({ child: null, mom: null, dad: null });
+  const setPhotos = (p: Photos) => {
+    setPhotosState(p);
+    void writeLocalPhotos(p, !p.child && !p.mom && !p.dad);
+  };
   const [ready, setReady] = useState(false);
 
   const update = (patch: Partial<FlowState> | ((prev: FlowState) => Partial<FlowState>)) => {
@@ -96,6 +107,10 @@ export function FlowProvider({ children }: { children: ReactNode }) {
       }
     }
     setReady(true);
+    // 送る前の写真が残っていれば戻す（先にこの画面で選び直していたら、そちらを優先）
+    readLocalPhotos<Photos>().then((p) => {
+      if (p && (p.child || p.mom || p.dad)) setPhotosState((cur) => (cur.child || cur.mom || cur.dad ? cur : p));
+    });
   }, []);
 
   const setPreview = (scene: number, url: string) =>

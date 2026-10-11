@@ -6,6 +6,7 @@ import { copySavedCharacters, demoDraftId, previewUrls, type Draft } from "@/lib
 import { currentUser } from "@/lib/auth";
 import { ensureAnonId, ipHash } from "@/lib/anon";
 import { PHOTO_BUCKET, getSupabase } from "@/lib/services";
+import { faceFromField, faceToPathTag } from "@/lib/face";
 
 const MAX_PHOTO_BYTES = 10 * 1024 * 1024;
 const PHOTO_TYPES: Record<string, string> = { "image/jpeg": "jpg", "image/png": "png", "image/webp": "webp" };
@@ -74,9 +75,11 @@ export async function POST(request: Request) {
   const id = randomUUID();
 
   const upload = async (f: File, who: string) => {
+    // 顔を囲んだ位置はファイル名に入れておく（保存した写真を見返したとき、どの人を選んだか分かるように）
+    const tag = faceToPathTag(faceFromField(form.get(`${who}Face`)));
     const path = user
-      ? `users/${user.id}/${randomUUID()}.${PHOTO_TYPES[f.type]}`
-      : `anon/${id}/${who}.${PHOTO_TYPES[f.type]}`;
+      ? `users/${user.id}/${randomUUID()}${tag}.${PHOTO_TYPES[f.type]}`
+      : `anon/${id}/${who}${tag}.${PHOTO_TYPES[f.type]}`;
     const { error } = await db.storage
       .from(PHOTO_BUCKET)
       .upload(path, Buffer.from(await f.arrayBuffer()), { contentType: f.type });
