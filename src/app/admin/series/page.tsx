@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { SAMPLE_CHILD_NAME, samplePublicUrl } from "@/lib/samples";
-import { SERIES, seriesImagePath, seriesSheetPath, type SeriesId } from "@/lib/series";
+import { SERIES, SERIES_NOTE_MAX, seriesImagePath, seriesSheetPath, type SeriesId } from "@/lib/series";
 import { SampleImage } from "@/components/sample-image";
 
 // 台本の絵スタジオ：作例と同じ架空の家族で、台本（シリーズ）の各話の表紙と12場面を水彩で作る。
@@ -18,6 +18,9 @@ export default function SeriesPage() {
   const [busy, setBusy] = useState<Record<string, boolean>>({});
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [version, setVersion] = useState<Record<string, number>>({});
+  // 絵ごとの追加の指示。その絵を作る／作り直すときだけ使う（まとめて作るときも、書いてあればその絵に効く）
+  const [notes, setNotes] = useState<Record<string, string>>({});
+  const noteProps = (key: string) => ({ note: notes[key] ?? "", onNote: (v: string) => setNotes((n) => ({ ...n, [key]: v })) });
 
   async function call(key: string, body: object) {
     setBusy((b) => ({ ...b, [key]: true }));
@@ -26,7 +29,7 @@ export default function SeriesPage() {
       const res = await fetch("/api/admin/series", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ series: SERIES_ID, ...body }),
+        body: JSON.stringify({ series: SERIES_ID, note: notes[key] ?? "", ...body }),
       });
       const json = await res.json();
       if (!res.ok) throw new Error(json.error ?? "作成に失敗しました");
@@ -67,7 +70,7 @@ export default function SeriesPage() {
       <h1 className="display" style={{ margin: 0, color: "var(--navy)" }}>台本の絵スタジオ</h1>
       <p style={{ margin: 0, fontSize: 14, lineHeight: 1.8 }}>
         作例と同じ架空の家族（主人公「{SAMPLE_CHILD_NAME}」とママ・パパ）で、「{series.name}」の台本の絵を水彩で作ります。サイトのお客様向けの画面には出ません。
-        まず「まとめて作る」を押してください（登場人物の設定画がまだなければ先に作ります）。気に入らない絵は、その絵の下のボタンで1枚ずつ作り直せます。
+        まず「まとめて作る」を押してください（登場人物の設定画がまだなければ先に作ります）。気に入らない絵は、その絵の下の欄に直してほしいこと（日本語で大丈夫です）を書いて、ボタンで1枚ずつ作り直せます。指示はその絵にだけ効きます。
       </p>
       <label>
         画質：
@@ -92,6 +95,7 @@ export default function SeriesPage() {
           width={420}
           onMake={makeSheet}
           disabled={anyBusy}
+          {...noteProps("sheet")}
         />
       </section>
 
@@ -115,6 +119,7 @@ export default function SeriesPage() {
             width={420}
             onMake={() => makePage(ep.no, 0)}
             disabled={anyBusy}
+            {...noteProps(`${ep.no}/0`)}
           />
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))", gap: 12 }}>
             {ep.scenes.map((sc, i) => (
@@ -127,6 +132,7 @@ export default function SeriesPage() {
                 label={`場面${i + 1}：${sc.label}`}
                 onMake={() => makePage(ep.no, i + 1)}
                 disabled={anyBusy}
+                {...noteProps(`${ep.no}/${i + 1}`)}
               />
             ))}
           </div>
@@ -146,6 +152,8 @@ function Tile(props: {
   width?: number;
   disabled: boolean;
   onMake: () => void;
+  note: string;
+  onNote: (v: string) => void;
 }) {
   const url = samplePublicUrl(props.path);
   return (
@@ -175,6 +183,15 @@ function Tile(props: {
         )}
       </div>
       <span style={{ fontSize: 12, lineHeight: 1.6, color: "var(--sub)" }}>{props.label}</span>
+      <textarea
+        value={props.note}
+        onChange={(e) => props.onNote(e.target.value)}
+        maxLength={SERIES_NOTE_MAX}
+        rows={2}
+        placeholder="作り直すときの指示（例：もっと淡い色に）"
+        aria-label={`${props.label}の指示`}
+        style={{ fontSize: 13, lineHeight: 1.5, padding: 8, borderRadius: 8, border: "1px solid #ccc", resize: "vertical" }}
+      />
       <button type="button" className="ghost" style={{ height: 36 }} disabled={props.disabled} onClick={props.onMake}>
         作る／作り直す
       </button>
