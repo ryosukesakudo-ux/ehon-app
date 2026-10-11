@@ -1,8 +1,8 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { MEMBER_MONTHLY_PREVIEWS, RETENTION, getSize, getStory, getTaste, yen } from "@/lib/catalog";
+import { MEMBER_MONTHLY_PREVIEWS, PERSON_LABEL, RETENTION, getSize, getStory, getTaste, yen } from "@/lib/catalog";
 import { currentUser } from "@/lib/auth";
-import { listPhotos, previewQuota } from "@/lib/account";
+import { listCharacters, listPhotos, previewQuota } from "@/lib/account";
 import { BuyPreviewsButton } from "@/components/buy-previews";
 import { BOOK_BUCKET, getSupabase } from "@/lib/services";
 import { PageHeader } from "@/components/page-header";
@@ -34,14 +34,15 @@ export default async function AccountPage({ searchParams }: PageProps<"/account"
   if (!user) redirect("/login?next=/account");
   const db = getSupabase();
 
-  const [save, quota, photos, { data: drafts }] = await Promise.all([
+  const [save, quota, photos, characters, { data: drafts }] = await Promise.all([
     getFlowSave(),
     previewQuota(user.id),
     listPhotos(user.id),
+    listCharacters(user.id),
     db
       ? db
           .from("drafts")
-          .select("id, taste, story, child_name, created_at, child_photo_path, images_deleted_at, orders(*)")
+          .select("*, orders(*)")
           .eq("user_id", user.id)
           .order("created_at", { ascending: false })
           .limit(30)
@@ -154,11 +155,33 @@ export default async function AccountPage({ searchParams }: PageProps<"/account"
               {!d.images_deleted_at && urls.length > 0 && (
                 <div style={{ fontSize: 12, color: "var(--sub)" }}>絵の保存期限：{keepUntil.toLocaleDateString("ja-JP", { timeZone: "Asia/Tokyo" })} まで</div>
               )}
-              {!paid && d.child_photo_path && !d.images_deleted_at && (
+              {!paid && (d.child_photo_path || d.child_character_path) && !d.images_deleted_at && (
                 <Link href={`/create/resume?draft=${d.id}`} className="ghost">つづきから</Link>
               )}
             </article>
           ))}
+        </section>
+
+        <section style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+          <h2 className="display" style={{ margin: 0, fontSize: 19, color: "var(--navy)" }}>保存しているキャラクター</h2>
+          <p className="step-lead" style={{ fontSize: 12 }}>
+            写真から作った登場人物の絵です。次の絵本でも同じ姿で登場させられます。会員でいる間は保存し、いつでも削除できます。
+          </p>
+          {characters.length === 0 && <p className="step-lead">まだありません。</p>}
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(3, minmax(0, 1fr))", gap: 10 }}>
+            {characters.map((c) => (
+              <div key={c.id} style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+                {/* eslint-disable-next-line @next/next/no-img-element -- 署名付きURLの一時画像 */}
+                <img src={c.url} alt={`${PERSON_LABEL[c.person]}のキャラクター`} style={{ width: "100%", aspectRatio: "1 / 1", objectFit: "cover", borderRadius: 12, background: "#fff" }} />
+                <div style={{ fontSize: 11, color: "var(--sub)", lineHeight: 1.5 }}>
+                  {c.person === "child" && c.childName ? c.childName : PERSON_LABEL[c.person]}／{getTaste(c.taste)?.name}
+                  <br />
+                  {date(c.createdAt)} 作成
+                </div>
+                <DeletePhotoButton id={c.id} kind="character" />
+              </div>
+            ))}
+          </div>
         </section>
 
         <section style={{ display: "flex", flexDirection: "column", gap: 12 }}>

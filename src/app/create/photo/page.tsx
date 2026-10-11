@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ANON_TRIAL_IMAGES, MEMBER_MONTHLY_PREVIEWS, RETENTION } from "@/lib/catalog";
+import { MEMBER_MONTHLY_PREVIEWS, RETENTION, getTaste, type Person } from "@/lib/catalog";
 import { shrinkPhoto } from "@/lib/shrink-photo";
 import { Lottie } from "@/components/lottie";
 import { useFlow } from "../flow";
@@ -14,6 +14,7 @@ import { NextButton, StepHeader, StepTitle } from "../step";
 const ACCEPT = "image/jpeg,image/png,image/webp";
 
 type Saved = { id: string; url: string };
+type SavedCharacter = Saved & { person: Person; taste: string; childName: string | null };
 
 function PhotoSlot({
   id,
@@ -25,6 +26,9 @@ function PhotoSlot({
   saved,
   savedId,
   onPickSaved,
+  characters,
+  characterId,
+  onPickCharacter,
 }: {
   id: string;
   title: string;
@@ -35,10 +39,13 @@ function PhotoSlot({
   saved: Saved[];
   savedId: string | null;
   onPickSaved: (id: string | null) => void;
+  characters: SavedCharacter[];
+  characterId: string | null;
+  onPickCharacter: (id: string | null) => void;
 }) {
   const fileUrl = useMemo(() => (file ? URL.createObjectURL(file) : null), [file]);
   useEffect(() => () => { if (fileUrl) URL.revokeObjectURL(fileUrl); }, [fileUrl]);
-  const url = fileUrl ?? saved.find((p) => p.id === savedId)?.url ?? null;
+  const url = fileUrl ?? saved.find((p) => p.id === savedId)?.url ?? characters.find((c) => c.id === characterId)?.url ?? null;
   // 選んだばかりの写真（顔を囲んで選ぶ前）
   const [picking, setPicking] = useState<File | null>(null);
 
@@ -115,8 +122,29 @@ function PhotoSlot({
           </div>
         </div>
       )}
-      {(file || savedId) && !required && (
-        <button type="button" className="ghost" style={{ height: 40, alignSelf: "flex-start" }} onClick={() => { onChange(null); onPickSaved(null); }}>
+      {characters.length > 0 && (
+        <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+          <div style={{ fontSize: 12, fontWeight: 700, color: "var(--navy)" }}>前に作ったキャラクターから選ぶ</div>
+          <div style={{ display: "flex", gap: 8, overflowX: "auto", paddingBottom: 4 }}>
+            {characters.map((c) => (
+              <button
+                key={c.id}
+                type="button"
+                aria-pressed={characterId === c.id && !file}
+                aria-label={`前に作ったキャラクター（${getTaste(c.taste)?.name ?? ""}）`}
+                onClick={() => onPickCharacter(c.id)}
+                style={{ flexShrink: 0, width: 64, height: 64, padding: 0, borderRadius: 12, overflow: "hidden", cursor: "pointer", border: characterId === c.id && !file ? "3px solid var(--coral)" : "1px solid var(--line)", background: "#fff" }}
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element -- 署名付きURLの一時画像 */}
+                <img src={c.url} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+              </button>
+            ))}
+          </div>
+          <div style={{ fontSize: 11, lineHeight: 1.6, color: "var(--sub)" }}>同じテイストなら、そのまま使います（プレビューの枚数を使いません）。</div>
+        </div>
+      )}
+      {(file || savedId || characterId) && !required && (
+        <button type="button" className="ghost" style={{ height: 40, alignSelf: "flex-start" }} onClick={() => { onChange(null); onPickSaved(null); onPickCharacter(null); }}>
           写真をはずす
         </button>
       )}
@@ -130,6 +158,8 @@ export default function PhotoPage() {
   const [account] = useAccount();
   const [saved, setSaved] = useState<Saved[]>([]);
   const [savedIds, setSavedIds] = useState<{ child: string | null; mom: string | null; dad: string | null }>({ child: null, mom: null, dad: null });
+  const [characters, setCharacters] = useState<SavedCharacter[]>([]);
+  const [characterIds, setCharacterIds] = useState<Record<Person, string | null>>({ child: null, mom: null, dad: null });
   const [consent, setConsent] = useState(false);
   const [sending, setSending] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -142,9 +172,13 @@ export default function PhotoPage() {
       .then((r) => r.json())
       .then((j) => setSaved(j.photos ?? []))
       .catch(() => {});
+    fetch("/api/account/characters")
+      .then((r) => r.json())
+      .then((j) => setCharacters(j.characters ?? []))
+      .catch(() => {});
   }, [member]);
 
-  const pickedChild = !!photos.child || !!savedIds.child;
+  const pickedChild = !!photos.child || !!savedIds.child || !!characterIds.child;
   const newUpload = !!photos.child || !!photos.mom || !!photos.dad;
   // 写真が選び直されていなければ、前回作った下書きをそのまま使う
   const reuse = !!state.draftId && !pickedChild;
@@ -169,15 +203,20 @@ export default function PhotoPage() {
       else if (savedIds.mom) form.set("momPhotoId", savedIds.mom);
       if (photos.dad) form.set("dadPhoto", await shrinkPhoto(photos.dad));
       else if (savedIds.dad) form.set("dadPhotoId", savedIds.dad);
+      for (const who of ["child", "mom", "dad"] as const) {
+        const id = characterIds[who];
+        if (id && !photos[who] && !savedIds[who]) form.set(`${who}CharacterId`, id);
+      }
       const res = await fetch("/api/drafts", { method: "POST", body: form });
       const json = await res.json();
       if (!res.ok) {
         setNeedLogin(!!json.needLogin);
         throw new Error(json.error ?? "送信に失敗しました");
       }
-      update({ draftId: json.draftId, demo: !!json.demo, previews: {}, previewScenes: json.previewScenes ?? [] });
+      update({ draftId: json.draftId, demo: !!json.demo, previews: json.previews ?? {}, previewScenes: json.previewScenes ?? [] });
       setPhotos({ child: null, mom: null, dad: null });
       setSavedIds({ child: null, mom: null, dad: null });
+      setCharacterIds({ child: null, mom: null, dad: null });
       router.push("/create/preview");
     } catch (e) {
       setError(e instanceof Error ? e.message : "送信に失敗しました");
@@ -192,7 +231,7 @@ export default function PhotoPage() {
         <StepTitle title="登場人物の写真をえらんでください" lead="正面を向いた、明るい写真がおすすめです。" />
         {account?.configured && !account.loggedIn && (
           <div className="demo-note" style={{ display: "flex", flexDirection: "column", gap: 4 }}>
-            <span>会員登録なしでも、1回だけ見本{ANON_TRIAL_IMAGES}枚をお試しできます。</span>
+            <span>会員登録なしでも、1回だけ表紙と登場人物のキャラクターをお試しで作れます。</span>
             <span>
               <Link href={loginHref("/create/photo")}>無料会員登録</Link>
               すると、毎月{MEMBER_MONTHLY_PREVIEWS}枚まで無料で作り直しができ、写真も保存できます。
@@ -205,10 +244,13 @@ export default function PhotoPage() {
           note="顔がはっきり写った写真を1枚えらんでください。"
           required
           file={photos.child}
-          onChange={(f) => { setPhotos({ ...photos, child: f }); if (f) setSavedIds((s) => ({ ...s, child: null })); }}
+          onChange={(f) => { setPhotos({ ...photos, child: f }); if (f) { setSavedIds((s) => ({ ...s, child: null })); setCharacterIds((c) => ({ ...c, child: null })); } }}
           saved={saved}
           savedId={savedIds.child}
-          onPickSaved={(id) => { setSavedIds((s) => ({ ...s, child: id })); if (id) setPhotos({ ...photos, child: null }); }}
+          onPickSaved={(id) => { setSavedIds((s) => ({ ...s, child: id })); if (id) { setPhotos({ ...photos, child: null }); setCharacterIds((c) => ({ ...c, child: null })); } }}
+          characters={characters.filter((c) => c.person === "child")}
+          characterId={characterIds.child}
+          onPickCharacter={(id) => { setCharacterIds((c) => ({ ...c, child: id })); if (id) { setPhotos({ ...photos, child: null }); setSavedIds((s) => ({ ...s, child: null })); } }}
         />
         <PhotoSlot
           id="mom-photo"
@@ -216,10 +258,13 @@ export default function PhotoPage() {
           note="ママを登場させたい場合にえらんでください。"
           required={false}
           file={photos.mom}
-          onChange={(f) => { setPhotos({ ...photos, mom: f }); if (f) setSavedIds((s) => ({ ...s, mom: null })); }}
+          onChange={(f) => { setPhotos({ ...photos, mom: f }); if (f) { setSavedIds((s) => ({ ...s, mom: null })); setCharacterIds((c) => ({ ...c, mom: null })); } }}
           saved={saved}
           savedId={savedIds.mom}
-          onPickSaved={(id) => { setSavedIds((s) => ({ ...s, mom: id })); if (id) setPhotos({ ...photos, mom: null }); }}
+          onPickSaved={(id) => { setSavedIds((s) => ({ ...s, mom: id })); if (id) { setPhotos({ ...photos, mom: null }); setCharacterIds((c) => ({ ...c, mom: null })); } }}
+          characters={characters.filter((c) => c.person === "mom")}
+          characterId={characterIds.mom}
+          onPickCharacter={(id) => { setCharacterIds((c) => ({ ...c, mom: id })); if (id) { setPhotos({ ...photos, mom: null }); setSavedIds((s) => ({ ...s, mom: null })); } }}
         />
         <PhotoSlot
           id="dad-photo"
@@ -227,10 +272,13 @@ export default function PhotoPage() {
           note="パパを登場させたい場合にえらんでください。"
           required={false}
           file={photos.dad}
-          onChange={(f) => { setPhotos({ ...photos, dad: f }); if (f) setSavedIds((s) => ({ ...s, dad: null })); }}
+          onChange={(f) => { setPhotos({ ...photos, dad: f }); if (f) { setSavedIds((s) => ({ ...s, dad: null })); setCharacterIds((c) => ({ ...c, dad: null })); } }}
           saved={saved}
           savedId={savedIds.dad}
-          onPickSaved={(id) => { setSavedIds((s) => ({ ...s, dad: id })); if (id) setPhotos({ ...photos, dad: null }); }}
+          onPickSaved={(id) => { setSavedIds((s) => ({ ...s, dad: id })); if (id) { setPhotos({ ...photos, dad: null }); setCharacterIds((c) => ({ ...c, dad: null })); } }}
+          characters={characters.filter((c) => c.person === "dad")}
+          characterId={characterIds.dad}
+          onPickCharacter={(id) => { setCharacterIds((c) => ({ ...c, dad: id })); if (id) { setPhotos({ ...photos, dad: null }); setSavedIds((s) => ({ ...s, dad: null })); } }}
         />
         {reuse ? (
           <p className="demo-note">写真は受け取り済みです。選び直す場合は、もう一度写真をえらんでください。</p>

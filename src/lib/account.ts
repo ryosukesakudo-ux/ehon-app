@@ -1,6 +1,7 @@
 import "server-only";
 import { MEMBER_MONTHLY_PREVIEWS } from "./catalog";
-import { PHOTO_BUCKET, getSupabase } from "./services";
+import { BOOK_BUCKET, PHOTO_BUCKET, getSupabase } from "./services";
+import type { Person } from "./catalog";
 
 /** 日本時間の今月1日 0:00 */
 export function monthStartJst(now = new Date()) {
@@ -88,5 +89,54 @@ export async function deletePhoto(userId: string | null, photoId: string): Promi
   await db.from("drafts").update({ child_photo_path: null, photos_deleted_at: now }).eq("child_photo_path", photo.path);
   await db.from("drafts").update({ mom_photo_path: null }).eq("mom_photo_path", photo.path);
   await db.from("drafts").update({ dad_photo_path: null }).eq("dad_photo_path", photo.path);
+  return { ok: true };
+}
+
+export type SavedCharacter = { id: string; person: Person; taste: string; childName: string | null; url: string; createdAt: string };
+
+/** 会員が保存しているキャラクター（写真から作った登場人物の絵、一時URL付き） */
+export async function listCharacters(userId: string): Promise<SavedCharacter[]> {
+  const db = getSupabase();
+  if (!db) return [];
+  const { data: rows, error } = await db
+    .from("characters")
+    .select("id, person, taste, child_name, path, created_at")
+    .eq("user_id", userId)
+    .order("updated_at", { ascending: false });
+  // characters 表がまだ無い（SQL 未実行）ときは空
+  if (error || !rows?.length) return [];
+  const { data: urls } = await db.storage.from(BOOK_BUCKET).createSignedUrls(rows.map((r) => r.path), 60 * 60);
+  return rows.map((r) => ({
+    id: r.id,
+    person: r.person,
+    taste: r.taste,
+    childName: r.child_name,
+    url: urls?.find((u) => u.path === r.path)?.signedUrl ?? "",
+    createdAt: r.created_at,
+  }));
+}
+
+/**
+ * 会員のキャラクターを削除する。制作中（支払い済み・未完成）の注文で使っているものは消せない。
+ * 消したキャラクターを使っていた下書きは、写真があれば写真から描き直す。
+ */
+export async function deleteCharacter(userId: string, characterId: string): Promise<{ ok: true } | { error: string }> {
+  const db = getSupabase();
+  if (!db) return { error: "デモモードではキャラクターは保存されていません" };
+  const { data: character } = await db.from("characters").select("id, path").eq("id", characterId).eq("user_id", userId).maybeSingle();
+  if (!character) return { error: "キャラクターが見つかりません" };
+
+  const cols = ["child_character_path", "mom_character_path", "dad_character_path"] as const;
+  const found = await Promise.all(cols.map((col) => db.from("drafts").select("id").eq(col, character.path)));
+  const draftIds = found.flatMap((r) => r.data ?? []).map((d) => d.id);
+  if (draftIds.length) {
+    const { data: busy } = await db.from("orders").select("id").in("draft_id", draftIds).eq("status", "paid").limit(1);
+    if (busy?.length) return { error: "制作中の絵本で使っているため、完成後に削除できます" };
+  }
+
+  const { error } = await db.storage.from(BOOK_BUCKET).remove([character.path]);
+  if (error) return { error: "キャラクターの削除に失敗しました" };
+  await db.from("characters").delete().eq("id", character.id);
+  for (const col of cols) await db.from("drafts").update({ [col]: null }).eq(col, character.path);
   return { ok: true };
 }
