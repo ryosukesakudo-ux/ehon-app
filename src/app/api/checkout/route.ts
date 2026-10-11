@@ -2,7 +2,6 @@ import { randomUUID } from "node:crypto";
 import {
   DELIVERY_MAX_DAYS,
   DELIVERY_MIN_DAYS,
-  DELIVERY_TIMES,
   clampCopies,
   extraCopyPrice,
   firstBookPrice,
@@ -28,14 +27,12 @@ export async function POST(request: Request) {
   const sizeId = String(body?.size ?? "") as SizeId;
   const copies = clampCopies(body?.copies);
   const deliveryDate = String(body?.deliveryDate ?? "") || null;
-  const deliveryTime = String(body?.deliveryTime ?? "") || null;
+  // 製本直送は日時指定ができないため、時間帯は受け付けない
+  const deliveryTime = null;
   // お誕生日は任意。入っていれば、誕生日の1か月前に続編のご案内メールを送る
   const childBirthday = parseBirthday(body?.childBirthday);
   if (deliveryDate && (!/^\d{4}-\d{2}-\d{2}$/.test(deliveryDate) || deliveryDate < jstDate(DELIVERY_MIN_DAYS) || deliveryDate > jstDate(DELIVERY_MAX_DAYS))) {
     return Response.json({ error: `お届け日は${DELIVERY_MIN_DAYS}日後から${DELIVERY_MAX_DAYS}日後までの日付を選んでください` }, { status: 400 });
-  }
-  if (deliveryTime && !DELIVERY_TIMES.some((t) => t.id === deliveryTime)) {
-    return Response.json({ error: "お届けの時間帯を選び直してください" }, { status: 400 });
   }
 
   const size = getSize(sizeId);

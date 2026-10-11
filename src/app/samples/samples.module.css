@@ -1,0 +1,43 @@
+.page { max-width: 480px; margin: 0 auto; min-height: 100dvh; background: var(--cream); overflow: hidden; }
+@media (min-width: 600px) { .page { box-shadow: 0 0 0 1px rgba(30, 47, 87, 0.06), 0 10px 40px rgba(30, 47, 87, 0.12); } }
+
+.section { position: relative; display: flex; flex-direction: column; gap: 16px; padding: 20px 20px 28px; }
+.lead { margin: 0; font-size: 15px; line-height: 1.8; color: var(--ink); }
+.eyebrow { align-self: flex-start; padding: 5px 14px; border-radius: 16px; background: var(--coral); color: #fff; font-size: 13px; font-weight: 800; }
+.h2 { margin: 0; font-size: 26px; font-weight: 900; line-height: 1.5; color: #2f5da8; -webkit-text-stroke: 6px #fff; paint-order: stroke fill; filter: drop-shadow(0 3px 0 rgba(47, 93, 168, 0.18)); }
+.note { text-align: center; font-size: 13px; font-weight: 700; color: #2e3a4f; }
+.fallback { color: #8a8478; font-size: 14px; font-weight: 700; }
+.back { align-self: center; font-size: 14px; }
+
+/* 写真 → 登場人物 */
+.figure { margin: 0; display: flex; flex-direction: column; gap: 8px; font-size: 13px; line-height: 1.7; color: var(--sub); }
+.photo, .sheet { position: relative; aspect-ratio: 3 / 2; border-radius: 16px; overflow: hidden; display: flex; align-items: center; justify-content: center; }
+.photo { background: #e9e4dc; border: 5px solid #fff; box-shadow: 0 4px 12px rgba(30, 47, 87, 0.16); }
+.sheet { background: #fff; box-shadow: 0 0 0 1px var(--line); }
+/* 写真の左・中・右の3人に名前を付ける */
+.tags { position: absolute; left: 0; right: 0; bottom: 8px; display: grid; grid-template-columns: repeat(3, 1fr); justify-items: center; pointer-events: none; }
+.tag { padding: 3px 10px; border: 2px solid #fff; border-radius: 14px; color: #fff; font-size: 12px; font-weight: 800; white-space: nowrap; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2); }
+.down { align-self: center; display: flex; transform: rotate(90deg); color: var(--coral); }
+.points { margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 6px; font-size: 14px; line-height: 1.7; }
+
+/* 話ごとの見本 */
+.episodes { display: flex; flex-direction: column; gap: 16px; }
+.tabs { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; position: sticky; top: 0; z-index: 2; padding: 8px 0; background: var(--cream); }
+.tab { display: flex; flex-direction: column; align-items: center; gap: 1px; padding: 8px 0; border: 2px solid var(--line); border-radius: 14px; background: #fff; color: var(--navy); font-weight: 800; cursor: pointer; }
+.tab[aria-selected="true"] { border-color: var(--coral); background: var(--coral); color: #fff; box-shadow: 0 3px 0 var(--coral-shadow); }
+.book { display: flex; flex-direction: column; gap: 18px; animation: fadeIn 0.35s ease; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) { .book { animation: none; } }
+.cover { border-radius: 4px 12px 12px 4px; overflow: hidden; box-shadow: -6px 0 0 #d9cdb6 inset, 0 8px 20px rgba(30, 47, 87, 0.22); }
+.spread { display: flex; flex-direction: column; border-radius: 12px; overflow: hidden; background: #fff; box-shadow: 0 0 0 1px var(--line), 0 4px 0 var(--card-shadow); }
+.picture { aspect-ratio: 1 / 1; display: flex; align-items: center; justify-content: center; background: #f2eee6; }
+.text { margin: 0; padding: 16px 18px 4px; font-size: 16px; line-height: 2; color: var(--ink); }
+.pageNo { padding: 0 18px 12px; text-align: right; font-size: 12px; color: var(--sub); }
+
+/* 続きのページ（ぼかし） */
+.locked { position: relative; border-radius: 16px; overflow: hidden; background: #fff; box-shadow: 0 0 0 1px var(--line); }
+.lockedGrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; padding: 10px; filter: blur(9px) saturate(1.1); transform: scale(1.06); }
+.lockedThumb { aspect-ratio: 1 / 1; border-radius: 8px; overflow: hidden; background: #e9e1d1; }
+.lockedMessage { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; padding: 18px; text-align: center; line-height: 1.5; background: rgba(255, 248, 236, 0.55); }
+.lockedMessage :global(.cta) { width: 100%; }
+.lockIcon { display: flex; align-items: center; justify-content: center; width: 52px; height: 52px; border-radius: 50%; background: var(--yellow); color: var(--navy); box-shadow: 0 3px 0 #c99a22; }

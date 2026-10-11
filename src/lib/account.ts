@@ -2,6 +2,7 @@ import "server-only";
 import { MEMBER_MONTHLY_PREVIEWS } from "./catalog";
 import { BOOK_BUCKET, PHOTO_BUCKET, getSupabase } from "./services";
 import type { Person } from "./catalog";
+import { faceFromPath, type Face } from "./face";
 
 /** 日本時間の今月1日 0:00 */
 export function monthStartJst(now = new Date()) {
@@ -38,7 +39,7 @@ export async function previewQuota(userId: string): Promise<PreviewQuota> {
   return { free, credits, remaining: free + credits };
 }
 
-export type SavedPhoto = { id: string; url: string; createdAt: string; lastUsedAt: string };
+export type SavedPhoto = { id: string; url: string; createdAt: string; lastUsedAt: string; face: Face | null };
 
 /** 会員が保存している顔写真（一時URL付き） */
 export async function listPhotos(userId: string): Promise<SavedPhoto[]> {
@@ -56,6 +57,7 @@ export async function listPhotos(userId: string): Promise<SavedPhoto[]> {
     url: urls?.find((u) => u.path === r.path)?.signedUrl ?? "",
     createdAt: r.created_at,
     lastUsedAt: r.last_used_at,
+    face: faceFromPath(r.path),
   }));
 }
 

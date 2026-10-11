@@ -7,6 +7,8 @@ import { MEMBER_MONTHLY_PREVIEWS, RETENTION, getTaste, type Person } from "@/lib
 import { shrinkPhoto } from "@/lib/shrink-photo";
 import { toViewablePhoto } from "@/lib/heic-photo";
 import { Lottie } from "@/components/lottie";
+import { FacePhoto } from "@/components/face-photo";
+import { faceToField, type Face } from "@/lib/face";
 import { useFlow } from "../flow";
 import { FacePicker } from "../face-picker";
 import { loginHref, useAccount } from "../account";
@@ -15,7 +17,7 @@ import { NextButton, StepHeader, StepTitle } from "../step";
 // HEIC（iPhoneの写真）も選べるようにして、選んだあと JPEG に変換する
 const ACCEPT = "image/jpeg,image/png,image/webp,image/heic,image/heif,.heic,.heif";
 
-type Saved = { id: string; url: string };
+type Saved = { id: string; url: string; face?: Face | null };
 type SavedCharacter = Saved & { person: Person; taste: string; childName: string | null };
 
 function PhotoSlot({
@@ -24,6 +26,7 @@ function PhotoSlot({
   note,
   required,
   file,
+  face,
   onChange,
   saved,
   savedId,
@@ -37,7 +40,9 @@ function PhotoSlot({
   note: string;
   required: boolean;
   file: File | null;
-  onChange: (f: File | null) => void;
+  /** 新しく選んだ写真で、顔を囲んだ位置 */
+  face: Face | null;
+  onChange: (f: File | null, face?: Face | null) => void;
   saved: Saved[];
   savedId: string | null;
   onPickSaved: (id: string | null) => void;
@@ -47,7 +52,10 @@ function PhotoSlot({
 }) {
   const fileUrl = useMemo(() => (file ? URL.createObjectURL(file) : null), [file]);
   useEffect(() => () => { if (fileUrl) URL.revokeObjectURL(fileUrl); }, [fileUrl]);
-  const url = fileUrl ?? saved.find((p) => p.id === savedId)?.url ?? characters.find((c) => c.id === characterId)?.url ?? null;
+  const savedPhoto = saved.find((p) => p.id === savedId);
+  const url = fileUrl ?? savedPhoto?.url ?? characters.find((c) => c.id === characterId)?.url ?? null;
+  // 囲んだ顔の位置（キャラクターの絵には無い）
+  const shownFace = fileUrl ? face : savedPhoto && !characterId ? savedPhoto.face : null;
   // 選んだばかりの写真（顔を囲んで選ぶ前）
   const [picking, setPicking] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
@@ -82,8 +90,7 @@ function PhotoSlot({
       >
         {url ? (
           <>
-            {/* eslint-disable-next-line @next/next/no-img-element -- 選んだ写真のその場プレビュー */}
-            <img src={url} alt={`${title}の写真`} style={{ width: "100%", height: "100%", objectFit: "contain" }} />
+            <FacePhoto src={url} alt={`${title}の写真`} face={shownFace} />
             <Lottie key={url} name="check" loop={false} style={{ position: "absolute", right: 6, top: 6, width: 48, height: 48 }} />
           </>
         ) : (
@@ -111,9 +118,9 @@ function PhotoSlot({
         <FacePicker
           file={picking}
           title={title.replace(/（.*）/, "")}
-          onDone={(cropped) => {
+          onDone={(cropped, f) => {
             setPicking(null);
-            onChange(cropped);
+            onChange(cropped, f);
           }}
           onCancel={() => setPicking(null)}
           onError={() => {
@@ -137,8 +144,7 @@ function PhotoSlot({
                 onClick={() => onPickSaved(p.id)}
                 style={{ flexShrink: 0, width: 64, height: 64, padding: 0, borderRadius: 12, overflow: "hidden", cursor: "pointer", border: savedId === p.id && !file ? "3px solid var(--coral)" : "1px solid var(--line)", background: "#fff" }}
               >
-                {/* eslint-disable-next-line @next/next/no-img-element -- 署名付きURLの一時画像 */}
-                <img src={p.url} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                <FacePhoto src={p.url} alt="" face={p.face} fit="cover" />
               </button>
             ))}
           </div>
@@ -219,6 +225,10 @@ export default function PhotoPage() {
     if (state.childAge) form.set("childAge", String(state.childAge));
     form.set("consent", String(consent));
     try {
+      for (const who of ["child", "mom", "dad"] as const) {
+        const face = photos.faces?.[who];
+        if (photos[who] && face) form.set(`${who}Face`, faceToField(face));
+      }
       if (photos.child) form.set("childPhoto", await shrinkPhoto(photos.child));
       else if (savedIds.child) form.set("childPhotoId", savedIds.child);
       if (photos.mom) form.set("momPhoto", await shrinkPhoto(photos.mom));
@@ -266,7 +276,8 @@ export default function PhotoPage() {
           note="顔がはっきり写った写真を1枚えらんでください。"
           required
           file={photos.child}
-          onChange={(f) => { setPhotos({ ...photos, child: f }); if (f) { setSavedIds((s) => ({ ...s, child: null })); setCharacterIds((c) => ({ ...c, child: null })); } }}
+          face={photos.faces?.child ?? null}
+          onChange={(f, face) => { setPhotos({ ...photos, child: f, faces: { ...photos.faces, child: face ?? null } }); if (f) { setSavedIds((s) => ({ ...s, child: null })); setCharacterIds((c) => ({ ...c, child: null })); } }}
           saved={saved}
           savedId={savedIds.child}
           onPickSaved={(id) => { setSavedIds((s) => ({ ...s, child: id })); if (id) { setPhotos({ ...photos, child: null }); setCharacterIds((c) => ({ ...c, child: null })); } }}
@@ -280,7 +291,8 @@ export default function PhotoPage() {
           note="ママを登場させたい場合にえらんでください。"
           required={false}
           file={photos.mom}
-          onChange={(f) => { setPhotos({ ...photos, mom: f }); if (f) { setSavedIds((s) => ({ ...s, mom: null })); setCharacterIds((c) => ({ ...c, mom: null })); } }}
+          face={photos.faces?.mom ?? null}
+          onChange={(f, face) => { setPhotos({ ...photos, mom: f, faces: { ...photos.faces, mom: face ?? null } }); if (f) { setSavedIds((s) => ({ ...s, mom: null })); setCharacterIds((c) => ({ ...c, mom: null })); } }}
           saved={saved}
           savedId={savedIds.mom}
           onPickSaved={(id) => { setSavedIds((s) => ({ ...s, mom: id })); if (id) { setPhotos({ ...photos, mom: null }); setCharacterIds((c) => ({ ...c, mom: null })); } }}
@@ -294,7 +306,8 @@ export default function PhotoPage() {
           note="パパを登場させたい場合にえらんでください。"
           required={false}
           file={photos.dad}
-          onChange={(f) => { setPhotos({ ...photos, dad: f }); if (f) { setSavedIds((s) => ({ ...s, dad: null })); setCharacterIds((c) => ({ ...c, dad: null })); } }}
+          face={photos.faces?.dad ?? null}
+          onChange={(f, face) => { setPhotos({ ...photos, dad: f, faces: { ...photos.faces, dad: face ?? null } }); if (f) { setSavedIds((s) => ({ ...s, dad: null })); setCharacterIds((c) => ({ ...c, dad: null })); } }}
           saved={saved}
           savedId={savedIds.dad}
           onPickSaved={(id) => { setSavedIds((s) => ({ ...s, dad: id })); if (id) { setPhotos({ ...photos, dad: null }); setCharacterIds((c) => ({ ...c, dad: null })); } }}

@@ -1,7 +1,7 @@
 import { toFile } from "openai";
-import { illustrateSeries, makeSeriesSheet } from "@/lib/illustrate";
+import { illustrateSeries, makeSeriesFamilyPhoto, makeSeriesSheet } from "@/lib/illustrate";
 import { characterSheetPath } from "@/lib/samples";
-import { seriesImagePath, seriesSheetPath } from "@/lib/series";
+import { seriesFamilyPhotoPath, seriesImagePath, seriesSheetPath } from "@/lib/series";
 import { getStudioSeries } from "@/lib/series-studio";
 import { SAMPLE_BUCKET, getSupabase } from "@/lib/services";
 
@@ -9,7 +9,7 @@ export const maxDuration = 300;
 
 // 台本の絵スタジオから呼ぶ。作例の家族でシリーズの絵を1枚作り、公開ストレージ（samples）に保存する。
 // note：その絵だけに効く追加の指示（日本語でよい）。
-// kind=sheet：シリーズの設定画（作例の設定画＋相棒） / それ以外：その話の表紙（page=0）か場面（1〜12）
+// kind=sheet：シリーズの設定画（作例の設定画＋相棒） / kind=photo：サンプル集に出す、設定画の家族そっくりの架空の家族写真 / それ以外：その話の表紙（page=0）か場面（1〜12）
 export async function POST(request: Request) {
   const body = await request.json().catch(() => null);
   const series = getStudioSeries(String(body?.series ?? ""));
@@ -36,6 +36,13 @@ export async function POST(request: Request) {
       const family = series.familyStory ? await load(characterSheetPath(series.familyStory), "family.png") : null;
       if (series.familyStory && !family) return Response.json({ error: "先に作例スタジオで、このお話のキャラクター設定画を作ってください" }, { status: 400 });
       await save(seriesSheetPath(series.id), await makeSeriesSheet(series, family, note));
+      return Response.json({ ok: true });
+    }
+
+    if (body?.kind === "photo") {
+      const sheet = await load(seriesSheetPath(series.id), "characters.png");
+      if (!sheet) return Response.json({ error: "先に登場人物の設定画を作ってください" }, { status: 400 });
+      await save(seriesFamilyPhotoPath(series.id), await makeSeriesFamilyPhoto(sheet, note));
       return Response.json({ ok: true });
     }
 

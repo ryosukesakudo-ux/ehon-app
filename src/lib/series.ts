@@ -29,6 +29,11 @@ export function seriesSheetPath(id: SeriesId) {
   return `series/${id}/characters.png`;
 }
 
+/** サンプル集に出す、シリーズの家族（設定画の3人）そっくりの架空の家族写真。左からママ・主人公・パパの順に並ぶ */
+export function seriesFamilyPhotoPath(id: SeriesId) {
+  return `series/${id}/family-photo.png`;
+}
+
 /** 0 が表紙、1〜12 が場面 */
 export function seriesImagePath(id: SeriesId, episode: number, page: number) {
   return `series/${id}/ep${episode}/${page === 0 ? "cover" : String(page).padStart(2, "0")}.png`;

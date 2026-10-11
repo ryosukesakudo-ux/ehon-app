@@ -343,6 +343,8 @@ export function buildSamplePrompt(taste: TasteId, story: StoryId, sceneIndex: nu
     "The reference image is the character sheet for this story.",
     "Draw exactly the same characters: the same faces, hairstyles, body proportions, outfits and outfit colors. Only the drawing style changes.",
     STYLE_ONLY_FROM_TEXT,
+    // 設定画はどのテイストでも同じ1枚なので、その平たい塗りに引っぱられて3つのテイストが似てしまわないようにする
+    "The character sheet is drawn in a plain neutral style; do not keep any of its look. Someone comparing this picture with the same scene in watercolor, crayon and anime styles must instantly see which one it is.",
     sampleCast(story, people),
     `Scene: ${scene.art}.`,
     scene.withMom ? "" : "Do not include the mother in this scene.",
@@ -492,6 +494,36 @@ export async function makeSeriesSheet(series: StudioSeries, familySheet: Uploada
         quality: "high",
         output_format: "png",
       });
+  const b64 = result.data?.[0]?.b64_json;
+  if (!b64) throw new Error("画像が生成されませんでした");
+  return b64;
+}
+
+/**
+ * サンプル集の「この写真から → この登場人物に」用に、シリーズの設定画の家族3人にそっくりな架空の家族写真を作る。
+ * サンプル集の画面は、左からママ・主人公・パパの順に並んでいる前提で名前を付けて表示する。
+ */
+export async function makeSeriesFamilyPhoto(sheet: Uploadable, note?: string) {
+  const ai = getOpenAI();
+  if (!ai) throw new Error("OPENAI_API_KEY が未設定です");
+  const result = await ai.images.edit({
+    model: process.env.OPENAI_IMAGE_MODEL ?? "gpt-image-2",
+    image: [sheet],
+    prompt: [
+      "A natural, candid smartphone photo of a real Japanese family of three in a sunny park, as if taken by a friend.",
+      "The reference image is a picture-book character sheet. The photo shows the real people these characters were drawn from: the child, the mother and the father must clearly look like their characters (the same hairstyles, hair colors, glasses, face shapes and body proportions), but as real people, not drawings.",
+      "They wear everyday casual clothes in similar colors to the character sheet.",
+      "Do not include the animal sidekick or any animal.",
+      "They stand side by side in a row, evenly spaced across the frame, in this exact order from left to right: the mother on the left third, the child in the middle, the father on the right third. The child stands in front, between the parents.",
+      "All three smile at the camera, faces clearly visible and not overlapping, upper bodies in the frame, soft daylight, realistic photo, no text.",
+      seriesNote(note),
+    ]
+      .filter(Boolean)
+      .join(" "),
+    size: "1536x1024",
+    quality: "high",
+    output_format: "png",
+  });
   const b64 = result.data?.[0]?.b64_json;
   if (!b64) throw new Error("画像が生成されませんでした");
   return b64;
