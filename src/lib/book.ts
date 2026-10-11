@@ -6,7 +6,7 @@ import { SERIES_DATA, type SeriesSceneData } from "./series-data";
 // 注文の「お話の番号」から、絵本の中身（表紙の絵・12場面の文と絵）を組み立てる（サーバー専用）。
 // 旧版の1話だけのお話は catalog.ts の STORIES、シリーズは src/data/series/*.json（確定した台本）から。
 
-export type BookScene = Scene & { withSidekick?: boolean };
+export type BookScene = Scene & { withSidekick?: boolean; /** カメラの位置・構図（英語） */ camera?: string };
 
 export type Book = {
   key: string;
@@ -14,6 +14,7 @@ export type Book = {
   name: string;
   cover: string;
   coverWithSidekick?: boolean;
+  coverCamera?: string;
   scenes: BookScene[];
   /** シリーズのお話のときだけ */
   series?: {
@@ -33,7 +34,7 @@ export type Book = {
 /** 写真の組み合わせに合わせて、場面の文と絵を選ぶ。シリーズの表は「その場面の親」が出る形で書いてあり、違う組み合わせは alt にある */
 function pick(scene: SeriesSceneData, combo: Combo, level: number): BookScene {
   const v = scene.alt?.[combo] ?? scene;
-  return { text: v.text[level], art: v.art, withMom: v.withMom, withDad: v.withDad, withSidekick: v.withSidekick };
+  return { text: v.text[level], art: v.art, withMom: v.withMom, withDad: v.withDad, withSidekick: v.withSidekick, camera: v.camera ?? scene.camera };
 }
 
 export function getBook(key: string | null | undefined): Book | null {
@@ -54,6 +55,7 @@ export function getBook(key: string | null | undefined): Book | null {
     name: info.name,
     cover: ep.cover.art,
     coverWithSidekick: ep.cover.withSidekick,
+    coverCamera: ep.cover.camera,
     scenes: ep.scenes.map((s) => pick(s, combo, level)),
     series: {
       id: k.series,

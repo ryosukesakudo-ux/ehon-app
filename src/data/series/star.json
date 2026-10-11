@@ -11,7 +11,8 @@
    "cover": {
     "label": "ふわふわの雲の上で、手のひらにのせた小さな星の子（ポラ）と、大きなおつきさまを見上げる主人公。",
     "art": "on top of fluffy clouds under a deep blue starry night sky, the child holds Pola the little star child gently on their open palm and both gaze up in wonder at the Moon, a huge round glowing moon with a kind smiling face",
-    "withSidekick": true
+    "withSidekick": true,
+    "camera": "Low-angle three-quarter view from below the cloud edge, the child's upturned face clearly lit by the huge moon looming above, Pola glowing on the open palm in the foreground, strong upward perspective."
    },
    "scenes": [
     {
@@ -36,7 +37,8 @@
        ],
        "withMom": true,
        "withDad": true,
-       "withSidekick": false
+       "withSidekick": false,
+       "camera": "Over-the-shoulder view from inside the dark bedroom, seeing the mother and child from behind as they climb hand in hand onto the ladder of stars rising steeply into the sky, the father steadying its base below."
       },
       "dad": {
        "label": "夜の子ども部屋の窓から空へのびる星のはしご。パパと手をつないでのぼる主人公",
@@ -48,7 +50,8 @@
        ],
        "withMom": false,
        "withDad": true,
-       "withSidekick": false
+       "withSidekick": false,
+       "camera": "Over-the-shoulder view from inside the dark bedroom, seeing the father and child from behind as they step toward the open window and the ladder of stars rising steeply into the sky."
       },
       "none": {
        "label": "窓の外でほほえむおつきさま。空へのびる星のはしごに足をかける主人公",
@@ -60,9 +63,11 @@
        ],
        "withMom": false,
        "withDad": false,
-       "withSidekick": false
+       "withSidekick": false,
+       "camera": "Over-the-shoulder view from inside the dark bedroom, seeing the child from behind setting a first foot on the ladder of stars rising steeply into the sky, the smiling Moon glowing in at the window."
       }
-     }
+     },
+     "camera": "Over-the-shoulder view from inside the dark bedroom, seeing the mother and child from behind as they step toward the open window and the ladder of stars rising steeply into the sky."
     },
     {
      "label": "ふわふわの雲の上ではねる主人公。雲のかげで泣く手のひらサイズの星の子（ポラ）",
@@ -74,7 +79,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Dynamic side view of the child mid-bounce high above the cloud, hair and pajamas flying, tilted diagonal composition, small crying Pola tucked in the shadow at the lower edge of the frame."
     },
     {
      "label": "大きなおつきさまが笑顔であいさつ。ポラの手を取る主人公",
@@ -86,7 +92,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Extreme low angle from cloud level looking up past the child's raised hand toward the enormous smiling moon filling the upper frame, Pola's tiny hand in the child's."
     },
     {
      "label": "雲のうしろや月のかげにかくれる、光る星の子どもたち。目をかくして数える主人公",
@@ -98,7 +105,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": false
+     "withSidekick": false,
+     "camera": "High bird's-eye view looking down on the rolling clouds, the child small in the center covering their eyes while glowing star children peek out from hiding spots all around."
     },
     {
      "label": "暗い雲のすみで豆つぶほどに光るポラを見つける主人公",
@@ -110,7 +118,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Intimate close-up at cloud level on the child's crouching face and cupped hands, lit by Pola's bean-sized glow beaming up at them."
     },
     {
      "label": "星をうつす湖にボートをこぎ出す主人公とポラ",
@@ -122,7 +131,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Wide establishing shot from a low angle across the mirror-like lake, the small boat gliding into deep perspective under the vast starry sky and its reflection."
     },
     {
      "label": "黒い雲が月と星をかくし、暗くなった湖にうかぶボート",
@@ -134,7 +144,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Wide high-angle view from above the swirling black clouds, the tiny boat isolated on the darkened lake, heavy clouds pressing in diagonally."
     },
     {
      "label": "暗やみのボートでひざをかかえる主人公。消えそうなポラの光",
@@ -146,7 +157,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Close-up three-quarter view from slightly above, the child curled hugging their knees and turned toward Pola's fading glow, darkness closing in at the edges."
     },
     {
      "label": "ボートの上でポラを高くかかげる主人公。光を見つけて集まってくる星の子どもたち",
@@ -158,7 +170,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Dramatic low angle from the bottom of the boat looking up at the child lifting Pola high, star children streaking in from every direction with radiating motion trails."
     },
     {
      "label": "【見開き】晴れた星空を横切る大きな流れ星。目をとじて願う主人公、まわりで光るポラと星の子どもたち。湖にうつる星",
@@ -170,7 +183,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Grand ultra-wide low-angle panorama from the lakeshore, the huge shooting star slashing diagonally across the whole sky, the child small in profile with eyes closed, friends glowing all around and stars mirrored in the lake."
     },
     {
      "label": "【ママ・パパ】パパにおんぶされて星のはしごを下りる主人公。となりでほほえむママ",
@@ -194,7 +208,8 @@
        ],
        "withMom": false,
        "withDad": true,
-       "withSidekick": true
+       "withSidekick": true,
+       "camera": "Medium side view tracking down the star ladder, the father in profile carrying the drowsy child piggyback, the little star child waving goodbye from above, the ladder sweeping diagonally down through the night."
       },
       "mom": {
        "label": "雲の上でママが主人公をぎゅっと抱きしめる（おんぶはしない）。空から手をふるポラ",
@@ -206,7 +221,8 @@
        ],
        "withMom": true,
        "withDad": false,
-       "withSidekick": true
+       "withSidekick": true,
+       "camera": "Medium side view on top of the fluffy clouds, the mother in profile hugging the drowsy child tightly, the little star child waving goodbye from the night sky above."
       },
       "none": {
        "label": "雲のベッドで眠りかける主人公。運んでいく星の子どもたちと、となりのポラ",
@@ -218,9 +234,11 @@
        ],
        "withMom": false,
        "withDad": false,
-       "withSidekick": true
+       "withSidekick": true,
+       "camera": "Medium side view tracking down through the night sky, the little star children carrying the drowsy child on a soft cloud bed on a gentle diagonal, the little star child glowing beside the pillow."
       }
-     }
+     },
+     "camera": "Medium side view tracking down the star ladder, the father in profile carrying the drowsy child piggyback, the mother turned toward them smiling, the ladder sweeping diagonally down through the night."
     },
     {
      "label": "暗い部屋で光る、かけら入りの小びん。窓の外でささの葉をふるポラ",
@@ -232,7 +250,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Quiet medium shot from inside the dark bedroom across the glowing jar on the windowsill in the foreground, Pola waving the bamboo leaf outside the window in soft focus."
     }
    ]
   },
@@ -243,7 +262,8 @@
    "cover": {
     "label": "天の川のほとりで、両手を口に当ててよびかける主人公。肩にポラ、空からかささぎの群れ。",
     "art": "on the bank of the sparkling Milky Way, a river of tiny stars, the child calls out with both hands cupped around their mouth, Pola the little star child perched on their shoulder, as a flock of magpies swoops down from the night sky",
-    "withSidekick": true
+    "withSidekick": true,
+    "camera": "Dynamic low-angle three-quarter view of the child calling out toward the sky, face clearly visible in profile-turned light, Pola on the shoulder, magpies swooping down diagonally in a rush of wings."
    },
    "scenes": [
     {
@@ -268,7 +288,8 @@
        ],
        "withMom": true,
        "withDad": true,
-       "withSidekick": false
+       "withSidekick": false,
+       "camera": "Medium three-quarter view from slightly above on the balcony, the child looking down shyly at the blank wish strip while the father reaches up to hang ornaments and the mother ties paper strips, the glowing jar in the foreground."
       },
       "mom": {
        "label": "ベランダでママとささかざり。白いままの短冊を持つ主人公。窓辺の小びんが光る",
@@ -280,7 +301,8 @@
        ],
        "withMom": true,
        "withDad": false,
-       "withSidekick": false
+       "withSidekick": false,
+       "camera": "Medium three-quarter view from slightly above on the balcony, the child looking down shyly at the blank wish strip while the mother reaches up to hang ornaments, the glowing jar in the foreground."
       },
       "none": {
        "label": "ベランダでささかざりをする主人公。白いままの短冊。窓辺の小びんが光る",
@@ -292,9 +314,11 @@
        ],
        "withMom": false,
        "withDad": false,
-       "withSidekick": false
+       "withSidekick": false,
+       "camera": "Medium three-quarter view from slightly above on the balcony, the child beside the decorated bamboo looking down shyly at the blank wish strip, the glowing jar in the foreground."
       }
-     }
+     },
+     "camera": "Medium three-quarter view from slightly above on the balcony, the child looking down shyly at the blank wish strip while the father reaches up to hang ornaments, the glowing jar in the foreground."
     },
     {
      "label": "ささのてっぺんからすべり下りるポラ。ささの先から空へのびる星のはしご",
@@ -306,7 +330,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Dynamic low angle from the base of the bamboo branch, Pola zooming down the stalk in a diagonal blur of motion, the ladder of stars shooting up into the summer night sky."
     },
     {
      "label": "星のつぶが流れる天の川。岸でしょんぼりするかささぎのカチ",
@@ -318,7 +343,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": false
+     "withSidekick": false,
+     "camera": "Wide high-angle view over the flowing Milky Way, the river of star grains curving through the frame, tiny Kachi drooping alone on the bank."
     },
     {
      "label": "星の子どもたちがこぐボートで天の川を上る主人公、ポラ、カチ",
@@ -330,7 +356,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Dynamic tracking side view of the boat surging up the shimmering river, star children pulling the oars hard, sparkles spraying, strong diagonal composition."
     },
     {
      "label": "遠くの雲の島にかささぎの群れ。声がかれたカチと、主人公を見つめるポラ",
@@ -342,7 +369,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Over-the-shoulder view from behind the child in the boat, looking out toward the distant cloud island of magpies, Kachi with open beak and Pola glancing up at the child from the side."
     },
     {
      "label": "小さな声でよびかけ、顔を赤くする主人公。見守る星の子どもたち",
@@ -354,7 +382,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": false
+     "withSidekick": false,
+     "camera": "Close-up on the child's flushed face and hands at their mouth, eyes dropping, the star children's glowing faces peeking in from the edges of the frame."
     },
     {
      "label": "天の川の両岸で見つめ合うおりひめとひこぼし。傾いていく月",
@@ -366,7 +395,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": false
+     "withSidekick": false,
+     "camera": "Grand wide shot looking straight across the broad Milky Way, Orihime and Hikoboshi tiny on opposite banks gazing at each other, the sinking moon low on the horizon."
     },
     {
      "label": "ボートのすみでうつむく主人公。その手を小さな光でてらすポラ",
@@ -378,7 +408,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Close high-angle view looking down into the corner of the boat, the child's bowed head and open hands softly lit by Pola's small glow."
     },
     {
      "label": "ボートの先に立ち、両手を口に当てて大声でよぶ主人公",
@@ -390,7 +421,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": false
+     "withSidekick": false,
+     "camera": "Heroic low angle from the water level at the bow, the child leaning forward with hands cupped around the mouth, calling with all their might, hair whipping in the wind."
     },
     {
      "label": "【見開き】天の川にかかる、かささぎの羽の橋。橋の真ん中で手を取り合うおりひめとひこぼし。歓声をあげる仲間たち",
@@ -402,7 +434,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Grand ultra-wide low-angle view from just above the river surface, the magpie bridge arching across the whole sky, Orihime and Hikoboshi joining hands at its peak, the cheering friends in the boat in the foreground."
     },
     {
      "label": "【ママ】ベランダで、ママの前で短冊を広げて読み上げる主人公。ささかざり",
@@ -426,7 +459,8 @@
        ],
        "withMom": true,
        "withDad": true,
-       "withSidekick": false
+       "withSidekick": false,
+       "camera": "Medium shot from the side on the balcony, the child in profile proudly holding the wish strip open toward the smiling mother and the clapping father, bamboo ornaments framing the scene."
       },
       "dad": {
        "label": "ベランダで、パパの前で短冊を広げて読み上げる主人公。ささかざり",
@@ -438,7 +472,8 @@
        ],
        "withMom": false,
        "withDad": true,
-       "withSidekick": false
+       "withSidekick": false,
+       "camera": "Medium shot from the side on the balcony, the child in profile proudly holding the wish strip open toward the smiling father, bamboo ornaments framing the scene."
       },
       "none": {
        "label": "ベランダで短冊を読み上げる主人公。ささの上のカチと、光るポラ",
@@ -450,9 +485,11 @@
        ],
        "withMom": false,
        "withDad": false,
-       "withSidekick": true
+       "withSidekick": true,
+       "camera": "Medium shot from the side on the balcony, the child in profile proudly reading the wish strip aloud, the magpie perched on the bamboo and the little star child glowing nearby, bamboo ornaments framing the scene."
       }
-     }
+     },
+     "camera": "Medium shot from the side on the balcony, the child in profile proudly holding the wish strip open toward the smiling mother, bamboo ornaments framing the scene."
     },
     {
      "label": "窓の外で白いおだんごを見せるポラ。窓辺に2つのかけらの小びん",
@@ -464,7 +501,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Quiet close-up through the window glass, the jar with two glowing fragments on the sill in the foreground and Pola holding up the white dumpling outside."
     }
    ]
   },
@@ -475,7 +513,8 @@
    "cover": {
     "label": "月の上で、きねを持った月のうさぎ（モチ）とならぶ主人公。うすの横にポラ。",
     "art": "on the glowing surface of the moon, the child stands side by side with Mochi, a small white moon rabbit with long ears, who holds a wooden mallet, and Pola the little star child sits beside a big wooden rice-cake mortar under a starry sky",
-    "withSidekick": true
+    "withSidekick": true,
+    "camera": "Low-angle three-quarter view from the lunar surface, the child and Mochi standing tall side by side with faces clearly visible, Mochi's mallet raised mid-swing, the starry sky and earth arcing above."
    },
    "scenes": [
     {
@@ -500,7 +539,8 @@
        ],
        "withMom": true,
        "withDad": true,
-       "withSidekick": false
+       "withSidekick": false,
+       "camera": "Medium three-quarter view from slightly above on the veranda, the child frowning at lumpy dumplings beside the father while the mother points up at the chipped moon framed by pampas grass."
       },
       "dad": {
        "label": "えんがわでパパとおだんご作り。でこぼこのおだんご。空にかけた月",
@@ -512,7 +552,8 @@
        ],
        "withMom": false,
        "withDad": true,
-       "withSidekick": false
+       "withSidekick": false,
+       "camera": "Medium three-quarter view from slightly above on the veranda, the child frowning at lumpy dumplings beside the father, the chipped moon framed by pampas grass above."
       },
       "none": {
        "label": "えんがわでひとりおだんご作り。でこぼこのおだんご。空にかけた月",
@@ -524,9 +565,11 @@
        ],
        "withMom": false,
        "withDad": false,
-       "withSidekick": false
+       "withSidekick": false,
+       "camera": "Medium three-quarter view from slightly above on the veranda, the child alone frowning at lumpy dumplings, the chipped moon framed by pampas grass above."
       }
-     }
+     },
+     "camera": "Medium three-quarter view from slightly above on the veranda, the child frowning at lumpy dumplings while the mother turns away looking up at the chipped moon framed by pampas grass."
     },
     {
      "label": "すすきのかげから出てくるポラと、耳を下げた月のうさぎのモチ",
@@ -538,7 +581,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Low angle from ground level through swaying pampas grass, Pola stepping out leading Mochi, the drooping-eared rabbit silhouetted against the night sky."
     },
     {
      "label": "月の上の大きなうすときね。一歩下がる主人公",
@@ -550,7 +594,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": false
+     "withSidekick": false,
+     "camera": "Extreme low angle looking up at the towering wooden mortar and mallet, the child small at its base taking a nervous step away while Mochi beckons."
     },
     {
      "label": "うすからとび出して転がるおもち。追いかけるポラ",
@@ -562,7 +607,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Dynamic low ground-level shot with the rice cake ball bouncing toward the camera, Pola chasing in a blur of motion, the child and Mochi startled in the distance, tilted diagonal composition."
     },
     {
      "label": "のびたおもちで手とモチの耳がつながった主人公とモチ",
@@ -574,7 +620,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": false
+     "withSidekick": false,
+     "camera": "Comic medium close-up side view of the child and Mochi linked by a long stretching gooey strand, both recoiling in surprise, eyes on each other."
     },
     {
      "label": "応援にかけつけたカチと星の子どもたち。かけが大きくなる月",
@@ -586,7 +633,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": false
+     "withSidekick": false,
+     "camera": "High bird's-eye view looking down on the moon's surface, Kachi and the star children rushing in from all sides toward the mortar while a creeping shadow swallows part of the moon."
     },
     {
      "label": "たおれたうす。すわりこむおもちだらけの主人公",
@@ -598,7 +646,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": false
+     "withSidekick": false,
+     "camera": "Close-up three-quarter view from slightly above on the slumped child covered in rice cake, face turned away from the tipped-over mortar."
     },
     {
      "label": "消えかけた月の上で泣くモチ。はるか下に、空を見上げる地球の子ども",
@@ -610,7 +659,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": false
+     "withSidekick": false,
+     "camera": "Over-the-shoulder view from behind the crying Mochi on the dark moon edge, looking far down at the tiny twinkling lights of a town on Earth."
     },
     {
      "label": "声を合わせてもちをつく主人公とモチ。手びょうしをする仲間たち",
@@ -622,7 +672,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Dynamic side view of the child and Mochi swinging the mallet together mid-strike, rice cake flying, friends clapping around them in a burst of motion lines."
     },
     {
      "label": "【見開き】まんまるにかがやく満月の上で、おもちを掲げる主人公とモチ。銀の光がすすき野原と町にふりそそぐ",
@@ -634,7 +685,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": false
+     "withSidekick": false,
+     "camera": "Grand ultra-wide view from far below on Earth's fields of pampas grass, looking up at the brilliant full moon, the child and Mochi tiny on top lifting the glowing rice cake, silver light pouring down."
     },
     {
      "label": "【パパ】えんがわで主人公を肩車するパパ。手にまるいおだんご、空に満月",
@@ -658,7 +710,8 @@
        ],
        "withMom": true,
        "withDad": true,
-       "withSidekick": false
+       "withSidekick": false,
+       "camera": "Medium low angle from the veranda floor looking up at the father with the child on his shoulders proudly raising a round dumpling against the full moon, the mother clapping beside them."
       },
       "mom": {
        "label": "えんがわでママが主人公をハグ（肩車はしない）。手にまるいおだんご、空に満月",
@@ -670,7 +723,8 @@
        ],
        "withMom": true,
        "withDad": false,
-       "withSidekick": false
+       "withSidekick": false,
+       "camera": "Medium low angle from the veranda floor looking up at the mother hugging the child, who proudly raises a round dumpling against the full moon."
       },
       "none": {
        "label": "えんがわで、頭にモチをのせて笑う主人公。手にまるいおだんご、空に満月",
@@ -682,9 +736,11 @@
        ],
        "withMom": false,
        "withDad": false,
-       "withSidekick": false
+       "withSidekick": false,
+       "camera": "Medium low angle from the veranda floor looking up at the laughing child with the moon rabbit on their head, proudly raising a round dumpling against the full moon."
       }
-     }
+     },
+     "camera": "Medium low angle from the veranda floor looking up at the father with the child on his shoulders proudly raising a round dumpling against the full moon."
     },
     {
      "label": "窓の外でふるえるポラ。とんがりの先に雪のつぶ。窓辺に3つのかけらの小びん",
@@ -696,7 +752,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Quiet close-up from inside the room on the jar with three glowing fragments on the windowsill, Pola shivering outside the window with a snowflake on his point."
     }
    ]
   },
@@ -707,7 +764,8 @@
    "cover": {
     "label": "雪のふる夜空で、3つのかけらが光る小びんをかかげる主人公。後ろに、大きくてやさしい顔の雪ぐも。",
     "art": "in a snowy night sky, the child holds up a small glass jar glowing with three star fragments (gold, light blue and silver), and behind them looms Yukin, a huge fluffy white snow cloud with a big gentle face",
-    "withSidekick": false
+    "withSidekick": false,
+    "camera": "Low-angle three-quarter view of the child holding the glowing jar high, face lit warmly and clearly visible, snow swirling diagonally, the gentle face of the huge snow cloud Yukin looming above."
    },
    "scenes": [
     {
@@ -732,7 +790,8 @@
        ],
        "withMom": true,
        "withDad": true,
-       "withSidekick": false
+       "withSidekick": false,
+       "camera": "Medium side view on the snowy balcony, the child in profile pouting with puffed cheeks as the mother wraps a scarf around them, the father at the telescope looking up at the thick cloud-covered sky."
       },
       "mom": {
        "label": "雪のベランダでママと望遠鏡。ほっぺをふくらませる主人公。空は一面の雪ぐも",
@@ -744,7 +803,8 @@
        ],
        "withMom": true,
        "withDad": false,
-       "withSidekick": false
+       "withSidekick": false,
+       "camera": "Medium side view on the snowy balcony, the child in profile pouting with puffed cheeks beside the telescope while the mother looks up at the thick cloud-covered sky."
       },
       "none": {
        "label": "雪のベランダで望遠鏡をのぞく主人公。空は一面の雪ぐも。窓辺の小びんが光る",
@@ -756,9 +816,11 @@
        ],
        "withMom": false,
        "withDad": false,
-       "withSidekick": false
+       "withSidekick": false,
+       "camera": "Medium side view on the snowy balcony, the child in profile peering through the telescope at the thick cloud-covered sky, the glowing jar on the windowsill."
       }
-     }
+     },
+     "camera": "Medium side view on the snowy balcony, the child in profile pouting with puffed cheeks beside the telescope while the father looks up at the thick cloud-covered sky."
     },
     {
      "label": "雪まみれで窓をたたくポラ。とんがりにつらら",
@@ -770,7 +832,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Close-up through the frosty window glass on snow-covered Pola tapping, tiny icicle on his point, the child's hand reaching toward the glass from the edge of the frame."
     },
     {
      "label": "雪の中、星のはしごを勢いよくのぼる主人公。追いかけるポラ",
@@ -782,7 +845,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Dynamic low angle from below the star ladder, the child climbing fast and diagonally upward through falling snow, Pola scrambling after them, coat flapping."
     },
     {
      "label": "身を寄せ合う星の子どもたちに、ほかほかのおもちを配るモチ",
@@ -794,7 +858,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": false
+     "withSidekick": false,
+     "camera": "Medium high-angle view looking down on the huddled star children on the snowy cloud, Mochi handing out steaming rice cakes, warm steam curling upward."
     },
     {
      "label": "山のように大きな雪ぐもを羽で指すカチ。小びんをにぎる主人公",
@@ -806,7 +871,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": false
+     "withSidekick": false,
+     "camera": "Over-the-shoulder view from behind the child gripping the glowing jar, Kachi pointing with his wing toward the mountain-sized snow cloud dominating the distance."
     },
     {
      "label": "雪ぐもに向かってさけぶ主人公。ふき出す猛ふぶき",
@@ -818,7 +884,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": false
+     "withSidekick": false,
+     "camera": "Low angle from the snow surface up at the child shouting at the enormous cloud, the blizzard blasting down diagonally across the frame."
     },
     {
      "label": "ふぶきに転がる主人公とポラ。雪にうもれていく小びん",
@@ -830,7 +897,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Dynamic tilted wide shot of the child and Pola tumbling through the blizzard into deep snow, the jar spinning away in the air, streaks of wind and snow everywhere."
     },
     {
      "label": "ふぶきの奥で泣く雪ぐもの大きな顔。雪の中で顔を上げる主人公",
@@ -842,7 +910,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": false
+     "withSidekick": false,
+     "camera": "Extreme low angle from inside the snow past the child's lifted head, looking up at Yukin's huge crying face emerging through the swirling blizzard."
     },
     {
      "label": "光る小びんを高くかかげ、雪ぐもに話しかける主人公",
@@ -854,7 +923,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": false
+     "withSidekick": false,
+     "camera": "Three-quarter view from slightly below, the child holding the jar high toward Yukin and speaking up to the cloud, warm light rays cutting through the blizzard."
     },
     {
      "label": "【見開き】笑顔の雪ぐも（ユキン）の上をそりですべる主人公と仲間たち。星明かりにきらめくこな雪と晴れた星空",
@@ -866,7 +936,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Grand ultra-wide high aerial view of everyone sledding down the smiling cloud's slope in a long diagonal sweep, powder snow sparkling in the starlight, clear starry sky opening above."
     },
     {
      "label": "【ママ】毛布にくるまってミルクを飲む主人公。手を温めるママ。窓の外は晴れた星空",
@@ -890,7 +961,8 @@
        ],
        "withMom": true,
        "withDad": true,
-       "withSidekick": false
+       "withSidekick": false,
+       "camera": "Warm close-up on the child wrapped in the blanket, the mother's hands cupping the child's hands, the father holding out a cup of warm milk, clear stars glittering in the window."
       },
       "dad": {
        "label": "毛布にくるまってミルクを飲む主人公。手を温めるパパ。窓の外は晴れた星空",
@@ -902,7 +974,8 @@
        ],
        "withMom": false,
        "withDad": true,
-       "withSidekick": false
+       "withSidekick": false,
+       "camera": "Warm close-up on the child wrapped in the blanket sipping milk, the father's hands cupping the child's hands, clear stars glittering in the window."
       },
       "none": {
        "label": "毛布にもぐる主人公の胸の上で丸くなって光るポラ。窓の外は晴れた星空",
@@ -914,9 +987,11 @@
        ],
        "withMom": false,
        "withDad": false,
-       "withSidekick": true
+       "withSidekick": true,
+       "camera": "Warm close-up on the child snuggled under the blanket, the little star child glowing softly on the child's chest, clear stars glittering in the window."
       }
-     }
+     },
+     "camera": "Warm close-up on the child wrapped in the blanket sipping milk, the mother's hands cupping the child's hands, clear stars glittering in the window."
     },
     {
      "label": "窓の外で緊張した顔のポラ。窓辺に4つのかけらの小びん。澄んだ星空",
@@ -928,7 +1003,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Quiet medium shot from inside the room across the jar with four glowing fragments on the sill, nervous Pola outside under a crystal-clear starry sky."
     }
    ]
   },
@@ -939,7 +1015,8 @@
    "cover": {
     "label": "春の星空に新しくかがやく大きな星（ポラ）。見上げる主人公と、これまでの仲間全員。",
     "art": "in a spring night sky a big, newly born star shines brilliantly: Pola the star child, now grown into a large radiant star with his gentle face; the child looks up joyfully together with all their friends: the Moon, a huge round glowing moon with a kind smiling face, Kachi, a small black-and-white magpie with a blue-tinged tail, Mochi, a small white moon rabbit with long ears, Yukin, a huge fluffy white snow cloud with a big gentle face and the little glowing star children",
-    "withSidekick": true
+    "withSidekick": true,
+    "camera": "Low-angle three-quarter view from among the gathered friends, the child's joyful upturned face clearly visible, the huge radiant new star Pola blazing above with light rays sweeping across the sky."
    },
    "scenes": [
     {
@@ -964,7 +1041,8 @@
        ],
        "withMom": true,
        "withDad": true,
-       "withSidekick": false
+       "withSidekick": false,
+       "camera": "Over-the-shoulder view from behind the mother inside the bedroom, the child turning round to lead her by the hand toward the window and the star ladder, the father steadying it below, the glowing jar on the sill."
       },
       "dad": {
        "label": "第1話と同じ構図の子ども部屋。主人公がパパの手を引いて星のはしごへ。窓辺に4つのかけらの小びん",
@@ -976,7 +1054,8 @@
        ],
        "withMom": false,
        "withDad": true,
-       "withSidekick": false
+       "withSidekick": false,
+       "camera": "Over-the-shoulder view from behind the father inside the bedroom, the child turning round to lead him by the hand toward the window and the star ladder, the glowing jar on the sill."
       },
       "none": {
        "label": "第1話と同じ構図の子ども部屋。小びんをかかえて、自分で窓を開ける主人公",
@@ -988,9 +1067,11 @@
        ],
        "withMom": false,
        "withDad": false,
-       "withSidekick": false
+       "withSidekick": false,
+       "camera": "Over-the-shoulder view from behind the child inside the bedroom, the child hugging the glowing jar and pushing open the window onto the star ladder."
       }
-     }
+     },
+     "camera": "Over-the-shoulder view from behind the mother inside the bedroom, the child turning round to lead her by the hand toward the window and the star ladder, the glowing jar on the sill."
     },
     {
      "label": "雲の上で待つ、どきどきした顔のポラ。かけてくる主人公",
@@ -1002,7 +1083,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Dynamic side view of the child running across the clouds mid-stride, hair flying, toward nervous flickering Pola waiting in the distance."
     },
     {
      "label": "ほほえむおつきさま。小びんを見つめるポラと、小びんを抱きしめる主人公",
@@ -1014,7 +1096,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Low angle from cloud level up at the smiling moon, the child hugging the glowing jar to their chest in three-quarter view while Pola gazes at it."
     },
     {
      "label": "第1〜4話の仲間が全員集合。星の花火が上がるお祭りの雲の広場",
@@ -1026,7 +1109,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "High bird's-eye view over the festive cloud plaza, all the friends gathered in a ring, star fireworks bursting toward the camera."
     },
     {
      "label": "空のてっぺんへのびる光の階段。てっぺんで星になって光る星の子ども",
@@ -1038,7 +1122,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": false
+     "withSidekick": false,
+     "camera": "Extreme low angle from the foot of the staircase of light, the steps soaring up into the sky, star children climbing and bursting into stars at the very top."
     },
     {
      "label": "光の階段のとちゅうで見送る主人公。ひとりでてっぺんへのぼる小さなポラ",
@@ -1050,7 +1135,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Over-the-shoulder view from behind the child partway up the staircase, watching tiny Pola climb on alone toward the distant top."
     },
     {
      "label": "階段のてっぺんで光が消え、うずくまるポラ。静まりかえる仲間たち",
@@ -1062,7 +1148,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "High wide view looking down from above the top of the staircase, dim Pola crouched small on the last step, the silent friends far below."
     },
     {
      "label": "小びんを見つめる主人公。4つのかけらに各話の思い出が小さく映る",
@@ -1074,7 +1161,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": false
+     "withSidekick": false,
+     "camera": "Extreme close-up on the child's face and hands cradling the jar, the four fragments glowing with tiny memories reflected in the child's eyes."
     },
     {
      "label": "階段のてっぺんで小びんのふたを開け、ポラに4つのかけらをおくる主人公",
@@ -1086,7 +1174,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Medium three-quarter side view at the top of the staircase, the child opening the jar toward Pola, gold, light blue, silver and white lights swirling out in a dynamic spiral."
     },
     {
      "label": "【見開き】金・水色・銀・白の光がまざり、夜空でいちばん大きくかがやく星になったポラ。見上げて喜ぶ主人公と仲間全員。第1話の流れ星の場面と対になる構図",
@@ -1098,7 +1187,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Grand ultra-wide low-angle panorama from the clouds, the swirling colored lights forming the biggest brightest star across the sky, the child and all the friends small in the foreground cheering, mirroring the shooting-star spread of the first night."
     },
     {
      "label": "【ママ・パパ】雲の上で新しい星を見上げる家族。主人公の小びんに光のつぶが落ちる",
@@ -1122,7 +1212,8 @@
        ],
        "withMom": true,
        "withDad": false,
-       "withSidekick": false
+       "withSidekick": false,
+       "camera": "Medium three-quarter view from slightly below, the child and mother looking up together at the new star, a drop of light falling gently into the jar in the child's hands."
       },
       "dad": {
        "label": "雲の上でパパと新しい星を見上げる主人公。小びんに光のつぶが落ちる",
@@ -1134,7 +1225,8 @@
        ],
        "withMom": false,
        "withDad": true,
-       "withSidekick": false
+       "withSidekick": false,
+       "camera": "Medium three-quarter view from slightly below, the child and father looking up together at the new star, a drop of light falling gently into the jar in the child's hands."
       },
       "none": {
        "label": "雲の上でおつきさまや仲間たちと新しい星を見上げる主人公。小びんに光のつぶが落ちる",
@@ -1146,9 +1238,11 @@
        ],
        "withMom": false,
        "withDad": false,
-       "withSidekick": false
+       "withSidekick": false,
+       "camera": "Medium three-quarter view from slightly below, the child, the smiling Moon, the magpie, the moon rabbit, the snow cloud and the star children looking up together at the new star, a drop of light falling gently into the jar in the child's hands."
       }
-     }
+     },
+     "camera": "Medium three-quarter view from slightly below, the child, mother and father looking up together at the new star, a drop of light falling gently into the jar in the child's hands."
     },
     {
      "label": "【パパ】ベランダでパパに肩車された主人公。家の真上に光るポラの星、夜空を横切るほうきぼし",
@@ -1172,7 +1266,8 @@
        ],
        "withMom": true,
        "withDad": true,
-       "withSidekick": false
+       "withSidekick": false,
+       "camera": "Wide low-angle view from the garden looking up at the balcony, the father with the child on his shoulders and the mother beside them, pointing at the comet streaking diagonally across the sky above the house and Pola's star."
       },
       "mom": {
        "label": "ベランダでママが主人公をハグ（肩車はしない）。家の真上に光るポラの星、夜空を横切るほうきぼし",
@@ -1184,7 +1279,8 @@
        ],
        "withMom": true,
        "withDad": false,
-       "withSidekick": false
+       "withSidekick": false,
+       "camera": "Wide low-angle view from the garden looking up at the balcony, the mother hugging the child as they gaze at the comet streaking diagonally across the sky above the house and Pola's star."
       },
       "none": {
        "label": "ベランダでひとり夜空を見上げる主人公。家の真上に光るポラの星、夜空を横切るほうきぼし",
@@ -1196,9 +1292,11 @@
        ],
        "withMom": false,
        "withDad": false,
-       "withSidekick": false
+       "withSidekick": false,
+       "camera": "Wide low-angle view from the garden looking up at the balcony, the child alone pointing at the comet streaking diagonally across the sky above the house and Pola's star."
       }
-     }
+     },
+     "camera": "Wide low-angle view from the garden looking up at the balcony, the father with the child on his shoulders pointing at the comet streaking diagonally across the sky above the house and Pola's star."
     }
    ]
   }

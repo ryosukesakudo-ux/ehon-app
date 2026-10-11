@@ -11,7 +11,8 @@
    "cover": {
     "label": "大きなしだの葉っぱの下で、みどりの水玉もようのたまごをだきしめ、そっと耳を当てる主人公。",
     "art": "under a huge fern leaf in a misty green fern forest, the child hugs a large green polka-dot dinosaur egg and gently presses an ear against it, eyes closed and listening with a soft smile; dappled spring light falls through the fronds",
-    "withSidekick": false
+    "withSidekick": false,
+    "camera": "Low-angle three-quarter view from the mossy forest floor, the child's peaceful face clearly visible as they hug the egg, the giant fern leaf arching overhead with light rays slanting through."
    },
    "scenes": [
     {
@@ -36,7 +37,8 @@
        ],
        "withMom": true,
        "withDad": true,
-       "withSidekick": false
+       "withSidekick": false,
+       "camera": "Over-the-shoulder view from behind the child, the mother and the father, so we see the backs of their heads and the mother's pointing arm leading the eye to the mysterious fern forest in the distance."
       },
       "dad": {
        "label": "春の公園を手をつないで歩く主人公とパパ。奥に背の高いしだの森",
@@ -48,7 +50,8 @@
        ],
        "withMom": false,
        "withDad": true,
-       "withSidekick": false
+       "withSidekick": false,
+       "camera": "Over-the-shoulder view from behind the child and the father walking hand in hand, so we see the backs of their heads leading the eye to the mysterious fern forest in the distance."
       },
       "none": {
        "label": "春の公園で、肩にすずめをとめた主人公。奥に背の高いしだの森",
@@ -60,9 +63,11 @@
        ],
        "withMom": false,
        "withDad": false,
-       "withSidekick": false
+       "withSidekick": false,
+       "camera": "Over-the-shoulder view from behind the child with a sparrow on one shoulder, so we see the back of the child's head leading the eye to the mysterious fern forest in the distance."
       }
-     }
+     },
+     "camera": "Over-the-shoulder view from behind the child and the mother, so we see the backs of their heads and the mother's pointing arm leading the eye to the mysterious fern forest in the distance."
     },
     {
      "label": "巨大なしだの葉の下に、緑の水玉もようの大きなたまご。そっと触れる主人公",
@@ -74,7 +79,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": false
+     "withSidekick": false,
+     "camera": "Low-angle shot from ground level beside the egg, looking up at the kneeling child reaching out, the giant fern leaf towering overhead like a roof."
     },
     {
      "label": "葉っぱとこけのベッドにたまごをのせ、顔を近づける主人公",
@@ -86,7 +92,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": false
+     "withSidekick": false,
+     "camera": "Close-up on the child's sparkling eyes and the curve of the egg shell, the child seen in profile leaning in so their nose almost touches it."
     },
     {
      "label": "たまごを揺らす主人公。たまごは静まりかえる",
@@ -98,7 +105,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": false
+     "withSidekick": false,
+     "camera": "High bird's-eye view looking down on the egg on its round leaf bed, the small puzzled child tilting their head beside it in the silent forest clearing."
     },
     {
      "label": "苔の生えた甲羅の年寄りかめノンノが、目を細めてたまごを見る",
@@ -110,7 +118,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": false
+     "withSidekick": false,
+     "camera": "Low-angle shot from the forest floor with the old tortoise plodding big in the foreground, the child kneeling beside the egg in the midground, both looking at the egg."
     },
     {
      "label": "日なたでたまごに歌いかける主人公。ノンノが横でうなずく",
@@ -122,7 +131,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": false
+     "withSidekick": false,
+     "camera": "Medium side view of the child swaying and singing toward the egg in a pool of sunlight, the tortoise nodding along at the edge of the frame."
     },
     {
      "label": "暗い空と雨。首を甲羅に引っこめるノンノ。耳をふさぐ主人公",
@@ -134,7 +144,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": false
+     "withSidekick": false,
+     "camera": "Dynamic wide shot with a tilted diagonal horizon, slanting sheets of rain and a lightning flash, the child covering their ears and the tortoise pulling into its shell."
     },
     {
      "label": "ずぶぬれのたまごに耳を当てる主人公。暗い雨の森",
@@ -146,7 +157,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": false
+     "withSidekick": false,
+     "camera": "Extreme close-up of the child's wet cheek and ear pressed against the dripping egg, raindrops streaking across the frame, eyes looking sideways full of worry."
     },
     {
      "label": "しだの葉の傘の下、上着でくるんだたまごを抱きしめて叫ぶ主人公",
@@ -158,7 +170,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": false
+     "withSidekick": false,
+     "camera": "Dramatic low-angle diagonal shot of the child hugging the wrapped egg and shouting up at the sky, the fern umbrella whipping in the wind and rain streaks slashing past."
     },
     {
      "label": "【見開き】月光の中、割れたたまごから水玉もようの赤ちゃんきょうりゅう。頭に殻のぼうし、見つめ合う主人公",
@@ -170,7 +183,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Grand wide low-angle view from the moonlit forest floor, the child and the tiny hatchling seen in profile gazing into each other's eyes, glistening ferns soaring all around under a huge silver moon."
     },
     {
      "label": "【パパ】傘を持ったパパが主人公を肩車。主人公の手にきらきらのうろこ。しだの陰で手をふるモコ",
@@ -194,7 +208,8 @@
        ],
        "withMom": true,
        "withDad": true,
-       "withSidekick": true
+       "withSidekick": true,
+       "camera": "Medium-wide three-quarter view from slightly below, the father carrying the child on his shoulders under the mother's umbrella as the child turns toward the fern where the little dinosaur waves in the foreground corner."
       },
       "mom": {
        "label": "しだの森の入口でママが主人公をハグ（肩車はしない）。主人公の手にうろこ。しだの陰で手をふるモコ",
@@ -206,7 +221,8 @@
        ],
        "withMom": true,
        "withDad": false,
-       "withSidekick": true
+       "withSidekick": true,
+       "camera": "Medium-wide three-quarter view from slightly below, the mother kneeling to hug the child as the child turns toward the fern where the little dinosaur waves in the foreground corner."
       },
       "none": {
        "label": "ノンノの甲羅に乗って帰る主人公。手にうろこ。しだの陰で手をふるモコ",
@@ -218,9 +234,11 @@
        ],
        "withMom": false,
        "withDad": false,
-       "withSidekick": true
+       "withSidekick": true,
+       "camera": "Medium-wide three-quarter view from slightly below, the child riding on the mossy tortoise's shell and turning toward the fern where the little dinosaur waves in the foreground corner."
       }
-     }
+     },
+     "camera": "Medium-wide three-quarter view from slightly below, the father carrying the child on his shoulders as the child turns toward the fern where the little dinosaur waves in the foreground corner."
     },
     {
      "label": "夜の寝室。光るうろこの中に、葉っぱをぺっと吐くモコとノンノが映る",
@@ -232,7 +250,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "High close view looking down at the glowing scale on the pillow, the child's face peeking from under the blanket at the edge of the frame, lit by the soft glow."
     }
    ]
   },
@@ -243,7 +262,8 @@
    "cover": {
     "label": "がけの上で、とげとげのオレンジ色の「お日さまの実」を両手でかかえる主人公と、大きく口をあけるモコ。空にはパタ。",
     "art": "on top of a sunny cliff, the child holds up a spiky orange fruit with both hands while Moko the baby long-neck dinosaur, now about the size of a small dog, opens its mouth wide beside them; Pata, a small young sky-blue pteranodon with clumsy wings glides in the bright summer sky above",
-    "withSidekick": true
+    "withSidekick": true,
+    "camera": "Dynamic low-angle three-quarter view from below the cliff edge, the child's beaming face clearly visible as they hoist the spiky fruit skyward, the dinosaur opening its mouth beside them and the pteranodon swooping overhead."
    },
    "scenes": [
     {
@@ -268,7 +288,8 @@
        ],
        "withMom": true,
        "withDad": true,
-       "withSidekick": false
+       "withSidekick": false,
+       "camera": "Medium three-quarter view from slightly above across the steaming griddle, the frowning child looking down at the pushed-aside peppers while the father cooks and the mother hands out plates, the glowing scale peeking from a pocket."
       },
       "mom": {
        "label": "庭でママと焼きそば。皿の端によけたピーマン。ポケットのうろこが光る",
@@ -280,7 +301,8 @@
        ],
        "withMom": true,
        "withDad": false,
-       "withSidekick": false
+       "withSidekick": false,
+       "camera": "Medium three-quarter view from slightly above across the steaming griddle, the frowning child looking down at the pushed-aside peppers while the mother cooks, the glowing scale peeking from a pocket."
       },
       "none": {
        "label": "庭の木陰でお弁当を食べる主人公。すみによけたピーマン、首をかしげるすずめ。ポケットのうろこが光る",
@@ -292,9 +314,11 @@
        ],
        "withMom": false,
        "withDad": false,
-       "withSidekick": false
+       "withSidekick": false,
+       "camera": "Medium three-quarter view from slightly above under the garden tree, the frowning child looking down at the peppers pushed into the lunch box corner while a sparrow tilts its head, the glowing scale peeking from a pocket."
       }
-     }
+     },
+     "camera": "Medium three-quarter view from slightly above across the steaming griddle, the frowning child looking down at the pushed-aside peppers while the father cooks, the glowing scale peeking from a pocket."
     },
     {
      "label": "少し大きくなったモコが葉っぱを吐き出す。ぎくっとする主人公",
@@ -306,7 +330,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Close-up on the droopy little dinosaur spitting out a leaf, the child flinching at the edge of the frame with a guilty look."
     },
     {
      "label": "ノンノが森の奥を指す。モコをリュックに入れて出発する主人公",
@@ -318,7 +343,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Over-the-shoulder view from behind the child setting off, the little dinosaur peeking over the child's shoulder, and the tortoise's stubby foot pointing toward the deep misty forest ahead."
     },
     {
      "label": "霧の向こうにのんびり草を食べる大きなきょうりゅうたち。見上げる主人公とリュックのモコ",
@@ -330,7 +356,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Extreme low wide shot from the ferns, the child small in the foreground gazing up in awe at the enormous long-necked dinosaurs grazing far into the mist."
     },
     {
      "label": "頭から着地した子どものプテラノドン・パタ。笑う主人公とモコ",
@@ -342,7 +369,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Dynamic tilted close-medium shot of the pteranodon mid-crash, head first in the ferns with dust and leaves bursting outward, the child and the little dinosaur laughing at it."
     },
     {
      "label": "崖の上の木。とげとげのオレンジ色の実。鼻をつまむ主人公",
@@ -354,7 +382,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": false
+     "withSidekick": false,
+     "camera": "Low-angle shot looking up the steep cliff at the lone tree and its spiky orange fruit against the sky, the child pinching their nose in profile below with the pteranodon perched nearby."
     },
     {
      "label": "主人公そっくりに鼻をつまんでそっぽを向くモコ。きょとんとするパタ",
@@ -366,7 +395,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Medium side view of the child and the little dinosaur face to face, the child holding out the fruit while the dinosaur turns its head away pinching its nose, the pteranodon blinking between them."
     },
     {
      "label": "力なく座りこむモコ。実を持ったまま涙ぐむ主人公",
@@ -378,7 +408,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Close-up on the child's teary eyes and the fruit in their hands, the weak little dinosaur slumped low at the edge of the frame."
     },
     {
      "label": "目をつぶって実にかじりつく主人公。見つめるモコとパタ",
@@ -390,7 +421,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Dynamic diagonal close shot of the child mid-bite with eyes squeezed shut, juice spraying, the little dinosaur and the pteranodon leaning in wide-eyed from the side."
     },
     {
      "label": "【見開き】夕日の崖の上で実をほおばる主人公とモコ。しっぽを振りすぎて転がるモコ、笑うパタ",
@@ -402,7 +434,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Grand high aerial wide view over the sunset cliff top with the misty dinosaur valley spread far below, the little dinosaur caught mid-tumble from wagging its tail as the child laughs and the pteranodon flaps."
     },
     {
      "label": "【ママ】夕食の食卓でピーマンを口に入れる主人公。にっこりするママ",
@@ -426,7 +459,8 @@
        ],
        "withMom": true,
        "withDad": true,
-       "withSidekick": false
+       "withSidekick": false,
+       "camera": "Medium eye-level view across the dinner table in three-quarter profile, the child bravely lifting a piece of pepper to their mouth while the mother beams and the father looks amazed."
       },
       "dad": {
        "label": "夕食の食卓でピーマンを口に入れる主人公。にっこりするパパ",
@@ -438,7 +472,8 @@
        ],
        "withMom": false,
        "withDad": true,
-       "withSidekick": false
+       "withSidekick": false,
+       "camera": "Medium eye-level view across the dinner table in three-quarter profile, the child nervously lifting a piece of pepper to their mouth while looking at the father, who beams."
       },
       "none": {
        "label": "夜の窓辺、パタが転がしたピーマンを口に入れる主人公。羽をぱたぱたさせるパタ",
@@ -450,9 +485,11 @@
        ],
        "withMom": false,
        "withDad": false,
-       "withSidekick": false
+       "withSidekick": false,
+       "camera": "Medium eye-level view across the windowsill in three-quarter profile, the child bravely popping the pepper into their mouth while the little pteranodon flaps its wings happily."
       }
-     }
+     },
+     "camera": "Medium eye-level view across the dinner table in three-quarter profile, the child nervously lifting a piece of pepper to their mouth while looking at the mother, who beams."
     },
     {
      "label": "枕元に2枚のうろこ。うろこの中に、眠るモコと大きな足あとを指すパタ",
@@ -464,7 +501,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "High close view looking down at the two glowing scales on the pillow, the dreamlike picture inside their glow framed like a little window in the dark bedroom."
     }
    ]
   },
@@ -475,7 +513,8 @@
    "cover": {
     "label": "紅葉の谷の丸太橋を一歩ずつ渡るモコ。向こう岸で両手を広げて待つ主人公。",
     "art": "in a valley of red and gold autumn leaves, Moko the baby long-neck dinosaur, now as tall as the child, wobbles step by step across a single log bridge over a stream, while the child waits on the far bank with arms wide open",
-    "withSidekick": true
+    "withSidekick": true,
+    "camera": "Low-angle view from the stream bed beneath the log bridge, the wobbling dinosaur crossing in a strong diagonal above, the child on the far bank in three-quarter view with face clearly visible and arms open wide."
    },
    "scenes": [
     {
@@ -500,7 +539,8 @@
        ],
        "withMom": true,
        "withDad": true,
-       "withSidekick": false
+       "withSidekick": false,
+       "camera": "Dynamic side tracking shot of the wobbling bicycle and the mother running to hold the seat, the father waving at the finish point ahead, red and yellow leaves swirling in motion streaks, the glowing scale in the child's pocket."
       },
       "dad": {
        "label": "紅葉の公園で自転車の練習。後ろを支えて走るパパ。ポケットのうろこが光る",
@@ -512,7 +552,8 @@
        ],
        "withMom": false,
        "withDad": true,
-       "withSidekick": false
+       "withSidekick": false,
+       "camera": "Dynamic side tracking shot of the wobbling bicycle and the father running to hold the seat, red and yellow leaves swirling in motion streaks, the glowing scale in the child's pocket."
       },
       "none": {
        "label": "紅葉の公園で、自転車にまたがって足をつく主人公。ポケットのうろこが光る",
@@ -524,9 +565,11 @@
        ],
        "withMom": false,
        "withDad": false,
-       "withSidekick": false
+       "withSidekick": false,
+       "camera": "Side view of the child sitting on the bicycle with both feet on the ground looking unsure, red and yellow leaves swirling around, the glowing scale in the child's pocket."
       }
-     }
+     },
+     "camera": "Dynamic side tracking shot of the wobbling bicycle and the mother running to hold the seat, red and yellow leaves swirling in motion streaks, the glowing scale in the child's pocket."
     },
     {
      "label": "大きくなったモコがよちよち歩いて転ぶ。かけよる主人公",
@@ -538,7 +581,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Low ground-level shot of the dinosaur mid-tumble on wobbly legs, fallen leaves flying, the child rushing in from the side of the frame."
     },
     {
      "label": "木の荷車にモコを乗せる主人公。木の上から道を指すパタ",
@@ -550,7 +594,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "High-angle view from the tree branch where the pteranodon perches pointing its wing, looking down on the child lifting the dinosaur into the wooden cart."
     },
     {
      "label": "落ち葉の坂道で汗をかきながら荷車を引く主人公。足をぶらぶらさせるモコ",
@@ -562,7 +607,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Medium side view on a steep diagonal slope, the child leaning hard into the cart handle, puffing, while the dinosaur dangles its legs in the cart and gazes at the ground."
     },
     {
      "label": "落ち葉を蹴散らして走るトリケラトプスの三きょうだい。身を乗り出すモコ",
@@ -574,7 +620,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Dynamic low wide tracking shot with the three triceratops racing past in the foreground, a whirl of leaves blurring with speed, the dinosaur leaning out of the cart to watch them."
     },
     {
      "label": "転んだモコを抱き上げる主人公。しっぽを下げるモコ",
@@ -586,7 +633,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Close-up of the child's hug, cheek pressed to the dinosaur's neck, the dinosaur's drooping tail curling at the lower edge of the frame."
     },
     {
      "label": "谷川にかかる丸太一本の橋。向こう岸に大きな足あと。荷車の横で困る主人公",
@@ -598,7 +646,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "High wide establishing view over the deep autumn valley, the single thin log spanning the rushing stream, the child, the cart and the dinosaur tiny on the near bank."
     },
     {
      "label": "夕日の谷で座りこむ主人公。自分の足で立ち、主人公の手をなめるモコ",
@@ -610,7 +659,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Medium close three-quarter view from the side in warm sunset light, the slumped child looking down at the dinosaur standing on its own and licking the child's hand."
     },
     {
      "label": "丸太を先に渡り、振り向いて両手を広げる主人公。橋のたもとのモコ",
@@ -622,7 +672,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Over-the-shoulder view from behind the dinosaur at the foot of the bridge, looking along the log to the child on the far side turning with arms wide open and an encouraging smile."
     },
     {
      "label": "【見開き】紅葉が舞う中、丸太橋を渡りきって主人公の胸に飛びこむモコ。跳ねる三きょうだいとパタ",
@@ -634,7 +685,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Grand low-angle wide view from below the bridge, the dinosaur frozen mid-leap into the child's arms, red and gold leaves swirling, the triceratops bouncing and the pteranodon cheering in the glowing sky."
     },
     {
      "label": "【パパ】公園で一人で自転車をこぐ主人公。手を広げて駆け寄るパパ",
@@ -658,7 +710,8 @@
        ],
        "withMom": true,
        "withDad": true,
-       "withSidekick": false
+       "withSidekick": false,
+       "camera": "Dynamic low side tracking shot of the child pedaling alone, hair flying, the father running in with arms open wide and the mother clapping from the far side of the frame."
       },
       "mom": {
        "label": "公園で一人で自転車をこいだ主人公を、駆け寄ったママがハグ",
@@ -670,7 +723,8 @@
        ],
        "withMom": true,
        "withDad": false,
-       "withSidekick": false
+       "withSidekick": false,
+       "camera": "Low side view of the child beside the bicycle after riding alone, hair windswept, the mother running in to hug the child warmly."
       },
       "none": {
        "label": "しだの森の前で一人で自転車をこぐ主人公。甲羅から首を伸ばして見守るノンノ",
@@ -682,9 +736,11 @@
        ],
        "withMom": false,
        "withDad": false,
-       "withSidekick": false
+       "withSidekick": false,
+       "camera": "Dynamic low side tracking shot of the child pedaling alone with a proud smile, hair flying, the old tortoise stretching its neck to watch from the far side of the frame."
       }
-     }
+     },
+     "camera": "Dynamic low side tracking shot of the child pedaling alone, hair flying, the father running in with arms open wide from the far side of the frame."
     },
     {
      "label": "枕元に3枚のうろこ。うろこの中に、大きな足あとと自分の足あとを並べるモコ、遠くに煙をはく火の山",
@@ -696,7 +752,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "High close view looking down at the three glowing scales on the pillow, the picture of the footprints and the distant smoking volcano glowing inside them."
     }
    ]
   },
@@ -707,7 +764,8 @@
    "cover": {
     "label": "ふぶきの中、せなかがとげとげの大きなゴツじいが体を丸め、その内側でぬくぬく笑う主人公とモコ。",
     "art": "in a swirling snowstorm, Gotsu-jii, a huge gentle old ankylosaurus with a rocky gray spiky back and a knobbed club tail curls his huge body into a ring, and inside it, in a warm glowing pocket, the child and Moko the young long-neck dinosaur, now a little bigger than the child, laugh snugly together",
-    "withSidekick": true
+    "withSidekick": true,
+    "camera": "Low-angle three-quarter view inside the ring of the curled ankylosaurus, the child's laughing face clearly visible turned toward the dinosaur, snow swirling past the spiky rocky body framing them in warm light."
    },
    "scenes": [
     {
@@ -732,7 +790,8 @@
        ],
        "withMom": true,
        "withDad": true,
-       "withSidekick": false
+       "withSidekick": false,
+       "camera": "Dynamic low angle from beside the lion head, its red jaws big in the foreground on a diagonal, the child clinging to the mother's legs and peeking out in fright while the father points at it, lanterns swaying."
       },
       "mom": {
        "label": "冬祭り。口を開けたししまいから、ママの後ろに隠れる主人公。ポケットのうろこが光る",
@@ -744,7 +803,8 @@
        ],
        "withMom": true,
        "withDad": false,
-       "withSidekick": false
+       "withSidekick": false,
+       "camera": "Dynamic low angle from beside the lion head, its red jaws snapping big in the foreground on a diagonal, the child clinging to the mother's legs and peeking out in fright, lanterns swaying."
       },
       "none": {
        "label": "窓の外を通るししまい。カーテンの後ろに隠れる主人公。ポケットのうろこが光る",
@@ -756,9 +816,11 @@
        ],
        "withMom": false,
        "withDad": false,
-       "withSidekick": false
+       "withSidekick": false,
+       "camera": "Dynamic low angle from beside the lion head passing outside the window, its red jaws big in the foreground on a diagonal, the child half-hidden by the curtain and peeking out in fright."
       }
-     }
+     },
+     "camera": "Dynamic low angle from beside the lion head, its red jaws snapping big in the foreground on a diagonal, the child clinging to the father's legs and peeking out in fright, lanterns swaying."
     },
     {
      "label": "雪で真っ白なしだの森。震えるモコ、甲羅から顔を出すノンノ",
@@ -770,7 +832,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "High wide view over the snow-buried fern forest, the shivering dinosaur and the tortoise peeking from its snowy shell small in the white clearing."
     },
     {
      "label": "モコの首にマフラーを巻く主人公。遠くに白い煙をはく火の山",
@@ -782,7 +845,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Over-the-shoulder view from behind the child wrapping the scarf around the dinosaur's long neck, the distant volcano puffing white smoke on the horizon."
     },
     {
      "label": "三きょうだいと主人公・モコが一台のそりで雪の坂を滑る",
@@ -794,7 +858,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Dynamic diagonal tracking shot of the crowded sled whooshing down the slope, snow spraying in arcs, everyone's mouths open in cheers, strong speed lines."
     },
     {
      "label": "吹雪の山のふもと。寄りそう主人公とモコ",
@@ -806,7 +871,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Wide establishing shot of the whirling white storm at the mountain foot, the child and the dinosaur tiny and huddled together in the middle of the frame."
     },
     {
      "label": "吹雪の中に、背中がとげとげで尾にこぶのある巨大な影。岩陰に隠れる二人",
@@ -818,7 +884,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Low-angle shot from the snow at the base of the big rock, the huge spiky shadow looming high above in the blizzard, the child and the dinosaur pressed against the rock in the foreground."
     },
     {
      "label": "岩陰で、まぶたが下がるモコを抱きかかえる主人公。すぐそばに巨大な足",
@@ -830,7 +897,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Close-up on the child cradling the drowsy dinosaur, an enormous rocky foot towering at the edge of the frame in the snow."
     },
     {
      "label": "岩の上から覗きこむごつごつの大きな顔。目をつぶってモコを抱く主人公",
@@ -842,7 +910,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "High-angle view from above the rock, the huge rugged face peering down into the foreground, the child below squeezing their eyes shut while hugging the dinosaur."
     },
     {
      "label": "吹雪の盾になっていた巨大きょうりゅうを見上げ、立ち上がる主人公",
@@ -854,7 +923,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Extreme low angle from the snow, the child standing tall in three-quarter view and looking up at the giant ankylosaurus, whose kind eyes gaze down through the blizzard."
     },
     {
      "label": "【見開き】吹雪の中、体を丸めて主人公とモコを包むゴツじい。内側だけ暖かな光",
@@ -866,7 +936,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Grand wide bird's-eye view of the raging white storm, the huge ankylosaurus curled in a perfect ring with a warm golden glow inside where the child and the dinosaur snuggle."
     },
     {
      "label": "【ママ】冬祭り、ししまいに自分から頭を差し出す主人公。驚いて喜ぶママ",
@@ -890,7 +961,8 @@
        ],
        "withMom": true,
        "withDad": true,
-       "withSidekick": false
+       "withSidekick": false,
+       "camera": "Medium three-quarter side view of the child bravely leaning their head into the lion head's open jaws, the mother hugging the child happily and the father's eyes round with surprise."
       },
       "dad": {
        "label": "冬祭り、ししまいに自分から頭を差し出す主人公。驚いて喜ぶパパ",
@@ -902,7 +974,8 @@
        ],
        "withMom": false,
        "withDad": true,
-       "withSidekick": false
+       "withSidekick": false,
+       "camera": "Medium three-quarter side view of the child bravely leaning their head into the lion head's open jaws, the father in the frame looking on surprised and delighted."
       },
       "none": {
        "label": "冬祭り、ししまいに自分から頭を差し出す主人公。拍手する町の人たち",
@@ -914,9 +987,11 @@
        ],
        "withMom": false,
        "withDad": false,
-       "withSidekick": false
+       "withSidekick": false,
+       "camera": "Medium three-quarter side view of the child bravely leaning their head into the lion head's open jaws, the townspeople around clapping and cheering."
       }
-     }
+     },
+     "camera": "Medium three-quarter side view of the child bravely leaning their head into the lion head's open jaws, the mother in the frame looking on surprised and delighted."
     },
     {
      "label": "枕元に4枚のうろこ。うろこの中に、ゴツじいの背で眠るモコ",
@@ -928,7 +1003,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "High close view looking down at the four glowing scales on the pillow, the image of the dinosaur sleeping on the spiky ankylosaurus glowing inside them."
     }
    ]
   },
@@ -939,7 +1015,8 @@
    "cover": {
     "label": "にじのかかる谷で、首の長いお母さんきょうりゅうに寄りそうモコと、笑って手をふる主人公。まわりにこれまでの仲間全員。",
     "art": "in a valley under a great rainbow, Moko the young long-neck dinosaur, now grown so tall that the long neck would reach a house roof, nestles against Moko's mama, a giant grown-up long-neck dinosaur with the same green polka dots, while the child smiles and waves; all the friends gather around: Nonno, a big old tortoise with soft green moss growing on its shell, Pata, a small young sky-blue pteranodon with clumsy wings, the three little triceratops siblings Tsun, Tan and Ton, round and orange with stubby horns and Gotsu-jii, a huge gentle old ankylosaurus with a rocky gray spiky back and a knobbed club tail",
-    "withSidekick": true
+    "withSidekick": true,
+    "camera": "Wide low-angle view from the valley floor under the great rainbow, the child in three-quarter view smiling and waving with face clearly visible, the dinosaur nestled against its giant mama and all the friends gathered around."
    },
    "scenes": [
     {
@@ -964,7 +1041,8 @@
        ],
        "withMom": true,
        "withDad": true,
-       "withSidekick": false
+       "withSidekick": false,
+       "camera": "Low-angle shot from under the eaves looking up past the baby swallows fluttering out of the nest, the child, the mother and the father side by side in profile gazing up at them."
       },
       "dad": {
        "label": "軒下の巣から巣立つつばめを、並んで見上げる主人公とパパ",
@@ -976,7 +1054,8 @@
        ],
        "withMom": false,
        "withDad": true,
-       "withSidekick": false
+       "withSidekick": false,
+       "camera": "Low-angle shot from under the eaves looking up past the baby swallows fluttering out of the nest, the child and the father side by side in profile gazing up at them."
       },
       "none": {
        "label": "軒下の巣から巣立つ子つばめと、巣に残る親つばめを見上げる主人公",
@@ -988,9 +1067,11 @@
        ],
        "withMom": false,
        "withDad": false,
-       "withSidekick": false
+       "withSidekick": false,
+       "camera": "Low-angle shot from under the eaves looking up past the baby swallows flying away and the grown swallow left in the nest, the child in profile gazing up at them."
       }
-     }
+     },
+     "camera": "Low-angle shot from under the eaves looking up past the baby swallows fluttering out of the nest, the child and the mother side by side in profile gazing up at them."
     },
     {
      "label": "首が長く伸びたモコが主人公にほおずり。遠くの空へ響く声",
@@ -1002,7 +1083,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Close-up on the cheek rub, the dinosaur's long neck curving down in a graceful arc to the child's smiling face, a faint sound-wave shimmer in the sky."
     },
     {
      "label": "しっぽを振りすぎて転ぶモコ。胸をおさえる主人公とノンノ",
@@ -1014,7 +1096,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Dynamic tilted shot of the dinosaur caught mid-tumble with its tail whipping, the child and the tortoise in the foreground holding hands to their chests."
     },
     {
      "label": "パタ・三きょうだい・ゴツじい・ノンノが勢ぞろいし、にぎやかに行進する",
@@ -1026,7 +1109,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "High bird's-eye view of the cheerful parade winding through the spring forest, every friend small and lively in a long curving line."
     },
     {
      "label": "寄り道して花をつむ主人公とまねするモコ。谷のほうを見つめるモコの横顔",
@@ -1038,7 +1122,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Medium three-quarter view from slightly above, the child picking flowers in the foreground while the dinosaur's profile turns away toward the far valley."
     },
     {
      "label": "大きな川の向こうに首長竜の群れ。首を伸ばして呼ぶモコ",
@@ -1050,7 +1135,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Over-the-shoulder view from behind the child and the dinosaur at the riverbank, the dinosaur's stretched neck leading the eye across the wide river to the distant herd."
     },
     {
      "label": "背を向けかける主人公。群れを見つめたまま目をうるませるモコ",
@@ -1062,7 +1148,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Medium close shot with the dinosaur's teary profile big in the foreground gazing across the water, the child small in the frame starting to turn away."
     },
     {
      "label": "モコの首に抱きついて泣く主人公。ポケットのうろこが鳴る",
@@ -1074,7 +1161,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Close-up on the child hugging the dinosaur's long neck and crying, the glowing scales in the pocket lighting their faces from below."
     },
     {
      "label": "川辺の一番高い岩の上で、モコと一緒に叫ぶ主人公。後ろで声をそろえる仲間たち",
@@ -1086,7 +1174,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Dramatic low angle from the riverbank looking up at the highest rock, the child and the dinosaur shouting to the sky with hair and grass streaming in the wind, the friends calling beside them."
     },
     {
      "label": "【見開き】川の上に長い首を伸ばし、モコにほおを寄せる母くびながりゅう。谷いっぱいの虹と喜ぶ仲間たち",
@@ -1098,7 +1187,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Grand wide low-angle view from river level, the mama's enormous neck stretching across the water to touch the dinosaur's cheek under a rainbow arching over the whole valley, the child and friends cheering."
     },
     {
      "label": "母の首を渡りかけて振り返るモコ。虹色の5枚目のうろこを受け取り、笑って手を振る主人公",
@@ -1110,7 +1200,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Medium three-quarter view with the dinosaur stepping onto the mama's neck and turning its head toward the child, the rainbow scale drifting down into the child's raised hand as the child smiles and waves."
     },
     {
      "label": "【パパ】夕暮れ、パパに肩車されてうろこを鳴らす主人公。空色のたまごを抱えて落ちてくるパタ",
@@ -1134,7 +1225,8 @@
        ],
        "withMom": true,
        "withDad": true,
-       "withSidekick": false
+       "withSidekick": false,
+       "camera": "Dynamic low-angle shot from the dusk road, the father with the child on his shoulders holding up the chiming scales, the mother smiling beside them, the pteranodon tumbling down the sky on a steep diagonal clutching a sky-blue egg."
       },
       "mom": {
        "label": "夕暮れ、ママに抱きしめられてうろこを鳴らす主人公（肩車はしない）。空色のたまごを抱えて落ちてくるパタ",
@@ -1146,7 +1238,8 @@
        ],
        "withMom": true,
        "withDad": false,
-       "withSidekick": false
+       "withSidekick": false,
+       "camera": "Dynamic low-angle shot from the dusk road, the mother hugging the child as the child holds up the chiming scales, the pteranodon tumbling down the sky on a steep diagonal clutching a sky-blue egg."
       },
       "none": {
        "label": "夕暮れ、ゴツじいの背に乗ってうろこを鳴らす主人公。空色のたまごを抱えて落ちてくるパタ",
@@ -1158,9 +1251,11 @@
        ],
        "withMom": false,
        "withDad": false,
-       "withSidekick": false
+       "withSidekick": false,
+       "camera": "Dynamic low-angle shot from the dusk road, the child riding the spiky back of the old ankylosaurus holding up the chiming scales, the pteranodon tumbling down the sky on a steep diagonal clutching a sky-blue egg."
       }
-     }
+     },
+     "camera": "Dynamic low-angle shot from the dusk road, the father with the child on his shoulders holding up the chiming scales, the pteranodon tumbling down the sky on a steep diagonal clutching a sky-blue egg."
     }
    ]
   }

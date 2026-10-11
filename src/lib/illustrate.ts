@@ -23,6 +23,26 @@ const SQUARE_FRAMING =
   "fits inside the picture with a little ground visible below their feet; never crop, fade out or hide any part of their bodies at the edges. " +
   "Do not leave an empty or blank band anywhere. Do not draw any letters, words or text in the image.";
 
+// 台本のシリーズの絵は、場面ごとにカメラの位置（後ろから・下からあおる・上から・動きのある横からなど）を決めてある。
+// 正面向きの似た絵ばかりにならないように（2026-10-11 作道さんの要望）。寄りの場面では全身を入れなくてよい。
+function cameraPrompt(camera?: string) {
+  if (!camera) return "";
+  return [
+    `Camera and composition: ${camera}`,
+    "Make it a dynamic, cinematic picture-book illustration with a strong sense of movement and depth: the characters act, move and look at each other or at what is happening, never stiffly posing toward the viewer.",
+    /close-up|close up/i.test(camera) ? "Because this is a close-up, it is fine to crop the characters' bodies at the frame edges; keep faces and hands fully inside the picture." : "",
+  ]
+    .filter(Boolean)
+    .join(" ");
+}
+
+/** 寄り（クローズアップ）のときは「全身を入れる」構図の指示を外す */
+function framing(camera?: string) {
+  return camera && /close-up|close up/i.test(camera)
+    ? "Square composition that fills the whole frame with the scene, edge to edge. Do not leave an empty or blank band anywhere. Do not draw any letters, words or text in the image."
+    : SQUARE_FRAMING;
+}
+
 /** 印刷用の本文の絵の大きさ（1辺のpx）。OPENAI_FINAL_SIZE（例 2048x2048）で変えられる */
 const FINAL_PX = Number((process.env.OPENAI_FINAL_SIZE ?? "2048x2048").split("x")[0]) || 2048;
 
@@ -106,7 +126,7 @@ export function buildPrompt(taste: TasteId, story: string, sceneIndex: number, r
   const t = getTaste(taste)!;
   const isCover = sceneIndex === COVER_SCENE;
   const book = getBook(story)!;
-  const scene: BookScene = isCover ? { text: "", art: book.cover, withSidekick: book.coverWithSidekick } : book.scenes[sceneIndex];
+  const scene: BookScene = isCover ? { text: "", art: book.cover, withSidekick: book.coverWithSidekick, camera: book.coverCamera } : book.scenes[sceneIndex];
   const series = book.series;
   const people = [...new Set(refs.map((r) => r.who))];
   const generic = [
@@ -130,9 +150,10 @@ export function buildPrompt(taste: TasteId, story: string, sceneIndex: number, r
     redoPrompt(redo),
     generic.length ? `${generic.join(" and ")} appear in this scene; draw them as gentle adults without a specific likeness.` : "",
     absent.length ? `Do not include ${absent.join(" or ")} in this scene.` : "",
+    cameraPrompt(scene.camera),
     isCover
       ? "This is the front cover of the picture book: a wide landscape composition with the child large and clearly visible near the center, the scene filling the whole frame. Do not draw any letters, words, title or text in the image."
-      : SQUARE_FRAMING,
+      : framing(scene.camera),
   ]
     .filter(Boolean)
     .join(" ");
@@ -431,9 +452,10 @@ export function buildSeriesPrompt(series: StudioSeries, scene: SeriesScene, opts
     scene.withMom ? "" : "Do not include the mother in this scene.",
     scene.withDad ? "" : "Do not include the father in this scene.",
     "Do not copy the white background or the side-by-side layout of the character sheet.",
+    cameraPrompt(scene.camera),
     opts.cover
       ? "This is the front cover of the picture book: a wide landscape composition with the child large and clearly visible near the center, the scene filling the whole frame. Do not draw any letters, words, title or text in the image."
-      : SQUARE_FRAMING,
+      : framing(scene.camera),
     seriesNote(opts.note),
   ]
     .filter(Boolean)

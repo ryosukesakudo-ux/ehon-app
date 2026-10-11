@@ -14,6 +14,8 @@ export type SeriesScene = {
   withDad?: boolean;
   /** 相棒（森ならりすのポッケ）が出る場面 */
   withSidekick?: boolean;
+  /** カメラの位置・構図（英語） */
+  camera?: string;
 };
 
 /** 絵スタジオで1枚ごとに書ける追加の指示の最大文字数 */

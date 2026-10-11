@@ -11,7 +11,8 @@
    "cover": {
     "label": "森の入口で、ほっぺのふくらんだりす（ポッケ）と並んで、光る種を見つめる主人公。",
     "art": "at the entrance of a sunny spring forest, the child and Pokke the squirrel sit side by side looking in wonder at a small glowing seed resting in the child's hands; tall trees and a winding path into the forest behind them",
-    "withSidekick": true
+    "withSidekick": true,
+    "camera": "Low three-quarter angle from just below the child's eye level, the child and the squirrel leaning toward the glowing seed in the child's hands, the child's face clearly visible and lit by its glow, the forest path curving away into depth."
    },
    "scenes": [
     {
@@ -36,7 +37,8 @@
        ],
        "withMom": true,
        "withDad": true,
-       "withSidekick": false
+       "withSidekick": false,
+       "camera": "Wide high-angle view looking down over the picnic blanket and meadow, the father unpacking the lunch box and the mother's arm pointing toward the deep forest stretching toward the top of the frame."
       },
       "dad": {
        "label": "草原のシートに座る主人公とパパ。奥に深い森",
@@ -48,7 +50,8 @@
        ],
        "withMom": false,
        "withDad": true,
-       "withSidekick": false
+       "withSidekick": false,
+       "camera": "Wide high-angle view looking down over the picnic blanket and meadow, the deep forest stretching toward the top of the frame and the father's arm pointing toward it."
       },
       "none": {
        "label": "草原で蝶を追う主人公。肩に蝶がとまる。奥に深い森",
@@ -60,9 +63,11 @@
        ],
        "withMom": false,
        "withDad": false,
-       "withSidekick": false
+       "withSidekick": false,
+       "camera": "Wide high-angle view looking down over the sunny meadow, the child turning toward the deep forest stretching toward the top of the frame, a butterfly perched on the child's shoulder."
       }
-     }
+     },
+     "camera": "Wide high-angle view looking down over the picnic blanket and meadow, the deep forest stretching toward the top of the frame and the mother's arm pointing toward it."
     },
     {
      "label": "茂みで泣く子りす、のぞきこむ主人公",
@@ -74,7 +79,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Low ground-level shot from inside the bush past the crying squirrel, the child's curious face peering in through the leaves."
     },
     {
      "label": "ポッケのほっぺから光る種。胸をたたく主人公",
@@ -86,7 +92,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Close-up on the squirrel's puffed cheek and the glowing seed, the child's determined face in three-quarter view tapping their chest."
     },
     {
      "label": "小川の飛び石を渡る主人公とポッケ",
@@ -98,7 +105,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Dynamic side view of the child mid-hop between stepping stones, arms flung out, water splashing, tilted diagonal composition."
     },
     {
      "label": "葉っぱのボールで遊ぶうさぎの兄弟が道を指さす",
@@ -110,7 +118,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Medium three-quarter view from slightly above, the child and the squirrel waving toward the rabbit siblings who point down the path."
     },
     {
      "label": "光るきのこの道を跳ねながら進む",
@@ -122,7 +131,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Low tracking side shot of the child skipping mid-stride along the glowing mushroom path, the squirrel bouncing in the air, gentle motion arcs."
     },
     {
      "label": "木の根のトンネルの暗い入口。立ち止まる二人",
@@ -134,7 +144,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Over-the-shoulder view from behind the child and the squirrel, looking into the huge dark tunnel mouth looming over them."
     },
     {
      "label": "振り返る主人公。ポッケのほっぺが内側から光る",
@@ -146,7 +157,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Medium close-up from inside the tunnel looking out, the child turned in profile toward the daylight, the squirrel's glowing cheeks lighting the child's face."
     },
     {
      "label": "種をかかげてトンネルを進む。壁に二人の影",
@@ -158,7 +170,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Low angle from the tunnel floor looking up at the child striding forward with the seed held high, long shadows stretching across the curved root walls."
     },
     {
      "label": "【見開き】巨木が一斉に満開。光が幹を駆け上がり、見上げる二人",
@@ -170,7 +183,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Grand extreme low wide angle from the ground, the giant tree soaring up across the spread, the tiny child and squirrel in the foreground gazing upward in three-quarter view."
     },
     {
      "label": "【パパ】森の入口で主人公を肩車するパパ。胸に葉っぱのバッジ  ママだけを取り込んだらママだけ、パパだけをアップすればパパだけ、2人アップしたら2人登場させてほしい。セリフはパパ優先で、ママだけを取り込んだときだけママに変更。ママだけの場合肩車じゃなくてハグにして。",
@@ -194,7 +208,8 @@
        ],
        "withMom": true,
        "withDad": true,
-       "withSidekick": false
+       "withSidekick": false,
+       "camera": "Medium side view at eye level as the father strides along at golden sunset with the child on his shoulders, the mother clapping beside them, all smiling, the leaf badge glinting."
       },
       "mom": {
        "label": "森の入口でママが主人公をハグ（肩車はしない）。胸に葉っぱのバッジ",
@@ -206,7 +221,8 @@
        ],
        "withMom": true,
        "withDad": false,
-       "withSidekick": false
+       "withSidekick": false,
+       "camera": "Medium side view at eye level at golden sunset as the mother kneels and hugs the child tightly, both smiling, the leaf badge glinting."
       },
       "none": {
        "label": "うさぎの兄弟とポッケが主人公を胴上げ。胸に葉っぱのバッジ",
@@ -218,9 +234,11 @@
        ],
        "withMom": false,
        "withDad": false,
-       "withSidekick": true
+       "withSidekick": true,
+       "camera": "Medium side view at eye level at golden sunset as the rabbit siblings and the squirrel toss the laughing child up into the air, the leaf badge glinting."
       }
-     }
+     },
+     "camera": "Medium side view at eye level as the father strides along at golden sunset with the child on his shoulders, both smiling at each other, the leaf badge glinting."
     },
     {
      "label": "夜の寝室。窓の外で地図を見せるポッケ。枕元にバッジ",
@@ -232,7 +250,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "High angle from the ceiling corner looking down on the cozy bedroom, the child sitting up in bed turned toward the window where the squirrel holds up the map."
     }
    ]
   },
@@ -243,7 +262,8 @@
    "cover": {
     "label": "夜の川辺で、ほたるの光に囲まれて笑う主人公とポッケ。",
     "art": "on a summer night by a forest river, the child and Pokke the squirrel laugh happily, surrounded by countless glowing fireflies whose lights reflect on the water",
-    "withSidekick": true
+    "withSidekick": true,
+    "camera": "Low angle from the riverbank grass, the child and the squirrel laughing toward each other in three-quarter view with the child's face clearly visible, fireflies swirling around them and reflecting in the water."
    },
    "scenes": [
     {
@@ -268,7 +288,8 @@
        ],
        "withMom": true,
        "withDad": true,
-       "withSidekick": false
+       "withSidekick": false,
+       "camera": "Dynamic diagonal side view of the father and the child straining on the tent rope together, the mother at the camp table nearby, the badge on the child's chest sparkling."
       },
       "mom": {
        "label": "ママと二人でテントを張る。主人公の胸のバッジが光る",
@@ -280,7 +301,8 @@
        ],
        "withMom": true,
        "withDad": false,
-       "withSidekick": false
+       "withSidekick": false,
+       "camera": "Dynamic diagonal side view of the mother and the child straining on the tent rope together, the badge on the child's chest sparkling."
       },
       "none": {
        "label": "うさぎの兄弟と葉っぱのテントを立てる主人公。胸のバッジが光る",
@@ -292,9 +314,11 @@
        ],
        "withMom": false,
        "withDad": false,
-       "withSidekick": false
+       "withSidekick": false,
+       "camera": "Dynamic diagonal side view of the child and the rabbit siblings heaving up the big leaf tent together, the badge on the child's chest sparkling."
       }
-     }
+     },
+     "camera": "Dynamic diagonal side view of the father and the child straining on the tent rope together, the badge on the child's chest sparkling."
     },
     {
      "label": "慌てて駆けてくるポッケ。地図の川上に×印",
@@ -306,7 +330,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Low ground-level shot from the grass as the squirrel bursts out of the bush holding up the map, the child turning toward him in the mid-ground."
     },
     {
      "label": "地図を握って走り出す主人公、追いかけるポッケ",
@@ -318,7 +343,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Wide tracking side view of the child running upstream mid-stride with the map clutched, the squirrel scrambling to keep up, motion lines in the grass, tilted composition."
     },
     {
      "label": "細い川。草の葉で光の消えたほたるたち",
@@ -330,7 +356,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Close-up at grass-blade level on the dim tired fireflies, the worried faces of the child and the squirrel leaning in, softly blurred."
     },
     {
      "label": "石と枝の山で塞がれた川。困り顔のビーバーの子ども3匹",
@@ -342,7 +369,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Over-the-shoulder view from behind the child as they arrive, looking at the towering dam of stones and branches with the three worried beaver children beside it."
     },
     {
      "label": "顔を真っ赤にして大きな石を押す主人公",
@@ -354,7 +382,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Low angle close on the child's straining red face and hands pushing the huge stone, strong diagonal of effort, the squirrel's paw reaching in from the frame edge."
     },
     {
      "label": "夕焼けの川で尻もちをつき、涙ぐむ主人公",
@@ -366,7 +395,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": false
+     "withSidekick": false,
+     "camera": "High angle looking down at the child sitting soaked in the shallow river, small amid orange sunset ripples, tears welling."
     },
     {
      "label": "手を差し出すポッケ。後ろに心配そうな仲間たち",
@@ -378,7 +408,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Medium three-quarter side view, the squirrel's paw extended toward the child in the water, the worried friends gathered in the distance."
     },
     {
      "label": "一列に並んで石を手渡しする動物たちと主人公",
@@ -390,7 +421,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Dynamic wide side view along the line of friends passing stones hand to hand, stones mid-air, energetic diagonal rhythm."
     },
     {
      "label": "【見開き】川一面に光るほたる。歓声をあげる仲間たち",
@@ -402,7 +434,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Grand low wide angle from the water's surface, the river of fireflies sweeping toward the horizon, the child and friends cheering with arms raised, faces lit by the glow."
     },
     {
      "label": "【ママ】テントの前でタオルにくるまれる主人公。ほたるの光の道",
@@ -426,7 +459,8 @@
        ],
        "withMom": true,
        "withDad": true,
-       "withSidekick": false
+       "withSidekick": false,
+       "camera": "Close-up of the mother hugging the towel-wrapped child, the child's cheek pressed to her, the father at the small campfire beside them, a trail of firefly lights curving into the night beyond."
       },
       "dad": {
        "label": "テント前でパパがタオルで包む。ほたるの光の道",
@@ -438,7 +472,8 @@
        ],
        "withMom": false,
        "withDad": true,
-       "withSidekick": false
+       "withSidekick": false,
+       "camera": "Close-up of the father hugging the towel-wrapped child, the child's cheek pressed to him, a trail of firefly lights curving into the night beyond."
       },
       "none": {
        "label": "葉っぱのテント前でポッケが小さなタオルで主人公をふく。うさぎの兄弟、ほたるの光の道",
@@ -450,9 +485,11 @@
        ],
        "withMom": false,
        "withDad": false,
-       "withSidekick": true
+       "withSidekick": true,
+       "camera": "Close-up of the squirrel on the log rubbing the soaked child's hair with a tiny towel, the rabbit siblings giggling beside them, a trail of firefly lights curving into the night beyond."
       }
-     }
+     },
+     "camera": "Close-up of the mother hugging the towel-wrapped child, the child's cheek pressed to her, a trail of firefly lights curving into the night beyond."
     },
     {
      "label": "テントの入口で金色のどんぐりを見せるポッケ",
@@ -464,7 +501,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Medium high angle from the tent ceiling looking down at the child in the sleeping bag turning toward the entrance where the squirrel holds up the golden acorn."
     }
    ]
   },
@@ -475,7 +513,8 @@
    "cover": {
     "label": "落ち葉の広場で、星のかんむりをかぶった主人公と小さなねずみのチッチ、肩にポッケ。",
     "art": "in a forest clearing covered with red and yellow fallen leaves, the child wearing a sparkling star crown stands smiling next to Chicchi, a tiny gray mouse also wearing a star crown, with Pokke the squirrel on the child's shoulder",
-    "withSidekick": true
+    "withSidekick": true,
+    "camera": "Dynamic low three-quarter angle, the child and Chicchi mid-twirl in their star crowns with leaves swirling upward, the child's face clearly visible, the squirrel clinging to the child's shoulder."
    },
    "scenes": [
     {
@@ -500,7 +539,8 @@
        ],
        "withMom": true,
        "withDad": true,
-       "withSidekick": false
+       "withSidekick": false,
+       "camera": "Medium three-quarter view from slightly above as the mother kneels reading the tiny acorn letter, the father and the child leaning in to look, leaves drifting down."
       },
       "dad": {
        "label": "紅葉の公園で落ち葉を拾う主人公とパパ。手紙つきのどんぐり",
@@ -512,7 +552,8 @@
        ],
        "withMom": false,
        "withDad": true,
-       "withSidekick": false
+       "withSidekick": false,
+       "camera": "Medium three-quarter view from slightly above as the father kneels reading the tiny acorn letter and the child leans in to look, leaves drifting down."
       },
       "none": {
        "label": "紅葉の公園で、手紙つきのどんぐりを拾う主人公",
@@ -524,9 +565,11 @@
        ],
        "withMom": false,
        "withDad": false,
-       "withSidekick": false
+       "withSidekick": false,
+       "camera": "Medium three-quarter view from slightly above as the child crouches holding up the acorn with its tiny letter, eyes shining, leaves drifting down."
       }
-     }
+     },
+     "camera": "Medium three-quarter view from slightly above as the mother kneels reading the tiny acorn letter and the child leans in to look, leaves drifting down."
     },
     {
      "label": "にぎやかな森の秋祭り。ステージにふくろうの村長と星のかんむり",
@@ -538,7 +581,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Wide high-angle view over the bustling festival clearing, the owl chief on the little stage in the distance, the excited child and squirrel small among the crowd."
     },
     {
      "label": "落ち葉の山に飛びこむ主人公とポッケ。走り出す仲間たち",
@@ -550,7 +594,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Dynamic low-angle shot of the child and the squirrel mid-leap into the leaf pile, leaves exploding upward, friends scattering, tilted diagonal composition."
     },
     {
      "label": "いろいろな形の茶色いどんぐりを並べて首をかしげる",
@@ -562,7 +607,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Top-down close view looking straight down at the rows of brown acorns, the child's puzzled tilted head and the squirrel peeking in at the frame edge."
     },
     {
      "label": "木の根元で土を掘る、鼻が泥だらけの小さなねずみ",
@@ -574,7 +620,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": false
+     "withSidekick": false,
+     "camera": "Low ground-level shot beside the tree roots on the muddy-nosed mouse digging hard, the child watching in the soft-focus distance."
     },
     {
      "label": "穴の奥から金色のどんぐりを取り出す主人公。背を向けて掘るチッチ",
@@ -586,7 +633,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": false
+     "withSidekick": false,
+     "camera": "Close-up on the child's hand emerging from the hole with the shining golden acorn, eyes wide, Chicchi digging in the far corner turned away."
     },
     {
      "label": "どんぐりをポケットに隠す主人公。笑顔のチッチ",
@@ -598,7 +646,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": false
+     "withSidekick": false,
+     "camera": "Medium side view at the child's eye level, the child slipping the acorn into a pocket with a guilty sideways glance at the smiling Chicchi."
     },
     {
      "label": "ステージ前でポケットを握る主人公。後ろで背伸びするチッチ",
@@ -610,7 +659,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": false
+     "withSidekick": false,
+     "camera": "Over-the-shoulder view from behind the child clutching the pocket and facing the festival stage, tiny Chicchi on tiptoe at the edge of the crowd."
     },
     {
      "label": "ステージ上でどんぐりを掲げる主人公、驚くチッチ。静まる広場",
@@ -622,7 +672,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": false
+     "withSidekick": false,
+     "camera": "Low angle from the stage floor looking up at the child raising the golden acorn high while holding Chicchi's hand, the silent crowd below."
     },
     {
      "label": "【見開き】二つに分かれた星のかんむりをかぶる二人。落ち葉の紙吹雪",
@@ -634,7 +685,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Grand sweeping wide view from the middle of the cheering crowd, the crowned child and Chicchi on the stage, the owl chief's wings spread, leaf confetti swirling across the spread."
     },
     {
      "label": "【パパ】パパと一緒に落ち葉の山に飛びこむ主人公",
@@ -658,7 +710,8 @@
        ],
        "withMom": true,
        "withDad": true,
-       "withSidekick": false
+       "withSidekick": false,
+       "camera": "Dynamic side view of the father and the child mid-dive into the leaf pile while the mother showers them with leaves, leaves flying everywhere, strong diagonal motion."
       },
       "mom": {
        "label": "ママと一緒に落ち葉の山に飛びこむ主人公",
@@ -670,7 +723,8 @@
        ],
        "withMom": true,
        "withDad": false,
-       "withSidekick": false
+       "withSidekick": false,
+       "camera": "Dynamic side view of the mother and the child mid-dive into the leaf pile, leaves flying everywhere, strong diagonal motion."
       },
       "none": {
        "label": "チッチと一緒に落ち葉の山に飛びこむ主人公",
@@ -682,9 +736,11 @@
        ],
        "withMom": false,
        "withDad": false,
-       "withSidekick": false
+       "withSidekick": false,
+       "camera": "Dynamic side view of the child and the tiny mouse mid-dive into the leaf pile, leaves flying everywhere, strong diagonal motion."
       }
-     }
+     },
+     "camera": "Dynamic side view of the father and the child mid-dive into the leaf pile, leaves flying everywhere, strong diagonal motion."
     },
     {
      "label": "窓辺であくびをするポッケ、白い小さな羽を手渡す",
@@ -696,7 +752,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Medium three-quarter view inside the bedroom, the child at the window reaching to take the white feather from the yawning squirrel, three badges on the pajamas."
     }
    ]
   },
@@ -707,7 +764,8 @@
    "cover": {
     "label": "雪の夜の森で、コートからふくろうの赤ちゃんが顔を出し、胸の3枚のバッジが光る主人公。",
     "art": "in a snowy forest at night, a round fluffy baby owl peeks out from the front of the child's coat, and three leaf badges on the child's chest glow softly; Pokke sits on the child's shoulder",
-    "withSidekick": true
+    "withSidekick": true,
+    "camera": "Low three-quarter angle in falling snow, the child's face clearly visible looking down at the baby owl peeking from the coat, the badges glowing, the squirrel on the shoulder, dark pines rising overhead."
    },
    "scenes": [
     {
@@ -732,7 +790,8 @@
        ],
        "withMom": true,
        "withDad": true,
-       "withSidekick": false
+       "withSidekick": false,
+       "camera": "Extreme low angle from the child's height looking up past the pouting child in profile, the mother tugging on the child's mittens and the tall father lifting the snowman's head high."
       },
       "mom": {
        "label": "ママが雪だるまの頭をのせる。口をとがらせて見上げる主人公",
@@ -744,7 +803,8 @@
        ],
        "withMom": true,
        "withDad": false,
-       "withSidekick": false
+       "withSidekick": false,
+       "camera": "Extreme low angle from the child's height looking up past the pouting child in profile at the mother lifting the snowman's head high."
       },
       "none": {
        "label": "庭で、雪だるまの頭を持ち上げようと背伸びする主人公。枝から雪が落ちる",
@@ -756,9 +816,11 @@
        ],
        "withMom": false,
        "withDad": false,
-       "withSidekick": false
+       "withSidekick": false,
+       "camera": "Extreme low angle from the child's height looking up past the pouting child on tiptoe straining to lift the snowball head onto the towering snowman, snow sliding off a branch above."
       }
-     }
+     },
+     "camera": "Extreme low angle from the child's height looking up past the pouting child in profile at the tall father lifting the snowman's head high."
     },
     {
      "label": "夜の寝室で光りだす白い羽。コートを羽織る主人公",
@@ -770,7 +832,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": false
+     "withSidekick": false,
+     "camera": "Medium side view of the child in the dark bedroom mid-motion swinging on the coat, the blinking feather lighting the room."
     },
     {
      "label": "雪の中で震えるまん丸のふくろうの赤ちゃん。木の穴から寝ぐせのポッケ",
@@ -782,7 +845,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "High angle looking down on the tiny shivering owl in the snow and the crouching child's worried face, the sleepy squirrel peering from a tree hole."
     },
     {
      "label": "コートの胸元から赤ちゃんが顔を出す。肩にポッケ",
@@ -794,7 +858,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Medium tracking shot at eye level of the child walking through the snowy forest in three-quarter view, smiling down at the owl in the coat, the squirrel riding on the shoulder."
     },
     {
      "label": "雪に埋もれた巣穴から顔を出すうさぎの兄弟",
@@ -806,7 +871,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Low ground-level view from beside the snowy burrow, the rabbit siblings' heads popping up and pointing, the child and the squirrel leaning toward them."
     },
     {
      "label": "吹雪で真っ白な森。消えていく足あと。立ちすくむ主人公",
@@ -818,7 +884,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Wide view from behind the child standing frozen in the white blizzard, footprints vanishing, nothing but swirling snow ahead."
     },
     {
      "label": "吹雪の中でコートごしに赤ちゃんを抱きしめる主人公",
@@ -830,7 +897,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Medium shot from slightly above, the child hunched against the howling wind hugging the coat, eyes squeezed shut, snow streaking diagonally across the frame."
     },
     {
      "label": "胸の3枚の葉っぱバッジがそれぞれの色（桃・緑・金）で光る",
@@ -842,7 +910,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Tight close-up on the child's chest and chin as the three badges glow pink, green and gold, the colored light reflecting on the child's face."
     },
     {
      "label": "雪の上に光の粒が一列にともり、吹雪の中に道ができる",
@@ -854,7 +923,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Dynamic low angle at snow level as the child takes a bold step forward and grains of light burst into a glowing path stretching ahead, wind streaks in motion."
     },
     {
      "label": "【見開き】巨大な松の木、翼を広げて舗い降りる母ふくろう。晴れた星空",
@@ -866,7 +936,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Grand wide low angle beneath the huge pine, the mother owl swooping down with wings spread across the starry sky, the baby owl leaping from the child's coat toward her."
     },
     {
      "label": "【ママ】毛布にくるまれてココアを飲む主人公とママ。窓の外は雪",
@@ -890,7 +961,8 @@
        ],
        "withMom": true,
        "withDad": true,
-       "withSidekick": false
+       "withSidekick": false,
+       "camera": "Cozy close-up of the blanket-wrapped child snuggled beside the mother, the father leaning in with a mug of cocoa, snowflakes falling past the window."
       },
       "dad": {
        "label": "毛布にくるまれてココアを飲む主人公とパパ。窓の外は雪",
@@ -902,7 +974,8 @@
        ],
        "withMom": false,
        "withDad": true,
-       "withSidekick": false
+       "withSidekick": false,
+       "camera": "Cozy close-up of the child and the father side by side sipping cocoa, the child looking up at him, snowflakes falling past the window."
       },
       "none": {
        "label": "毛布にもぐる主人公の胸の上で丸くなるポッケ。窓の外は雪",
@@ -914,9 +987,11 @@
        ],
        "withMom": false,
        "withDad": false,
-       "withSidekick": true
+       "withSidekick": true,
+       "camera": "Cozy close-up of the child burrowed under the blanket smiling down at the squirrel curled on their chest, snowflakes falling past the window."
       }
-     }
+     },
+     "camera": "Cozy close-up of the child and the mother side by side sipping cocoa, the child looking up at her, snowflakes falling past the window."
     },
     {
      "label": "窓の外の枝に母ふくろう。枕元に4枚目の雪の結晶模様のバッジ",
@@ -928,7 +1003,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": false
+     "withSidekick": false,
+     "camera": "High angle from outside the snowy window looking down into the bedroom, the mother owl on the branch in the foreground, the child in bed turned toward her, the silver snowflake badge glowing."
     }
    ]
   },
@@ -939,7 +1015,8 @@
    "cover": {
     "label": "満開のおじいの木の下、これまでの仲間全員に囲まれた主人公とポッケ。",
     "art": "under a giant ancient tree in full bloom with pink, green, gold and silver leaves, the child and Pokke the squirrel stand happily surrounded by all their forest friends: two rabbit siblings, three beaver children, a tiny gray mouse, an owl chief and an owl mother with her baby",
-    "withSidekick": true
+    "withSidekick": true,
+    "camera": "Low wide three-quarter angle beneath the giant blooming tree, the child and the squirrel laughing at the center with the child's face clearly visible, all the friends gathered around, multicolored leaves drifting."
    },
    "scenes": [
     {
@@ -964,7 +1041,8 @@
        ],
        "withMom": true,
        "withDad": true,
-       "withSidekick": false
+       "withSidekick": false,
+       "camera": "Wide high-angle view over the picnic meadow mirroring the first spring, the child's long shadow stretching across the grass as the mother points at it and the father nods."
       },
       "dad": {
        "label": "第1話と同じ構図の草原。少し背が伸びた主人公とパパ、胸に4枚のバッジ",
@@ -976,7 +1054,8 @@
        ],
        "withMom": false,
        "withDad": true,
-       "withSidekick": false
+       "withSidekick": false,
+       "camera": "Wide high-angle view over the picnic meadow mirroring the first spring, the child's long shadow stretching across the grass as the father points at it."
       },
       "none": {
        "label": "第1話と同じ構図の草原。少し背が伸びた主人公と蝶、胸に4枚のバッジ",
@@ -988,9 +1067,11 @@
        ],
        "withMom": false,
        "withDad": false,
-       "withSidekick": false
+       "withSidekick": false,
+       "camera": "Wide high-angle view over the meadow mirroring the first spring, the child looking down at their long shadow stretching across the grass, a butterfly fluttering around them."
       }
-     }
+     },
+     "camera": "Wide high-angle view over the picnic meadow mirroring the first spring, the child's long shadow stretching across the grass as the mother points at it."
     },
     {
      "label": "草むらから飛び出す、少しふっくらしたポッケ",
@@ -1002,7 +1083,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Dynamic low ground-level shot of the plump squirrel leaping out of the grass mid-air toward the child, tilted diagonal composition."
     },
     {
      "label": "空っぽのポケットを裏返して困る主人公",
@@ -1014,7 +1096,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Close-up on the child's troubled face and empty turned-out pockets, the squirrel peeking in at the frame edge."
     },
     {
      "label": "第1話のトンネルを笑顔で歩く二人。出口で手を振るうさぎの兄弟",
@@ -1026,7 +1109,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Medium shot from inside the root tunnel toward the bright exit, the child and the squirrel walking along smiling at each other, the rabbits waving in the light beyond."
     },
     {
      "label": "大きな木の周りに第2〜4話の仲間が贈り物を並べる。後ろでもじもじする主人公",
@@ -1038,7 +1122,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Over-the-shoulder view from behind the shy child at the edge of the group, looking past them at the friends lining up presents around the giant tree."
     },
     {
      "label": "花も葉もない寂しげな大きな木。見上げる動物たち",
@@ -1050,7 +1135,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Extreme low angle from the roots up the bare towering trunk and empty branches, the quiet animals and the child tiny below looking up."
     },
     {
      "label": "大きな木の幹にうっすら優しい顔。耳をすます主人公",
@@ -1062,7 +1148,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Close-up profile of the child's ear and hand pressed to the bark, the gentle old face faintly glowing in the trunk beside them."
     },
     {
      "label": "胸の4枚のバッジに手を当てる主人公。各葉に各話の思い出が小さく映る",
@@ -1074,7 +1161,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Medium shot from slightly above, the child looking down at the hand over the four glowing badges, tiny memories shimmering inside each leaf."
     },
     {
      "label": "根元に4枚のバッジをそっと置く主人公。見守る仲間たち",
@@ -1086,7 +1174,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "High angle looking down at the roots as the child kneels laying the badges, the friends gathered in a warm circle around."
     },
     {
      "label": "【見開き】四季の色（桃・緑・金・銀）が一度に咲く大きな木。第1話の満開場面と対になる構図",
@@ -1098,7 +1187,8 @@
      ],
      "withMom": false,
      "withDad": false,
-     "withSidekick": true
+     "withSidekick": true,
+     "camera": "Grand extreme low wide angle from the base of the tree, light racing up the trunk into four-season blossoms across the spread, the small child, squirrel and friends cheering upward."
     },
     {
      "label": "【ママ・パパ】満開の木の下で家族と仲間がたんじょうび会。主人公の手に名前入りの葉",
@@ -1122,7 +1212,8 @@
        ],
        "withMom": true,
        "withDad": false,
-       "withSidekick": true
+       "withSidekick": true,
+       "camera": "Dynamic medium three-quarter view at the party, the child reaching up mid-jump to catch the floating glowing leaf, the mother with her lunch box and the forest friends laughing around them."
       },
       "dad": {
        "label": "満開の木の下でパパと仲間がたんじょう日会。主人公の手に名前入りの葉",
@@ -1134,7 +1225,8 @@
        ],
        "withMom": false,
        "withDad": true,
-       "withSidekick": true
+       "withSidekick": true,
+       "camera": "Dynamic medium three-quarter view at the party, the child reaching up mid-jump to catch the floating glowing leaf, the father with his lunch box and the forest friends laughing around them."
       },
       "none": {
        "label": "満開の木の下で仲間たちとたんじょう日会。主人公の手に名前入りの葉",
@@ -1146,9 +1238,11 @@
        ],
        "withMom": false,
        "withDad": false,
-       "withSidekick": true
+       "withSidekick": true,
+       "camera": "Dynamic medium three-quarter view at the party, the child reaching up mid-jump to catch the floating glowing leaf, the squirrel and the forest friends laughing around them."
       }
-     }
+     },
+     "camera": "Dynamic medium three-quarter view at the party, the child reaching up mid-jump to catch the floating glowing leaf, family and friends laughing around them."
     },
     {
      "label": "【パパ】夕暮れ、パパに肩車された主人公と肩のポッケ。森の向こうに光る海",
@@ -1172,7 +1266,8 @@
        ],
        "withMom": true,
        "withDad": true,
-       "withSidekick": true
+       "withSidekick": true,
+       "camera": "Wide three-quarter view from behind the father on the sunset hill, the child's smiling profile visible on his shoulders with the squirrel, the mother walking alongside, the sparkling sea on the far horizon."
       },
       "mom": {
        "label": "夕暮れの丘の上でママが主人公をハグ（肩車はしない）。肩にポッケ、森の向こうに光る海",
@@ -1184,7 +1279,8 @@
        ],
        "withMom": true,
        "withDad": false,
-       "withSidekick": true
+       "withSidekick": true,
+       "camera": "Wide three-quarter view from behind the mother on the sunset hilltop, the child's smiling profile visible in her hug with the squirrel on the child's shoulder, the sparkling sea on the far horizon."
       },
       "none": {
        "label": "夕暮れ、丘の上の大きな石に立つ主人公と肩のポッケ。森の向こうに光る海",
@@ -1196,9 +1292,11 @@
        ],
        "withMom": false,
        "withDad": false,
-       "withSidekick": true
+       "withSidekick": true,
+       "camera": "Wide three-quarter view from behind the child standing on the big rock on the sunset hill, the child's smiling profile visible with the squirrel on their shoulder, the sparkling sea on the far horizon."
       }
-     }
+     },
+     "camera": "Wide three-quarter view from behind the father on the sunset hill, the child's smiling profile visible on his shoulders with the squirrel, the sparkling sea on the far horizon."
     }
    ]
   }
