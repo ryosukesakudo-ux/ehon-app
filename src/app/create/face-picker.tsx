@@ -16,11 +16,14 @@ export function FacePicker({
   title,
   onDone,
   onCancel,
+  onError,
 }: {
   file: File;
   title: string;
   onDone: (cropped: File) => void;
   onCancel: () => void;
+  /** 写真をブラウザで表示できなかったとき（このままだと枠が出ず、先へ進めない） */
+  onError: () => void;
 }) {
   const url = useMemo(() => URL.createObjectURL(file), [file]);
   useEffect(() => () => URL.revokeObjectURL(url), [url]);
@@ -99,9 +102,9 @@ export function FacePicker({
       const blob = await new Promise<Blob | null>((r) => canvas.toBlob(r, "image/jpeg", 0.9));
       if (!blob) throw new Error("crop failed");
       onDone(new File([blob], "photo.jpg", { type: "image/jpeg" }));
-    } catch {
-      alert("写真を読み込めませんでした。別の写真をお試しください");
-      setBusy(false);
+    } catch (e) {
+      console.error("face crop failed", e);
+      onError();
     }
   }
 
@@ -114,7 +117,7 @@ export function FacePicker({
         </p>
         <div className="face-picker-stage" onPointerDown={tap}>
           {/* eslint-disable-next-line @next/next/no-img-element -- 選んだ写真のその場プレビュー */}
-          <img ref={imgRef} src={url} alt="選んだ写真" onLoad={onLoad} draggable={false} />
+          <img ref={imgRef} src={url} alt="選んだ写真" onLoad={onLoad} onError={onError} draggable={false} />
           {box && (
             <div
               className="face-picker-box"

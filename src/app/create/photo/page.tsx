@@ -5,13 +5,15 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { MEMBER_MONTHLY_PREVIEWS, RETENTION, getTaste, type Person } from "@/lib/catalog";
 import { shrinkPhoto } from "@/lib/shrink-photo";
+import { toViewablePhoto } from "@/lib/heic-photo";
 import { Lottie } from "@/components/lottie";
 import { useFlow } from "../flow";
 import { FacePicker } from "../face-picker";
 import { loginHref, useAccount } from "../account";
 import { NextButton, StepHeader, StepTitle } from "../step";
 
-const ACCEPT = "image/jpeg,image/png,image/webp";
+// HEIC（iPhoneの写真）も選べるようにして、選んだあと JPEG に変換する
+const ACCEPT = "image/jpeg,image/png,image/webp,image/heic,image/heif,.heic,.heif";
 
 type Saved = { id: string; url: string };
 type SavedCharacter = Saved & { person: Person; taste: string; childName: string | null };
@@ -48,6 +50,21 @@ function PhotoSlot({
   const url = fileUrl ?? saved.find((p) => p.id === savedId)?.url ?? characters.find((c) => c.id === characterId)?.url ?? null;
   // 選んだばかりの写真（顔を囲んで選ぶ前）
   const [picking, setPicking] = useState<File | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [loadError, setLoadError] = useState<string | null>(null);
+
+  async function pick(f: File) {
+    setLoadError(null);
+    setLoading(true);
+    try {
+      setPicking(await toViewablePhoto(f));
+    } catch (e) {
+      console.error("photo convert failed", e);
+      setLoadError("この写真は読み込めませんでした。別の写真（JPEG・PNG）をお試しください");
+    } finally {
+      setLoading(false);
+    }
+  }
 
   return (
     <div className="card">
@@ -75,7 +92,7 @@ function PhotoSlot({
               <path d="M4 8h3l2-3h6l2 3h3v11H4z" />
               <circle cx="12" cy="13" r="3.5" />
             </svg>
-            <span>写真をアップロード</span>
+            <span>{loading ? "写真を読み込んでいます…" : "写真をアップロード"}</span>
           </>
         )}
       </label>
@@ -86,7 +103,7 @@ function PhotoSlot({
         style={{ position: "absolute", width: 1, height: 1, opacity: 0 }}
         onChange={(e) => {
           const f = e.target.files?.[0];
-          if (f) setPicking(f);
+          if (f) pick(f);
           e.target.value = "";
         }}
       />
@@ -99,8 +116,13 @@ function PhotoSlot({
             onChange(cropped);
           }}
           onCancel={() => setPicking(null)}
+          onError={() => {
+            setPicking(null);
+            setLoadError("この写真は読み込めませんでした。別の写真（JPEG・PNG）をお試しください");
+          }}
         />
       )}
+      {loadError && <p className="error" role="alert" style={{ margin: 0 }}>{loadError}</p>}
       <div style={{ fontSize: 12, lineHeight: 1.6, color: "var(--sub)" }}>{note}</div>
       {saved.length > 0 && (
         <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
