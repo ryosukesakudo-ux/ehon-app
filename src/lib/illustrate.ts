@@ -56,11 +56,13 @@ const SERIES_CAST_RULES =
   "Everyone stands, sits or kneels on top of the ground; never draw a body sunk into the ground or a hole.";
 
 // 絵は1ページずつ別々に描くので、決めていないことはページごとに変わってしまう（服の色、バッジの数、仲間の見た目など。
-// 2026-10-11 作道さん「この話に限らず統一感をもたせるプロンプトに」）。すべての絵本の全ページに付ける共通の決まり。
+// 2026-10-11 作道さん「この話に限らず統一感をもたせるプロンプトに」。後ろ姿の背中にバッジが描かれたので、前に付ける物の位置も決める）。すべての絵本の全ページに付ける共通の決まり。
 const BOOK_CONSISTENCY =
   "This picture is one page of a picture book, and every page must match the others exactly. Keep each recurring character identical on every page: " +
   "the same face, hairstyle, hair color, hair accessories and glasses, the same body proportions and height relative to the others, " +
   "the same clothes with the same colors, shapes and details, and the same accessories (badges, bags, hats) in the same number, colors and position. " +
+  "Things worn or carried on the front of the body (badges, pins, front pockets, prints on a shirt) always stay in the same place on the front, with left and right meaning the character's own left and right: " +
+  "never move them to the back, shoulders, sleeves or hat, and when a character is seen from behind they are hidden and must not be drawn. " +
   "Keep recurring animals, objects and places the same shape, colors and size relative to the child. " +
   "Do not add accessories, logos, patterns or items to anyone's clothes beyond what is described.";
 
