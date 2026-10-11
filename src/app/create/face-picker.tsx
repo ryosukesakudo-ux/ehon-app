@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState, type PointerEvent as ReactPointerEvent } from "react";
+import type { Face } from "@/lib/face";
 
 // 写真に何人か写っているとき、登場させたい人の顔を四角で囲んで選ぶ画面。
 // 囲んだ範囲より少し広め（髪型や服が入るくらい）を切り出して、AIに渡す写真にする。
@@ -20,7 +21,8 @@ export function FacePicker({
 }: {
   file: File;
   title: string;
-  onDone: (cropped: File) => void;
+  /** face：切り出した写真のどこを囲んだか（写真全体を使うときは null） */
+  onDone: (cropped: File, face: Face | null) => void;
   onCancel: () => void;
   /** 写真をブラウザで表示できなかったとき（このままだと枠が出ず、先へ進めない） */
   onError: () => void;
@@ -84,6 +86,7 @@ export function FacePicker({
       const bitmap = await createImageBitmap(file);
       const k = bitmap.width / view.w; // 表示ピクセル → 元の写真のピクセル
       let sx = 0, sy = 0, sw = bitmap.width, sh = bitmap.height;
+      let face: Face | null = null;
       if (!whole) {
         const side = Math.min(box.size * MARGIN * k, bitmap.width, bitmap.height);
         const cx = (box.x + box.size / 2) * k;
@@ -92,6 +95,14 @@ export function FacePicker({
         sw = sh = side;
         sx = Math.min(Math.max(0, cx - side / 2), bitmap.width - side);
         sy = Math.min(Math.max(0, cy - side / 2), bitmap.height - side);
+        face = {
+          x: Math.max(0, (box.x * k - sx) / side),
+          y: Math.max(0, (box.y * k - sy) / side),
+          w: Math.min(1, (box.size * k) / side),
+          h: Math.min(1, (box.size * k) / side),
+        };
+        face.w = Math.min(face.w, 1 - face.x);
+        face.h = Math.min(face.h, 1 - face.y);
       }
       const scale = Math.min(1, MAX_EDGE / Math.max(sw, sh));
       const canvas = document.createElement("canvas");
@@ -101,7 +112,7 @@ export function FacePicker({
       bitmap.close();
       const blob = await new Promise<Blob | null>((r) => canvas.toBlob(r, "image/jpeg", 0.9));
       if (!blob) throw new Error("crop failed");
-      onDone(new File([blob], "photo.jpg", { type: "image/jpeg" }));
+      onDone(new File([blob], "photo.jpg", { type: "image/jpeg" }), face);
     } catch (e) {
       console.error("face crop failed", e);
       onError();
