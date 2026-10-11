@@ -2,7 +2,7 @@ import "server-only";
 import type { StoryId } from "./catalog";
 import { SERIES_DATA } from "./series-data";
 import { SERIES_PAGES, seriesImagePath, type SeriesScene } from "./series";
-import { SERIES_LIST, type SeriesId } from "./story-key";
+import { SERIES_LIST, openEpisodes, type SeriesId } from "./story-key";
 import { SAMPLE_BUCKET, getSupabase } from "./services";
 
 // 絵スタジオで描く見本の場面。見本の家族はママもパパもいるので、両方の写真がある形（alt.both）があればそちらを使う。
@@ -30,7 +30,7 @@ export function getStudioSeries(id: string): StudioSeries | null {
     familyStory: FAMILY_STORY[data.id] ?? null,
     sidekick: data.sidekick,
     sidekickLabel: data.sidekickLabel,
-    episodes: data.episodes.map((ep) => ({
+    episodes: openEpisodes(data.episodes).map((ep) => ({
       no: ep.no,
       title: ep.title,
       outfits: ep.outfits ?? undefined,
@@ -48,10 +48,10 @@ export async function readyEpisodes(): Promise<Record<SeriesId, number[]>> {
   const out = Object.fromEntries(SERIES_LIST.map((s) => [s.id, [] as number[]])) as Record<SeriesId, number[]>;
   const db = getSupabase();
   // デモモード（Supabase 未設定）では、すべての話を選べるようにする（画面の確認用）
-  if (!db) return Object.fromEntries(SERIES_LIST.map((s) => [s.id, s.episodes.map((e) => e.no)])) as Record<SeriesId, number[]>;
+  if (!db) return Object.fromEntries(SERIES_LIST.map((s) => [s.id, openEpisodes(s.episodes).map((e) => e.no)])) as Record<SeriesId, number[]>;
   await Promise.all(
     SERIES_LIST.flatMap((s) =>
-      s.episodes.map(async (ep) => {
+      openEpisodes(s.episodes).map(async (ep) => {
         const dir = seriesImagePath(s.id, ep.no, 0).replace(/\/[^/]+$/, "");
         const { data } = await db.storage.from(SAMPLE_BUCKET).list(dir, { limit: 100 });
         const names = new Set((data ?? []).map((f) => f.name));

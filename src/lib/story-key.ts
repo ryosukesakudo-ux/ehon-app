@@ -93,6 +93,14 @@ export const SERIES_LIST: {
   },
 ];
 
+/** お客様と絵スタジオに出す話の数。5話目は 2026-10-11 に一旦取り下げ（台本とデータは残している） */
+export const OPEN_EPISODES = 4;
+
+/** 公開中の話だけ */
+export function openEpisodes<E extends { no: number }>(episodes: E[]) {
+  return episodes.filter((e) => e.no <= OPEN_EPISODES);
+}
+
 export type SeriesKey = { series: SeriesId; episode: number; level: LevelId; combo: Combo | null };
 
 const KEY_RE = /^(forest|star|birthday|sea|dinosaur):([1-5]):([snl])(?::(both|mom|dad|none))?$/;
