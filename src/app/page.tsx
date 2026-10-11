@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import type { CSSProperties, ReactNode } from "react";
 import { Arrow, Sparkle, Star } from "@/components/icons";
-import { ANON_TRIAL_IMAGES, EXTRA_COPY_DISCOUNT, MEMBER_MONTHLY_PREVIEWS, PREVIEW_PACK, SIZES, STORIES, TASTES, sceneText, yen } from "@/lib/catalog";
+import { EXTRA_COPY_DISCOUNT, MEMBER_MONTHLY_PREVIEWS, PREVIEW_PACK, SIZES, STORIES, TASTES, sceneText, yen } from "@/lib/catalog";
 import { SAMPLE_CHILD_NAME, SAMPLE_SCENES, SHOWCASE, SHOWCASE_BOOK, SHOWCASE_PHOTO, samplePublicUrl, sampleUrl } from "@/lib/samples";
 import { SampleImage } from "@/components/sample-image";
 import { Brand, SITE_NAME } from "@/components/brand";
@@ -124,7 +124,7 @@ const GIFTS: { label: string; bg: string; art: ReactNode }[] = [
 ];
 
 const FAQ = [
-  { q: "会員登録は必要ですか？", a: `登録なしでも1回だけ、見本${ANON_TRIAL_IMAGES}枚をお試しできます。作り直しやご注文は、無料会員登録（Google またはメールアドレス）のあとでご利用いただけます。`, color: "#F6C445" },
+  { q: "会員登録は必要ですか？", a: `登録なしでも1回だけ、表紙と登場人物のキャラクターをお試しで作れます。作り直しやご注文は、無料会員登録（Google またはメールアドレス）のあとでご利用いただけます。`, color: "#F6C445" },
   { q: "写真はどう扱われますか？", a: "絵本の制作にだけ使います。マイページからいつでも削除でき、1年使わなければ自動で削除します。", color: "#2F5DA8" },
   { q: "届くまでどのくらいかかりますか？", a: "ご注文から数日後に発送します。", color: "#F08A6C" },
   { q: "気に入らない絵があったら？", a: "見本のページは、ご注文前に絵を作り直せます。", color: "#7CC7A8" },

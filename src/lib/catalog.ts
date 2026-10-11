@@ -178,30 +178,40 @@ export function bookTitle(storyId: StoryId, childName: string) {
   return { lead: `${childName}の`, main: getStory(storyId)?.name ?? "" };
 }
 
-// 注文前のプレビューで作る3枚：表紙、ママが出てくる場面、パパが出てくる場面。
-// ママ（パパ）の写真がないときは、その1枚をママ・パパの出てこない場面からランダムに選ぶ（下書きごとに固定）。
-export const PREVIEW_COUNT = 3;
+export type Person = "child" | "mom" | "dad";
 
-export function previewScenes(storyId: StoryId, opts: { hasMom: boolean; hasDad: boolean; seed: string }) {
-  const scenes = getStory(storyId)?.scenes ?? [];
-  const idx = scenes.map((_, i) => i);
-  const picked: number[] = [COVER_SCENE];
-  let seed = [...opts.seed].reduce((h, c) => (h * 31 + c.charCodeAt(0)) >>> 0, 7);
-  const random = () => {
-    const solo = idx.filter((i) => !scenes[i].withMom && !scenes[i].withDad && !picked.includes(i));
-    seed = (seed * 1103515245 + 12345) >>> 0;
-    return solo[seed % solo.length];
-  };
-  const momOnly = idx.find((i) => scenes[i].withMom && !scenes[i].withDad);
-  const mom = opts.hasMom ? (momOnly ?? idx.find((i) => scenes[i].withMom)) : undefined;
-  picked.push(mom ?? random());
-  const dad = opts.hasDad ? idx.find((i) => scenes[i].withDad && !picked.includes(i)) : undefined;
-  picked.push(dad ?? random());
-  return picked;
+// 注文前のプレビュー：表紙と、写真をもらった人ごとのキャラクター（全身・正面の絵）。
+// 子どもだけなら2枚、ママかパパも入れば3枚、3人なら4枚。キャラクターは本番の絵の見本にもなる。
+// 場面の番号と重ならないよう、キャラクターは 101〜103 で表す。
+export const CHARACTER_SCENES: Record<Person, number> = { child: 101, mom: 102, dad: 103 };
+
+export function characterOf(scene: number): Person | null {
+  return (Object.keys(CHARACTER_SCENES) as Person[]).find((p) => CHARACTER_SCENES[p] === scene) ?? null;
 }
 
-// 会員登録前のお試し：見本の場面を1回ずつ（作り直しなし）。ブラウザごと・IPアドレスごとに1回。
-export const ANON_TRIAL_IMAGES = PREVIEW_COUNT;
+export const PERSON_LABEL: Record<Person, string> = { child: "主人公", mom: "ママ", dad: "パパ" };
+
+export function previewScenes(opts: { hasMom: boolean; hasDad: boolean }) {
+  return [
+    COVER_SCENE,
+    CHARACTER_SCENES.child,
+    ...(opts.hasMom ? [CHARACTER_SCENES.mom] : []),
+    ...(opts.hasDad ? [CHARACTER_SCENES.dad] : []),
+  ];
+}
+
+// 作り直しの指示。選択肢（複数可）と、40字までの一言。どちらも絵1枚分の料金は同じ。
+export const REDO_OPTIONS = [
+  { id: "cute", label: "もっとかわいく", prompt: "Make the characters look cuter and softer: a rounder face, bigger sparkling eyes and a gentle smile." },
+  { id: "likeness", label: "もっと本人に似せて", prompt: "Make each person resemble their reference photo much more closely: face shape, eyes, eyebrows, nose, mouth, hairstyle and hair color." },
+  { id: "smile", label: "表情を明るく", prompt: "Give the characters a brighter, happier expression with a big natural smile." },
+  { id: "hair", label: "髪型を写真に近く", prompt: "Match the hairstyle, hair length, bangs and hair color to the reference photo exactly." },
+  { id: "clothes", label: "服の色を変える", prompt: "Change the outfit colors to a different, cheerful color scheme while keeping the same kind of clothes." },
+] as const;
+export type RedoOptionId = (typeof REDO_OPTIONS)[number]["id"];
+export const REDO_NOTE_MAX = 40;
+
+// 会員登録前のお試し：表紙とキャラクターを1回ずつ（作り直しなし）。ブラウザごと・IPアドレスごとに1回。
 export const ANON_TRIAL_IP_DAYS = 30;
 
 // 会員が1か月（日本時間の月初リセット）に無料で作れるプレビューの枚数（作り直しを含む）。AI費用の歯止め。
@@ -220,6 +230,7 @@ export const RETENTION = {
   unpaidImageDays: 30,
   /** 支払い済みの注文の絵（支払い日から） */
   paidImageDays: 100,
+  // キャラクター（写真から作った登場人物の絵）は、会員でいる間は保存する（マイページから削除できる）
 };
 
 export function getTaste(id: string) {

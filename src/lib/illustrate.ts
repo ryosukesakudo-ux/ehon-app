@@ -1,10 +1,10 @@
 import "server-only";
 import type { Uploadable } from "openai/uploads";
-import { COVER_SCENE, COVER_SIZE, getStory, getTaste, type Scene, type StoryId, type TasteId } from "./catalog";
+import { COVER_SCENE, COVER_SIZE, REDO_OPTIONS, characterOf, getStory, getTaste, type Person, type RedoOptionId, type Scene, type StoryId, type TasteId } from "./catalog";
 import { getOpenAI } from "./services";
 import { upscalePng } from "./upscale";
 
-export type Person = "child" | "mom" | "dad";
+export type { Person };
 
 // 写真をもとに描くとき、写実的になりすぎないようにする指示（お客様の絵本と、トップの見本で共通）
 const PICTURE_BOOK_CHARACTERS =
@@ -45,12 +45,66 @@ export function ageBody(age: number) {
   return `The child is ${age} year${age === 1 ? "" : "s"} old: draw them as ${build}, at a height that fits that age next to the adults.`;
 }
 
-export function buildPrompt(taste: TasteId, story: StoryId, sceneIndex: number, people: Person[], childAge?: number | null) {
+/** 参考画像：写真か、写真から作ったキャラクターの絵（previous は作り直す前の同じキャラクター） */
+export type RefKind = "photo" | "character" | "previous";
+export type RefImage = { who: Person; kind?: RefKind; file: Uploadable };
+
+/** 作り直しの指示（選択肢と一言） */
+export type Redo = { options: RedoOptionId[]; note: string };
+
+function describeRefs(refs: { who: Person; kind?: RefKind }[]) {
+  return refs
+    .map((r, i) => {
+      const n = `Reference image ${i + 1}`;
+      if (r.kind === "character") {
+        return `${n} is the approved picture-book character design of ${LABEL[r.who]}: keep exactly the same face, hairstyle, hair color and body proportions, and the same outfit unless the scene calls for different clothes.`;
+      }
+      if (r.kind === "previous") return `${n} is the previous version of this drawing of ${LABEL[r.who]}.`;
+      return `${n} is a photo of ${LABEL[r.who]}.`;
+    })
+    .join(" ");
+}
+
+function redoPrompt(redo?: Redo | null) {
+  if (!redo) return "";
+  const opts = redo.options.map((id) => REDO_OPTIONS.find((o) => o.id === id)?.prompt).filter(Boolean);
+  const note = redo.note.trim();
+  return [
+    opts.length || note ? "This is a redo requested by the customer." : "",
+    ...opts,
+    note ? `The customer also wrote this request in Japanese; follow it as long as it fits a gentle children's picture book: 「${note}」` : "",
+  ]
+    .filter(Boolean)
+    .join(" ");
+}
+
+/** キャラクター（1人の全身・正面の絵）を描く指示。プレビューで見せ、本番の絵の参考にする。 */
+export function buildCharacterPrompt(taste: TasteId, who: Person, refs: { who: Person; kind?: RefKind }[], childAge?: number | null, redo?: Redo | null) {
+  const t = getTaste(taste)!;
+  const hasPrevious = refs.some((r) => r.kind === "previous");
+  return [
+    `${t.prompt}.`,
+    describeRefs(refs),
+    STYLE_ONLY_FROM_TEXT,
+    PICTURE_BOOK_CHARACTERS,
+    "Make them look friendly and natural, never caricatured.",
+    who === "child" && childAge ? ageBody(childAge).replace(", at a height that fits that age next to the adults", "") : "",
+    `Character design of ${LABEL[who]} only, for a children's picture book: one person standing alone, full body from head to toes, front view, relaxed natural pose, friendly expression, simple everyday clothes.`,
+    "Plain soft light background with no scenery and no other people or animals. Leave a little space above the head and below the feet.",
+    hasPrevious ? "Keep everything from the previous version except what the requests below ask to change." : "",
+    redoPrompt(redo),
+    "Do not draw any letters, words or text in the image.",
+  ]
+    .filter(Boolean)
+    .join(" ");
+}
+
+export function buildPrompt(taste: TasteId, story: StoryId, sceneIndex: number, refs: { who: Person; kind?: RefKind }[], childAge?: number | null, redo?: Redo | null) {
   const t = getTaste(taste)!;
   const isCover = sceneIndex === COVER_SCENE;
   const s = getStory(story)!;
   const scene: Scene = isCover ? { text: "", art: s.cover } : s.scenes[sceneIndex];
-  const refs = people.map((p, i) => `Reference image ${i + 1} is ${LABEL[p]}.`).join(" ");
+  const people = [...new Set(refs.map((r) => r.who))];
   const generic = [
     scene.withMom && !people.includes("mom") ? "the mother" : null,
     scene.withDad && !people.includes("dad") ? "the father" : null,
@@ -61,12 +115,13 @@ export function buildPrompt(taste: TasteId, story: StoryId, sceneIndex: number, 
   ].filter(Boolean);
   return [
     `${t.prompt}.`,
-    refs,
+    describeRefs(refs),
     STYLE_ONLY_FROM_TEXT,
     PICTURE_BOOK_CHARACTERS,
     "Make them look friendly and natural, never caricatured.",
     childAge ? ageBody(childAge) : "",
     `Scene: ${scene.art}.`,
+    redoPrompt(redo),
     generic.length ? `${generic.join(" and ")} appear in this scene; draw them as gentle adults without a specific likeness.` : "",
     absent.length ? `Do not include ${absent.join(" or ")} in this scene.` : "",
     isCover
@@ -77,14 +132,15 @@ export function buildPrompt(taste: TasteId, story: StoryId, sceneIndex: number, 
     .join(" ");
 }
 
-/** 参考写真から1場面の挿絵を作り、PNG の base64 を返す。 */
+/** 参考写真（とキャラクター）から1場面の挿絵、またはキャラクターの絵を作り、PNG の base64 を返す。 */
 export async function illustrate(opts: {
   taste: TasteId;
   story: StoryId;
   sceneIndex: number;
-  images: { who: Person; file: Uploadable }[];
+  images: RefImage[];
   quality: Quality;
   childAge?: number | null;
+  redo?: Redo | null;
   /** 出力サイズを指定するとき（画質くらべ用）。省略時は品質と場面から決める */
   size?: "1024x1024" | "2048x2048";
 }): Promise<string> {
@@ -93,11 +149,14 @@ export async function illustrate(opts: {
   // 印刷用の本文の絵は、1024px・最高画質で作ってから印刷サイズに拡大する（A方式）。
   // 2048px で直接作るより約6割安く、2026-10-10 の画質くらべで見分けがつかないことを確認済み。
   const isCover = opts.sceneIndex === COVER_SCENE;
-  const upscaleTo = !opts.size && !isCover && opts.quality === "final" ? FINAL_PX : null;
+  const character = characterOf(opts.sceneIndex);
+  const upscaleTo = !opts.size && !isCover && !character && opts.quality === "final" ? FINAL_PX : null;
   const result = await ai.images.edit({
     model: process.env.OPENAI_IMAGE_MODEL ?? "gpt-image-2",
     image: opts.images.map((i) => i.file),
-    prompt: buildPrompt(opts.taste, opts.story, opts.sceneIndex, opts.images.map((i) => i.who), opts.childAge),
+    prompt: character
+      ? buildCharacterPrompt(opts.taste, character, opts.images, opts.childAge, opts.redo)
+      : buildPrompt(opts.taste, opts.story, opts.sceneIndex, opts.images, opts.childAge, opts.redo),
     // 表紙は横長（タイトルは絵の上の帯に置くので、絵に文字の場所はいらない）
     size: opts.size ?? (isCover ? COVER_SIZE : "1024x1024"),
     quality: opts.quality === "final" ? "high" : "medium",
