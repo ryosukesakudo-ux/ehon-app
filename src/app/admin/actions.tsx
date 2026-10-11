@@ -20,7 +20,7 @@ function DetailSelect() {
       画質
       <select value={detail} onChange={(e) => setDetail(e.target.value as Detail)}>
         <option value="medium">中画質（1枚 約15円）</option>
-        <option value="high">高画質（1枚 約30円）</option>
+        <option value="high">高画質（1枚 約50円）</option>
       </select>
     </label>
   );
@@ -109,6 +109,18 @@ export function OrderActions({
       }
     });
 
+  // できている絵も含めて、全ページを1枚ずつ作り直す（服や持ち物の指示を直したあとなど）。途中で止まったら、残りは1ページずつ作り直す
+  const redoAll = () => {
+    const per = detail === "high" ? 50 : 15;
+    if (!confirm(`全${scenes.length}ページの絵を作り直します（AI代 約${scenes.length * per}円）。今の絵は上書きされます。よろしいですか？`)) return;
+    run("redoAll", async () => {
+      for (const [n, i] of scenes.entries()) {
+        setBusy(`redoAll:${n + 1}/${scenes.length}`);
+        await call(`scenes/${i}`, { detail });
+      }
+    });
+  };
+
   // 入稿用PDF（本文・表紙）と見開き表紙画像を作って、ダウンロードのリンクを出す（リンクは1時間有効）
   const makePdf = (size: string) =>
     run(`pdf:${size}`, async () => {
@@ -148,6 +160,11 @@ export function OrderActions({
             制作完了にする
           </button>
         </>
+      )}
+      {(status === "paid" || status === "generated") && doneScenes.length > 0 && (
+        <button type="button" className="ghost" disabled={!!busy} onClick={redoAll}>
+          {busy?.startsWith("redoAll") ? `作り直し中 ${busy.split(":")[1]}` : "全ページ作り直す"}
+        </button>
       )}
       {status === "generated" && (
         <button type="button" className="ghost" disabled={!!busy} onClick={() => run("ship", () => call("ship"))}>
