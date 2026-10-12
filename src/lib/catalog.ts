@@ -208,13 +208,35 @@ export function previewScenes(opts: { hasMom: boolean; hasDad: boolean }) {
 // 作り直しの指示。選択肢（複数可）と、40字までの一言。どちらも絵1枚分の料金は同じ。
 export const REDO_OPTIONS = [
   { id: "cute", label: "もっとかわいく", prompt: "Make the characters look cuter and softer: a rounder face, bigger sparkling eyes and a gentle smile." },
-  { id: "likeness", label: "もっと本人に似せて", prompt: "Make each person resemble their reference photo much more closely: face shape, eyes, eyebrows, nose, mouth, hairstyle and hair color." },
   { id: "smile", label: "表情を明るく", prompt: "Give the characters a brighter, happier expression with a big natural smile." },
   { id: "hair", label: "髪型を写真に近く", prompt: "Match the hairstyle, hair length, bangs and hair color to the reference photo exactly." },
   { id: "clothes", label: "服の色を変える", prompt: "Change the outfit colors to a different, cheerful color scheme while keeping the same kind of clothes." },
 ] as const;
 export type RedoOptionId = (typeof REDO_OPTIONS)[number]["id"];
 export const REDO_NOTE_MAX = 40;
+
+// 本人への似せ方（作り直しのとき3段階から選ぶ）。「ふつう」は指示なし。
+// しっかり・写真そっくりは、前の絵の顔を引き継がず写真から描き直す（前の絵に引っぱられて似ないままになるため）。
+export const LIKENESS_LEVELS = [
+  { id: "normal", label: "ふつう", hint: "いまの絵のタッチのまま", prompt: "" },
+  {
+    id: "strong",
+    label: "しっかり",
+    hint: "顔や髪型を写真に近づける",
+    prompt: "Make each person resemble their reference photo much more closely: face shape, eyes, eyebrows, nose, mouth, hairstyle and hair color. Redraw the face and hair from the photo rather than from the previous version.",
+  },
+  {
+    id: "exact",
+    label: "写真そっくり",
+    hint: "写真の特徴をできるだけ忠実に",
+    prompt:
+      "Likeness to the photo is the top priority: the customer wants each person to look as close as possible to the person in their reference photo. Faithfully reproduce the face shape and proportions, the shape, size and spacing of the eyes, eyelids, eyebrows, nose, mouth and lips, ears, skin tone, hairline, hairstyle, bangs, hair length and hair color, and distinctive features visible in the photo such as glasses, dimples or moles. Only translate them into the picture-book art style; do not idealize, beautify or make the face generic.",
+  },
+] as const;
+export type LikenessId = (typeof LIKENESS_LEVELS)[number]["id"];
+export function isLikenessId(v: unknown): v is LikenessId {
+  return LIKENESS_LEVELS.some((l) => l.id === v);
+}
 
 // 会員登録前のお試し：表紙とキャラクターを1回ずつ（作り直しなし）。ブラウザごと・IPアドレスごとに1回。
 export const ANON_TRIAL_IP_DAYS = 30;

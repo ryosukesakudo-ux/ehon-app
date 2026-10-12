@@ -1,7 +1,7 @@
 import "server-only";
 import { toFile } from "openai";
 import { BOOK_BUCKET, PHOTO_BUCKET, getOpenAI, getSupabase } from "./services";
-import { illustrate, type Detail, type Quality, type Redo, type RefImage } from "./illustrate";
+import { hasRedoRequest, illustrate, type Detail, type Quality, type Redo, type RefImage } from "./illustrate";
 import { CHARACTER_SCENES, COVER_SCENE, PERSON_LABEL, characterOf, getTaste, previewScenes, type Person, type TasteId } from "./catalog";
 import { getBook } from "./book";
 import { currentUser, type Member } from "./auth";
@@ -162,8 +162,9 @@ export async function generateScene(draft: Draft, sceneIndex: number, quality: Q
     if (photo) images.push({ who, kind: "photo", file: await download(PHOTO_BUCKET, photo) });
     if (!character) continue;
     if (!target) images.push({ who, kind: "character", file: await download(BOOK_BUCKET, character) });
-    // キャラクターの作り直し：指示があるとき（写真が無いときも）は、今の絵をもとに直す
-    else if (!photo || (redo && (redo.options.length || redo.note))) {
+    // キャラクターの作り直し：指示があるとき（写真が無いときも）は、今の絵をもとに直す。
+    // 「写真そっくり」は前の絵に引っぱられないよう、写真だけから描き直す
+    else if (!photo || (hasRedoRequest(redo) && redo.likeness !== "exact")) {
       images.push({ who, kind: photo ? "previous" : "character", file: await download(BOOK_BUCKET, character) });
     }
   }

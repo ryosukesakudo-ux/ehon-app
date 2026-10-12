@@ -1,4 +1,5 @@
-import { MEMBER_MONTHLY_PREVIEWS, PREVIEW_PACK, REDO_NOTE_MAX, REDO_OPTIONS, type RedoOptionId } from "@/lib/catalog";
+import { MEMBER_MONTHLY_PREVIEWS, PREVIEW_PACK, REDO_NOTE_MAX, REDO_OPTIONS, isLikenessId, type RedoOptionId } from "@/lib/catalog";
+import { hasRedoRequest, type Redo } from "@/lib/illustrate";
 import { getBook } from "@/lib/book";
 import { draftPreviewScenes, generateScene, isDemoId, loadOwnedDraft } from "@/lib/drafts";
 import { getSupabase } from "@/lib/services";
@@ -7,7 +8,7 @@ export const maxDuration = 120;
 
 // プレビュー用の絵（表紙・キャラクター）を1枚作る（作り直しも同じ）。
 // 会員は月の無料枠＋追加枠まで。登録前のお試しはプレビューの絵を1回ずつ（作り直しなし）。
-// 作り直しでは、選択肢（options）と40字までの一言（note）で、どう直したいかを指示できる。
+// 作り直しでは、選択肢（options）と40字までの一言（note）、本人への似せ方（likeness）で、どう直したいかを指示できる。
 export async function POST(request: Request, ctx: RouteContext<"/api/drafts/[id]/scenes/[scene]">) {
   const { id, scene } = await ctx.params;
   const sceneIndex = Number(scene);
@@ -19,7 +20,10 @@ export async function POST(request: Request, ctx: RouteContext<"/api/drafts/[id]
   if ([...note].length > REDO_NOTE_MAX) {
     return Response.json({ error: `ひとことは${REDO_NOTE_MAX}文字以内で入力してください` }, { status: 400 });
   }
-  const redo = options.length || note ? { options, note } : null;
+  // 似せ方（以前の「もっと本人に似せて」の選択肢は「しっかり」として読む）
+  const likeness = isLikenessId(body?.likeness) ? body.likeness : Array.isArray(body?.options) && body.options.includes("likeness") ? "strong" : "normal";
+  const asked: Redo = { options, note, likeness };
+  const redo = hasRedoRequest(asked) ? asked : null;
   const owned = await loadOwnedDraft(id);
   if (!owned || !getBook(owned.draft.story)) {
     return Response.json({ error: "下書きが見つかりません" }, { status: 404 });
