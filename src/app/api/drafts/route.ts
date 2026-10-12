@@ -7,6 +7,8 @@ import { currentUser } from "@/lib/auth";
 import { ensureAnonId, ipHash } from "@/lib/anon";
 import { PHOTO_BUCKET, getSupabase } from "@/lib/services";
 import { faceFromField, faceToPathTag } from "@/lib/face";
+import { customStoryComplete, parseCustomKey } from "@/lib/custom-story";
+import { storyTextFlagged, verifyStory } from "@/lib/custom-story-server";
 
 const MAX_PHOTO_BYTES = 10 * 1024 * 1024;
 const PHOTO_TYPES: Record<string, string> = { "image/jpeg": "jpg", "image/png": "png", "image/webp": "webp" };
@@ -41,8 +43,14 @@ export async function POST(request: Request) {
   if (!getTaste(taste) || !isStoryKey(story)) return bad("テイストとお話を選んでください");
   // シリーズのお話は、見本の絵がそろった話だけ選べる。1話だけのお話は 2026-10-11 から非表示（新しくは作れない）
   const series = parseSeriesKey(story);
-  if (!series) return bad("このお話は今はお選びいただけません。お話を選び直してください");
-  if (!(await readyEpisodes())[series.series].includes(series.episode)) return bad("このお話はまだ準備中です。ほかのお話を選んでください");
+  // オリジナルのお話は、絵の内容がサーバーで作ったままで、文がそろっていて、ふさわしくない言葉がないこと
+  const custom = parseCustomKey(story);
+  if (custom) {
+    if (!verifyStory(custom)) return bad("お話を読み込めませんでした。お話をもう一度作ってください");
+    if (!customStoryComplete(custom)) return bad("題名と全ページの文を入れてください");
+    if (await storyTextFlagged(custom).catch(() => false)) return bad("絵本にふさわしくない言葉が含まれているようです。文を直してください");
+  } else if (!series) return bad("このお話は今はお選びいただけません。お話を選び直してください");
+  else if (!(await readyEpisodes())[series.series].includes(series.episode)) return bad("このお話はまだ準備中です。ほかのお話を選んでください");
   if (!childName || childName.length > 12) return bad("名前は12文字以内で入力してください");
   if (!CHILD_AGES.includes(childAge)) return bad("お子さまの年齢を選んでください");
   for (const f of [childPhoto, momPhoto, dadPhoto]) {

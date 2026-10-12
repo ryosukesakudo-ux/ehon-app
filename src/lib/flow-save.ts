@@ -44,7 +44,7 @@ export function parseFlowSave(input: unknown): FlowSave | null {
   const path = str(v.path, 40);
   if (!(path in FLOW_STEPS)) return null;
   const taste = str(v.taste, 20);
-  const story = withoutCombo(str(v.story, 30));
+  const story = withoutCombo(str(v.story, 12000));
   const size = str(v.size, 4);
   if (!getTaste(taste) || !isStoryKey(story)) return null;
   const age = Number(v.childAge);

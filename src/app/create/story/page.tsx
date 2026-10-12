@@ -8,6 +8,8 @@ import { samplePublicUrl } from "@/lib/samples";
 import { seriesImagePath } from "@/lib/series";
 import { LEVELS, OPEN_SERIES, SERIES_LIST, isOpenSeries, levelForAge, openEpisodes, parseSeriesKey, seriesKey, type SeriesId } from "@/lib/story-key";
 import { useFlow } from "../flow";
+import { CustomStoryPanel } from "./custom";
+import { customStoryComplete, parseCustomKey } from "@/lib/custom-story";
 import { NextButton, StepHeader, StepTitle } from "../step";
 
 export default function StoryPage() {
@@ -27,7 +29,8 @@ export default function StoryPage() {
       .catch(() => setReady(none));
   }, []);
   const isReady = (id: SeriesId, no: number) => !!ready?.[id]?.includes(no);
-  const storyOk = !!current && isReady(current.series, current.episode);
+  const custom = parseCustomKey(state.story);
+  const storyOk = custom ? customStoryComplete(custom) : !!current && isReady(current.series, current.episode);
   const choose = (story: string) => update({ story, previews: {}, draftId: null });
 
   return (
@@ -116,6 +119,10 @@ export default function StoryPage() {
             </div>
           );
         })}
+
+        <h2 className="display section-label">自分で考えるお話</h2>
+        <p className="section-lead">お子さまの好きなものや、家族の思い出をお話にできます。</p>
+        <CustomStoryPanel />
 
         <div className="field">
           <label htmlFor="childname" className="display">主人公の名前（ひらがな）</label>
