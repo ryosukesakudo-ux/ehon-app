@@ -4,9 +4,10 @@ import type { NextConfig } from "next";
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL ? new URL(process.env.NEXT_PUBLIC_SUPABASE_URL) : null;
 
 const nextConfig: NextConfig = {
-  // 入稿用PDFに埋め込むフォント（サーバーの処理から読み込む）
+  // 入稿用PDF・しまうま用の画像に使うフォント（サーバーの処理から読み込む）
   outputFileTracingIncludes: {
     "/api/admin/orders/*/print": ["./assets/fonts/*.ttf"],
+    "/api/admin/orders/*/shimauma": ["./assets/fonts/*.ttf"],
   },
   images: {
     remotePatterns: supabaseUrl

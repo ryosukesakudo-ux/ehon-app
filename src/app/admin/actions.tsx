@@ -52,6 +52,7 @@ export function OrderActions({
   const [busy, setBusy] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [pdfs, setPdfs] = useState<Record<string, { body: string; cover: string; spread: string }>>({});
+  const [shimauma, setShimauma] = useState<string | null>(null);
   // 製本直送.comの表紙画像の背幅（mm）。表紙アップロード画面の「表紙サイズが不明な方は、こちら」で確認した値を入れる
   const [spineMm, setSpineMm] = useState("2");
   const refundable = amount - refunded;
@@ -135,6 +136,15 @@ export function OrderActions({
       setPdfs((p) => ({ ...p, [size]: json.urls }));
     });
 
+  // しまうまプリント「PICTURES」B5スクエア（182mm角）24ページ用の画像（表紙＋本文23枚）をZIPで作る（リンクは1時間有効）
+  const makeShimauma = () =>
+    run("shimauma", async () => {
+      const res = await fetch(`/api/admin/orders/${orderId}/shimauma`, { method: "POST" });
+      const json = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(json.error ?? `失敗しました (${res.status})`);
+      setShimauma(json.url);
+    });
+
   return (
     <div style={{ display: "flex", flexWrap: "wrap", gap: 8, alignItems: "center" }}>
       {(status === "paid" || status === "generated") && <DetailSelect />}
@@ -194,6 +204,14 @@ export function OrderActions({
             )}
           </span>
         ))}
+      {status !== "pending" && (
+        <span style={{ display: "inline-flex", gap: 8, alignItems: "center" }}>
+          <button type="button" className="ghost" disabled={!!busy} onClick={makeShimauma}>
+            {busy === "shimauma" ? "画像を作成中…" : "しまうま用の画像を作る（PICTURES 182mm角）"}
+          </button>
+          {shimauma && <a href={shimauma}>しまうま用の画像（ZIP）</a>}
+        </span>
+      )}
       {status !== "pending" && refundable > 0 && (
         <span style={{ display: "inline-flex", gap: 6, alignItems: "center" }}>
           返金

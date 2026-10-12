@@ -1,7 +1,8 @@
-import { COVER_SCENE, getSize, sceneText, type SizeId } from "@/lib/catalog";
+import { getSize, sceneText, type SizeId } from "@/lib/catalog";
 import { getBook } from "@/lib/book";
 import { bookTitle } from "@/lib/story-key";
 import { buildCoverSpread } from "@/lib/cover-spread";
+import { loadFinalImages } from "@/lib/print-assets";
 import { buildBookPdfs } from "@/lib/print-pdf";
 import { BOOK_BUCKET, getSupabase } from "@/lib/services";
 import { bookVolume } from "@/lib/volume";
@@ -30,16 +31,9 @@ export async function POST(request: Request, ctx: RouteContext<"/api/admin/order
   const spineMm = Number(body?.spineMm ?? DEFAULT_SPINE_MM);
   if (!Number.isFinite(spineMm) || spineMm < 0 || spineMm > 30) return Response.json({ error: "背幅は0〜30mmで入れてください" }, { status: 400 });
 
-  const { data: coverData } = await db.storage.from(BOOK_BUCKET).download(`${order.draft_id}/final/${COVER_SCENE}.png`);
-  if (!coverData) return Response.json({ error: "表紙の本番の絵がまだありません。先に「全ページの絵を作る」を押してください" }, { status: 400 });
-  const coverImage = Buffer.from(await coverData.arrayBuffer());
-
-  const images: Buffer[] = [];
-  for (let i = 0; i < story.scenes.length; i++) {
-    const { data } = await db.storage.from(BOOK_BUCKET).download(`${order.draft_id}/final/${String(i).padStart(2, "0")}.png`);
-    if (!data) return Response.json({ error: `場面${i + 1}の本番の絵がまだありません。先に「全ページの絵を作る」を押してください` }, { status: 400 });
-    images.push(Buffer.from(await data.arrayBuffer()));
-  }
+  const loaded = await loadFinalImages(db, order.draft_id, story.scenes.length);
+  if ("error" in loaded) return Response.json({ error: loaded.error }, { status: 400 });
+  const { coverImage, images } = loaded;
 
   const volume = await bookVolume(db, order);
 
