@@ -6,7 +6,7 @@ import { Check, Chevron } from "@/components/icons";
 import { SampleImage } from "@/components/sample-image";
 import { samplePublicUrl } from "@/lib/samples";
 import { seriesImagePath } from "@/lib/series";
-import { LEVELS, OPEN_SERIES, SERIES_LIST, SHOWN_SERIES_LIST, isOpenSeries, isProofread, levelForAge, openEpisodes, parseSeriesKey, seriesKey, type SeriesId } from "@/lib/story-key";
+import { LEVELS, OPEN_SERIES, SERIES_LIST, SHOWN_SERIES_LIST, fixedLevelEpisode, isOpenSeries, isProofread, levelForAge, openEpisodes, parseSeriesKey, seriesKey, type SeriesId } from "@/lib/story-key";
 import { useFlow } from "../flow";
 import { CustomStoryPanel } from "./custom";
 import { customStoryComplete, parseCustomKey } from "@/lib/custom-story";
@@ -35,6 +35,8 @@ export default function StoryPage() {
   const custom = parseCustomKey(state.story);
   const storyOk = custom ? customStoryComplete(custom) : !!current && isReady(current.series, current.episode);
   const choose = (story: string) => update({ story, previews: {}, draftId: null });
+  // 数のお勉強のように、文の量が話ごとに決まっている話（文の量は選ばせず、対象年齢を出す）
+  const fixed = current ? fixedLevelEpisode(current.series, current.episode) : null;
 
   return (
     <>
@@ -83,12 +85,13 @@ export default function StoryPage() {
                         className="choice episode-choice"
                         aria-pressed={selected}
                         disabled={!ok}
-                        onClick={() => choose(seriesKey(s.id, ep.no, current?.level ?? levelForAge(state.childAge)))}
+                        onClick={() => choose(seriesKey(s.id, ep.no, ep.level ?? (current && !fixed ? current.level : levelForAge(state.childAge))))}
                       >
                         <Thumb src={ok || comingSoon ? samplePublicUrl(seriesImagePath(s.id, ep.no, 0)) : null} alt={`第${ep.no}話の見本`} size={56} />
                         <div style={{ display: "flex", flexDirection: "column", gap: 4, flexGrow: 1 }}>
                           <div style={{ display: "flex", gap: 6, alignItems: "center", flexWrap: "wrap", fontSize: 12, color: "var(--sub)" }}>
                             <span>第{ep.no}話・{ep.season}</span>
+                            {ep.ages && <span className="tag">{ep.ages}向け</span>}
                             {!ok && <span className="soon">{comingSoon ? "Coming soon" : ready ? "準備中" : "確認中"}</span>}
                           </div>
                           <div className="display" style={{ fontSize: 15, fontWeight: 800, color: "var(--navy)" }}>{ep.title}</div>
@@ -99,7 +102,12 @@ export default function StoryPage() {
                   })}
                 </div>
               )}
-              {current?.series === s.id && (
+              {current?.series === s.id && fixed && (
+                <p style={{ margin: 0, fontSize: 12, lineHeight: 1.6, color: "var(--sub)" }}>
+                  このお話の文は{fixed.ages}向けです（文の量は選べません）。
+                </p>
+              )}
+              {current?.series === s.id && !fixed && (
                 <div className="field">
                   <span className="display" style={{ fontWeight: 800, color: "var(--navy)" }}>文の量</span>
                   <div className="level-row" role="radiogroup" aria-label="文の量">

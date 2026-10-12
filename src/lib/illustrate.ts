@@ -366,7 +366,7 @@ const SAMPLE_CAST: Record<Person, string> = {
 };
 
 // お話ごとの服装（同じお話の中では変えない）
-const SAMPLE_OUTFITS: Record<StoryId | "sea" | "dinosaur", Record<Person, string>> = {
+const SAMPLE_OUTFITS: Record<StoryId | "sea" | "dinosaur" | "number", Record<Person, string>> = {
   forest: {
     child: "a mustard-yellow hooded jacket, navy shorts, white socks, red sneakers and a small green backpack",
     mom: "a light-green cardigan over a white T-shirt, beige wide pants and white sneakers",
@@ -392,6 +392,11 @@ const SAMPLE_OUTFITS: Record<StoryId | "sea" | "dinosaur", Record<Person, string
     child: "an orange T-shirt, olive-green shorts, a khaki explorer hat and brown boots",
     mom: "a mustard-yellow knit top, dark green pants and brown boots",
     dad: "a light-brown safari shirt, navy pants and hiking boots",
+  },
+  number: {
+    child: "a light-green zip-up hoodie, a white T-shirt, beige pants and yellow sneakers",
+    mom: "a pale-pink knit sweater and light-blue jeans",
+    dad: "a white-and-navy striped long-sleeved shirt and khaki pants",
   },
 };
 
@@ -540,7 +545,7 @@ export async function makeHeroBookPhoto(opts: { title: string; cover: Uploadable
 // --- 台本（シリーズ）の絵 ---
 // 作例と同じ架空の家族で、シリーズの各話の表紙と12場面を描く。家族はお話の作例の設定画（服装も同じ）を
 // もとにし、相棒（森ならりすのポッケ）を加えた「シリーズの設定画」を1枚作って、全場面でそれを参考にする。
-// 作例の設定画が無いシリーズ（海・恐竜）は、家族と相棒の設定画を文章から作る。
+// 作例の設定画が無いシリーズ（海・恐竜・数のお勉強）は、家族と相棒の設定画を文章から作る。
 
 /** シリーズの設定画（家族3人＋相棒）を作る。familySheet はお話の作例の設定画（無ければ文章から描く） */
 export async function makeSeriesSheet(series: StudioSeries, familySheet: Uploadable | null, note?: string) {
