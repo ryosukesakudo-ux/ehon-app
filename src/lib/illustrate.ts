@@ -1,6 +1,6 @@
 import "server-only";
 import type { Uploadable } from "openai/uploads";
-import { COVER_SCENE, COVER_SIZE, REDO_OPTIONS, characterOf, getStory, getTaste, type Person, type RedoOptionId, type StoryId, type TasteId } from "./catalog";
+import { COVER_SCENE, COVER_SIZE, LIKENESS_LEVELS, REDO_OPTIONS, characterOf, getStory, getTaste, type LikenessId, type Person, type RedoOptionId, type StoryId, type TasteId } from "./catalog";
 import { getBook, type BookScene } from "./book";
 import { getOpenAI } from "./services";
 import { upscalePng } from "./upscale";
@@ -133,7 +133,12 @@ export type RefKind = "photo" | "character" | "previous";
 export type RefImage = { who: Person; kind?: RefKind; file: Uploadable };
 
 /** 作り直しの指示（選択肢と一言） */
-export type Redo = { options: RedoOptionId[]; note: string };
+export type Redo = { options: RedoOptionId[]; note: string; likeness?: LikenessId };
+
+/** 作り直しに中身があるか（選択肢・一言・似せ方のどれか） */
+export function hasRedoRequest(redo?: Redo | null): redo is Redo {
+  return !!redo && (redo.options.length > 0 || !!redo.note.trim() || (!!redo.likeness && redo.likeness !== "normal"));
+}
 
 function describeRefs(refs: { who: Person; kind?: RefKind }[]) {
   return refs
@@ -151,9 +156,11 @@ function describeRefs(refs: { who: Person; kind?: RefKind }[]) {
 function redoPrompt(redo?: Redo | null) {
   if (!redo) return "";
   const opts = redo.options.map((id) => REDO_OPTIONS.find((o) => o.id === id)?.prompt).filter(Boolean);
+  const likeness = LIKENESS_LEVELS.find((l) => l.id === redo.likeness)?.prompt ?? "";
   const note = redo.note.trim();
   return [
-    opts.length || note ? "This is a redo requested by the customer." : "",
+    hasRedoRequest(redo) ? "This is a redo requested by the customer." : "",
+    likeness,
     ...opts,
     note ? `The customer also wrote this request in Japanese; follow it as long as it fits a gentle children's picture book: 「${note}」` : "",
   ]
@@ -177,7 +184,11 @@ export function buildCharacterPrompt(taste: TasteId, who: Person, refs: { who: P
     `Character design of ${LABEL[who]} only, for a children's picture book: one person standing alone, full body from head to toes, front view, relaxed natural pose, friendly expression, ${outfits ? "wearing this person's clothes from this list" : "simple everyday clothes"}.`,
     outfits ? `Clothes: ${outfits} Draw exactly these clothes and colors instead of the clothes in the reference images.` : "",
     "Plain soft light background with no scenery and no other people or animals. Leave a little space above the head and below the feet.",
-    hasPrevious ? "Keep everything from the previous version except what the requests below ask to change." : "",
+    hasPrevious
+      ? redo?.likeness && redo.likeness !== "normal"
+        ? "Keep the outfit, colors and overall look of the previous version, but redraw the face and hair from the photo so the person looks more like the photo, and change what the requests below ask to change."
+        : "Keep everything from the previous version except what the requests below ask to change."
+      : "",
     redoPrompt(redo),
     "Do not draw any letters, words or text in the image.",
   ]
