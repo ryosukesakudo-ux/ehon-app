@@ -3,6 +3,18 @@
 import { useState } from "react";
 import { PREVIEW_PACK, yen } from "@/lib/catalog";
 
+/** プレビューの追加枠（packs セット）の決済画面を開く。失敗したらエラーを投げる */
+export async function startCreditCheckout(returnTo: string, packs = 1) {
+  const res = await fetch("/api/credits", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ returnTo, packs }),
+  });
+  const json = await res.json();
+  if (!res.ok || !json.url) throw new Error(json.error ?? "購入画面を開けませんでした");
+  window.location.href = json.url;
+}
+
 /** プレビューの追加枠を買うボタン。Stripe の決済画面へ移り、終わったら returnTo に戻る。 */
 export function BuyPreviewsButton({ returnTo, className = "ghost" }: { returnTo: string; className?: string }) {
   const [busy, setBusy] = useState(false);
@@ -12,14 +24,7 @@ export function BuyPreviewsButton({ returnTo, className = "ghost" }: { returnTo:
     setBusy(true);
     setError(null);
     try {
-      const res = await fetch("/api/credits", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ returnTo }),
-      });
-      const json = await res.json();
-      if (!res.ok || !json.url) throw new Error(json.error ?? "購入画面を開けませんでした");
-      window.location.href = json.url;
+      await startCreditCheckout(returnTo);
     } catch (e) {
       setError(e instanceof Error ? e.message : "購入画面を開けませんでした");
       setBusy(false);

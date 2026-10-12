@@ -10,6 +10,7 @@ import {
   MEMBER_MONTHLY_PREVIEWS,
   PERSON_LABEL,
   PREVIEW_PACK,
+  packsFor,
   REDO_NOTE_MAX,
   REDO_OPTIONS,
   characterOf,
@@ -24,7 +25,7 @@ import { parseCustomKey } from "@/lib/custom-story";
 import { BookCover } from "@/components/book-cover";
 import { Chevron } from "@/components/icons";
 import { Lottie } from "@/components/lottie";
-import { BuyPreviewsButton } from "@/components/buy-previews";
+import { BuyPreviewsButton, startCreditCheckout } from "@/components/buy-previews";
 import { useFlow } from "../flow";
 import { LikenessPicker } from "../likeness-picker";
 import { loginHref, useAccount } from "../account";
@@ -59,7 +60,12 @@ function Preview() {
   // 描けなかった絵とその理由（使い切り・会員登録が必要・その他の失敗）
   const [failed, setFailed] = useState<Record<number, "quota" | "login" | "error">>({});
   const [account, setAccount, refreshAccount] = useAccount();
-  const boughtCredits = useSearchParams().get("credits") === "done";
+  const params = useSearchParams();
+  const boughtCredits = params.get("credits") === "done";
+  // チャージしてから作る本文のページ数（決済から戻ったら、反映を待って自動で作る）
+  const thenPages = Number(params.get("then")) || 0;
+  const [charging, setCharging] = useState(false);
+  const autoStarted = useRef(false);
   // 登録前のお試し（Supabase 設定済みで未ログイン）
   const trial = !!account?.configured && !account.loggedIn;
   const inFlight = useRef(new Set<number>());
@@ -204,6 +210,34 @@ function Preview() {
     }
   }
 
+  /** その枚数まで作るのに必要なプレビューの枚数（作ってあるページは数えない） */
+  const costOf = (count: number) => pageRange(count).filter((i) => !state.previews[i]).length;
+  // チャージ後、残り枚数の反映を待っている（そのあと自動で作る）
+  const waitingCredits = !!thenPages && boughtCredits;
+
+  // 本文のページを作る。残りが足りなければ、足りない分をチャージ（決済）してから作る（2026-10-12 作道さん）
+  async function makeOrCharge(count: number) {
+    const short = costOf(count) - remaining;
+    if (short <= 0) return makePages(count);
+    setCharging(true);
+    setError(null);
+    try {
+      await startCreditCheckout(`/create/preview?then=${count}`, packsFor(short));
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "購入画面を開けませんでした");
+      setCharging(false);
+    }
+  }
+
+  /** ボタンの文言：足りないときはチャージする枚数と金額を添える */
+  const pagesLabel = (count: number, text: string) => {
+    const cost = costOf(count);
+    const short = cost - remaining;
+    if (short <= 0) return `${text}（${cost}枚）`;
+    const packs = packsFor(short);
+    return `${PREVIEW_PACK.credits * packs}枚チャージして${text}（${yen(PREVIEW_PACK.price * packs)}）`;
+  };
+
   // 本文のページを作る（冒頭3枚・12枚ぜんぶ・残り9枚）
   async function makePages(count: number) {
     update({ pageCount: count });
@@ -244,6 +278,16 @@ function Preview() {
     }, 5000);
     return () => window.clearInterval(timer);
   }, [boughtCredits, refreshAccount]);
+
+  // チャージして戻ってきたら、残りが足りた時点で本文のページを自動で作る（1回だけ）
+  useEffect(() => {
+    if (!thenPages || !boughtCredits || !ready || !confirmed || autoStarted.current || !account?.loggedIn) return;
+    if (account.remaining < costOf(thenPages)) return;
+    autoStarted.current = true;
+    router.replace("/create/preview");
+    void makePages(thenPages);
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 残り枚数が反映されたときに一度だけ作る
+  }, [thenPages, boughtCredits, ready, confirmed, account]);
   const charactersDone = characters.length > 0 && characters.every((i) => state.previews[i]);
   const coverDone = !!state.previews[COVER_SCENE];
   const missingPages = pages.filter((i) => !state.previews[i]);
@@ -436,11 +480,11 @@ function Preview() {
             <div style={{ fontSize: 13, lineHeight: 1.7, color: "var(--sub)" }}>
               作った本文の絵は、ご注文後そのまま絵本に使います。作らなかったページは、ご注文後にこのキャラクターで描きます。
             </div>
-            <button type="button" className="cta" disabled={busy || remaining < FIRST_PAGES} onClick={() => makePages(FIRST_PAGES)}>
-              冒頭{FIRST_PAGES}枚をプレビュー（{FIRST_PAGES}枚）
+            <button type="button" className="cta" disabled={busy || charging || waitingCredits} onClick={() => makeOrCharge(FIRST_PAGES)}>
+              {pagesLabel(FIRST_PAGES, `冒頭${FIRST_PAGES}枚をプレビュー`)}
             </button>
-            <button type="button" className="ghost" disabled={busy || remaining < BOOK_SCENE_COUNT} onClick={() => makePages(BOOK_SCENE_COUNT)}>
-              {BOOK_SCENE_COUNT}枚ぜんぶ作って調整（{BOOK_SCENE_COUNT}枚）
+            <button type="button" className="ghost" disabled={busy || charging || waitingCredits} onClick={() => makeOrCharge(BOOK_SCENE_COUNT)}>
+              {pagesLabel(BOOK_SCENE_COUNT, `${BOOK_SCENE_COUNT}枚ぜんぶ作って調整`)}
             </button>
             <button type="button" className="ghost" disabled={busy} onClick={() => router.push("/create/size")}>
               プレビューせず購入へ
@@ -450,8 +494,8 @@ function Preview() {
         {confirmed && pageCount === FIRST_PAGES && !missingPages.length && !trial && (
           <section className="card" style={{ gap: 10 }}>
             <div className="display" style={{ fontSize: 16, fontWeight: 800, color: "var(--navy)" }}>冒頭{FIRST_PAGES}枚ができました</div>
-            <button type="button" className="cta" disabled={busy || remaining < BOOK_SCENE_COUNT - FIRST_PAGES} onClick={() => makePages(BOOK_SCENE_COUNT)}>
-              残り{BOOK_SCENE_COUNT - FIRST_PAGES}枚も作る（{BOOK_SCENE_COUNT - FIRST_PAGES}枚）
+            <button type="button" className="cta" disabled={busy || charging || waitingCredits} onClick={() => makeOrCharge(BOOK_SCENE_COUNT)}>
+              {pagesLabel(BOOK_SCENE_COUNT, `残り${BOOK_SCENE_COUNT - FIRST_PAGES}枚も作る`)}
             </button>
             <button type="button" className="ghost" disabled={busy} onClick={() => router.push("/create/size")}>
               このまま購入へ
@@ -471,7 +515,13 @@ function Preview() {
             {typeof account.free === "number" && `（今月の無料 ${account.free} / ${account.limit}枚${account.credits ? `＋追加 ${account.credits}枚` : ""}）`}
           </p>
         )}
-        {boughtCredits && <p className="info-note" role="status">ご購入ありがとうございます。残り枚数は数十秒ほどで自動的に反映されます。</p>}
+        {boughtCredits && (
+          <p className="info-note" role="status">
+            ご購入ありがとうございます。残り枚数は数十秒ほどで自動的に反映されます。
+            {waitingCredits && "反映されたら、本文の絵を自動で作りはじめます。"}
+          </p>
+        )}
+        {charging && <p className="info-note" role="status">購入画面を開いています…</p>}
         {/* 残りが次の操作に足りないときは、追加のボタンを出す */}
         {account?.loggedIn && account.remaining < needed && <BuyPreviewsButton returnTo="/create/preview" />}
         {error && <p className="error" role="alert">{error}</p>}
