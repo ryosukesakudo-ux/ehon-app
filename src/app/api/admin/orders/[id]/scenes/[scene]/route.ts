@@ -1,6 +1,6 @@
 import { bookScenes } from "@/lib/catalog";
 import { getBook } from "@/lib/book";
-import { generateScene, loadDraft } from "@/lib/drafts";
+import { finalFromPreview, generateScene, loadDraft } from "@/lib/drafts";
 import { getSupabase } from "@/lib/services";
 import { SERIES_NOTE_MAX } from "@/lib/series";
 
@@ -8,6 +8,7 @@ export const maxDuration = 300;
 
 // 管理画面から、支払い済みの注文の挿絵を印刷用の高画質で作る（1場面ずつ）。
 // 制作完了のあとでも、発送前なら1ページずつ作り直せる（2026-10-11 森3話の絵の不具合の作り直し用）。
+// 「全ページの絵を作る」（reuse: true）では、お客様がプレビューで作った表紙・本文の絵をそのまま使い、無いページだけ描く（2026-10-12 作道さん）。
 export async function POST(request: Request, ctx: RouteContext<"/api/admin/orders/[id]/scenes/[scene]">) {
   const { id, scene } = await ctx.params;
   const db = getSupabase();
@@ -29,6 +30,10 @@ export async function POST(request: Request, ctx: RouteContext<"/api/admin/order
     const body = await request.json().catch(() => ({}));
     const note = typeof body?.note === "string" ? body.note.trim().slice(0, SERIES_NOTE_MAX) : "";
     const detail = body?.detail === "high" ? "high" : "medium";
+    if (body?.reuse === true && !note) {
+      const reused = await finalFromPreview(draft, sceneIndex);
+      if (reused) return Response.json({ url: reused, reused: true });
+    }
     const url = await generateScene(draft, sceneIndex, "final", note ? { options: [], note } : null, detail);
     return Response.json({ url });
   } catch (e) {

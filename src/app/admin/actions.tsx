@@ -99,13 +99,14 @@ export function OrderActions({
     }
   }
 
-  // まだ無い場面を1つずつ順番に作る（1枚あたり1分前後かかる）。途中で止まっても、押し直せば続きから作る
+  // まだ無い場面を1つずつ順番に作る（1枚あたり1分前後かかる）。途中で止まっても、押し直せば続きから作る。
+  // お客様がプレビューで作った表紙・本文の絵は、描き直さずにそのまま使う（数秒で終わる）
   const todo = scenes.filter((i) => !doneScenes.includes(i));
   const generateAll = () =>
     run("generate", async () => {
       for (const [n, i] of todo.entries()) {
         setBusy(`generate:${doneScenes.length + n + 1}/${scenes.length}`);
-        await call(`scenes/${i}`, { detail });
+        await call(`scenes/${i}`, { detail, reuse: true });
       }
     });
 

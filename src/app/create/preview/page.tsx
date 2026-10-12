@@ -3,8 +3,24 @@
 import { Suspense, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { COVER_SCENE, MEMBER_MONTHLY_PREVIEWS, PERSON_LABEL, PREVIEW_PACK, REDO_NOTE_MAX, REDO_OPTIONS, characterOf, yen, type LikenessId, type RedoOptionId } from "@/lib/catalog";
+import {
+  BOOK_SCENE_COUNT,
+  COVER_SCENE,
+  FIRST_PAGES,
+  MEMBER_MONTHLY_PREVIEWS,
+  PERSON_LABEL,
+  PREVIEW_PACK,
+  REDO_NOTE_MAX,
+  REDO_OPTIONS,
+  characterOf,
+  guestOf,
+  isCharacterScene,
+  yen,
+  type LikenessId,
+  type RedoOptionId,
+} from "@/lib/catalog";
 import { bookTitle } from "@/lib/story-key";
+import { parseCustomKey } from "@/lib/custom-story";
 import { BookCover } from "@/components/book-cover";
 import { Chevron } from "@/components/icons";
 import { Lottie } from "@/components/lottie";
@@ -13,6 +29,17 @@ import { useFlow } from "../flow";
 import { LikenessPicker } from "../likeness-picker";
 import { loginHref, useAccount } from "../account";
 import { NextButton, StepHeader, StepTitle } from "../step";
+
+// プレビューは3段階（2026-10-12 作道さん）：
+// 1. 登場人物のキャラクターを確かめて、気になれば作り直す →「登場人物を確定」
+// 2. 確定したキャラクターで表紙を描く
+// 3. 本文を「冒頭3枚」か「12枚ぜんぶ」プレビューするか、プレビューせずに購入へ。冒頭3枚のあとは「残り9枚も作る」か「このまま購入へ」
+// どの絵も1枚でプレビュー1枚分。作った表紙と本文の絵は、ご注文後そのまま本に使う。
+
+/** 本文のページを同時に何枚まで作るか */
+const PARALLEL_PAGES = 3;
+
+const pageRange = (n: number) => Array.from({ length: n }, (_, i) => i);
 
 export default function PreviewPage() {
   return (
@@ -39,15 +66,31 @@ function Preview() {
   // 作り直しの指示（選択肢と一言）
   const [options, setOptions] = useState<RedoOptionId[]>([]);
   const [note, setNote] = useState("");
+  const [resetting, setResetting] = useState(false);
   // 本人への似せ方（写真の画面で選んだもの。作り直しのときに変えられ、変えたら次からもそれを使う）
   const likeness = state.likeness;
 
-  const scenes = state.previewScenes;
-  const scene = scenes[pos];
+  const custom = parseCustomKey(state.story);
+  const characters = state.previewScenes.filter(isCharacterScene);
+  // 登場人物を確定したか（以前の画面で表紙まで作った下書きも、確定済みとして読む）
+  const confirmed = state.confirmed || !!state.previews[COVER_SCENE];
+  // 作ると選んだ本文のページ数（以前に作ったページがあれば、その分は開く）
+  const madePages = pageRange(BOOK_SCENE_COUNT).filter((i) => state.previews[i]);
+  const pageCount = Math.max(state.pageCount, madePages.some((i) => i >= FIRST_PAGES) ? BOOK_SCENE_COUNT : madePages.length ? FIRST_PAGES : 0);
+  const pages = pageRange(pageCount);
+  // いま見せている絵の並び（確定前はキャラクター、確定後は表紙と本文）
+  const shown = confirmed ? [COVER_SCENE, ...pages] : characters;
+  const scene: number | undefined = shown[Math.min(pos, shown.length - 1)];
   const isCover = scene === COVER_SCENE;
-  const who = scene === undefined ? null : characterOf(scene);
   const title = bookTitle(state.story, state.childName);
-  const whoName = who === "child" ? state.childName || PERSON_LABEL.child : who ? PERSON_LABEL[who] : "";
+  const nameOf = (i: number) => {
+    const p = characterOf(i);
+    if (p) return p === "child" ? state.childName || PERSON_LABEL.child : PERSON_LABEL[p];
+    const g = guestOf(i);
+    return g === null ? "" : (custom?.cast[g]?.name ?? `登場人物${g + 1}`);
+  };
+  const labelOf = (i: number) => (i === COVER_SCENE ? "表紙" : isCharacterScene(i) ? nameOf(i) : `${i + 1}ページ`);
+  const remaining = account?.loggedIn ? account.remaining : Infinity;
 
   type RedoRequest = { options: RedoOptionId[]; note: string; likeness: LikenessId };
 
@@ -88,6 +131,23 @@ function Preview() {
     }
   }
 
+  /** 何枚かを、同時に作りすぎないように順番に作る（使い切ったら、そこで止める） */
+  async function generateMany(targets: number[], redo?: RedoRequest) {
+    const queue = [...targets];
+    const results: boolean[] = [];
+    let stop = false;
+    const worker = async () => {
+      while (queue.length && !stop) {
+        const i = queue.shift()!;
+        const ok = await generate(i, redo);
+        results.push(ok);
+        if (!ok) stop = true;
+      }
+    };
+    await Promise.all(Array.from({ length: Math.min(PARALLEL_PAGES, targets.length) }, worker));
+    return results.length === targets.length && results.every(Boolean);
+  }
+
   useEffect(() => {
     if (!ready) return;
     if (!state.draftId) {
@@ -95,34 +155,79 @@ function Preview() {
       return;
     }
     // 以前の画面で作った下書きなど、プレビューの場面が分からないときはサーバーに聞く
-    if (!scenes.length) {
+    if (!state.previewScenes.length) {
       fetch(`/api/drafts/${encodeURIComponent(state.draftId)}`)
         .then((r) => (r.ok ? r.json() : null))
         .then((json) => json?.previewScenes && update({ previewScenes: json.previewScenes }))
         .catch(() => {});
       return;
     }
-    // 足りない見本の絵の作成をサーバーに依頼する（読み込み中の表示もここで切り替わる）
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    for (const i of scenes) if (!state.previews[i]) generate(i);
+    // 開いたとき：確定前はキャラクター、確定後は表紙のうち、まだ無い絵を作る（本文のページはボタンで作る）
+    const todo = confirmed ? (state.previews[COVER_SCENE] ? [] : [COVER_SCENE]) : characters.filter((i) => !state.previews[i]);
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- 読み込み中の表示もここで切り替わる
+    for (const i of todo) generate(i);
     // eslint-disable-next-line react-hooks/exhaustive-deps -- 画面を開いたとき（と場面が分かったとき）に一度だけ作る
-  }, [ready, state.draftId, scenes.length]);
+  }, [ready, state.draftId, state.previewScenes.length]);
 
-  // 作り直し：いま見ている絵だけ、または家族（登場人物）全員をまとめて。うまくいったら選択肢と一言を空にする
-  const people = scenes.filter((i) => characterOf(i));
-  const remaining = account?.loggedIn ? account.remaining : Infinity;
+  // 登場人物を確定して、表紙を描く
+  function confirm() {
+    update({ confirmed: true });
+    setPos(0);
+    setOptions([]);
+    setNote("");
+    if (!state.previews[COVER_SCENE]) generate(COVER_SCENE);
+  }
+
+  // 登場人物に戻る：表紙と本文の絵は、直す前のキャラクターで描いたものなので消す
+  async function backToCharacters() {
+    const made = [COVER_SCENE, ...pageRange(BOOK_SCENE_COUNT)].filter((i) => state.previews[i]).length;
+    if (made && !confirm_(`登場人物を直すと、いま作ってある表紙と本文の絵（${made}枚）は消えて、確定したあと作り直しになります（使ったプレビューの枚数は戻りません）。よろしいですか？`)) return;
+    setResetting(true);
+    setError(null);
+    try {
+      if (made && !state.demo) {
+        const res = await fetch(`/api/drafts/${encodeURIComponent(state.draftId!)}/pages`, { method: "DELETE" });
+        if (!res.ok) throw new Error((await res.json().catch(() => null))?.error ?? "絵の削除に失敗しました");
+      }
+      update((prev) => ({
+        confirmed: false,
+        pageCount: 0,
+        previews: Object.fromEntries(Object.entries(prev.previews).filter(([k]) => isCharacterScene(Number(k)))),
+      }));
+      setPos(0);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "絵の削除に失敗しました");
+    } finally {
+      setResetting(false);
+    }
+  }
+
+  // 本文のページを作る（冒頭3枚・12枚ぜんぶ・残り9枚）
+  async function makePages(count: number) {
+    update({ pageCount: count });
+    const targets = pageRange(count).filter((i) => !state.previews[i]);
+    if (targets.length) setPos(1 + targets[0]);
+    await generateMany(targets);
+  }
+
+  // 作り直し：いま見ている絵だけ、または登場人物全員をまとめて。うまくいったら選択肢と一言を空にする
   async function redoScenes(targets: number[]) {
     const req = { options, note: note.trim(), likeness };
-    const results = await Promise.all(targets.map((i) => generate(i, req)));
-    if (results.every(Boolean)) {
+    if (await generateMany(targets, req)) {
       setOptions([]);
       setNote("");
     }
   }
 
   const url = scene === undefined ? undefined : state.previews[scene];
-  const allDone = scenes.length > 0 && scenes.every((i) => state.previews[i]);
+  const busy = Object.values(loading).some(Boolean) || resetting;
+  const charactersDone = characters.length > 0 && characters.every((i) => state.previews[i]);
+  const coverDone = !!state.previews[COVER_SCENE];
+  const missingPages = pages.filter((i) => !state.previews[i]);
+  // 次の操作に必要なプレビューの枚数（足りないときは追加のボタンを出す）
+  const needed = !confirmed ? Math.max(1, characters.length > 1 ? characters.length : 1) : pageCount === 0 ? FIRST_PAGES : pageCount < BOOK_SCENE_COUNT ? BOOK_SCENE_COUNT - FIRST_PAGES : 1;
   const failure = scene === undefined || url || loading[scene] ? undefined : failed[scene];
+  const isChar = scene !== undefined && isCharacterScene(scene);
   const picture =
     failure ? (
       <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 8, padding: 24, textAlign: "center", color: "var(--navy)" }}>
@@ -141,9 +246,17 @@ function Preview() {
               : "時間をおいて「作り直す」を押してください。"}
         </div>
       </div>
-    ) : url && !loading[scene] ? (
+    ) : url && !loading[scene!] ? (
       // eslint-disable-next-line @next/next/no-img-element -- 署名付きURLの一時画像
-      <img src={url} alt={isCover ? "表紙の絵" : `${whoName}のキャラクター`} style={{ width: "100%", height: "100%", objectFit: who ? "contain" : "cover" }} />
+      <img src={url} alt={isCover ? "表紙の絵" : isChar ? `${nameOf(scene!)}のキャラクター` : `${scene! + 1}ページの絵`} style={{ width: "100%", height: "100%", objectFit: isChar ? "contain" : "cover" }} />
+    ) : scene !== undefined && !loading[scene] && !isChar && !isCover ? (
+      // まだ作っていない本文のページ（作る途中で止まったときなど）
+      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 10, padding: 24, textAlign: "center", color: "var(--sub)", fontSize: 13 }}>
+        <span>このページの絵はまだありません。</span>
+        <button type="button" className="ghost" disabled={busy || remaining <= 0} onClick={() => generate(scene)}>
+          このページの絵を作る（プレビュー1枚）
+        </button>
+      </div>
     ) : (
       <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 12, color: "var(--sub)", fontSize: 13 }}>
         <Lottie name="drawing" style={{ width: 200, height: 150 }} />
@@ -155,112 +268,173 @@ function Preview() {
     <>
       <StepHeader step={4} back="/create/photo" />
       <main className="step-body">
-        <StepTitle title="表紙と登場人物を確認してください" lead="気になる絵は、直したいところを選んで作り直せます。" />
+        <StepTitle
+          title={confirmed ? "表紙と本文を確認してください" : "登場人物を確認してください"}
+          lead={
+            confirmed
+              ? "気になる絵は作り直せます。本文は、冒頭3枚か12枚ぜんぶをプレビューで作れます（1枚でプレビュー1枚分）。"
+              : "気になるところは作り直せます。確定すると、この姿で表紙と本文を描きます。"
+          }
+        />
         {state.demo && (
           <p className="demo-note">デモモードで動いています。実際の絵の代わりに仮の画像を表示しています。</p>
         )}
+        <ol className="preview-steps" aria-label="プレビューの進み方">
+          <li className={confirmed ? "done" : "on"}>登場人物</li>
+          <li className={confirmed && !pageCount ? "on" : confirmed ? "done" : ""}>表紙</li>
+          <li className={pageCount ? "on" : ""}>本文（任意）</li>
+        </ol>
         <div style={{ display: "flex", flexDirection: "column", borderRadius: 18, overflow: "hidden", background: "#fff", border: "1px solid var(--line)" }}>
           {isCover ? (
             <BookCover lead={title.lead} title={title.main} art={picture} />
           ) : (
-            <div style={{ aspectRatio: "1 / 1", background: who ? "#fff" : "#E6EEF9", display: "flex", alignItems: "center", justifyContent: "center" }}>{picture}</div>
+            <div style={{ aspectRatio: "1 / 1", background: isChar ? "#fff" : "#E6EEF9", display: "flex", alignItems: "center", justifyContent: "center" }}>{picture}</div>
           )}
           <p style={{ margin: 0, padding: 18, fontSize: 16, lineHeight: 1.9 }}>
             {scene === undefined ? (
               ""
             ) : isCover ? (
               "表紙"
-            ) : who ? (
+            ) : isChar ? (
               <>
-                <strong>{whoName}のキャラクター</strong>
+                <strong>{nameOf(scene)}のキャラクター</strong>
                 <br />
-                <span style={{ fontSize: 13, color: "var(--sub)" }}>この姿をもとに、絵本の全ページを描きます。</span>
+                <span style={{ fontSize: 13, color: "var(--sub)" }}>この姿をもとに、表紙と本文を描きます。</span>
               </>
             ) : (
-              ""
+              <>
+                <strong>{scene + 1}ページ</strong>
+                {custom?.scenes[scene]?.text && (
+                  <>
+                    <br />
+                    <span style={{ fontSize: 14, whiteSpace: "pre-wrap" }}>{custom.scenes[scene].text.replace(/《[^》]*》/g, "")}</span>
+                  </>
+                )}
+              </>
             )}
           </p>
         </div>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-          <button type="button" className="ghost" aria-label="前のページ" style={{ width: 44, height: 44, padding: 0, borderRadius: 22 }} disabled={pos === 0} onClick={() => setPos(pos - 1)}>
+          <button type="button" className="ghost" aria-label="前の絵" style={{ width: 44, height: 44, padding: 0, borderRadius: 22 }} disabled={pos === 0} onClick={() => setPos(Math.max(0, pos - 1))}>
             <Chevron dir="left" size={20} />
           </button>
           <div style={{ fontSize: 14, color: "var(--sub)" }}>
-            見本 {pos + 1} / {scenes.length || 2}
+            {scene === undefined ? "" : labelOf(scene)}（{Math.min(pos, shown.length - 1) + 1} / {shown.length || 1}）
           </div>
-          <button type="button" className="ghost" aria-label="次のページ" style={{ width: 44, height: 44, padding: 0, borderRadius: 22 }} disabled={pos >= scenes.length - 1} onClick={() => setPos(pos + 1)}>
+          <button type="button" className="ghost" aria-label="次の絵" style={{ width: 44, height: 44, padding: 0, borderRadius: 22 }} disabled={pos >= shown.length - 1} onClick={() => setPos(pos + 1)}>
             <Chevron dir="right" size={20} />
           </button>
         </div>
+        {shown.length > 1 && (
+          <div className="preview-thumbs" role="tablist" aria-label="絵を選ぶ">
+            {shown.map((i, n) => (
+              <button key={i} type="button" role="tab" aria-selected={i === scene} aria-label={labelOf(i)} onClick={() => setPos(n)} className="preview-thumb">
+                {state.previews[i] && !loading[i] ? (
+                  // eslint-disable-next-line @next/next/no-img-element -- 署名付きURLの一時画像
+                  <img src={state.previews[i]} alt="" style={{ width: "100%", height: "100%", objectFit: isCharacterScene(i) ? "contain" : "cover" }} />
+                ) : (
+                  <span>{loading[i] ? "…" : i === COVER_SCENE ? "表紙" : isCharacterScene(i) ? nameOf(i).slice(0, 3) : i + 1}</span>
+                )}
+              </button>
+            ))}
+          </div>
+        )}
+
         {trial ? (
           <Link href={loginHref("/create/preview")} className="ghost">
-            作り直しは無料会員登録で（月{MEMBER_MONTHLY_PREVIEWS}枚まで）
+            作り直しと本文のプレビューは無料会員登録で（月{MEMBER_MONTHLY_PREVIEWS}枚まで）
           </Link>
         ) : (
-          <section className="card" style={{ gap: 10 }}>
-            <div className="display" style={{ fontSize: 15, fontWeight: 800, color: "var(--navy)" }}>
-              {isCover ? "表紙の絵を作り直す" : who ? `${whoName}のキャラクターを作り直す` : "このページの絵を作り直す"}
-            </div>
-            <div style={{ fontSize: 12, color: "var(--sub)" }}>直したいところを選んでください（いくつでも・選ばなくても作り直せます）</div>
-            <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-              {REDO_OPTIONS.map((o) => {
-                const on = options.includes(o.id);
-                return (
-                  <button
-                    key={o.id}
-                    type="button"
-                    aria-pressed={on}
-                    onClick={() => setOptions((v) => (on ? v.filter((x) => x !== o.id) : [...v, o.id]))}
-                    style={{ height: 36, padding: "0 14px", borderRadius: 18, fontSize: 13, cursor: "pointer", border: on ? "2px solid var(--coral)" : "1px solid var(--line)", background: on ? "#FDECE8" : "#fff", color: "var(--navy)", fontWeight: on ? 700 : 500 }}
-                  >
-                    {o.label}
+          scene !== undefined && (state.previews[scene] || failed[scene]) && (
+            <section className="card" style={{ gap: 10 }}>
+              <div className="display" style={{ fontSize: 15, fontWeight: 800, color: "var(--navy)" }}>
+                {isCover ? "表紙の絵を作り直す" : isChar ? `${nameOf(scene)}のキャラクターを作り直す` : `${scene + 1}ページの絵を作り直す`}
+              </div>
+              <div style={{ fontSize: 12, color: "var(--sub)" }}>直したいところを選んでください（いくつでも・選ばなくても作り直せます）</div>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+                {REDO_OPTIONS.map((o) => {
+                  const on = options.includes(o.id);
+                  return (
+                    <button
+                      key={o.id}
+                      type="button"
+                      aria-pressed={on}
+                      onClick={() => setOptions((v) => (on ? v.filter((x) => x !== o.id) : [...v, o.id]))}
+                      style={{ height: 36, padding: "0 14px", borderRadius: 18, fontSize: 13, cursor: "pointer", border: on ? "2px solid var(--coral)" : "1px solid var(--line)", background: on ? "#FDECE8" : "#fff", color: "var(--navy)", fontWeight: on ? 700 : 500 }}
+                    >
+                      {o.label}
+                    </button>
+                  );
+                })}
+              </div>
+              <label style={{ display: "flex", flexDirection: "column", gap: 4, fontSize: 12, color: "var(--sub)" }}>
+                ひとこと（任意・{REDO_NOTE_MAX}文字まで）
+                <input
+                  type="text"
+                  value={note}
+                  maxLength={REDO_NOTE_MAX}
+                  placeholder={isChar ? "例：メガネをかけて／前髪を短く" : "例：もっと笑顔で／空を夕焼けに"}
+                  onChange={(e) => setNote([...e.target.value].slice(0, REDO_NOTE_MAX).join(""))}
+                  style={{ height: 44, padding: "0 12px", borderRadius: 10, border: "1px solid var(--line)", fontSize: 16 }}
+                />
+                <span style={{ alignSelf: "flex-end" }}>{[...note].length} / {REDO_NOTE_MAX}</span>
+              </label>
+              <LikenessPicker value={likeness} onChange={(v) => update({ likeness: v })} />
+              <button type="button" className="ghost" disabled={!!loading[scene] || resetting || remaining <= 0} onClick={() => redoScenes([scene])}>
+                {options.length || note.trim() || likeness !== "normal" ? "この内容で作り直す" : "そのまま作り直す"}（プレビュー1枚）
+              </button>
+              {!confirmed && characters.length > 1 && (
+                <>
+                  <button type="button" className="ghost" disabled={characters.some((i) => loading[i]) || remaining < characters.length} onClick={() => redoScenes(characters)}>
+                    登場人物{characters.length}人まとめて作り直す（{characters.length}枚）
                   </button>
-                );
-              })}
+                  <div style={{ fontSize: 12, lineHeight: 1.6, color: "var(--sub)" }}>
+                    {characters.map(nameOf).join("・")}
+                    のキャラクターを、上で選んだ内容でいっしょに作り直します。
+                    {remaining < characters.length && `（プレビューの残りが${characters.length}枚以上必要です。下のボタンで追加できます）`}
+                  </div>
+                </>
+              )}
+            </section>
+          )
+        )}
+
+        {/* 表紙ができたら、本文のプレビューをどうするか選ぶ */}
+        {confirmed && coverDone && !trial && pageCount === 0 && (
+          <section className="card" style={{ gap: 10 }}>
+            <div className="display" style={{ fontSize: 16, fontWeight: 800, color: "var(--navy)" }}>本文のプレビュー</div>
+            <div style={{ fontSize: 13, lineHeight: 1.7, color: "var(--sub)" }}>
+              作った本文の絵は、ご注文後そのまま絵本に使います。作らなかったページは、ご注文後にこのキャラクターで描きます。
             </div>
-            <label style={{ display: "flex", flexDirection: "column", gap: 4, fontSize: 12, color: "var(--sub)" }}>
-              ひとこと（任意・{REDO_NOTE_MAX}文字まで）
-              <input
-                type="text"
-                value={note}
-                maxLength={REDO_NOTE_MAX}
-                placeholder="例：メガネをかけて／前髪を短く"
-                onChange={(e) => setNote([...e.target.value].slice(0, REDO_NOTE_MAX).join(""))}
-                style={{ height: 44, padding: "0 12px", borderRadius: 10, border: "1px solid var(--line)", fontSize: 16 }}
-              />
-              <span style={{ alignSelf: "flex-end" }}>{[...note].length} / {REDO_NOTE_MAX}</span>
-            </label>
-            <LikenessPicker value={likeness} onChange={(v) => update({ likeness: v })} />
-            <button
-              type="button"
-              className="ghost"
-              disabled={scene === undefined || !!loading[scene] || remaining <= 0}
-              onClick={() => redoScenes([scene])}
-            >
-              {options.length || note.trim() || likeness !== "normal" ? "この内容で作り直す" : "そのまま作り直す"}（プレビュー1枚）
+            <button type="button" className="cta" disabled={busy || remaining < FIRST_PAGES} onClick={() => makePages(FIRST_PAGES)}>
+              冒頭{FIRST_PAGES}枚をプレビュー（{FIRST_PAGES}枚）
             </button>
-            {people.length > 1 && (
-              <>
-                <button
-                  type="button"
-                  className="ghost"
-                  disabled={people.some((i) => loading[i]) || remaining < people.length}
-                  onClick={() => redoScenes(people)}
-                >
-                  家族{people.length}人まとめて作り直す（{people.length}枚）
-                </button>
-                <div style={{ fontSize: 12, lineHeight: 1.6, color: "var(--sub)" }}>
-                  {people.map((i) => {
-                    const p = characterOf(i)!;
-                    return p === "child" ? state.childName || PERSON_LABEL.child : PERSON_LABEL[p];
-                  }).join("・")}
-                  のキャラクターを、上で選んだ内容でいっしょに作り直します。
-                  {remaining < people.length && `（プレビューの残りが${people.length}枚以上必要です。下のボタンで追加できます）`}
-                </div>
-              </>
-            )}
+            <button type="button" className="ghost" disabled={busy || remaining < BOOK_SCENE_COUNT} onClick={() => makePages(BOOK_SCENE_COUNT)}>
+              {BOOK_SCENE_COUNT}枚ぜんぶ作って調整（{BOOK_SCENE_COUNT}枚）
+            </button>
+            <button type="button" className="ghost" disabled={busy} onClick={() => router.push("/create/size")}>
+              プレビューせず購入へ
+            </button>
           </section>
         )}
+        {confirmed && pageCount === FIRST_PAGES && !missingPages.length && !trial && (
+          <section className="card" style={{ gap: 10 }}>
+            <div className="display" style={{ fontSize: 16, fontWeight: 800, color: "var(--navy)" }}>冒頭{FIRST_PAGES}枚ができました</div>
+            <button type="button" className="cta" disabled={busy || remaining < BOOK_SCENE_COUNT - FIRST_PAGES} onClick={() => makePages(BOOK_SCENE_COUNT)}>
+              残り{BOOK_SCENE_COUNT - FIRST_PAGES}枚も作る（{BOOK_SCENE_COUNT - FIRST_PAGES}枚）
+            </button>
+            <button type="button" className="ghost" disabled={busy} onClick={() => router.push("/create/size")}>
+              このまま購入へ
+            </button>
+            <div style={{ fontSize: 12, lineHeight: 1.6, color: "var(--sub)" }}>残りのページは、ご注文後にこのキャラクターで描きます。</div>
+          </section>
+        )}
+        {confirmed && !trial && (
+          <button type="button" className="ghost" style={{ alignSelf: "center", height: 40, padding: "0 18px", fontSize: 14 }} disabled={busy} onClick={backToCharacters}>
+            {resetting ? "もどしています…" : "登場人物を直す"}
+          </button>
+        )}
+
         {account?.loggedIn && (
           <p className="step-lead" style={{ textAlign: "center", fontSize: 13 }}>
             プレビュー残り：{account.remaining}枚
@@ -268,8 +442,8 @@ function Preview() {
           </p>
         )}
         {boughtCredits && <p className="info-note" role="status">ご購入ありがとうございます。反映まで少しかかる場合は、下の「画面を再読み込み」を押してください。</p>}
-        {/* 残りが無いとき、または家族まとめて作り直すには足りないときは、追加のボタンを出す */}
-        {account?.loggedIn && (account.remaining <= 0 || (people.length > 1 && account.remaining < people.length)) && <BuyPreviewsButton returnTo="/create/preview" />}
+        {/* 残りが次の操作に足りないときは、追加のボタンを出す */}
+        {account?.loggedIn && account.remaining < needed && <BuyPreviewsButton returnTo="/create/preview" />}
         <button
           type="button"
           className="ghost"
@@ -286,13 +460,19 @@ function Preview() {
         {needLogin && !trial && (
           <Link href={loginHref("/create/preview")} className="ghost">無料会員登録・ログインへ</Link>
         )}
-        <p className="step-lead">ここでは表紙と登場人物のキャラクターをお見せしています。本文のページは、ご注文後にこのキャラクターをもとに同じタッチで仕上げます。</p>
       </main>
-      {trial ? (
-        <NextButton href={loginHref("/create/size")} disabled={!allDone}>無料会員登録して注文へ進む</NextButton>
+      {!confirmed ? (
+        <NextButton onClick={confirm} disabled={!charactersDone || busy}>登場人物を確定して表紙をつくる</NextButton>
+      ) : trial ? (
+        <NextButton href={loginHref("/create/size")} disabled={!coverDone || busy}>無料会員登録して注文へ進む</NextButton>
       ) : (
-        <NextButton href="/create/size" disabled={!allDone}>この内容で進む</NextButton>
+        <NextButton href="/create/size" disabled={!coverDone || busy}>この内容で進む</NextButton>
       )}
     </>
   );
+}
+
+/** ブラウザの確認ダイアログ（関数名の confirm は登場人物の確定に使っているため） */
+function confirm_(message: string) {
+  return window.confirm(message);
 }

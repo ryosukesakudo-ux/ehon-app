@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { CUSTOM_TEXT_MAX, CUSTOM_TITLE_MAX, SYNOPSIS_MAX, customKey, parseCustomKey, type CustomStory } from "@/lib/custom-story";
+import { CAST_ABOUT_MAX, CAST_KIND_LABEL, CAST_NAME_MAX, CUSTOM_TEXT_MAX, CUSTOM_TITLE_MAX, MAX_CAST, SYNOPSIS_MAX, castLabel, customKey, parseCustomKey, type CastInput, type CastKind, type CustomStory } from "@/lib/custom-story";
 import { LEVELS, levelForAge, type LevelId } from "@/lib/story-key";
 import { Chevron } from "@/components/icons";
 import { Lottie } from "@/components/lottie";
@@ -21,6 +21,12 @@ export function CustomStoryPanel() {
   const open = toggled ?? !!story;
   const [synopsis, setSynopsis] = useState("");
   const [level, setLevel] = useState<LevelId>(story?.level ?? levelForAge(state.childAge));
+  // ほかの登場人物（ペットやおばあちゃんなど）。お話を作ったあとは、そのお話の登場人物から始める
+  const [cast, setCast] = useState<CastInput[] | null>(null);
+  const castRows = cast ?? story?.cast.map(({ name, kind, about }) => ({ name, kind, about })) ?? [];
+  const castOk = castRows.every((c) => c.name.trim());
+  const castChanged = !!story && JSON.stringify(castRows.map((c) => [c.name.trim(), c.kind, c.about.trim()])) !== JSON.stringify(story.cast.map((c) => [c.name, c.kind, c.about]));
+  const setRow = (i: number, patch: Partial<CastInput>) => setCast(castRows.map((c, j) => (j === i ? { ...c, ...patch } : c)));
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [needLogin, setNeedLogin] = useState(false);
@@ -44,7 +50,7 @@ export function CustomStoryPanel() {
       const res = await fetch("/api/stories", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ synopsis, childName: state.childName.trim(), childAge: state.childAge, level }),
+        body: JSON.stringify({ synopsis, childName: state.childName.trim(), childAge: state.childAge, level, cast: castRows.map((c) => ({ ...c, name: c.name.trim(), about: c.about.trim() })) }),
       });
       const json = await res.json().catch(() => ({}));
       if (!res.ok || !json.story) {
@@ -52,6 +58,7 @@ export function CustomStoryPanel() {
         throw new Error(json.error ?? "お話を作れませんでした");
       }
       save(json.story);
+      setCast(null);
     } catch (e) {
       setError(e instanceof Error ? e.message : "お話を作れませんでした");
     } finally {
@@ -70,12 +77,60 @@ export function CustomStoryPanel() {
         </div>
         <div style={{ display: "flex", flexDirection: "column", gap: 6, flexGrow: 1 }}>
           <div className="choice-title display">{story ? `オリジナル「${story.title}」` : "オリジナルのお話をつくる"}</div>
-          <div className="choice-desc">あらすじを書くと、AIが12ページのお話にします。文はあとから自由に直せます。{open && !story && "お話ができると、次へ進めます。"}</div>
+          <div className="choice-desc">あらすじを書くと、AIが12ページのお話にします。ペットやおばあちゃんなども、写真から登場させられます。{open && !story && "お話ができると、次へ進めます。"}</div>
         </div>
         <Chevron dir={open ? "up" : "down"} size={18} />
       </button>
       {open && (
         <div className="card" style={{ gap: 12 }}>
+          <div className="field">
+            <span className="display" style={{ fontWeight: 800, color: "var(--navy)" }}>ほかの登場人物（任意・{MAX_CAST}人まで）</span>
+            <span style={{ fontSize: 12, lineHeight: 1.6, color: "var(--sub)" }}>
+              ママ・パパ以外に登場させたい人やペットの名前を入れてください。次の写真の画面で、それぞれの写真を選べます。
+            </span>
+            {castRows.map((c, i) => (
+              <div key={i} className="cast-row">
+                <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+                  <input
+                    type="text"
+                    aria-label={`${i + 1}人目の名前`}
+                    placeholder="名前（例：コロ）"
+                    maxLength={CAST_NAME_MAX}
+                    value={c.name}
+                    onChange={(e) => setRow(i, { name: [...e.target.value].slice(0, CAST_NAME_MAX).join("") })}
+                    style={{ flex: 1, minWidth: 0 }}
+                  />
+                  <div role="radiogroup" aria-label={`${i + 1}人目の種類`} style={{ display: "flex", gap: 4 }}>
+                    {(Object.keys(CAST_KIND_LABEL) as CastKind[]).map((k) => (
+                      <button key={k} type="button" role="radio" aria-checked={c.kind === k} className="cast-kind" onClick={() => setRow(i, { kind: k })}>
+                        {CAST_KIND_LABEL[k]}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+                <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+                  <input
+                    type="text"
+                    aria-label={`${i + 1}人目はどんな人・動物か`}
+                    placeholder={c.kind === "animal" ? "どんな動物か（例：うちの犬・ミニチュアシュナウザー）" : "どんな人か（例：おばあちゃん）"}
+                    maxLength={CAST_ABOUT_MAX}
+                    value={c.about}
+                    onChange={(e) => setRow(i, { about: [...e.target.value].slice(0, CAST_ABOUT_MAX).join("") })}
+                    style={{ flex: 1, minWidth: 0 }}
+                  />
+                  <button type="button" className="ghost" aria-label={`${i + 1}人目をはずす`} style={{ height: 40, padding: "0 12px", fontSize: 13 }} onClick={() => setCast(castRows.filter((_, j) => j !== i))}>
+                    はずす
+                  </button>
+                </div>
+              </div>
+            ))}
+            {castRows.length < MAX_CAST && (
+              <button type="button" className="ghost" style={{ alignSelf: "flex-start", height: 40, padding: "0 16px", fontSize: 14 }} onClick={() => setCast([...castRows, { name: "", kind: "animal", about: "" }])}>
+                ＋ 登場人物を追加
+              </button>
+            )}
+            {castChanged && <p className="info-note" style={{ fontSize: 13 }}>登場人物を変えたときは、下のボタンでお話を作り直してください。</p>}
+          </div>
           <div className="field">
             <label htmlFor="synopsis" className="display">あらすじ（{SYNOPSIS_MAX}文字まで）</label>
             <textarea
@@ -104,7 +159,7 @@ export function CustomStoryPanel() {
           {!nameOk || !ageOk ? (
             <p className="info-note" style={{ fontSize: 13 }}>下の「主人公の名前」と「年齢」を先に入れてください。お話の中に名前が入ります。</p>
           ) : null}
-          <button type="button" className="cta" disabled={busy || !synopsis.trim() || !nameOk || !ageOk} onClick={generate}>
+          <button type="button" className="cta" disabled={busy || !synopsis.trim() || !nameOk || !ageOk || !castOk} onClick={generate}>
             {busy ? "お話を書いています…" : story ? "このあらすじで作り直す" : "AIにお話を作ってもらう"}
           </button>
           <p style={{ margin: 0, fontSize: 12, lineHeight: 1.6, color: "var(--sub)" }}>
@@ -123,6 +178,9 @@ export function CustomStoryPanel() {
             <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
               <div className="divider" />
               <div className="display" style={{ fontSize: 16, fontWeight: 800, color: "var(--navy)" }}>できたお話（自由に直せます）</div>
+              {story.cast.length > 0 && (
+                <div style={{ fontSize: 13, lineHeight: 1.6, color: "var(--sub)" }}>登場人物：{story.cast.map(castLabel).join("、")}</div>
+              )}
               <div className="field">
                 <label htmlFor="custom-title">題名（{CUSTOM_TITLE_MAX}文字まで）</label>
                 <input

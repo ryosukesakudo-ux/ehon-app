@@ -34,6 +34,8 @@ function Resume() {
         demo: false,
         previews: {},
         previewScenes: [],
+        confirmed: false,
+        pageCount: 0,
         size: save.size,
         copies: save.copies,
         deliveryDate: save.deliveryDate,
@@ -74,6 +76,8 @@ function Resume() {
           demo: false,
           previews: json.previews,
           previewScenes: json.previewScenes ?? [],
+          confirmed: false,
+          pageCount: 0,
         }));
         router.replace("/create/preview");
       })

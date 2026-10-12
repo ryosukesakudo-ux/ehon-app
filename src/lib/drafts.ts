@@ -1,9 +1,11 @@
 import "server-only";
 import { toFile } from "openai";
 import { BOOK_BUCKET, PHOTO_BUCKET, getOpenAI, getSupabase } from "./services";
-import { hasRedoRequest, illustrate, type Detail, type Quality, type Redo, type RefImage } from "./illustrate";
-import { CHARACTER_SCENES, COVER_SCENE, PERSON_LABEL, characterOf, getTaste, previewScenes, type Person, type TasteId } from "./catalog";
+import { FINAL_PX, hasRedoRequest, illustrate, type Detail, type Quality, type Redo, type RefImage } from "./illustrate";
+import { BOOK_SCENE_COUNT, CHARACTER_SCENES, COVER_SCENE, MAX_GUESTS, PERSON_LABEL, characterOf, getTaste, guestOf, isPageScene, previewScenes, type Person, type TasteId } from "./catalog";
 import { getBook } from "./book";
+import { customPhotos, parseCustomKey } from "./custom-story";
+import { upscalePng } from "./upscale";
 import { currentUser, type Member } from "./auth";
 import { getAnonId } from "./anon";
 
@@ -103,10 +105,15 @@ export function draftPeople(draft: Draft): Person[] {
   return PEOPLE.filter((p) => photoOf(draft, p) || characterPathOf(draft, p));
 }
 
-/** この下書きのプレビューで作る絵の番号（表紙と、登場する人ごとのキャラクター） */
+/** オリジナルのお話の、ほかの登場人物の人数（ペットやおばあちゃんなど） */
+export function draftGuestCount(draft: Pick<Draft, "story">) {
+  return Math.min(parseCustomKey(draft.story)?.cast.length ?? 0, MAX_GUESTS);
+}
+
+/** この下書きのプレビューで最初に作る絵の番号（登場する人ごとのキャラクターと表紙）。本文のページ（0〜11）は別に選んで作る */
 export function draftPreviewScenes(draft: Draft) {
   const people = draftPeople(draft);
-  return previewScenes({ hasMom: people.includes("mom"), hasDad: people.includes("dad") });
+  return previewScenes({ hasMom: people.includes("mom"), hasDad: people.includes("dad"), guests: draftGuestCount(draft) });
 }
 
 /** この下書きで作ったキャラクターの保存先（作り直すと上書きする） */
@@ -114,14 +121,27 @@ export function characterPath(draftId: string, who: Person) {
   return `characters/${draftId}/${who}.png`;
 }
 
+/** ほかの登場人物のキャラクターの保存先（下書きの列には入れず、この場所で決まる） */
+export function guestCharacterPath(draftId: string, i: number) {
+  return `characters/${draftId}/guest${i}.png`;
+}
+
 function demoImage(draft: Draft, sceneIndex: number) {
   const taste = getTaste(draft.taste)!;
   const story = getBook(draft.story)!;
   const cover = sceneIndex === COVER_SCENE;
   const who = characterOf(sceneIndex);
-  const scene = cover ? { art: story.cover } : who ? { art: `${PERSON_LABEL[who]}のキャラクター（全身・正面）` } : story.scenes[sceneIndex];
+  const guest = guestOf(sceneIndex);
+  const guestName = guest === null ? "" : (parseCustomKey(draft.story)?.cast[guest]?.name ?? `登場人物${guest + 1}`);
+  const scene = cover
+    ? { art: story.cover }
+    : who
+      ? { art: `${PERSON_LABEL[who]}のキャラクター（全身・正面）` }
+      : guest !== null
+        ? { art: `${guestName}のキャラクター（全身）` }
+        : story.scenes[sceneIndex];
   const h = cover ? 683 : 1024;
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 ${h}"><rect width="1024" height="${h}" fill="${taste.swatch}"/><circle cx="820" cy="190" r="90" fill="#F6C445"/><path d="M0 760 C 260 640 520 820 1024 700 L1024 1024 L0 1024Z" fill="#ffffff" opacity="0.55"/><text x="512" y="480" font-size="40" text-anchor="middle" fill="#43505C" font-family="sans-serif">[デモ画像] ${cover ? "表紙" : who ? PERSON_LABEL[who] : `場面 ${sceneIndex + 1}`}</text><text x="512" y="540" font-size="26" text-anchor="middle" fill="#43505C" font-family="sans-serif">${escapeXml(scene.art.slice(0, 60))}</text></svg>`;
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 ${h}"><rect width="1024" height="${h}" fill="${taste.swatch}"/><circle cx="820" cy="190" r="90" fill="#F6C445"/><path d="M0 760 C 260 640 520 820 1024 700 L1024 1024 L0 1024Z" fill="#ffffff" opacity="0.55"/><text x="512" y="480" font-size="40" text-anchor="middle" fill="#43505C" font-family="sans-serif">[デモ画像] ${cover ? "表紙" : who ? PERSON_LABEL[who] : guest !== null ? escapeXml(guestName) : `場面 ${sceneIndex + 1}`}</text><text x="512" y="540" font-size="26" text-anchor="middle" fill="#43505C" font-family="sans-serif">${escapeXml(scene.art.slice(0, 60))}</text></svg>`;
   return `data:image/svg+xml;base64,${Buffer.from(svg).toString("base64")}`;
 }
 
@@ -140,6 +160,20 @@ async function download(bucket: string, path: string) {
   return toFile(data, path.split("/").pop() ?? "image.png", { type: data.type || "image/png" });
 }
 
+/** 無くてもよい画像（ほかの登場人物の写真・キャラクター）。無ければ null */
+async function tryDownload(bucket: string, path: string | null) {
+  if (!path) return null;
+  return download(bucket, path).catch(() => null);
+}
+
+/** この絵に出る、ほかの登場人物（キャラクターの絵なら本人だけ、表紙・本文ならその場面に出る人） */
+function guestsIn(draft: Draft, sceneIndex: number): number[] {
+  const book = getBook(draft.story);
+  if (!book?.cast?.length) return [];
+  if (sceneIndex === COVER_SCENE) return book.coverGuests ?? [];
+  return isPageScene(sceneIndex) ? (book.scenes[sceneIndex]?.guests ?? []) : [];
+}
+
 /**
  * 1場面の挿絵（またはキャラクターの絵）を作り、表示用のURLを返す。
  * 参考にするのは写真と、作ってあるキャラクターの絵。写真が削除されていても、キャラクターがあれば描ける。
@@ -155,8 +189,10 @@ export async function generateScene(draft: Draft, sceneIndex: number, quality: Q
   }
 
   const target = characterOf(sceneIndex);
+  const guest = guestOf(sceneIndex);
+  const guestPhotos = customPhotos(draft.story);
   const images: RefImage[] = [];
-  for (const who of target ? [target] : draftPeople(draft)) {
+  for (const who of target ? [target] : guest !== null ? [] : draftPeople(draft)) {
     const photo = photoOf(draft, who);
     const character = characterPathOf(draft, who);
     if (photo) images.push({ who, kind: "photo", file: await download(PHOTO_BUCKET, photo) });
@@ -168,17 +204,30 @@ export async function generateScene(draft: Draft, sceneIndex: number, quality: Q
       images.push({ who, kind: photo ? "previous" : "character", file: await download(BOOK_BUCKET, character) });
     }
   }
+  // ほかの登場人物（オリジナルのお話）：写真と、作ってあるキャラクターの絵。写真を消していても、キャラクターがあれば描ける
+  for (const g of guest !== null ? [guest] : guestsIn(draft, sceneIndex)) {
+    const photo = await tryDownload(PHOTO_BUCKET, guestPhotos[g] ?? null);
+    if (photo) images.push({ who: g, kind: "photo", file: photo });
+    const keepPrevious = !photo || (hasRedoRequest(redo) && redo.likeness !== "exact");
+    if (guest !== null && !keepPrevious) continue;
+    const character = await tryDownload(BOOK_BUCKET, guestCharacterPath(draft.id, g));
+    if (character) images.push({ who: g, kind: guest !== null && photo ? "previous" : "character", file: character });
+  }
 
   const b64 = await illustrate({ taste: draft.taste, story: draft.story, sceneIndex, images, quality, detail, childAge: draft.child_age, redo });
   const png = Buffer.from(b64, "base64");
 
   // 会員の写真は「最後に使った日」を更新する（1年使わなければ自動削除）
-  const used = PEOPLE.map((p) => photoOf(draft, p)).filter((p): p is string => !!p);
+  const used = [...PEOPLE.map((p) => photoOf(draft, p)), ...guestPhotos].filter((p): p is string => !!p);
   if (draft.user_id && used.length) {
     await db.from("user_photos").update({ last_used_at: new Date().toISOString() }).in("path", used);
   }
 
   if (target) await saveCharacter(draft, target, png);
+  if (guest !== null) {
+    const { error } = await db.storage.from(BOOK_BUCKET).upload(guestCharacterPath(draft.id, guest), png, { contentType: "image/png", upsert: true });
+    if (error) throw new Error(`キャラクターの保存に失敗しました: ${error.message}`);
+  }
 
   const path = pagePath(draft.id, quality, sceneIndex);
   const { error } = await db.storage.from(BOOK_BUCKET).upload(path, png, { contentType: "image/png", upsert: true });
@@ -238,6 +287,32 @@ export async function previewUrls(draftId: string): Promise<Record<number, strin
   return out;
 }
 
+/**
+ * 注文の印刷用の絵を、プレビューで作った同じページの絵から作る（お客様がプレビューで確かめた絵をそのまま本にする。2026-10-12 作道さん）。
+ * 本文は印刷の大きさに拡大し、表紙はそのまま使う。プレビューに無いページは null（新しく描く）。
+ */
+export async function finalFromPreview(draft: Draft, sceneIndex: number): Promise<string | null> {
+  const db = getSupabase();
+  if (!db || isDemoId(draft.id) || (sceneIndex !== COVER_SCENE && !isPageScene(sceneIndex))) return null;
+  const { data } = await db.storage.from(BOOK_BUCKET).download(pagePath(draft.id, "preview", sceneIndex));
+  if (!data) return null;
+  const b64 = Buffer.from(await data.arrayBuffer()).toString("base64");
+  const png = Buffer.from(sceneIndex === COVER_SCENE ? b64 : await upscalePng(b64, FINAL_PX), "base64");
+  const path = pagePath(draft.id, "final", sceneIndex);
+  const { error } = await db.storage.from(BOOK_BUCKET).upload(path, png, { contentType: "image/png", upsert: true });
+  if (error) throw new Error(`画像の保存に失敗しました: ${error.message}`);
+  return signedUrl(path);
+}
+
+/** プレビューの表紙と本文の絵を消す（登場人物を直すとき。古いキャラクターで描いた絵が本に使われないように） */
+export async function deletePreviewBook(draftId: string) {
+  const db = getSupabase();
+  if (!db || isDemoId(draftId)) return;
+  const scenes = [COVER_SCENE, ...Array.from({ length: BOOK_SCENE_COUNT }, (_, i) => i)];
+  const { error } = await db.storage.from(BOOK_BUCKET).remove(scenes.map((i) => pagePath(draftId, "preview", i)));
+  if (error) throw new Error(`絵の削除に失敗しました: ${error.message}`);
+}
+
 /** 下書きの絵（プレビューと本番）をすべて削除する。 */
 export async function deleteDraftImages(draftId: string) {
   const db = getSupabase();
@@ -269,7 +344,9 @@ export async function deleteDraftPhotos(draft: Pick<Draft, "id" | "child_photo_p
     const { error } = await db.storage.from(PHOTO_BUCKET).remove(paths);
     if (error) throw new Error(`写真の削除に失敗しました: ${error.message}`);
   }
-  const { error: charError } = await db.storage.from(BOOK_BUCKET).remove(PEOPLE.map((p) => characterPath(draft.id, p)));
+  const { error: charError } = await db.storage
+    .from(BOOK_BUCKET)
+    .remove([...PEOPLE.map((p) => characterPath(draft.id, p)), ...Array.from({ length: MAX_GUESTS }, (_, i) => guestCharacterPath(draft.id, i))]);
   if (charError) throw new Error(`キャラクターの削除に失敗しました: ${charError.message}`);
   await db
     .from("drafts")
