@@ -221,6 +221,27 @@ function Preview() {
 
   const url = scene === undefined ? undefined : state.previews[scene];
   const busy = Object.values(loading).some(Boolean) || resetting;
+  const drawing = Object.values(loading).some(Boolean);
+
+  // 絵を作っている間に再読み込み・画面を閉じると、同じ絵をもう一度作ってプレビューを2枚使ってしまうので、ブラウザの確認を出す
+  useEffect(() => {
+    if (!drawing) return;
+    const warn = (e: BeforeUnloadEvent) => e.preventDefault();
+    window.addEventListener("beforeunload", warn);
+    return () => window.removeEventListener("beforeunload", warn);
+  }, [drawing]);
+
+  // 追加プレビューの購入直後は、反映されるまで残り枚数を数秒ごとに読み直す（最大1分）
+  useEffect(() => {
+    if (!boughtCredits) return;
+    let tries = 0;
+    const timer = window.setInterval(() => {
+      tries += 1;
+      if (tries > 12) window.clearInterval(timer);
+      else refreshAccount();
+    }, 5000);
+    return () => window.clearInterval(timer);
+  }, [boughtCredits, refreshAccount]);
   const charactersDone = characters.length > 0 && characters.every((i) => state.previews[i]);
   const coverDone = !!state.previews[COVER_SCENE];
   const missingPages = pages.filter((i) => !state.previews[i]);
@@ -284,6 +305,7 @@ function Preview() {
           <li className={confirmed && !pageCount ? "on" : confirmed ? "done" : ""}>表紙</li>
           <li className={pageCount ? "on" : ""}>本文（任意）</li>
         </ol>
+        {drawing && <p className="info-note" role="status">絵を作っています。完成まで画面の再読み込みや移動はしないでください。</p>}
         <div style={{ display: "flex", flexDirection: "column", borderRadius: 18, overflow: "hidden", background: "#fff", border: "1px solid var(--line)" }}>
           {isCover ? (
             <BookCover lead={title.lead} title={title.main} art={picture} />
@@ -441,21 +463,9 @@ function Preview() {
             {typeof account.free === "number" && `（今月の無料 ${account.free} / ${account.limit}枚${account.credits ? `＋追加 ${account.credits}枚` : ""}）`}
           </p>
         )}
-        {boughtCredits && <p className="info-note" role="status">ご購入ありがとうございます。反映まで少しかかる場合は、下の「画面を再読み込み」を押してください。</p>}
+        {boughtCredits && <p className="info-note" role="status">ご購入ありがとうございます。残り枚数は数十秒ほどで自動的に反映されます。</p>}
         {/* 残りが次の操作に足りないときは、追加のボタンを出す */}
         {account?.loggedIn && account.remaining < needed && <BuyPreviewsButton returnTo="/create/preview" />}
-        <button
-          type="button"
-          className="ghost"
-          style={{ alignSelf: "center", height: 40, padding: "0 18px", fontSize: 14, gap: 6 }}
-          onClick={() => window.location.reload()}
-        >
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-            <path d="M21 12a9 9 0 1 1-2.64-6.36" />
-            <path d="M21 3v6h-6" />
-          </svg>
-          画面を再読み込み
-        </button>
         {error && <p className="error" role="alert">{error}</p>}
         {needLogin && !trial && (
           <Link href={loginHref("/create/preview")} className="ghost">無料会員登録・ログインへ</Link>
