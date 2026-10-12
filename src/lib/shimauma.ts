@@ -7,6 +7,7 @@ import { CREAM, SAFE_MM, drawCoverText, drawParagraph, mm, type Color, type Surf
 import { buildZip } from "@/lib/zip";
 
 // しまうまプリントのフォトブック「PICTURES」B5スクエア（182mm角）24ページに入れる画像を、ZIPにまとめて作る。
+// 表紙は、題名入りの正方形（表紙.jpg）と、文字の無い横長の絵（表紙_絵だけ.jpg）の2つ。
 // - しまうまの編集画面では文字を好きな位置に置けないので、文章もページの画像にする。1ページに1枚、全面に置いてもらう。
 // - PICTURES 24ページは、中表紙を除く23ページに写真を置ける（https://www.n-pri.jp/photobook/pictures/）。
 //   見開き（左：文章 / 右：絵）を11場面、最後の場面だけ1ページに文章と絵をまとめて、12場面すべてを入れる。
@@ -56,6 +57,8 @@ export async function buildShimaumaZip(input: ShimaumaInput) {
         ]),
       ),
     });
+    // PICTURESの表紙デザインは写真の枠が横長で、題名はしまうまの文字欄に入れる形なので、文字の無い表紙の絵（3:2）も入れておく
+    files.push({ name: "表紙_絵だけ.jpg", bytes: await jpeg(sharp(await art(input.coverImage, COVER_PX, Math.round((COVER_PX * 2) / 3)))) });
   }
 
   // 本文：ファイル名の順（しまうまの「自動配置」の「ファイル名順」）で並ぶように 01〜23 の番号をつける
