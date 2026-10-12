@@ -365,6 +365,15 @@ const SAMPLE_CAST: Record<Person, string> = {
   dad: "a kind Japanese man in his thirties with short black hair and round black glasses",
 };
 
+// 作例とは別の家族で見本を描くシリーズ（名前は series.ts の seriesSampleChildName）。2026-10-12 作道さん：数のお勉強は3歳くらいの女の子、ママ・パパは今の家族とはっきり違う見た目に
+const SERIES_SAMPLE_CAST: Partial<Record<keyof typeof SAMPLE_OUTFITS, Record<Person, string>>> = {
+  number: {
+    child: "a cheerful three-year-old Japanese girl, small with a toddler's build, with chin-length dark brown hair in two short pigtails tied with plain yellow hair ties, straight bangs, round rosy cheeks and big bright eyes",
+    mom: "a lively Japanese woman in her thirties with very short black pixie-cut hair and a wide warm smile, no glasses",
+    dad: "a tall, friendly Japanese man in his thirties with slightly wavy medium-length brown hair and a short neat beard, no glasses",
+  },
+};
+
 // お話ごとの服装（同じお話の中では変えない）
 const SAMPLE_OUTFITS: Record<StoryId | "sea" | "dinosaur" | "number", Record<Person, string>> = {
   forest: {
@@ -402,7 +411,8 @@ const SAMPLE_OUTFITS: Record<StoryId | "sea" | "dinosaur" | "number", Record<Per
 
 function sampleCast(story: keyof typeof SAMPLE_OUTFITS, people: Person[], withOutfits = true) {
   const role: Record<Person, string> = { child: "The main character", mom: "The mother", dad: "The father" };
-  return people.map((p) => `${role[p]}: ${SAMPLE_CAST[p]}${withOutfits ? `, wearing ${SAMPLE_OUTFITS[story][p]}` : ""}.`).join(" ");
+  const cast = SERIES_SAMPLE_CAST[story] ?? SAMPLE_CAST;
+  return people.map((p) => `${role[p]}: ${cast[p]}${withOutfits ? `, wearing ${SAMPLE_OUTFITS[story][p]}` : ""}.`).join(" ");
 }
 
 /** お話ごとのキャラクター設定画を作る（家族3人の全身・正面、白い背景）。 */
@@ -545,10 +555,17 @@ export async function makeHeroBookPhoto(opts: { title: string; cover: Uploadable
 // --- 台本（シリーズ）の絵 ---
 // 作例と同じ架空の家族で、シリーズの各話の表紙と12場面を描く。家族はお話の作例の設定画（服装も同じ）を
 // もとにし、相棒（森ならりすのポッケ）を加えた「シリーズの設定画」を1枚作って、全場面でそれを参考にする。
-// 作例の設定画が無いシリーズ（海・恐竜・数のお勉強）は、家族と相棒の設定画を文章から作る。
+// 作例の設定画が無いシリーズ（海・恐竜）は、家族と相棒の設定画を文章から作る。
+// 写真が先のシリーズ（数のお勉強）は、架空の家族写真を先に作り、設定画と場面はその写真に寄せて描く。
 
-/** シリーズの設定画（家族3人＋相棒）を作る。familySheet はお話の作例の設定画（無ければ文章から描く） */
-export async function makeSeriesSheet(series: StudioSeries, familySheet: Uploadable | null, note?: string) {
+/** 写真が先のシリーズで、設定画・場面を家族写真に寄せる指示（作り直しの「写真そっくり」と同じ） */
+const PHOTO_LIKENESS = LIKENESS_LEVELS.find((l) => l.id === "exact")!.prompt;
+
+/**
+ * シリーズの設定画（家族3人＋相棒）を作る。familySheet はお話の作例の設定画（無ければ文章から描く）。
+ * familyPhoto があれば（写真が先のシリーズ）、その写真の3人を写真そっくりに絵にする
+ */
+export async function makeSeriesSheet(series: StudioSeries, familySheet: Uploadable | null, note?: string, familyPhoto?: Uploadable | null) {
   const ai = getOpenAI();
   if (!ai) throw new Error("OPENAI_API_KEY が未設定です");
   const common = [
@@ -557,7 +574,25 @@ export async function makeSeriesSheet(series: StudioSeries, familySheet: Uploada
     "Do not draw any letters, words or text.",
     seriesNote(note),
   ];
-  const result = familySheet
+  const result = familyPhoto
+    ? await ai.images.edit({
+        model: process.env.OPENAI_IMAGE_MODEL ?? "gpt-image-2",
+        image: [familyPhoto],
+        prompt: [
+          "Character reference sheet for a children's picture book series.",
+          "The reference image is a photo of the real family: the mother on the left, the child in the middle and the father on the right. Draw these three people as picture-book characters.",
+          PHOTO_LIKENESS,
+          `Dress them for the book: the child wears ${SAMPLE_OUTFITS[series.id].child}; the mother wears ${SAMPLE_OUTFITS[series.id].mom}; the father wears ${SAMPLE_OUTFITS[series.id].dad}.`,
+          `Add the series sidekick standing next to the child: ${series.sidekick}.`,
+          ...common,
+        ]
+          .filter(Boolean)
+          .join(" "),
+        size: "1536x1024",
+        quality: "high",
+        output_format: "png",
+      })
+    : familySheet
     ? await ai.images.edit({
         model: process.env.OPENAI_IMAGE_MODEL ?? "gpt-image-2",
         image: [familySheet],
@@ -587,6 +622,34 @@ export async function makeSeriesSheet(series: StudioSeries, familySheet: Uploada
         quality: "high",
         output_format: "png",
       });
+  const b64 = result.data?.[0]?.b64_json;
+  if (!b64) throw new Error("画像が生成されませんでした");
+  return b64;
+}
+
+/**
+ * 写真が先のシリーズで、最初に作る架空の家族写真（文章の家族から）。設定画と場面はこの写真に寄せて描く。
+ * サンプル集では左からママ・主人公・パパの順に名前を付けて表示する。
+ */
+export async function makeSeriesFamilyPhotoFromText(series: StudioSeries, note?: string) {
+  const ai = getOpenAI();
+  if (!ai) throw new Error("OPENAI_API_KEY が未設定です");
+  const result = await ai.images.generate({
+    model: process.env.OPENAI_IMAGE_MODEL ?? "gpt-image-2",
+    prompt: [
+      "A natural, candid smartphone photo of a real Japanese family of three in a sunny park, as if taken by a friend.",
+      sampleCast(series.id, ["child", "mom", "dad"], false),
+      "They wear everyday casual clothes.",
+      "They stand side by side in a row, evenly spaced across the frame, in this exact order from left to right: the mother on the left third, the child in the middle, the father on the right third. The child stands in front, between the parents.",
+      "All three smile at the camera, faces clearly visible and not overlapping, upper bodies in the frame, soft daylight, realistic photo, no text. Do not include any animal.",
+      seriesNote(note),
+    ]
+      .filter(Boolean)
+      .join(" "),
+    size: "1536x1024",
+    quality: "high",
+    output_format: "png",
+  });
   const b64 = result.data?.[0]?.b64_json;
   if (!b64) throw new Error("画像が生成されませんでした");
   return b64;
@@ -628,7 +691,7 @@ function seriesNote(note?: string) {
   return n ? `Additional instructions from the art director (may be written in Japanese); follow them carefully, they take priority over the instructions above: ${n}` : "";
 }
 
-export function buildSeriesPrompt(series: StudioSeries, scene: SeriesScene, opts: { cover: boolean; page: number; outfits?: string; continuity?: Continuity[]; note?: string }) {
+export function buildSeriesPrompt(series: StudioSeries, scene: SeriesScene, opts: { cover: boolean; page: number; outfits?: string; continuity?: Continuity[]; note?: string; withPhoto?: boolean }) {
   const t = getTaste("watercolor")!;
   const people: Person[] = ["child", ...(scene.withMom ? (["mom"] as const) : []), ...(scene.withDad ? (["dad"] as const) : [])];
   return [
@@ -637,6 +700,9 @@ export function buildSeriesPrompt(series: StudioSeries, scene: SeriesScene, opts
     opts.outfits
       ? "Draw exactly the same characters: the same faces, hairstyles and body proportions. Only the drawing style and the clothes change."
       : "Draw exactly the same characters: the same faces, hairstyles, body proportions and outfit colors. Only the drawing style changes.",
+    opts.withPhoto
+      ? "The second reference image is a photo of the real family these characters were drawn from (the mother on the left, the child in the middle, the father on the right). Keep each person's face, hairstyle and hair color as close to that photo as possible, translated into the picture-book style; take only faces and hair from the photo, not its clothes, background or pose."
+      : "",
     STYLE_ONLY_FROM_TEXT,
     sampleCast(series.id, people, !opts.outfits),
     BOOK_CONSISTENCY,
@@ -662,14 +728,14 @@ export function buildSeriesPrompt(series: StudioSeries, scene: SeriesScene, opts
 }
 
 /** シリーズの1ページ（表紙または場面）を水彩で描き、PNG の base64 を返す。 */
-export async function illustrateSeries(opts: { series: StudioSeries; scene: SeriesScene; page: number; outfits?: string; continuity?: Continuity[]; note?: string; quality: Quality; sheet: Uploadable }) {
+export async function illustrateSeries(opts: { series: StudioSeries; scene: SeriesScene; page: number; outfits?: string; continuity?: Continuity[]; note?: string; quality: Quality; sheet: Uploadable; photo?: Uploadable | null }) {
   const cover = opts.page === 0;
   const ai = getOpenAI();
   if (!ai) throw new Error("OPENAI_API_KEY が未設定です");
   const result = await ai.images.edit({
     model: process.env.OPENAI_IMAGE_MODEL ?? "gpt-image-2",
-    image: [opts.sheet],
-    prompt: buildSeriesPrompt(opts.series, opts.scene, { cover, page: opts.page, outfits: opts.outfits, continuity: opts.continuity, note: opts.note }),
+    image: opts.photo ? [opts.sheet, opts.photo] : [opts.sheet],
+    prompt: buildSeriesPrompt(opts.series, opts.scene, { cover, page: opts.page, outfits: opts.outfits, continuity: opts.continuity, note: opts.note, withPhoto: !!opts.photo }),
     size: cover ? COVER_SIZE : "1024x1024",
     quality: opts.quality === "final" ? "high" : "medium",
     output_format: "png",

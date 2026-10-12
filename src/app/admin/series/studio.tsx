@@ -1,11 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { SAMPLE_CHILD_NAME, samplePublicUrl } from "@/lib/samples";
-import { SERIES_NOTE_MAX, seriesFamilyPhotoPath, seriesImagePath, seriesSheetPath, type SeriesId } from "@/lib/series";
+import { samplePublicUrl } from "@/lib/samples";
+import { SERIES_NOTE_MAX, isPhotoFirst, seriesFamilyPhotoPath, seriesSampleChildName, seriesImagePath, seriesSheetPath, type SeriesId } from "@/lib/series";
 import { SampleImage } from "@/components/sample-image";
 
-// 台本の絵スタジオ：作例と同じ架空の家族で、台本（シリーズ）の各話の表紙と12場面を水彩で作る。
+// 台本の絵スタジオ：架空の家族（ふつうは作例と同じ家族。数のお勉強は別の家族で、写真が先）で、台本（シリーズ）の各話の表紙と12場面を水彩で作る。
 // ① 登場人物の設定画（家族＋相棒）→ ② 話ごとに「まとめて作る」。気に入らない絵は1枚ずつ作り直せる。
 
 const PARALLEL = 3;
@@ -23,6 +23,9 @@ export function SeriesStudio({ list }: { list: StudioView[] }) {
   const [seriesId, setSeriesId] = useState<SeriesId>(list[0].id);
   const series = list.find((s) => s.id === seriesId)!;
   const SERIES_ID = seriesId;
+  const childName = seriesSampleChildName(seriesId);
+  // 写真が先のシリーズ：家族写真 → 設定画（写真そっくり） → 場面（設定画＋写真）の順に作る
+  const photoFirst = isPhotoFirst(seriesId);
   const [quality, setQuality] = useState<"preview" | "final">("preview");
   const [busy, setBusy] = useState<Record<string, boolean>>({});
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -56,15 +59,16 @@ export function SeriesStudio({ list }: { list: StudioView[] }) {
   const makePhoto = () => call("photo", { kind: "photo" });
   const makePage = (episode: number, page: number) => call(`${episode}/${page}` satisfies Key, { episode, page, quality });
 
-  async function sheetExists() {
-    const url = samplePublicUrl(seriesSheetPath(SERIES_ID));
+  async function exists(path: string) {
+    const url = samplePublicUrl(path);
     return url ? fetch(url, { method: "HEAD", cache: "no-store" }).then((r) => r.ok).catch(() => false) : false;
   }
 
   async function makeEpisode(no: number) {
     const per = quality === "final" ? 30 : 15;
     if (!confirm(`第${no}話の表紙と12場面（13枚）をまとめて作ります。AI代は約${13 * per}円です。よろしいですか？`)) return;
-    if (!(await sheetExists()) && !(await makeSheet())) return;
+    if (photoFirst && !(await exists(seriesFamilyPhotoPath(SERIES_ID))) && !(await makePhoto())) return;
+    if (!(await exists(seriesSheetPath(SERIES_ID))) && !(await makeSheet())) return;
     const jobs = Array.from({ length: 13 }, (_, page) => () => makePage(no, page));
     const run = async () => {
       for (let job = jobs.shift(); job; job = jobs.shift()) await job();
@@ -74,13 +78,59 @@ export function SeriesStudio({ list }: { list: StudioView[] }) {
 
   const anyBusy = Object.values(busy).some(Boolean);
 
+  const sheetSection = (
+    <section className="card" style={{ gap: 12 }}>
+      <h2 className="display" style={{ margin: 0, fontSize: 18, color: "var(--navy)" }}>登場人物の設定画</h2>
+      <p style={{ margin: 0, fontSize: 13, lineHeight: 1.7 }}>
+        {photoFirst ? "上の家族写真の3人を写真そっくりに絵にして" : "作例スタジオの家族3人（無いシリーズは文章から描きます）に"}、{series.sidekickLabel}を加えた1枚です。すべての場面がこの絵をもとに描かれます。作り直したら、場面も作り直してください（1枚 約50円）。
+      </p>
+      <Tile
+        path={seriesSheetPath(SERIES_ID)}
+        version={version.sheet}
+        busy={busy.sheet}
+        error={errors.sheet}
+        label="家族＋相棒の設定画"
+        aspect="3 / 2"
+        width={420}
+        onMake={makeSheet}
+        disabled={anyBusy}
+        {...noteProps("sheet")}
+      />
+    </section>
+  );
+  const photoSection = (
+    <section className="card" style={{ gap: 12 }}>
+      <h2 className="display" style={{ margin: 0, fontSize: 18, color: "var(--navy)" }}>サンプル集の家族写真</h2>
+      <p style={{ margin: 0, fontSize: 13, lineHeight: 1.7 }}>
+        サンプル集（/samples）の「この写真から → この登場人物に」に出す架空の家族写真です。左からママ・{childName}・パパの順に並べ、画面ではその順に名前を付けます。
+        {photoFirst
+          ? "このシリーズは、この写真をもとに設定画と場面を描きます（3歳くらいの女の子とママ・パパ）。並びや雰囲気が違ったら、欄に指示を書いて作り直してください（1枚 約40円）。作り直したら、設定画と場面も作り直してください。"
+          : "設定画の家族3人にそっくりに作ります。並びが違ったり似ていなかったりしたら、欄に指示を書いて作り直してください（1枚 約40円）。設定画を作り直したら、これも作り直してください。"}
+      </p>
+      <Tile
+        path={seriesFamilyPhotoPath(SERIES_ID)}
+        version={version.photo}
+        busy={busy.photo}
+        error={errors.photo}
+        label="架空の家族写真（左からママ・主人公・パパ）"
+        aspect="3 / 2"
+        width={420}
+        onMake={makePhoto}
+        disabled={anyBusy}
+        {...noteProps("photo")}
+      />
+    </section>
+  );
+
   return (
     <main style={{ maxWidth: 1100, margin: "0 auto", padding: "24px 16px 64px", display: "flex", flexDirection: "column", gap: 20 }}>
       <a href="/admin">← 注文管理へ</a>
       <h1 className="display" style={{ margin: 0, color: "var(--navy)" }}>台本の絵スタジオ</h1>
       <p style={{ margin: 0, fontSize: 14, lineHeight: 1.8 }}>
-        作例と同じ架空の家族（主人公「{SAMPLE_CHILD_NAME}」とママ・パパ）で、「{series.name}」の台本の見本の絵を水彩で作ります。表紙と12場面の13枚がそろった話から、お客様がお話選びの画面で選べるようになります（表紙はその見本として表示されます）。
-        まず「まとめて作る」を押してください（登場人物の設定画がまだなければ先に作ります）。気に入らない絵は、その絵の下の欄に直してほしいこと（日本語で大丈夫です）を書いて、ボタンで1枚ずつ作り直せます。指示はその絵にだけ効きます。
+        {childName === seriesSampleChildName("forest") ? "作例と同じ" : "このシリーズ用の"}架空の家族（主人公「{childName}」とママ・パパ）で、「{series.name}」の台本の見本の絵を水彩で作ります。表紙と12場面の13枚がそろった話から、お客様がお話選びの画面で選べるようになります（表紙はその見本として表示されます）。
+        {photoFirst
+          ? "このシリーズは、先に架空の家族写真を作り、設定画と場面はその写真にそっくりに寄せて描きます（お客様の写真から絵本ができる流れと同じです）。まず「まとめて作る」を押してください（家族写真と設定画がまだなければ、その順に先に作ります）。"
+          : "まず「まとめて作る」を押してください（登場人物の設定画がまだなければ先に作ります）。"}気に入らない絵は、その絵の下の欄に直してほしいこと（日本語で大丈夫です）を書いて、ボタンで1枚ずつ作り直せます。指示はその絵にだけ効きます。
       </p>
       <label>
         シリーズ：
@@ -96,44 +146,8 @@ export function SeriesStudio({ list }: { list: StudioView[] }) {
         </select>
       </label>
 
-      <section className="card" style={{ gap: 12 }}>
-        <h2 className="display" style={{ margin: 0, fontSize: 18, color: "var(--navy)" }}>登場人物の設定画</h2>
-        <p style={{ margin: 0, fontSize: 13, lineHeight: 1.7 }}>
-          作例スタジオの家族3人（無いシリーズは文章から描きます）に、{series.sidekickLabel}を加えた1枚です。すべての場面がこの絵をもとに描かれます。作り直したら、場面も作り直してください（1枚 約50円）。
-        </p>
-        <Tile
-          path={seriesSheetPath(SERIES_ID)}
-          version={version.sheet}
-          busy={busy.sheet}
-          error={errors.sheet}
-          label="家族＋相棒の設定画"
-          aspect="3 / 2"
-          width={420}
-          onMake={makeSheet}
-          disabled={anyBusy}
-          {...noteProps("sheet")}
-        />
-      </section>
-
-      <section className="card" style={{ gap: 12 }}>
-        <h2 className="display" style={{ margin: 0, fontSize: 18, color: "var(--navy)" }}>サンプル集の家族写真</h2>
-        <p style={{ margin: 0, fontSize: 13, lineHeight: 1.7 }}>
-          サンプル集（/samples）の「この写真から → この登場人物に」に出す、設定画の家族3人にそっくりな架空の家族写真です。左からママ・{SAMPLE_CHILD_NAME}・パパの順に並べ、画面ではその順に名前を付けます。
-          並びが違ったり似ていなかったりしたら、欄に指示を書いて作り直してください（1枚 約40円）。設定画を作り直したら、これも作り直してください。
-        </p>
-        <Tile
-          path={seriesFamilyPhotoPath(SERIES_ID)}
-          version={version.photo}
-          busy={busy.photo}
-          error={errors.photo}
-          label="架空の家族写真（左からママ・主人公・パパ）"
-          aspect="3 / 2"
-          width={420}
-          onMake={makePhoto}
-          disabled={anyBusy}
-          {...noteProps("photo")}
-        />
-      </section>
+      {photoFirst ? photoSection : sheetSection}
+      {photoFirst ? sheetSection : photoSection}
 
       {series.episodes.map((ep) => (
         <section key={ep.no} className="card" style={{ gap: 14 }}>
