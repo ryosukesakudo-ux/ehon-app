@@ -1,6 +1,6 @@
 import "server-only";
 import type { Uploadable } from "openai/uploads";
-import { COVER_SCENE, COVER_SIZE, LIKENESS_LEVELS, REDO_OPTIONS, characterOf, getStory, getTaste, type LikenessId, type Person, type RedoOptionId, type StoryId, type TasteId } from "./catalog";
+import { COVER_SCENE, COVER_SIZE, LIKENESS_LEVELS, REDO_OPTIONS, characterOf, getStory, guestOf, getTaste, type LikenessId, type Person, type RedoOptionId, type StoryId, type TasteId } from "./catalog";
 import { getBook, type BookScene } from "./book";
 import { getOpenAI } from "./services";
 import { upscalePng } from "./upscale";
@@ -104,7 +104,7 @@ function outfitsPrompt(outfits: string) {
 }
 
 /** 印刷用の本文の絵の大きさ（1辺のpx）。OPENAI_FINAL_SIZE（例 2048x2048）で変えられる */
-const FINAL_PX = Number((process.env.OPENAI_FINAL_SIZE ?? "2048x2048").split("x")[0]) || 2048;
+export const FINAL_PX = Number((process.env.OPENAI_FINAL_SIZE ?? "2048x2048").split("x")[0]) || 2048;
 
 // 参考画像（写真や設定画）の絵柄に引っぱられて、テイストの違いが消えないようにする指示
 const STYLE_ONLY_FROM_TEXT =
@@ -128,9 +128,17 @@ export function ageBody(age: number) {
   return `The child is ${age} year${age === 1 ? "" : "s"} old: draw them as ${build}, at a height that fits that age next to the adults.`;
 }
 
+/** 絵に出る人：主人公・ママ・パパか、オリジナルのお話のほかの登場人物（cast の番号・0から） */
+export type Who = Person | number;
+
+/** 絵の指示での呼び名。ほかの登場人物は Companion 1, 2, ...（お話の絵の内容と同じ） */
+function labelOf(who: Who) {
+  return typeof who === "number" ? `Companion ${who + 1}` : LABEL[who];
+}
+
 /** 参考画像：写真か、写真から作ったキャラクターの絵（previous は作り直す前の同じキャラクター） */
 export type RefKind = "photo" | "character" | "previous";
-export type RefImage = { who: Person; kind?: RefKind; file: Uploadable };
+export type RefImage = { who: Who; kind?: RefKind; file: Uploadable };
 
 /** 作り直しの指示（選択肢と一言） */
 export type Redo = {
@@ -146,15 +154,15 @@ export function hasRedoRequest(redo?: Redo | null): redo is Redo {
   return !!redo && (redo.options.length > 0 || !!redo.note.trim() || (!!redo.likeness && redo.likeness !== "normal"));
 }
 
-function describeRefs(refs: { who: Person; kind?: RefKind }[]) {
+function describeRefs(refs: { who: Who; kind?: RefKind }[]) {
   return refs
     .map((r, i) => {
       const n = `Reference image ${i + 1}`;
       if (r.kind === "character") {
-        return `${n} is the approved picture-book character design of ${LABEL[r.who]}: keep exactly the same face, hairstyle, hair color and body proportions, and the same outfit unless this prompt describes different clothes.`;
+        return `${n} is the approved picture-book character design of ${labelOf(r.who)}: keep exactly the same face, hairstyle, hair color and body proportions, and the same outfit unless this prompt describes different clothes.`;
       }
-      if (r.kind === "previous") return `${n} is the previous version of this drawing of ${LABEL[r.who]}.`;
-      return `${n} is a photo of ${LABEL[r.who]}.`;
+      if (r.kind === "previous") return `${n} is the previous version of this drawing of ${labelOf(r.who)}.`;
+      return `${n} is a photo of ${labelOf(r.who)}.`;
     })
     .join(" ");
 }
@@ -175,11 +183,13 @@ function redoPrompt(redo?: Redo | null) {
 }
 
 /** キャラクター（1人の全身・正面の絵）を描く指示。プレビューで見せ、本番の絵の参考にする。 */
-export function buildCharacterPrompt(taste: TasteId, who: Person, refs: { who: Person; kind?: RefKind }[], childAge?: number | null, redo?: Redo | null, story?: string) {
+export function buildCharacterPrompt(taste: TasteId, who: Who, refs: { who: Who; kind?: RefKind }[], childAge?: number | null, redo?: Redo | null, story?: string) {
   const t = getTaste(taste)!;
+  const book = getBook(story);
   // 台本のシリーズは、キャラクターの絵もその話の服で描く（本文の絵の参考になるので、服がずれないように）
-  const outfits = getBook(story)?.series?.outfits;
+  const outfits = book?.series?.outfits;
   const hasPrevious = refs.some((r) => r.kind === "previous");
+  if (typeof who === "number") return guestCharacterPrompt(t.prompt, who, book?.cast?.[who], refs, redo, hasPrevious);
   return [
     `${t.prompt}.`,
     describeRefs(refs),
@@ -202,11 +212,58 @@ export function buildCharacterPrompt(taste: TasteId, who: Person, refs: { who: P
     .join(" ");
 }
 
-export function buildPrompt(taste: TasteId, story: string, sceneIndex: number, refs: { who: Person; kind?: RefKind }[], childAge?: number | null, redo?: Redo | null) {
+/** オリジナルのお話の、ほかの登場人物（ペットやおばあちゃんなど）のキャラクターの絵の指示 */
+function guestCharacterPrompt(style: string, i: number, member: { kind: "person" | "animal"; look: string } | undefined, refs: { who: Who; kind?: RefKind }[], redo: Redo | null | undefined, hasPrevious: boolean) {
+  const animal = member?.kind === "animal";
+  const hasPhoto = refs.some((r) => r.kind === "photo");
+  return [
+    `${style}.`,
+    describeRefs(refs),
+    STYLE_ONLY_FROM_TEXT,
+    animal
+      ? "Turn the animal into a hand-drawn picture-book character, not a realistic photo: soft simplified shapes and expressive friendly eyes" +
+        (hasPhoto ? ", while keeping the breed, size, fur color, fur length, markings and ear and tail shape from the photo so the family recognizes their own pet at a glance." : ".")
+      : PICTURE_BOOK_CHARACTERS,
+    "Make them look friendly and natural, never caricatured.",
+    `Character design of ${labelOf(i)}${member ? ` (${member.look})` : ""} only, for a children's picture book: ` +
+      (animal
+        ? "the animal alone, full body from head to tail, standing in a natural relaxed pose, friendly expression."
+        : "one person standing alone, full body from head to toes, front view, relaxed natural pose, friendly expression, simple everyday clothes."),
+    "Plain soft light background with no scenery and no other people or animals. Leave a little space around the whole body.",
+    hasPrevious
+      ? redo?.likeness && redo.likeness !== "normal"
+        ? `Keep the overall look of the previous version, but redraw ${animal ? "the face, fur and markings" : "the face and hair"} from the photo so it looks more like the photo, and change what the requests below ask to change.`
+        : "Keep everything from the previous version except what the requests below ask to change."
+      : "",
+    redoPrompt(redo),
+    "Do not draw any letters, words or text in the image.",
+  ]
+    .filter(Boolean)
+    .join(" ");
+}
+
+/** オリジナルのお話で、この絵に出る・出ない「ほかの登場人物」の指示 */
+function guestsPrompt(cast: { kind: "person" | "animal"; look: string }[] | undefined, guests: number[] | undefined) {
+  if (!cast?.length) return "";
+  const present = (guests ?? []).filter((g) => cast[g]);
+  const absent = cast.map((_, g) => g).filter((g) => !present.includes(g));
+  return [
+    present.length
+      ? `Also in this picture: ${present.map((g) => `${labelOf(g)} is ${cast[g].look}`).join("; ")}. Draw each companion exactly like their character design reference image, keeping the same look on every page; never turn a companion into a different person or animal.`
+      : "",
+    absent.length ? `Do not include ${absent.map(labelOf).join(" or ")} in this picture.` : "",
+  ]
+    .filter(Boolean)
+    .join(" ");
+}
+
+export function buildPrompt(taste: TasteId, story: string, sceneIndex: number, refs: { who: Who; kind?: RefKind }[], childAge?: number | null, redo?: Redo | null) {
   const t = getTaste(taste)!;
   const isCover = sceneIndex === COVER_SCENE;
   const book = getBook(story)!;
-  const scene: BookScene = isCover ? { text: "", art: book.cover, withSidekick: book.coverWithSidekick, camera: book.coverCamera } : book.scenes[sceneIndex];
+  const scene: BookScene = isCover
+    ? { text: "", art: book.cover, withSidekick: book.coverWithSidekick, camera: book.coverCamera, guests: book.coverGuests }
+    : book.scenes[sceneIndex];
   const series = book.series;
   const people = [...new Set(refs.map((r) => r.who))];
   const generic = [
@@ -235,6 +292,7 @@ export function buildPrompt(taste: TasteId, story: string, sceneIndex: number, r
     `Scene: ${scene.art}.`,
     series ? lookPrompt(series.cast, series.props, scene.art, scene.camera) : "",
     series ? SERIES_CAST_RULES : "",
+    guestsPrompt(book.cast, scene.guests),
     redoPrompt(redo),
     generic.length ? `${generic.join(" and ")} appear in this scene; draw them as gentle adults without a specific likeness.` : "",
     absent.length ? `Do not include ${absent.join(" or ")} in this scene.` : "",
@@ -267,12 +325,13 @@ export async function illustrate(opts: {
   // 印刷用の本文の絵は、1024px・最高画質で作ってから印刷サイズに拡大する（A方式）。
   // 2048px で直接作るより約6割安く、2026-10-10 の画質くらべで見分けがつかないことを確認済み。
   const isCover = opts.sceneIndex === COVER_SCENE;
-  const character = characterOf(opts.sceneIndex);
-  const upscaleTo = !opts.size && !isCover && !character && opts.quality === "final" ? FINAL_PX : null;
+  const guest = guestOf(opts.sceneIndex);
+  const character: Who | null = characterOf(opts.sceneIndex) ?? guest;
+  const upscaleTo = !opts.size && !isCover && character === null && opts.quality === "final" ? FINAL_PX : null;
   const result = await ai.images.edit({
     model: process.env.OPENAI_IMAGE_MODEL ?? "gpt-image-2",
     image: opts.images.map((i) => i.file),
-    prompt: character
+    prompt: character !== null
       ? buildCharacterPrompt(opts.taste, character, opts.images, opts.childAge, opts.redo, opts.story)
       : buildPrompt(opts.taste, opts.story, opts.sceneIndex, opts.images, opts.childAge, opts.redo),
     // 表紙は横長（タイトルは絵の上の帯に置くので、絵に文字の場所はいらない）

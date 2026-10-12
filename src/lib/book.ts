@@ -7,7 +7,13 @@ import { parseCustomKey } from "./custom-story";
 // 注文の「お話の番号」から、絵本の中身（表紙の絵・12場面の文と絵）を組み立てる（サーバー専用）。
 // 旧版の1話だけのお話は catalog.ts の STORIES、シリーズは src/data/series/*.json（確定した台本）から。
 
-export type BookScene = Scene & { withSidekick?: boolean; /** カメラの位置・構図（英語） */ camera?: string };
+export type BookScene = Scene & {
+  withSidekick?: boolean;
+  /** カメラの位置・構図（英語） */
+  camera?: string;
+  /** オリジナルのお話で、この場面に出るほかの登場人物（cast の番号） */
+  guests?: number[];
+};
 
 export type Book = {
   key: string;
@@ -19,6 +25,10 @@ export type Book = {
   scenes: BookScene[];
   /** オリジナルのお話のとき、本文に 漢字《かな》 のふりがながある（文の量が「多い」） */
   ruby?: boolean;
+  /** オリジナルのお話の、ほかの登場人物（名前と、絵での見た目） */
+  cast?: { name: string; kind: "person" | "animal"; look: string }[];
+  /** 表紙に出る、ほかの登場人物（cast の番号） */
+  coverGuests?: number[];
   /** シリーズのお話のときだけ */
   series?: {
     id: SeriesId;
@@ -56,8 +66,10 @@ export function getBook(key: string | null | undefined): Book | null {
       key: key!,
       name: custom.title,
       cover: custom.cover,
-      scenes: custom.scenes.map((s) => ({ text: s.text, art: s.art, withMom: s.withMom, withDad: s.withDad })),
+      scenes: custom.scenes.map((s) => ({ text: s.text, art: s.art, withMom: s.withMom, withDad: s.withDad, guests: s.guests })),
       ruby: custom.level === "l",
+      cast: custom.cast.map(({ name, kind, look }) => ({ name, kind, look })),
+      coverGuests: custom.coverGuests,
     };
   }
 

@@ -1,7 +1,7 @@
 "use client";
 
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
-import { clampCopies, getSize, isLikenessId, type LikenessId, type SizeId, type TasteId } from "@/lib/catalog";
+import { BOOK_SCENE_COUNT, FIRST_PAGES, clampCopies, getSize, isLikenessId, type LikenessId, type SizeId, type TasteId } from "@/lib/catalog";
 import { isStoryKey, parseSeriesKey, withoutCombo } from "@/lib/story-key";
 import { parseCustomKey } from "@/lib/custom-story";
 import type { Face } from "@/lib/face";
@@ -22,8 +22,12 @@ export type FlowState = {
   draftId: string | null;
   demo: boolean;
   previews: Record<number, string>;
-  /** プレビューで作る絵の番号（表紙・ママ・パパ）。下書きを作ったときにサーバーが決める */
+  /** プレビューで最初に作る絵の番号（登場人物のキャラクターと表紙）。下書きを作ったときにサーバーが決める */
   previewScenes: number[];
+  /** 登場人物のキャラクターを確定したか（確定すると表紙を作る） */
+  confirmed: boolean;
+  /** プレビューで作ると選んだ本文のページ数（0・冒頭3枚・12枚） */
+  pageCount: number;
   size: SizeId;
   /** 部数（1〜10） */
   copies: number;
@@ -47,6 +51,8 @@ const initial: FlowState = {
   demo: false,
   previews: {},
   previewScenes: [],
+  confirmed: false,
+  pageCount: 0,
   size: "M",
   copies: 1,
   deliveryDate: "",
@@ -58,9 +64,16 @@ export type Photos = {
   child: File | null;
   mom: File | null;
   dad: File | null;
-  /** 顔を囲んだ位置（何人か写っている写真で、どの人を選んだか分かるように表示する） */
-  faces?: Partial<Record<"child" | "mom" | "dad", Face | null>>;
+  /** オリジナルのお話の、ほかの登場人物の写真（お話の登場人物の順） */
+  guests?: (File | null)[];
+  /** 顔を囲んだ位置（何人か写っている写真で、どの人を選んだか分かるように表示する）。ほかの登場人物は guest0, guest1… */
+  faces?: Partial<Record<string, Face | null>>;
 };
+
+/** 写真を1枚も選んでいないか */
+export function noPhotos(p: Photos) {
+  return !p.child && !p.mom && !p.dad && !p.guests?.some(Boolean);
+}
 
 type Ctx = {
   state: FlowState;
@@ -78,7 +91,7 @@ export function FlowProvider({ children }: { children: ReactNode }) {
   const [photos, setPhotosState] = useState<Photos>({ child: null, mom: null, dad: null });
   const setPhotos = (p: Photos) => {
     setPhotosState(p);
-    void writeLocalPhotos(p, !p.child && !p.mom && !p.dad);
+    void writeLocalPhotos(p, noPhotos(p));
   };
   const [ready, setReady] = useState(false);
 
@@ -101,6 +114,8 @@ export function FlowProvider({ children }: { children: ReactNode }) {
       if (!isStoryKey(restored.story) || !(parseSeriesKey(restored.story) || parseCustomKey(restored.story))) restored.story = initial.story;
       restored.copies = clampCopies(restored.copies);
       if (!isLikenessId(restored.likeness)) restored.likeness = initial.likeness;
+      restored.confirmed = restored.confirmed === true;
+      restored.pageCount = [0, FIRST_PAGES, BOOK_SCENE_COUNT].includes(restored.pageCount) ? restored.pageCount : 0;
       // eslint-disable-next-line react-hooks/set-state-in-effect -- 保存済みの入力を一度だけ復元する
       setState(restored);
       // 作成済みの絵のURLは1時間で切れるので、下書きがあれば読み直す（ログイン後は会員の下書きとして読める）
@@ -114,7 +129,7 @@ export function FlowProvider({ children }: { children: ReactNode }) {
     setReady(true);
     // 送る前の写真が残っていれば戻す（先にこの画面で選び直していたら、そちらを優先）
     readLocalPhotos<Photos>().then((p) => {
-      if (p && (p.child || p.mom || p.dad)) setPhotosState((cur) => (cur.child || cur.mom || cur.dad ? cur : p));
+      if (p && !noPhotos(p)) setPhotosState((cur) => (noPhotos(cur) ? p : cur));
     });
   }, []);
 

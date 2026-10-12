@@ -7,7 +7,7 @@ import { currentUser } from "@/lib/auth";
 import { ensureAnonId, ipHash } from "@/lib/anon";
 import { PHOTO_BUCKET, getSupabase } from "@/lib/services";
 import { faceFromField, faceToPathTag } from "@/lib/face";
-import { customStoryComplete, parseCustomKey } from "@/lib/custom-story";
+import { customKeyWithPhotos, customStoryComplete, parseCustomKey } from "@/lib/custom-story";
 import { storyTextFlagged, verifyStory } from "@/lib/custom-story-server";
 
 const MAX_PHOTO_BYTES = 10 * 1024 * 1024;
@@ -53,12 +53,16 @@ export async function POST(request: Request) {
   else if (!(await readyEpisodes())[series.series].includes(series.episode)) return bad("このお話はまだ準備中です。ほかのお話を選んでください");
   if (!childName || childName.length > 12) return bad("名前は12文字以内で入力してください");
   if (!CHILD_AGES.includes(childAge)) return bad("お子さまの年齢を選んでください");
-  for (const f of [childPhoto, momPhoto, dadPhoto]) {
+  // オリジナルのお話の、ほかの登場人物の写真（guest0Photo…・会員は保存している写真 guest0PhotoId… も）
+  const guestCount = custom?.cast.length ?? 0;
+  const guestPhotos = Array.from({ length: guestCount }, (_, i) => form.get(`guest${i}Photo`));
+  const guestPhotoIds = Array.from({ length: guestCount }, (_, i) => String(form.get(`guest${i}PhotoId`) ?? ""));
+  for (const f of [childPhoto, momPhoto, dadPhoto, ...guestPhotos]) {
     if (!(f instanceof File)) continue;
     if (!PHOTO_TYPES[f.type]) return bad("写真は JPEG・PNG・WebP でアップロードしてください");
     if (f.size > MAX_PHOTO_BYTES) return bad("写真は10MB以下にしてください");
   }
-  const newUpload = [childPhoto, momPhoto, dadPhoto].some((f) => f instanceof File);
+  const newUpload = [childPhoto, momPhoto, dadPhoto, ...guestPhotos].some((f) => f instanceof File);
   if (newUpload && !consent) return bad("写真の取り扱いへの同意が必要です");
 
   const db = getSupabase();
@@ -75,7 +79,7 @@ export async function POST(request: Request) {
     return Response.json({
       draftId: demoId,
       demo: true,
-      previewScenes: previewScenes({ hasMom: momPhoto instanceof File, hasDad: dadPhoto instanceof File }),
+      previewScenes: previewScenes({ hasMom: momPhoto instanceof File, hasDad: dadPhoto instanceof File, guests: guestCount }),
     });
   }
 
@@ -150,13 +154,24 @@ export async function POST(request: Request) {
     const dadPath = dadPhoto instanceof File ? await upload(dadPhoto, "dad") : await saved(dadPhotoId);
     hasMom = !!momPath || !!characters.mom;
     hasDad = !!dadPath || !!characters.dad;
+    // ほかの登場人物の写真の保存先は、お話の中に入れておく（データベースの列を増やさずに済むように。お客様が送ったお話の中の値は使わない）
+    const guestPaths: (string | null)[] = [];
+    for (let i = 0; i < guestCount; i++) {
+      const f = guestPhotos[i];
+      // オリジナルのお話は会員だけ（登録前のお試しの写真は自動削除の対象が決まっているので、ここでは受け取らない）
+      if (!user) {
+        guestPaths.push(null);
+        continue;
+      }
+      guestPaths.push(f instanceof File ? await upload(f, `guest${i}`) : await saved(guestPhotoIds[i]));
+    }
     const row = {
       id,
       user_id: user?.id ?? null,
       anon_id: anonId,
       taste,
       // シリーズは写真の組み合わせを足して保存する（写真を消したあとも、同じ本文で印刷できるように）
-      story: series ? `${story}:${comboOf(hasMom, hasDad)}` : story,
+      story: series ? `${story}:${comboOf(hasMom, hasDad)}` : custom ? customKeyWithPhotos(custom, guestPaths) : story,
       child_name: childName,
       child_age: childAge,
       child_photo_path: childPath,
@@ -184,6 +199,6 @@ export async function POST(request: Request) {
     draftId: id,
     member: !!user,
     previews,
-    previewScenes: previewScenes({ hasMom, hasDad }),
+    previewScenes: previewScenes({ hasMom, hasDad, guests: guestCount }),
   });
 }

@@ -10,6 +10,7 @@ import { Lottie } from "@/components/lottie";
 import { FacePhoto } from "@/components/face-photo";
 import { faceToField, type Face } from "@/lib/face";
 import { useFlow } from "../flow";
+import { castLabel, parseCustomKey } from "@/lib/custom-story";
 import { FacePicker } from "../face-picker";
 import { LikenessPicker } from "../likeness-picker";
 import { loginHref, useAccount } from "../account";
@@ -189,6 +190,9 @@ export default function PhotoPage() {
   const [savedIds, setSavedIds] = useState<{ child: string | null; mom: string | null; dad: string | null }>({ child: null, mom: null, dad: null });
   const [characters, setCharacters] = useState<SavedCharacter[]>([]);
   const [characterIds, setCharacterIds] = useState<Record<Person, string | null>>({ child: null, mom: null, dad: null });
+  // オリジナルのお話の、ほかの登場人物（ペットなど）
+  const cast = parseCustomKey(state.story)?.cast ?? [];
+  const [guestSavedIds, setGuestSavedIds] = useState<(string | null)[]>([]);
   const [consent, setConsent] = useState(false);
   const [sending, setSending] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -208,9 +212,10 @@ export default function PhotoPage() {
   }, [member]);
 
   const pickedChild = !!photos.child || !!savedIds.child || !!characterIds.child;
-  const newUpload = !!photos.child || !!photos.mom || !!photos.dad;
+  const pickedGuest = cast.some((_, i) => !!photos.guests?.[i] || !!guestSavedIds[i]);
+  const newUpload = !!photos.child || !!photos.mom || !!photos.dad || cast.some((_, i) => !!photos.guests?.[i]);
   // 写真が選び直されていなければ、前回作った下書きをそのまま使う
-  const reuse = !!state.draftId && !pickedChild;
+  const reuse = !!state.draftId && !pickedChild && !pickedGuest;
   const canSubmit = reuse || (pickedChild && (!newUpload || consent));
 
   async function submit() {
@@ -236,6 +241,13 @@ export default function PhotoPage() {
       else if (savedIds.mom) form.set("momPhotoId", savedIds.mom);
       if (photos.dad) form.set("dadPhoto", await shrinkPhoto(photos.dad));
       else if (savedIds.dad) form.set("dadPhotoId", savedIds.dad);
+      for (const [i] of cast.entries()) {
+        const f = photos.guests?.[i];
+        const face = photos.faces?.[`guest${i}`];
+        if (f && face) form.set(`guest${i}Face`, faceToField(face));
+        if (f) form.set(`guest${i}Photo`, await shrinkPhoto(f));
+        else if (guestSavedIds[i]) form.set(`guest${i}PhotoId`, guestSavedIds[i]!);
+      }
       for (const who of ["child", "mom", "dad"] as const) {
         const id = characterIds[who];
         if (id && !photos[who] && !savedIds[who]) form.set(`${who}CharacterId`, id);
@@ -246,9 +258,10 @@ export default function PhotoPage() {
         setNeedLogin(!!json.needLogin);
         throw new Error(json.error ?? "送信に失敗しました");
       }
-      update({ draftId: json.draftId, demo: !!json.demo, previews: json.previews ?? {}, previewScenes: json.previewScenes ?? [] });
+      update({ draftId: json.draftId, demo: !!json.demo, previews: json.previews ?? {}, previewScenes: json.previewScenes ?? [], confirmed: false, pageCount: 0 });
       setPhotos({ child: null, mom: null, dad: null });
       setSavedIds({ child: null, mom: null, dad: null });
+      setGuestSavedIds([]);
       setCharacterIds({ child: null, mom: null, dad: null });
       router.push("/create/preview");
     } catch (e) {
@@ -316,10 +329,38 @@ export default function PhotoPage() {
           characterId={characterIds.dad}
           onPickCharacter={(id) => { setCharacterIds((c) => ({ ...c, dad: id })); if (id) { setPhotos({ ...photos, dad: null }); setSavedIds((s) => ({ ...s, dad: null })); } }}
         />
+        {cast.map((c, i) => (
+          <PhotoSlot
+            key={i}
+            id={`guest${i}-photo`}
+            title={castLabel(c)}
+            note={c.kind === "animal" ? "顔と体の毛の色・模様がよく分かる写真がおすすめです。写真が無いときは、お話に合わせて描きます。" : "写真があると、その人に似せて描きます。写真が無いときは、お話に合わせて描きます。"}
+            required={false}
+            file={photos.guests?.[i] ?? null}
+            face={photos.faces?.[`guest${i}`] ?? null}
+            onChange={(f, face) => {
+              const guests = cast.map((_, j) => (j === i ? f : (photos.guests?.[j] ?? null)));
+              setPhotos({ ...photos, guests, faces: { ...photos.faces, [`guest${i}`]: face ?? null } });
+              if (f) setGuestSavedIds((s) => cast.map((_, j) => (j === i ? null : (s[j] ?? null))));
+            }}
+            saved={saved}
+            savedId={guestSavedIds[i] ?? null}
+            onPickSaved={(id) => {
+              setGuestSavedIds((s) => cast.map((_, j) => (j === i ? id : (s[j] ?? null))));
+              if (id) setPhotos({ ...photos, guests: cast.map((_, j) => (j === i ? null : (photos.guests?.[j] ?? null))) });
+            }}
+            characters={[]}
+            characterId={null}
+            onPickCharacter={() => {}}
+          />
+        ))}
+        {!!state.draftId && pickedGuest && !pickedChild && (
+          <p className="info-note">写真を選び直すときは、主人公の写真もえらんでください。</p>
+        )}
         <section className="card" style={{ gap: 8 }}>
           <LikenessPicker value={state.likeness} onChange={(v) => v !== state.likeness && update({ likeness: v, previews: {} })} />
           <p style={{ margin: 0, fontSize: 12, lineHeight: 1.6, color: "var(--sub)" }}>
-            表紙とキャラクターを、この似せ方で描きます。プレビューを見てから、表情や髪型などを直せます。
+            登場人物のキャラクターを、この似せ方で描きます。プレビューを見てから、表情や髪型などを直せます。
           </p>
         </section>
         {reuse ? (

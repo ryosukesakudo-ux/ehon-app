@@ -1,4 +1,4 @@
-import { MEMBER_MONTHLY_PREVIEWS, PREVIEW_PACK, REDO_NOTE_MAX, REDO_OPTIONS, isLikenessId, type RedoOptionId } from "@/lib/catalog";
+import { MEMBER_MONTHLY_PREVIEWS, PREVIEW_PACK, REDO_NOTE_MAX, REDO_OPTIONS, isLikenessId, isPageScene, type RedoOptionId } from "@/lib/catalog";
 import { hasRedoRequest, type Redo } from "@/lib/illustrate";
 import { getBook } from "@/lib/book";
 import { draftPreviewScenes, generateScene, isDemoId, loadOwnedDraft } from "@/lib/drafts";
@@ -6,8 +6,8 @@ import { getSupabase } from "@/lib/services";
 
 export const maxDuration = 120;
 
-// プレビュー用の絵（表紙・キャラクター）を1枚作る（作り直しも同じ）。
-// 会員は月の無料枠＋追加枠まで。登録前のお試しはプレビューの絵を1回ずつ（作り直しなし）。
+// プレビュー用の絵（登場人物のキャラクター・表紙・本文のページ）を1枚作る（作り直しも同じ）。どれも1枚でプレビュー1枚分。
+// 会員は月の無料枠＋追加枠まで。登録前のお試しはキャラクターと表紙を1回ずつ（作り直しと本文のページは会員だけ）。
 // 本人への似せ方（likeness）は写真の画面で選び、最初の作成から使う。作り直し（redo: true）では、選択肢（options）と40字までの一言（note）も指示できる。
 export async function POST(request: Request, ctx: RouteContext<"/api/drafts/[id]/scenes/[scene]">) {
   const { id, scene } = await ctx.params;
@@ -32,8 +32,12 @@ export async function POST(request: Request, ctx: RouteContext<"/api/drafts/[id]
   }
   const { draft, user } = owned;
   const scenes = draftPreviewScenes(draft);
-  if (!scenes.includes(sceneIndex)) {
+  const page = isPageScene(sceneIndex);
+  if (!scenes.includes(sceneIndex) && !page) {
     return Response.json({ error: "この場面はプレビューできません" }, { status: 400 });
+  }
+  if (page && !user && !isDemoId(id) && getSupabase()) {
+    return Response.json({ error: "本文のページのプレビューは、会員登録（無料）後にご利用いただけます。", needLogin: true }, { status: 403 });
   }
 
   const db = getSupabase();

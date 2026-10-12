@@ -196,13 +196,40 @@ export function characterOf(scene: number): Person | null {
 
 export const PERSON_LABEL: Record<Person, string> = { child: "主人公", mom: "ママ", dad: "パパ" };
 
-export function previewScenes(opts: { hasMom: boolean; hasDad: boolean }) {
+// オリジナルのお話の「ほかの登場人物」（ペットやおばあちゃんなど。5人まで）のキャラクターは 104〜108 で表す
+export const MAX_GUESTS = 5;
+const GUEST_SCENE_BASE = 104;
+export function guestScene(i: number) {
+  return GUEST_SCENE_BASE + i;
+}
+/** ほかの登場人物のキャラクターの絵の番号なら、何人目か（0から） */
+export function guestOf(scene: number): number | null {
+  const i = scene - GUEST_SCENE_BASE;
+  return Number.isInteger(i) && i >= 0 && i < MAX_GUESTS ? i : null;
+}
+/** キャラクター（主人公・ママ・パパ・ほかの登場人物）の絵の番号か */
+export function isCharacterScene(scene: number) {
+  return !!characterOf(scene) || guestOf(scene) !== null;
+}
+
+// プレビューは「登場人物のキャラクター → 表紙 → 本文（冒頭3枚か12枚ぜんぶ・任意）」の順に作る（2026-10-12 作道さん）。
+// 本文のページの絵は1枚ずつプレビュー1枚分。作った本文の絵は、ご注文後そのまま印刷に使う。
+export const FIRST_PAGES = 3;
+
+/** プレビューで最初に作る絵（登場人物のキャラクターと表紙）。本文のページ（0〜11）は別に選んで作る */
+export function previewScenes(opts: { hasMom: boolean; hasDad: boolean; guests?: number }) {
   return [
-    COVER_SCENE,
     CHARACTER_SCENES.child,
     ...(opts.hasMom ? [CHARACTER_SCENES.mom] : []),
     ...(opts.hasDad ? [CHARACTER_SCENES.dad] : []),
+    ...Array.from({ length: Math.min(opts.guests ?? 0, MAX_GUESTS) }, (_, i) => guestScene(i)),
+    COVER_SCENE,
   ];
+}
+
+/** 本文のページの番号（0〜11） */
+export function isPageScene(scene: number) {
+  return Number.isInteger(scene) && scene >= 0 && scene < BOOK_SCENE_COUNT;
 }
 
 // 作り直しの指示。選択肢（複数可）と、40字までの一言。どちらも絵1枚分の料金は同じ。
