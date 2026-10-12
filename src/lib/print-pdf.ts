@@ -2,7 +2,7 @@ import "server-only";
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 import fontkit from "@pdf-lib/fontkit";
-import { PDFDocument, rgb, type PDFFont, type PDFPage } from "pdf-lib";
+import { PDFDocument, rgb } from "pdf-lib";
 import sharp from "sharp";
 
 // 印刷会社に渡す入稿用PDF。
@@ -13,13 +13,24 @@ import sharp from "sharp";
 // どちらも仕上がりサイズの四方に塗り足し3mmをつける。色はRGB。
 
 const BLEED_MM = 3;
-const SAFE_MM = 12; // 文字は仕上がり線からこれ以上内側に置く
-const mm = (v: number) => (v * 72) / 25.4;
+export const SAFE_MM = 12; // 文字は仕上がり線からこれ以上内側に置く
+export const mm = (v: number) => (v * 72) / 25.4;
 
-const CREAM = rgb(1, 0.973, 0.925); // #fff8ec
-const NAVY = rgb(0.118, 0.184, 0.341); // #1e2f57
-const INK = rgb(0.18, 0.227, 0.31); // #2e3a4f
-const CORAL = rgb(0.941, 0.541, 0.424); // #f08a6c
+export const CREAM = rgb(1, 0.973, 0.925); // #fff8ec
+export const NAVY = rgb(0.118, 0.184, 0.341); // #1e2f57
+export const INK = rgb(0.18, 0.227, 0.31); // #2e3a4f
+export const CORAL = rgb(0.941, 0.541, 0.424); // #f08a6c
+
+export type Color = ReturnType<typeof rgb>;
+
+/** 文字の幅を測れるフォント（PDFのフォント、またはしまうま用の画像で使う輪郭のフォント） */
+export type TextFont = { widthOfTextAtSize(text: string, size: number): number };
+
+/** 文字と四角を描ける面（PDFのページ、またはしまうま用の画像）。座標はポイントで、左下が原点 */
+export type Surface<F extends TextFont> = {
+  drawText(text: string, options: { x: number; y: number; size: number; font: F; color: Color }): void;
+  drawRectangle(options: { x: number; y: number; width: number; height: number; color: Color; opacity?: number }): void;
+};
 
 const NO_LINE_START = "、。，．」』）！？ーっゃゅょ";
 
@@ -73,9 +84,9 @@ export async function buildBookPdfs(input: BookPdfInput) {
   // 1 扉
   {
     const page = blank();
-    drawCentered(page, lead, bold, fitSize(lead, bold, 18 * scale, textWidth), NAVY, size / 2 + 26 * scale);
-    drawCentered(page, main, bold, fitSize(main, bold, 30 * scale, textWidth), NAVY, size / 2 - 12 * scale);
-    drawCentered(page, "えほん Only Yours", body, 10 * scale, CORAL, mm(BLEED_MM + SAFE_MM));
+    drawCentered(page, size, lead, bold, fitSize(lead, bold, 18 * scale, textWidth), NAVY, size / 2 + 26 * scale);
+    drawCentered(page, size, main, bold, fitSize(main, bold, 30 * scale, textWidth), NAVY, size / 2 - 12 * scale);
+    drawCentered(page, size, "えほん Only Yours", body, 10 * scale, CORAL, mm(BLEED_MM + SAFE_MM));
   }
 
   // 2〜25 見開き（左：文章 / 右：絵）
@@ -83,7 +94,7 @@ export async function buildBookPdfs(input: BookPdfInput) {
     const textPage = blank();
     drawParagraph(textPage, input.texts[i], body, 18 * scale, size, mm(input.trimMm * 0.68), mm(input.trimMm * 0.72));
     const pageNo = 2 + i * 2;
-    drawCentered(textPage, String(pageNo), body, 9 * scale, INK, mm(BLEED_MM + 8));
+    drawCentered(textPage, size, String(pageNo), body, 9 * scale, INK, mm(BLEED_MM + 8));
 
     const imagePage = doc.addPage([size, size]);
     const image = await doc.embedJpg(jpegs[i]);
@@ -91,7 +102,7 @@ export async function buildBookPdfs(input: BookPdfInput) {
   }
 
   // 26 おしまい / 27 白 / 28 奥付
-  drawCentered(blank(), "おしまい", bold, 24 * scale, NAVY, size / 2 - 8 * scale);
+  drawCentered(blank(), size, "おしまい", bold, 24 * scale, NAVY, size / 2 - 8 * scale);
   blank();
   {
     const page = blank();
@@ -121,38 +132,47 @@ export async function buildBookPdfs(input: BookPdfInput) {
     const art = await sharp(coverJpeg).resize(w, Math.round((w * 2) / 3), { fit: "cover" }).jpeg({ quality: 92 }).toBuffer();
     const image = await cover.doc.embedJpg(art);
     page.drawImage(image, { x: 0, y: 0, width: size, height: artHeight });
-    // 上1/3の帯にタイトル（絵とは重ねない）
-    const bandBottom = artHeight;
-    const bandTop = size - mm(BLEED_MM);
-    const leadSize = fitSize(lead, cover.bold, 20 * scale, textWidth);
-    const titleSize = fitSize(main, cover.bold, 34 * scale, textWidth);
-    const blockHeight = leadSize + titleSize * 1.4;
-    const blockTop = (bandTop + bandBottom) / 2 + blockHeight / 2;
-    drawCentered(page, lead, cover.bold, leadSize, CORAL, blockTop - leadSize);
-    drawCentered(page, main, cover.bold, titleSize, NAVY, blockTop - leadSize - titleSize * 1.4);
-    // 右下に巻数（絵の上に、小さなクリーム色の札を置いて書く）
-    const vol = `Vol.${input.volume}`;
-    const volSize = 11 * scale;
-    const padX = volSize * 0.7;
-    const labelW = cover.bold.widthOfTextAtSize(vol, volSize) + padX * 2;
-    const labelH = volSize * 1.8;
-    const right = size - mm(BLEED_MM + SAFE_MM / 2);
-    const bottom = mm(BLEED_MM + SAFE_MM / 2);
-    page.drawRectangle({ x: right - labelW, y: bottom, width: labelW, height: labelH, color: CREAM, opacity: 0.92 });
-    page.drawText(vol, { x: right - labelW + padX, y: bottom + (labelH - volSize * 0.72) / 2, size: volSize, font: cover.bold, color: NAVY });
+    drawCoverText(page, { title: input.title, volume: input.volume, font: cover.bold, size, bleed: mm(BLEED_MM), artHeight, scale, textWidth });
   }
   const coverPdf = await cover.doc.save();
 
   return { body: bodyPdf, cover: coverPdf };
 }
 
-function drawCentered(page: PDFPage, text: string, font: PDFFont, size: number, color: ReturnType<typeof rgb>, y: number) {
+/** おもて表紙の文字：上1/3の帯にタイトル（絵とは重ねない）と、右下の巻数。size は塗り足しを含むページの1辺、bleed は塗り足しの幅 */
+export function drawCoverText<F extends TextFont>(
+  page: Surface<NoInfer<F>>,
+  o: { title: { lead: string; main: string }; volume: number; font: F; size: number; bleed: number; artHeight: number; scale: number; textWidth: number },
+) {
+  const { lead, main } = o.title;
+  const { font, size, scale } = o;
+  const bandBottom = o.artHeight;
+  const bandTop = size - o.bleed;
+  const leadSize = fitSize(lead, font, 20 * scale, o.textWidth);
+  const titleSize = fitSize(main, font, 34 * scale, o.textWidth);
+  const blockHeight = leadSize + titleSize * 1.4;
+  const blockTop = (bandTop + bandBottom) / 2 + blockHeight / 2;
+  drawCentered(page, size, lead, font, leadSize, CORAL, blockTop - leadSize);
+  drawCentered(page, size, main, font, titleSize, NAVY, blockTop - leadSize - titleSize * 1.4);
+  // 右下に巻数（絵の上に、小さなクリーム色の札を置いて書く）
+  const vol = `Vol.${o.volume}`;
+  const volSize = 11 * scale;
+  const padX = volSize * 0.7;
+  const labelW = font.widthOfTextAtSize(vol, volSize) + padX * 2;
+  const labelH = volSize * 1.8;
+  const right = size - o.bleed - mm(SAFE_MM / 2);
+  const bottom = o.bleed + mm(SAFE_MM / 2);
+  page.drawRectangle({ x: right - labelW, y: bottom, width: labelW, height: labelH, color: CREAM, opacity: 0.92 });
+  page.drawText(vol, { x: right - labelW + padX, y: bottom + (labelH - volSize * 0.72) / 2, size: volSize, font, color: NAVY });
+}
+
+export function drawCentered<F extends TextFont>(page: Surface<NoInfer<F>>, pageWidth: number, text: string, font: F, size: number, color: Color, y: number) {
   const width = font.widthOfTextAtSize(text, size);
-  page.drawText(text, { x: (page.getWidth() - width) / 2, y, size, font, color });
+  page.drawText(text, { x: (pageWidth - width) / 2, y, size, font, color });
 }
 
 // 幅に収まるまで文字を小さくする
-function fitSize(text: string, font: PDFFont, size: number, maxWidth: number) {
+export function fitSize(text: string, font: TextFont, size: number, maxWidth: number) {
   let s = size;
   while (s > 8 && font.widthOfTextAtSize(text, s) > maxWidth) s -= 0.5;
   return s;
@@ -162,7 +182,8 @@ function fitSize(text: string, font: PDFFont, size: number, maxWidth: number) {
 // 1つの文の行は長さをそろえる（最後の行に「いました。」だけが残るような折り返しにしない。2026-10-12 トライアルの声「改行が変」）。
 // 漢字《かな》 は、かなを漢字の上に小さく置く（ふりがな）。行の間は広めにとってあるので、ふりがなが前の行に重ならない。
 // 長い文（文の量「多い」）で枠に収まらないときは、収まるまで文字を小さくする。
-function drawParagraph(page: PDFPage, text: string, font: PDFFont, size: number, pageSize: number, maxWidth: number, maxHeight: number) {
+// centerY を省くとページの上下の真ん中に置く。
+export function drawParagraph<F extends TextFont>(page: Surface<NoInfer<F>>, text: string, font: F, size: number, pageSize: number, maxWidth: number, maxHeight: number, centerY = pageSize / 2) {
   const units = toUnits(pdfSafe(text));
   const layout = (byLine: boolean, minSize: number) => {
     let s = size;
@@ -180,7 +201,7 @@ function drawParagraph(page: PDFPage, text: string, font: PDFFont, size: number,
   const blockHeight = lineHeight * (lines.length - 1) + s;
   const blockWidth = Math.max(...lines.map((l) => lineWidth(l, font, s)));
   const x0 = (pageSize - blockWidth) / 2;
-  let y = pageSize / 2 + blockHeight / 2 - s;
+  let y = centerY + blockHeight / 2 - s;
   for (const line of lines) {
     let x = x0;
     for (const u of trimLine(line)) {
@@ -229,12 +250,12 @@ export function toUnits(text: string): Unit[] {
   return units;
 }
 
-function unitWidth(u: Unit, font: PDFFont, size: number) {
+function unitWidth(u: Unit, font: TextFont, size: number) {
   const bw = font.widthOfTextAtSize(u.base, size);
   return u.ruby ? Math.max(bw, font.widthOfTextAtSize(u.ruby, size * RUBY_SCALE)) : bw;
 }
 
-function lineWidth(line: Unit[], font: PDFFont, size: number) {
+function lineWidth(line: Unit[], font: TextFont, size: number) {
   return trimLine(line).reduce((w, u) => w + unitWidth(u, font, size), 0);
 }
 
@@ -267,7 +288,7 @@ const SENTENCE_END = "。！？!?";
 const CLOSING = "」』）)。！？!?…";
 const CLOSING_QUOTE = "」』";
 
-function wrap(units: Unit[], font: PDFFont, size: number, maxWidth: number, byLine = true) {
+function wrap(units: Unit[], font: TextFont, size: number, maxWidth: number, byLine = true) {
   const starts = phraseStarts(units);
   return (byLine ? splitSentences(units) : [units]).flatMap((s) => balanced(s, font, size, maxWidth, starts));
 }
@@ -304,7 +325,7 @@ function phraseStarts(units: Unit[]) {
 }
 
 // 行数は枠の幅いっぱいに詰めたときと同じまま、いちばん長い行ができるだけ短くなる幅で折り返す
-function balanced(units: Unit[], font: PDFFont, size: number, maxWidth: number, starts: Set<Unit>) {
+function balanced(units: Unit[], font: TextFont, size: number, maxWidth: number, starts: Set<Unit>) {
   const lines = greedy(units, font, size, maxWidth, starts);
   if (lines.length < 2) return lines;
   let lo = 0;
@@ -317,7 +338,7 @@ function balanced(units: Unit[], font: PDFFont, size: number, maxWidth: number, 
   return greedy(units, font, size, hi, starts);
 }
 
-function greedy(units: Unit[], font: PDFFont, size: number, maxWidth: number, starts: Set<Unit>) {
+function greedy(units: Unit[], font: TextFont, size: number, maxWidth: number, starts: Set<Unit>) {
   const fits = (l: Unit[]) => lineWidth(l, font, size) <= maxWidth;
   // 分かち書きの空白や「、」のあと（分かち書きの無い文は、ことばの切れ目）で区切った「ことば」
   const words: Unit[][] = [];
