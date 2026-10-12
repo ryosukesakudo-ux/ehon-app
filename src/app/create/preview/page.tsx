@@ -3,13 +3,14 @@
 import { Suspense, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { COVER_SCENE, LIKENESS_LEVELS, MEMBER_MONTHLY_PREVIEWS, PERSON_LABEL, PREVIEW_PACK, REDO_NOTE_MAX, REDO_OPTIONS, characterOf, yen, type LikenessId, type RedoOptionId } from "@/lib/catalog";
+import { COVER_SCENE, MEMBER_MONTHLY_PREVIEWS, PERSON_LABEL, PREVIEW_PACK, REDO_NOTE_MAX, REDO_OPTIONS, characterOf, yen, type LikenessId, type RedoOptionId } from "@/lib/catalog";
 import { bookTitle } from "@/lib/story-key";
 import { BookCover } from "@/components/book-cover";
 import { Chevron } from "@/components/icons";
 import { Lottie } from "@/components/lottie";
 import { BuyPreviewsButton } from "@/components/buy-previews";
 import { useFlow } from "../flow";
+import { LikenessPicker } from "../likeness-picker";
 import { loginHref, useAccount } from "../account";
 import { NextButton, StepHeader, StepTitle } from "../step";
 
@@ -38,8 +39,8 @@ function Preview() {
   // 作り直しの指示（選択肢と一言）
   const [options, setOptions] = useState<RedoOptionId[]>([]);
   const [note, setNote] = useState("");
-  // 本人への似せ方（作り直したあとも選んだまま）
-  const [likeness, setLikeness] = useState<LikenessId>("normal");
+  // 本人への似せ方（写真の画面で選んだもの。作り直しのときに変えられ、変えたら次からもそれを使う）
+  const likeness = state.likeness;
 
   const scenes = state.previewScenes;
   const scene = scenes[pos];
@@ -64,7 +65,7 @@ function Preview() {
       const res = await fetch(`/api/drafts/${encodeURIComponent(state.draftId)}/scenes/${index}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(redo ?? {}),
+        body: JSON.stringify(redo ? { ...redo, redo: true } : { likeness }),
       });
       const json = await res.json();
       if (typeof json.remaining === "number") {
@@ -229,27 +230,7 @@ function Preview() {
               />
               <span style={{ alignSelf: "flex-end" }}>{[...note].length} / {REDO_NOTE_MAX}</span>
             </label>
-            <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-              <div style={{ fontSize: 13, fontWeight: 700, color: "var(--navy)" }}>本人への似せ方</div>
-              <div role="radiogroup" aria-label="本人への似せ方" style={{ display: "flex", gap: 6 }}>
-                {LIKENESS_LEVELS.map((l) => {
-                  const on = likeness === l.id;
-                  return (
-                    <button
-                      key={l.id}
-                      type="button"
-                      role="radio"
-                      aria-checked={on}
-                      onClick={() => setLikeness(l.id)}
-                      style={{ flex: 1, minHeight: 40, padding: "4px 6px", borderRadius: 12, fontSize: 13, cursor: "pointer", border: on ? "2px solid var(--coral)" : "1px solid var(--line)", background: on ? "#FDECE8" : "#fff", color: "var(--navy)", fontWeight: on ? 800 : 500 }}
-                    >
-                      {l.label}
-                    </button>
-                  );
-                })}
-              </div>
-              <div style={{ fontSize: 12, color: "var(--sub)" }}>{LIKENESS_LEVELS.find((l) => l.id === likeness)?.hint}</div>
-            </div>
+            <LikenessPicker value={likeness} onChange={(v) => update({ likeness: v })} />
             <button
               type="button"
               className="ghost"
@@ -274,7 +255,7 @@ function Preview() {
                     return p === "child" ? state.childName || PERSON_LABEL.child : PERSON_LABEL[p];
                   }).join("・")}
                   のキャラクターを、上で選んだ内容でいっしょに作り直します。
-                  {remaining < people.length && `（プレビューの残りが${people.length}枚以上必要です）`}
+                  {remaining < people.length && `（プレビューの残りが${people.length}枚以上必要です。下のボタンで追加できます）`}
                 </div>
               </>
             )}
@@ -287,7 +268,8 @@ function Preview() {
           </p>
         )}
         {boughtCredits && <p className="info-note" role="status">ご購入ありがとうございます。反映まで少しかかる場合は、下の「画面を再読み込み」を押してください。</p>}
-        {account?.loggedIn && account.remaining <= 0 && <BuyPreviewsButton returnTo="/create/preview" />}
+        {/* 残りが無いとき、または家族まとめて作り直すには足りないときは、追加のボタンを出す */}
+        {account?.loggedIn && (account.remaining <= 0 || (people.length > 1 && account.remaining < people.length)) && <BuyPreviewsButton returnTo="/create/preview" />}
         <button
           type="button"
           className="ghost"

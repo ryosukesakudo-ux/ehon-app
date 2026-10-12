@@ -8,7 +8,7 @@ export const maxDuration = 120;
 
 // プレビュー用の絵（表紙・キャラクター）を1枚作る（作り直しも同じ）。
 // 会員は月の無料枠＋追加枠まで。登録前のお試しはプレビューの絵を1回ずつ（作り直しなし）。
-// 作り直しでは、選択肢（options）と40字までの一言（note）、本人への似せ方（likeness）で、どう直したいかを指示できる。
+// 本人への似せ方（likeness）は写真の画面で選び、最初の作成から使う。作り直し（redo: true）では、選択肢（options）と40字までの一言（note）も指示できる。
 export async function POST(request: Request, ctx: RouteContext<"/api/drafts/[id]/scenes/[scene]">) {
   const { id, scene } = await ctx.params;
   const sceneIndex = Number(scene);
@@ -22,7 +22,9 @@ export async function POST(request: Request, ctx: RouteContext<"/api/drafts/[id]
   }
   // 似せ方（以前の「もっと本人に似せて」の選択肢は「しっかり」として読む）
   const likeness = isLikenessId(body?.likeness) ? body.likeness : Array.isArray(body?.options) && body.options.includes("likeness") ? "strong" : "normal";
-  const asked: Redo = { options, note, likeness };
+  // 最初の作成（写真の画面で選んだ似せ方だけ）か、作り直しか
+  const initial = body?.redo !== true && !options.length && !note;
+  const asked: Redo = { options, note, likeness, initial };
   const redo = hasRedoRequest(asked) ? asked : null;
   const owned = await loadOwnedDraft(id);
   if (!owned || !getBook(owned.draft.story)) {

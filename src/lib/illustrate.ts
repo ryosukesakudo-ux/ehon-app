@@ -133,7 +133,13 @@ export type RefKind = "photo" | "character" | "previous";
 export type RefImage = { who: Person; kind?: RefKind; file: Uploadable };
 
 /** 作り直しの指示（選択肢と一言） */
-export type Redo = { options: RedoOptionId[]; note: string; likeness?: LikenessId };
+export type Redo = {
+  options: RedoOptionId[];
+  note: string;
+  likeness?: LikenessId;
+  /** 最初に作るとき（作り直しではない）。写真の画面で選んだ似せ方だけを伝える */
+  initial?: boolean;
+};
 
 /** 作り直しに中身があるか（選択肢・一言・似せ方のどれか） */
 export function hasRedoRequest(redo?: Redo | null): redo is Redo {
@@ -159,7 +165,7 @@ function redoPrompt(redo?: Redo | null) {
   const likeness = LIKENESS_LEVELS.find((l) => l.id === redo.likeness)?.prompt ?? "";
   const note = redo.note.trim();
   return [
-    hasRedoRequest(redo) ? "This is a redo requested by the customer." : "",
+    hasRedoRequest(redo) && !redo.initial ? "This is a redo requested by the customer." : "",
     likeness,
     ...opts,
     note ? `The customer also wrote this request in Japanese; follow it as long as it fits a gentle children's picture book: 「${note}」` : "",

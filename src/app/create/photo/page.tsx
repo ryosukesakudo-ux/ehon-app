@@ -11,6 +11,7 @@ import { FacePhoto } from "@/components/face-photo";
 import { faceToField, type Face } from "@/lib/face";
 import { useFlow } from "../flow";
 import { FacePicker } from "../face-picker";
+import { LikenessPicker } from "../likeness-picker";
 import { loginHref, useAccount } from "../account";
 import { NextButton, StepHeader, StepTitle } from "../step";
 
@@ -315,6 +316,12 @@ export default function PhotoPage() {
           characterId={characterIds.dad}
           onPickCharacter={(id) => { setCharacterIds((c) => ({ ...c, dad: id })); if (id) { setPhotos({ ...photos, dad: null }); setSavedIds((s) => ({ ...s, dad: null })); } }}
         />
+        <section className="card" style={{ gap: 8 }}>
+          <LikenessPicker value={state.likeness} onChange={(v) => v !== state.likeness && update({ likeness: v, previews: {} })} />
+          <p style={{ margin: 0, fontSize: 12, lineHeight: 1.6, color: "var(--sub)" }}>
+            表紙とキャラクターを、この似せ方で描きます。プレビューを見てから、表情や髪型などを直せます。
+          </p>
+        </section>
         {reuse ? (
           <p className="demo-note">写真は受け取り済みです。選び直す場合は、もう一度写真をえらんでください。</p>
         ) : newUpload ? (
