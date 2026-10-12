@@ -55,6 +55,13 @@ const SERIES_CAST_RULES =
   "Each animal or creature character keeps exactly its own species and look on every page; never turn one into a person or into a different animal. " +
   "Everyone stands, sits or kneels on top of the ground; never draw a body sunk into the ground or a hole.";
 
+// オリジナルのお話の絵で、本文と食い違わないための指示（2026-10-12 作道さん：おじいちゃんの家なのに子どもが出迎える、
+// 家の中で靴、亡くなった犬がそこにいる、全員が全ページに出る、が見られた）。オリジナルのお話の全ページに付ける。
+const CUSTOM_CAST_RULES =
+  "Draw only the people and animals this scene names; do not add family members, companions or extra people who are not mentioned, and never draw the same character twice. " +
+  "Keep who is the host and who is the visitor exactly as described. Indoors in a Japanese home, nobody wears outdoor shoes. " +
+  "A person or animal described as passed away appears only as a memory, photo, dream or gentle spirit when the scene says so, never as if alive in the room.";
+
 // 絵は1ページずつ別々に描くので、決めていないことはページごとに変わってしまう（服の色、バッジの数、仲間の見た目など。
 // 2026-10-11 作道さん「この話に限らず統一感をもたせるプロンプトに」。後ろ姿の背中にバッジが描かれたので、前に付ける物・肩に乗る仲間・抱える物の位置もアングルによらず決める）。すべての絵本の全ページに付ける共通の決まり。
 const BOOK_CONSISTENCY =
@@ -291,9 +298,12 @@ export function buildPrompt(taste: TasteId, story: string, sceneIndex: number, r
         ? `The sidekick of this picture book series appears: ${series.sidekick}. Keep the sidekick looking the same on every page.`
         : `Do not include ${sidekickName(series.sidekick)} (the sidekick) in this scene.`
       : "",
+    book.facts ? `Facts of this story that every picture must respect: ${book.facts}` : "",
+    scene.setting ? `Setting: ${scene.setting}.` : "",
     `Scene: ${scene.art}.`,
     series ? lookPrompt(series.cast, series.props, scene.art, scene.camera) : "",
     series ? SERIES_CAST_RULES : "",
+    !series && book.cast ? CUSTOM_CAST_RULES : "",
     guestsPrompt(book.cast, scene.guests),
     redoPrompt(redo),
     generic.length ? `${generic.join(" and ")} appear in this scene; draw them as gentle adults without a specific likeness.` : "",

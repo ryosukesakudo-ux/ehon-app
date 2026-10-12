@@ -16,7 +16,7 @@ function secret() {
   return process.env.SUPABASE_SERVICE_ROLE_KEY ?? process.env.CRON_SECRET ?? "ehon-demo";
 }
 
-export function signStory(s: Pick<CustomStory, "cover" | "scenes" | "level" | "cast" | "coverGuests">) {
+export function signStory(s: Pick<CustomStory, "cover" | "scenes" | "level" | "cast" | "coverGuests" | "facts">) {
   return createHmac("sha256", secret()).update(signedPayload(s)).digest("base64url");
 }
 
@@ -33,13 +33,32 @@ const LEVEL_RULES: Record<LevelId, string> = {
   l: "1場面に4〜6文（100〜170文字）。小学1〜4年生で習う漢字だけを使い、漢字には必ず 漢字《かんじ》 の形でふりがなを付ける。会話や気持ちの言葉を入れる。",
 };
 
+// 構図の候補（毎ページ正面向きの似た絵にならないよう、AIにこの中から場面に合うものを選ばせる。2026-10-12 作道さん「構図がどれも同じ」）
+const CAMERAS = [
+  "wide establishing shot from far away, the characters small in a big landscape",
+  "seen from behind the child, looking at what the child sees",
+  "over-the-shoulder view from behind one character toward another",
+  "low angle looking up at the child",
+  "high angle looking down from above",
+  "side view in motion, characters running or walking across the frame",
+  "close-up on the child's face and hands showing the feeling",
+  "medium shot of two characters facing each other",
+  "view through a doorway or window into the room",
+  "bird's-eye view from high above",
+];
+
 const COMPANIONS = { type: "array", items: { type: "integer" }, description: "この絵に出る仲間（Companion）の番号。いなければ空" } as const;
 
 const SCHEMA = {
   type: "object",
   additionalProperties: false,
-  required: ["title", "cover", "coverCompanions", "companions", "scenes"],
+  required: ["title", "facts", "cover", "coverCompanions", "companions", "scenes"],
   properties: {
+    facts: {
+      type: "string",
+      description:
+        "お話全体の決まりごと（英語・3〜8文）。どこに住んでいて誰の家に行くか、誰が誰を出迎えるか、亡くなっている人や動物（実際にはそこにいない）、季節、屋内では靴をぬぐ、などの絵がずれないための事実",
+    },
     title: { type: "string", description: `絵本の題名（ひらがな中心・${CUSTOM_TITLE_MAX}文字以内）` },
     cover: { type: "string", description: "表紙の絵の内容（英語・1〜2文）" },
     coverCompanions: COMPANIONS,
@@ -59,10 +78,12 @@ const SCHEMA = {
       items: {
         type: "object",
         additionalProperties: false,
-        required: ["text", "art", "withMom", "withDad", "companions"],
+        required: ["text", "setting", "art", "camera", "withMom", "withDad", "companions"],
         properties: {
           text: { type: "string", description: "その場面の本文（日本語）" },
-          art: { type: "string", description: "その場面の挿絵の内容（英語・1〜2文）" },
+          setting: { type: "string", description: "場所（誰の家・どの部屋か）、屋内か屋外か、時間帯・天気（英語・1文）" },
+          art: { type: "string", description: "その場面の挿絵の内容（英語・2〜3文）。誰がどこで何をしていて、どんな表情か" },
+          camera: { type: "string", description: "カメラの位置・構図（英語・1文）" },
           withMom: { type: "boolean" },
           withDad: { type: "boolean" },
           companions: COMPANIONS,
@@ -72,10 +93,15 @@ const SCHEMA = {
   },
 } as const;
 
-export type StoryInput = { synopsis: string; childName: string; childAge: number; level: LevelId; cast: CastInput[] };
+/** お話を作る前のAIの質問と、お客様の答え */
+export type StoryAnswer = { q: string; a: string };
+export const QUESTION_MAX = 3;
+export const ANSWER_MAX = 100;
 
-type AiScene = { text: string; art: string; withMom: boolean; withDad: boolean; companions?: number[] };
-type AiBody = { title: string; cover: string; coverCompanions?: number[]; companions?: { look: string }[]; scenes: AiScene[] };
+export type StoryInput = { synopsis: string; childName: string; childAge: number; level: LevelId; cast: CastInput[]; answers?: StoryAnswer[] };
+
+type AiScene = { text: string; setting?: string; art: string; camera?: string; withMom: boolean; withDad: boolean; companions?: number[] };
+type AiBody = { title: string; facts?: string; cover: string; coverCompanions?: number[]; companions?: { look: string }[]; scenes: AiScene[] };
 
 /** 仲間の番号（1から）を、登場人物の番号（0から）にする */
 function toGuests(v: unknown, count: number) {
@@ -110,6 +136,8 @@ export async function generateCustomStory(input: StoryInput): Promise<CustomStor
     withMom: !!s.withMom,
     withDad: !!s.withDad,
     guests: toGuests(s.companions, n),
+    setting: (s.setting ?? "").trim().slice(0, 300),
+    camera: (s.camera ?? "").trim().slice(0, 300),
   }));
   if (scenes.length !== CUSTOM_SCENES) throw new Error("お話を作れませんでした。もう一度お試しください");
   // 見た目の説明が足りないときは、種類だけで描く
@@ -117,7 +145,15 @@ export async function generateCustomStory(input: StoryInput): Promise<CustomStor
     ...c,
     look: (body.companions?.[i]?.look ?? "").trim().slice(0, 300) || (c.kind === "animal" ? "a friendly animal" : "a friendly person"),
   }));
-  const story = { title, level: input.level, cover: body.cover.trim().slice(0, 600), scenes, cast, coverGuests: toGuests(body.coverCompanions, n) };
+  const story = {
+    title,
+    level: input.level,
+    cover: body.cover.trim().slice(0, 600),
+    scenes,
+    cast,
+    coverGuests: toGuests(body.coverCompanions, n),
+    facts: (body.facts ?? "").trim().slice(0, 1200),
+  };
   return { ...story, sig: signStory(story) };
 }
 
@@ -130,7 +166,13 @@ async function askAi(input: StoryInput) {
     `主人公は「${input.childName}」（${input.childAge}さい）。本文では名前をそのまま使う。`,
     `文の量：${level.name}（${level.ages}）。${LEVEL_RULES[input.level]}`,
     "こわすぎる・暴力的・性的・差別的な内容や、実在の人物・キャラクター・商品名は入れない。あらすじにあっても、子ども向けにやわらかく言いかえる。",
-    "ママ（the mother）とパパ（the father）は、あらすじに出てくるときだけ登場させてよい。登場する場面は withMom / withDad を true にする。",
+    "ママ（the mother）とパパ（the father）は、あらすじに出てくるときだけ登場させてよい。",
+    "【絵の指示の作り方】絵は1ページずつ別々に描くので、絵を描く人は本文を読めない。だから文脈は facts・setting・art にすべて書く。",
+    "- まず facts に、お話全体の事実を英語でまとめる：家族がどこに住んでいるか、どこへ出かけるか（例：the child visits the grandfather's house; the grandfather welcomes the child at his front door）、亡くなっている人や動物（例：the dog Companion 1 passed away before this story; it appears only as a memory, a photo, a dream or a soft glowing spirit, never as if alive in the room）、季節、日本の家では屋内で靴をぬいでいること。",
+    "- 各場面の setting に、場所（誰の家のどの部屋か・どこの外か）、屋内か屋外か、時間帯を書く。屋内では \"everyone is barefoot or in socks, no shoes\" と書く。",
+    "- art には、その場面で誰がどこで何をしているかを、立場（迎える人・訪ねる人など）が分かるように書く。本文と食い違わないこと。",
+    "- 【登場する人を絞る】withMom / withDad / companions は、その場面の本文に名前が出て、実際にその場にいる人だけ true・番号を入れる。全員を全ページに出さない。主人公ひとりや、主人公と1〜2人の場面を多くする。亡くなっている人や動物は、思い出・写真・夢として出す場面以外は入れない。",
+    `- 【構図を変える】camera は場面ごとに変え、同じ構図を続けない。12場面のうち、後ろ姿・遠景・見上げ・見下ろし・寄りをそれぞれ1回以上使う。候補：${CAMERAS.join(" / ")}`,
     "挿絵の内容（art・cover）は英語で、主人公は必ず \"the child\" と書き、名前は書かない。どの場面にも主人公が出る。絵の中に文字は入れない。毎回同じ見た目で描けるよう、主人公の服装は書かない。",
     "表紙（cover）は、お話の世界を背景に主人公が大きく描かれる横長の絵。",
     ...castRules(input.cast),
@@ -142,7 +184,7 @@ async function askAi(input: StoryInput) {
         model,
         messages: [
           { role: "system", content: system },
-          { role: "user", content: `あらすじ：${input.synopsis}` },
+          { role: "user", content: userMessage(input) },
         ],
         response_format: { type: "json_schema", json_schema: { name: "picture_book", strict: true, schema: SCHEMA } },
       });
@@ -158,6 +200,80 @@ async function askAi(input: StoryInput) {
     }
   }
   throw lastError ?? new Error("no model");
+}
+
+/** あらすじと、作る前の質問への答え */
+function userMessage(input: Pick<StoryInput, "synopsis" | "answers">) {
+  const qa = (input.answers ?? []).filter((x) => x.a.trim());
+  return [`あらすじ：${input.synopsis}`, ...(qa.length ? ["", "お客様への確認と答え：", ...qa.map((x) => `- ${x.q} → ${x.a}`)] : [])].join("\n");
+}
+
+const QUESTIONS_SCHEMA = {
+  type: "object",
+  additionalProperties: false,
+  required: ["questions"],
+  properties: { questions: { type: "array", items: { type: "string" }, description: `確認したいこと（0〜${QUESTION_MAX}問）` } },
+} as const;
+
+/**
+ * お話を作る前に、絵がずれないように確かめたいことをAIが質問する（2026-10-12 作道さん）。
+ * 例：「おじいちゃんの家にはどうやって行きますか？」「コロはもう亡くなっていますか？」。はっきりしていれば質問なし。
+ */
+export async function askStoryQuestions(input: Omit<StoryInput, "level" | "answers">): Promise<string[]> {
+  const ai = getOpenAI();
+  if (!ai) return demoQuestions(input);
+  const system = [
+    "あなたは日本の幼児向け絵本作家です。お客様のあらすじから12場面の絵本を作る前に、挿絵が食い違わないよう、お客様に確認したいことを日本語で質問します。",
+    `質問は${QUESTION_MAX}問まで。あらすじから分かることや、お話の楽しさに関係ない細かいことは聞かない。はっきりしていれば質問は0問でよい。`,
+    "聞くとよいこと：場所（誰の家か・どこへ行くか）、登場人物の関係や立場（誰が迎えるか）、亡くなっている人や動物が実際に登場するのか思い出として出るのか、季節、お話の結末の希望 など。",
+    "1問は40文字くらいまでの、やさしい話し言葉で。子どもの名前やほかの登場人物の名前を使ってよい。",
+    `主人公は「${input.childName}」（${input.childAge}さい）。`,
+    ...(input.cast.length ? [`ほかの登場人物：${input.cast.map((c) => `${c.name}（${CAST_KIND_LABEL[c.kind]}${c.about ? `・${c.about}` : ""}）`).join("、")}`] : []),
+  ].join("\n");
+  for (const model of TEXT_MODELS()) {
+    try {
+      const res = await ai.chat.completions.create({
+        model,
+        messages: [
+          { role: "system", content: system },
+          { role: "user", content: `あらすじ：${input.synopsis}` },
+        ],
+        response_format: { type: "json_schema", json_schema: { name: "story_questions", strict: true, schema: QUESTIONS_SCHEMA } },
+      });
+      const raw = res.choices[0]?.message?.content;
+      if (!raw) throw new Error("empty response");
+      const body = JSON.parse(raw) as { questions?: unknown };
+      return (Array.isArray(body.questions) ? body.questions : [])
+        .filter((q): q is string => typeof q === "string" && !!q.trim())
+        .map((q) => [...q.trim()].slice(0, 80).join(""))
+        .slice(0, QUESTION_MAX);
+    } catch (e) {
+      console.error(`story questions with ${model} failed`, e);
+    }
+  }
+  // 質問が作れなくても、お話づくりは止めない
+  return [];
+}
+
+function demoQuestions(input: Omit<StoryInput, "level" | "answers">) {
+  return [
+    `［デモ］お話の舞台はどこですか？（例：${input.childName}のおうち、おじいちゃんの家）`,
+    ...(input.cast.length ? [`［デモ］${input.cast[0].name}は、お話の中で実際にいっしょにいますか？`] : []),
+  ];
+}
+
+/** 質問と答えを整える（質問も答えも長さを決める）。おかしければ null */
+export function cleanAnswers(v: unknown): StoryAnswer[] | null {
+  if (v === undefined) return [];
+  if (!Array.isArray(v) || v.length > QUESTION_MAX) return null;
+  const out: StoryAnswer[] = [];
+  for (const x of v) {
+    const q = typeof x?.q === "string" ? x.q.trim() : "";
+    const a = typeof x?.a === "string" ? x.a.replace(/\s+/g, " ").trim() : "";
+    if (!q || [...q].length > 80 || [...a].length > ANSWER_MAX) return null;
+    out.push({ q, a });
+  }
+  return out;
 }
 
 /** ほかの登場人物（仲間）についての指示 */
@@ -176,6 +292,7 @@ function demoStory(input: StoryInput): AiBody {
   const n = input.cast.length;
   return {
     title: "わたしの おはなし",
+    facts: "Demo story. Indoors everyone is barefoot.",
     cover: `the child smiling in a bright, friendly fantasy landscape${n ? " with Companion 1" : ""}`,
     coverCompanions: n ? [1] : [],
     companions: input.cast.map((c) => ({ look: c.kind === "animal" ? "a small friendly animal" : "a kind grown-up" })),
@@ -183,7 +300,9 @@ function demoStory(input: StoryInput): AiBody {
       const guests = n ? [(i % n) + 1] : [];
       return {
         text: `［デモ］${input.childName}の おはなし ${i + 1}ページめ。${guests.length ? `${input.cast[guests[0] - 1].name}も いっしょ。` : ""}${input.synopsis.slice(0, 30)}`,
+        setting: i % 2 ? "outdoors in a sunny park, daytime" : "inside the family's living room, daytime, everyone barefoot",
         art: `the child${guests.length ? ` and Companion ${guests[0]}` : ""} in scene ${i + 1} of a gentle adventure`,
+        camera: CAMERAS[i % CAMERAS.length],
         withMom: false,
         withDad: false,
         companions: guests,
