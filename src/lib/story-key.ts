@@ -105,6 +105,13 @@ export function isOpenSeries(id: SeriesId) {
   return OPEN_SERIES.includes(id);
 }
 
+/** 添削が終わって注文できる話。ほかの話は見本の絵があっても「Coming soon」で選べない（2026-10-12 作道さん） */
+export const PROOFREAD_EPISODES: Partial<Record<SeriesId, number[]>> = { forest: [1] };
+
+export function isProofread(id: SeriesId, no: number) {
+  return PROOFREAD_EPISODES[id]?.includes(no) ?? false;
+}
+
 /** 公開中の話だけ */
 export function openEpisodes<E extends { no: number }>(episodes: E[]) {
   return episodes.filter((e) => e.no <= OPEN_EPISODES);

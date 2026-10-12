@@ -6,7 +6,7 @@ import { Check, Chevron } from "@/components/icons";
 import { SampleImage } from "@/components/sample-image";
 import { samplePublicUrl } from "@/lib/samples";
 import { seriesImagePath } from "@/lib/series";
-import { LEVELS, OPEN_SERIES, SERIES_LIST, isOpenSeries, levelForAge, openEpisodes, parseSeriesKey, seriesKey, type SeriesId } from "@/lib/story-key";
+import { LEVELS, OPEN_SERIES, SERIES_LIST, isOpenSeries, isProofread, levelForAge, openEpisodes, parseSeriesKey, seriesKey, type SeriesId } from "@/lib/story-key";
 import { useFlow } from "../flow";
 import { CustomStoryPanel } from "./custom";
 import { customStoryComplete, parseCustomKey } from "@/lib/custom-story";
@@ -29,7 +29,9 @@ export default function StoryPage() {
       .then((json) => setReady(json ?? none))
       .catch(() => setReady(none));
   }, []);
-  const isReady = (id: SeriesId, no: number) => !!ready?.[id]?.includes(no);
+  const hasArt = (id: SeriesId, no: number) => !!ready?.[id]?.includes(no);
+  // 選べるのは見本の絵がそろい、添削も終わった話だけ
+  const isReady = (id: SeriesId, no: number) => hasArt(id, no) && isProofread(id, no);
   const custom = parseCustomKey(state.story);
   const storyOk = custom ? customStoryComplete(custom) : !!current && isReady(current.series, current.episode);
   const choose = (story: string) => update({ story, previews: {}, draftId: null });
@@ -43,7 +45,7 @@ export default function StoryPage() {
         <h2 className="display section-label">シリーズのお話</h2>
         <p className="section-lead">1冊に1話。季節がめぐるように、続きのお話もあとから作れます。</p>
         {SERIES_LIST.map((s) => {
-          const firstReady = openEpisodes(s.episodes).find((e) => isReady(s.id, e.no));
+          const firstReady = openEpisodes(s.episodes).find((e) => hasArt(s.id, e.no));
           // 公開前のシリーズは「準備中」で、開けない
           const soon = !isOpenSeries(s.id);
           const expanded = !soon && open === s.id;
@@ -71,6 +73,8 @@ export default function StoryPage() {
                 <div className="episode-list">
                   {openEpisodes(s.episodes).map((ep) => {
                     const ok = isReady(s.id, ep.no);
+                    // 絵はあるが添削待ちの話は、サムネイルを見せて「Coming soon」
+                    const comingSoon = hasArt(s.id, ep.no) && !ok;
                     const selected = current?.series === s.id && current.episode === ep.no;
                     return (
                       <button
@@ -81,11 +85,11 @@ export default function StoryPage() {
                         disabled={!ok}
                         onClick={() => choose(seriesKey(s.id, ep.no, current?.level ?? levelForAge(state.childAge)))}
                       >
-                        <Thumb src={ok ? samplePublicUrl(seriesImagePath(s.id, ep.no, 0)) : null} alt={`第${ep.no}話の見本`} size={56} />
+                        <Thumb src={ok || comingSoon ? samplePublicUrl(seriesImagePath(s.id, ep.no, 0)) : null} alt={`第${ep.no}話の見本`} size={56} />
                         <div style={{ display: "flex", flexDirection: "column", gap: 4, flexGrow: 1 }}>
                           <div style={{ display: "flex", gap: 6, alignItems: "center", flexWrap: "wrap", fontSize: 12, color: "var(--sub)" }}>
                             <span>第{ep.no}話・{ep.season}</span>
-                            {!ok && <span className="soon">{ready ? "準備中" : "確認中"}</span>}
+                            {!ok && <span className="soon">{comingSoon ? "Coming soon" : ready ? "準備中" : "確認中"}</span>}
                           </div>
                           <div className="display" style={{ fontSize: 15, fontWeight: 800, color: "var(--navy)" }}>{ep.title}</div>
                         </div>
