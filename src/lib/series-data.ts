@@ -4,10 +4,11 @@ import star from "@/data/series/star.json";
 import birthday from "@/data/series/birthday.json";
 import sea from "@/data/series/sea.json";
 import dinosaur from "@/data/series/dinosaur.json";
+import number from "@/data/series/number.json";
 import type { Combo, SeriesId } from "./story-key";
 
 // 確定した台本（/mnt/project-files/stories/*-script.md、Claude Doc で 2026-10-11 承認）を、サイトで使う形にしたデータ。
-// text は文の量（少ない・普通・多い）の順。多いは 漢字《かな》 でふりがなを書いている。{name} は主人公の名前。
+// text は文の量（少ない・普通・多い）の順（数のお勉強は文が1種類なので、3つとも同じ文）。多いは 漢字《かな》 でふりがなを書いている。{name} は主人公の名前。
 // 各場面は「その場面の親」が出る形（ママ場面はママだけ…）で、ほかの写真の組み合わせの文と絵は alt にある。
 
 export type SeriesVersion = {
@@ -48,4 +49,4 @@ export type SeriesData = {
   }[];
 };
 
-export const SERIES_DATA = { forest, star, birthday, sea, dinosaur } as Record<SeriesId, SeriesData>;
+export const SERIES_DATA = { forest, star, birthday, sea, dinosaur, number } as Record<SeriesId, SeriesData>;
