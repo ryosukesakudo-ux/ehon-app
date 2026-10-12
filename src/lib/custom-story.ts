@@ -8,7 +8,8 @@ import type { LevelId } from "./story-key";
 
 export const CUSTOM_PREFIX = "custom:";
 export const CUSTOM_SCENES = 12;
-export const SYNOPSIS_MAX = 150;
+/** あらすじの長さ（2026-10-12 作道さん：150字では場面の状況を書ききれないので400字に） */
+export const SYNOPSIS_MAX = 400;
 export const CUSTOM_TITLE_MAX = 20;
 /** 1場面の文の長さの上限（文の量「多い」でも収まる長さ） */
 export const CUSTOM_TEXT_MAX = 300;
@@ -18,6 +19,9 @@ export const MAX_CAST = 5;
 export const CAST_NAME_MAX = 10;
 export const CAST_ABOUT_MAX = 30;
 const LOOK_MAX = 300;
+/** お話の決まりごと・場面の場所・構図（英語・サーバーで作ったもの）の長さ */
+const FACTS_MAX = 1200;
+const SETTING_MAX = 300;
 
 export type CustomScene = {
   /** 本文（お客様が直せる） */
@@ -28,6 +32,10 @@ export type CustomScene = {
   withDad: boolean;
   /** この場面に出る、ほかの登場人物（cast の番号・0から） */
   guests: number[];
+  /** 場所・屋内か屋外か・時間帯など（英語）。以前のお話には無い */
+  setting: string;
+  /** カメラの位置・構図（英語）。以前のお話には無い */
+  camera: string;
 };
 
 export type CastKind = "person" | "animal";
@@ -57,6 +65,8 @@ export type CustomStory = {
   cast: CastMember[];
   /** 表紙に出る、ほかの登場人物（cast の番号） */
   coverGuests: number[];
+  /** お話全体の決まりごと（英語。誰の家か・亡くなった人や動物・屋内では靴をぬぐ など）。以前のお話には無い */
+  facts: string;
   /** 絵の内容の署名 */
   sig: string;
 };
@@ -64,7 +74,19 @@ export type CustomStory = {
 const str = (v: unknown, max: number) => (typeof v === "string" && [...v].length <= max ? v : null);
 
 /** 署名する中身（絵の内容と、場面ごとのママ・パパ・ほかの登場人物の登場、登場人物の見た目） */
-export function signedPayload(s: Pick<CustomStory, "cover" | "scenes" | "level" | "cast" | "coverGuests">) {
+export function signedPayload(s: Pick<CustomStory, "cover" | "scenes" | "level" | "cast" | "coverGuests" | "facts">) {
+  // 決まりごと・場所・構図のあるお話（2026-10-12〜）
+  if (s.facts || s.scenes.some((x) => x.setting || x.camera)) {
+    return JSON.stringify([
+      3,
+      s.level,
+      s.cover,
+      s.facts,
+      s.scenes.map((x) => [x.art, x.withMom, x.withDad, x.guests, x.setting, x.camera]),
+      s.cast.map((c) => [c.kind, c.look]),
+      s.coverGuests,
+    ]);
+  }
   // ほかの登場人物がいないお話は以前と同じ形（以前に作って保存しているお話もそのまま使えるように）
   if (!s.cast.length) return JSON.stringify([s.level, s.cover, s.scenes.map((x) => [x.art, x.withMom, x.withDad])]);
   return JSON.stringify([
@@ -120,9 +142,14 @@ export function parseCustomKey(key: string | null | undefined): CustomStory | nu
       const text = str(s?.text, CUSTOM_TEXT_MAX);
       const art = str(s?.art, ART_MAX);
       if (text === null || !art) return null;
-      scenes.push({ text, art, withMom: s.withMom === true, withDad: s.withDad === true, guests: guestList(s.guests, cast.length) });
+      const setting = str(s.setting ?? "", SETTING_MAX);
+      const camera = str(s.camera ?? "", SETTING_MAX);
+      if (setting === null || camera === null) return null;
+      scenes.push({ text, art, withMom: s.withMom === true, withDad: s.withDad === true, guests: guestList(s.guests, cast.length), setting, camera });
     }
-    return { title, level, cover, scenes, cast, coverGuests: guestList(v.coverGuests, cast.length), sig };
+    const facts = str(v.facts ?? "", FACTS_MAX);
+    if (facts === null) return null;
+    return { title, level, cover, scenes, cast, coverGuests: guestList(v.coverGuests, cast.length), facts, sig };
   } catch {
     return null;
   }

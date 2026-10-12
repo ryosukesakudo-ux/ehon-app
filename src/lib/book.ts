@@ -13,6 +13,8 @@ export type BookScene = Scene & {
   camera?: string;
   /** オリジナルのお話で、この場面に出るほかの登場人物（cast の番号） */
   guests?: number[];
+  /** オリジナルのお話で、場所・屋内か屋外か・時間帯（英語） */
+  setting?: string;
 };
 
 export type Book = {
@@ -29,6 +31,8 @@ export type Book = {
   cast?: { name: string; kind: "person" | "animal"; look: string }[];
   /** 表紙に出る、ほかの登場人物（cast の番号） */
   coverGuests?: number[];
+  /** オリジナルのお話全体の決まりごと（英語。誰の家か・亡くなった人や動物・屋内では靴をぬぐ など） */
+  facts?: string;
   /** シリーズのお話のときだけ */
   series?: {
     id: SeriesId;
@@ -66,10 +70,19 @@ export function getBook(key: string | null | undefined): Book | null {
       key: key!,
       name: custom.title,
       cover: custom.cover,
-      scenes: custom.scenes.map((s) => ({ text: s.text, art: s.art, withMom: s.withMom, withDad: s.withDad, guests: s.guests })),
+      scenes: custom.scenes.map((s) => ({
+        text: s.text,
+        art: s.art,
+        withMom: s.withMom,
+        withDad: s.withDad,
+        guests: s.guests,
+        setting: s.setting || undefined,
+        camera: s.camera || undefined,
+      })),
       ruby: custom.level === "l",
       cast: custom.cast.map(({ name, kind, look }) => ({ name, kind, look })),
       coverGuests: custom.coverGuests,
+      facts: custom.facts || undefined,
     };
   }
 

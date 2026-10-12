@@ -7,6 +7,9 @@ import { LEVELS, levelForAge, type LevelId } from "@/lib/story-key";
 import { Chevron } from "@/components/icons";
 import { Lottie } from "@/components/lottie";
 import { useFlow } from "../flow";
+
+/** 質問への答えの長さ（サーバーの ANSWER_MAX と同じ） */
+const ANSWER_MAX = 100;
 import { loginHref } from "../account";
 
 // オリジナルのお話：あらすじを入れるとAIが12ページのお話を作り、文はその場で自由に直せる。
@@ -27,7 +30,10 @@ export function CustomStoryPanel() {
   const castOk = castRows.every((c) => c.name.trim());
   const castChanged = !!story && JSON.stringify(castRows.map((c) => [c.name.trim(), c.kind, c.about.trim()])) !== JSON.stringify(story.cast.map((c) => [c.name, c.kind, c.about]));
   const setRow = (i: number, patch: Partial<CastInput>) => setCast(castRows.map((c, j) => (j === i ? { ...c, ...patch } : c)));
-  const [busy, setBusy] = useState(false);
+  const [busy, setBusy] = useState<"asking" | "writing" | false>(false);
+  // 作る前のAIの質問（null はまだ聞いていない）と、お客様の答え
+  const [questions, setQuestions] = useState<string[] | null>(null);
+  const [answers, setAnswers] = useState<string[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [needLogin, setNeedLogin] = useState(false);
   const nameOk = state.childName.trim().length > 0;
@@ -42,15 +48,44 @@ export function CustomStoryPanel() {
 
   const save = (s: CustomStory) => update({ story: customKey(s), previews: {}, draftId: null });
 
-  async function generate() {
-    setBusy(true);
+  const cleanCast = () => castRows.map((c) => ({ ...c, name: c.name.trim(), about: c.about.trim() }));
+
+  // まず、絵がずれないように確かめたいことをAIに聞いてもらう（0〜3問）。質問が無ければそのままお話を作る
+  async function ask() {
+    setBusy("asking");
+    setError(null);
+    setNeedLogin(false);
+    try {
+      const res = await fetch("/api/stories/questions", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ synopsis, childName: state.childName.trim(), childAge: state.childAge, cast: cleanCast() }),
+      });
+      const json = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        setNeedLogin(!!json.needLogin);
+        throw new Error(json.error ?? "お話を作れませんでした");
+      }
+      const qs: string[] = Array.isArray(json.questions) ? json.questions : [];
+      if (!qs.length) return generate([]);
+      setQuestions(qs);
+      setAnswers(qs.map(() => ""));
+      setBusy(false);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "お話を作れませんでした");
+      setBusy(false);
+    }
+  }
+
+  async function generate(qa: { q: string; a: string }[]) {
+    setBusy("writing");
     setError(null);
     setNeedLogin(false);
     try {
       const res = await fetch("/api/stories", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ synopsis, childName: state.childName.trim(), childAge: state.childAge, level, cast: castRows.map((c) => ({ ...c, name: c.name.trim(), about: c.about.trim() })) }),
+        body: JSON.stringify({ synopsis, childName: state.childName.trim(), childAge: state.childAge, level, cast: cleanCast(), answers: qa }),
       });
       const json = await res.json().catch(() => ({}));
       if (!res.ok || !json.story) {
@@ -59,6 +94,7 @@ export function CustomStoryPanel() {
       }
       save(json.story);
       setCast(null);
+      setQuestions(null);
     } catch (e) {
       setError(e instanceof Error ? e.message : "お話を作れませんでした");
     } finally {
@@ -135,11 +171,14 @@ export function CustomStoryPanel() {
             <label htmlFor="synopsis" className="display">あらすじ（{SYNOPSIS_MAX}文字まで）</label>
             <textarea
               id="synopsis"
-              rows={3}
+              rows={6}
               maxLength={SYNOPSIS_MAX}
               value={synopsis}
-              placeholder="例：うちの犬のコロと、雲の上のおかしの国へ冒険に行く。最後はママとパパにおみやげを持って帰る。"
-              onChange={(e) => setSynopsis([...e.target.value].slice(0, SYNOPSIS_MAX).join(""))}
+              placeholder="例：夏休みに、いなかのおじいちゃんの家へ遊びに行く。おじいちゃんが玄関で出むかえてくれて、いっしょに川で魚つり。去年天国へ行った犬のコロのことを思い出して、夜は星を見ながらコロの話をする。（だれの家か・どこで何をするか・もういない人や動物など、くわしく書くほど絵が正確になります）"
+              onChange={(e) => {
+                setSynopsis([...e.target.value].slice(0, SYNOPSIS_MAX).join(""));
+                setQuestions(null);
+              }}
               style={textareaStyle}
             />
             <span style={{ alignSelf: "flex-end", fontSize: 12, color: "var(--sub)" }}>{[...synopsis].length} / {SYNOPSIS_MAX}</span>
@@ -159,16 +198,46 @@ export function CustomStoryPanel() {
           {!nameOk || !ageOk ? (
             <p className="info-note" style={{ fontSize: 13 }}>下の「主人公の名前」と「年齢」を先に入れてください。お話の中に名前が入ります。</p>
           ) : null}
-          <button type="button" className="cta" disabled={busy || !synopsis.trim() || !nameOk || !ageOk || !castOk} onClick={generate}>
-            {busy ? "お話を書いています…" : story ? "このあらすじで作り直す" : "AIにお話を作ってもらう"}
-          </button>
+          {questions ? (
+            <div className="card" style={{ gap: 10, background: "#FBF7F0" }}>
+              <div className="display" style={{ fontSize: 15, fontWeight: 800, color: "var(--navy)" }}>お話を作る前に、AIから質問です</div>
+              <div style={{ fontSize: 12, lineHeight: 1.6, color: "var(--sub)" }}>
+                答えると、絵が本文と食い違いにくくなります（分からない質問は空欄のままで大丈夫です）。
+              </div>
+              {questions.map((q, i) => (
+                <div key={i} className="field">
+                  <label htmlFor={`story-q-${i}`} style={{ fontSize: 14 }}>{q}</label>
+                  <input
+                    id={`story-q-${i}`}
+                    type="text"
+                    maxLength={ANSWER_MAX}
+                    value={answers[i] ?? ""}
+                    onChange={(e) => setAnswers(answers.map((a, j) => (j === i ? [...e.target.value].slice(0, ANSWER_MAX).join("") : a)))}
+                  />
+                </div>
+              ))}
+              <button type="button" className="cta" disabled={!!busy} onClick={() => generate(questions.map((q, i) => ({ q, a: answers[i]?.trim() ?? "" })))}>
+                {busy === "writing" ? "お話を書いています…" : "答えてお話を作る"}
+              </button>
+              <button type="button" className="ghost" disabled={!!busy} onClick={() => generate([])}>
+                質問に答えずに作る
+              </button>
+              <button type="button" className="ghost" disabled={!!busy} style={{ height: 40, fontSize: 13 }} onClick={() => setQuestions(null)}>
+                あらすじを書き直す
+              </button>
+            </div>
+          ) : (
+            <button type="button" className="cta" disabled={!!busy || !synopsis.trim() || !nameOk || !ageOk || !castOk} onClick={ask}>
+              {busy === "asking" ? "あらすじを読んでいます…" : busy ? "お話を書いています…" : story ? "このあらすじで作り直す" : "AIにお話を作ってもらう"}
+            </button>
+          )}
           <p style={{ margin: 0, fontSize: 12, lineHeight: 1.6, color: "var(--sub)" }}>
             無料会員の方が使えます（1日10回まで・プレビューの枚数は減りません）。作り直すと、直した文は新しいお話に置きかわります。
           </p>
           {busy && (
             <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 6, fontSize: 13, color: "var(--sub)" }}>
               <Lottie name="drawing" style={{ width: 160, height: 120 }} />
-              <span>30秒ほどかかります</span>
+              <span>{busy === "asking" ? "10秒ほどかかります" : "30秒ほどかかります"}</span>
             </div>
           )}
           {error && <p className="error" role="alert">{error}</p>}
