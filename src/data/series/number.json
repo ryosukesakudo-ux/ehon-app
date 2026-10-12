@@ -158,8 +158,8 @@
      "camera": "Eye-level wide view along the pond bank, the lotus leaf with two chicks and the row of three chicks on the bank both clearly visible, the child pointing from the side."
     },
     {
-     "label": "高い木の上の巣にひよこ3わ。はしごに登る主人公を下から見上げる（あおり）。下に5わが待つ",
-     "art": "a tall tree with a round nest high in its branches holding exactly three chicks; the child climbs a wooden ladder toward the nest while Kazoe holds the bottom of the ladder; at the foot of the tree exactly five chicks wait in a row",
+     "label": "木の枝の巣から3わのひよこが並んで顔を出す（3わともはっきり大きく）。はしごに登る主人公を下から見上げる（あおり）。下に5わが待つ",
+     "art": "a tree with a round nest on a thick branch not far above the ground; exactly three chicks sit side by side in the nest with their whole heads and bodies poking up above its rim, drawn large and bright so all three are clearly visible and easy to count, and they look down cheerfully; the child climbs a short wooden ladder toward the nest, almost reaching it, while Kazoe holds the bottom of the ladder; at the foot of the tree exactly five chicks wait in a row",
      "text": [
       "きの うえにも ひよこ。ろく、なな、はち！",
       "きの うえにも ひよこ。ろく、なな、はち！",
@@ -168,7 +168,7 @@
      "withMom": false,
      "withDad": false,
      "withSidekick": true,
-     "camera": "Low worm's-eye view from the foot of the tree looking up the ladder at the child climbing toward the nest, the bear cub and the row of five chicks in the bottom foreground."
+     "camera": "Low angle from below and slightly to the side of the ladder, close enough that the nest with the three chicks fills the upper part of the frame large and in sharp focus, the climbing child just below it, the bear cub and the row of five chicks small at the bottom."
     },
     {
      "label": "草むらから転がり出るひよこ。全部で9わ。カゾエが首をかしげ、空はまだ薄暗い",
