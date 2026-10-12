@@ -28,6 +28,8 @@ export type FlowState = {
   confirmed: boolean;
   /** プレビューで作ると選んだ本文のページ数（0・冒頭3枚・12枚） */
   pageCount: number;
+  /** 保存しているキャラクターをそのまま使った絵の番号（プレビューの枚数を使っていない） */
+  reused: number[];
   size: SizeId;
   /** 部数（1〜10） */
   copies: number;
@@ -53,6 +55,7 @@ const initial: FlowState = {
   previewScenes: [],
   confirmed: false,
   pageCount: 0,
+  reused: [],
   size: "M",
   copies: 1,
   deliveryDate: "",
@@ -115,6 +118,7 @@ export function FlowProvider({ children }: { children: ReactNode }) {
       restored.copies = clampCopies(restored.copies);
       if (!isLikenessId(restored.likeness)) restored.likeness = initial.likeness;
       restored.confirmed = restored.confirmed === true;
+      restored.reused = Array.isArray(restored.reused) ? restored.reused.filter((n) => typeof n === "number") : [];
       restored.pageCount = [0, FIRST_PAGES, BOOK_SCENE_COUNT].includes(restored.pageCount) ? restored.pageCount : 0;
       // eslint-disable-next-line react-hooks/set-state-in-effect -- 保存済みの入力を一度だけ復元する
       setState(restored);

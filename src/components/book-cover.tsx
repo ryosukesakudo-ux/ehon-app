@@ -6,7 +6,8 @@ export function BookCover({ lead, title, art, style }: { lead: string; title: st
   return (
     <div style={{ aspectRatio: "1 / 1", width: "100%", display: "flex", flexDirection: "column", background: "#fff8ec", containerType: "inline-size", ...style }}>
       <div style={{ flex: "0 0 33.333%", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: "1.5cqw", padding: "0 6cqw", textAlign: "center" }}>
-        <div className="display" style={{ fontSize: "5.2cqw", fontWeight: 800, color: "var(--coral)", lineHeight: 1.2 }}>{lead}</div>
+        {/* 上の小さい行も1行に収める（長いと「第1話」の「話」だけが次の行に落ちていた。入稿用PDFの表紙と同じく、縮めて1行に） */}
+        <div className="display" style={{ fontSize: `min(5.2cqw, ${Math.floor(8400 / Math.max([...lead].length, 1)) / 100}cqw)`, fontWeight: 800, color: "var(--coral)", lineHeight: 1.2, whiteSpace: "nowrap" }}>{lead}</div>
         {/* 長い題名でも1行に収める */}
         <div className="display" style={{ fontSize: `min(8.4cqw, ${Math.floor(8600 / Math.max(title.length, 1)) / 100}cqw)`, fontWeight: 900, color: "var(--navy)", lineHeight: 1.2, whiteSpace: "nowrap" }}>{title}</div>
       </div>

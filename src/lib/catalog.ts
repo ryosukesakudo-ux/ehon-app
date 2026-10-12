@@ -273,6 +273,12 @@ export const MEMBER_MONTHLY_PREVIEWS = 10;
 
 // 無料枠を使い切ったあとの追加枠：500円で10枚。使い切るまで有効（月をまたいでも残る）
 export const PREVIEW_PACK = { credits: 10, price: 500 };
+/** 一度にまとめて買えるセット数（足りない分に合わせて買う） */
+export const MAX_PACKS = 3;
+/** 足りない枚数に必要なセット数 */
+export function packsFor(short: number) {
+  return Math.min(MAX_PACKS, Math.max(1, Math.ceil(short / PREVIEW_PACK.credits)));
+}
 
 // 保管期間（日）
 export const RETENTION = {
