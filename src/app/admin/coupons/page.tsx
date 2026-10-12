@@ -1,4 +1,4 @@
-import { yen } from "@/lib/catalog";
+import { FLYER_COUPON, REPEAT_COUPON, yen } from "@/lib/catalog";
 import { getSupabase } from "@/lib/services";
 import { CouponForm, CouponToggle } from "./forms";
 
@@ -26,6 +26,9 @@ export default async function CouponsPage() {
       <h1 className="display" style={{ margin: 0, color: "var(--navy)" }}>クーポン管理</h1>
       <p style={{ margin: 0, fontSize: 14, lineHeight: 1.8 }}>
         クーポンは1冊目の値段を変えます（0円なら無料）。2冊目以降は通常の値段です。おひとり様1回まで、人数の上限はありません。
+      </p>
+      <p style={{ margin: 0, fontSize: 14, lineHeight: 1.8 }}>
+        決まったコード：チラシ割引 <b>{FLYER_COUPON.code}</b>（{yen(FLYER_COUPON.discount)}引き・おひとり様1回）使われた回数 {count(FLYER_COUPON.code)}回 ／ リピート割引 <b>{REPEAT_COUPON.code}</b>（{yen(REPEAT_COUPON.discount)}引き）使われた回数 {count(REPEAT_COUPON.code)}回
       </p>
       <CouponForm />
       <table style={{ borderCollapse: "collapse", fontSize: 14 }}>
