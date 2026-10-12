@@ -6,7 +6,7 @@ import { Check, Chevron } from "@/components/icons";
 import { SampleImage } from "@/components/sample-image";
 import { samplePublicUrl } from "@/lib/samples";
 import { seriesImagePath } from "@/lib/series";
-import { LEVELS, OPEN_SERIES, SERIES_LIST, isOpenSeries, isProofread, levelForAge, openEpisodes, parseSeriesKey, seriesKey, type SeriesId } from "@/lib/story-key";
+import { LEVELS, OPEN_SERIES, SERIES_LIST, SHOWN_SERIES_LIST, isOpenSeries, isProofread, levelForAge, openEpisodes, parseSeriesKey, seriesKey, type SeriesId } from "@/lib/story-key";
 import { useFlow } from "../flow";
 import { CustomStoryPanel } from "./custom";
 import { customStoryComplete, parseCustomKey } from "@/lib/custom-story";
@@ -44,7 +44,7 @@ export default function StoryPage() {
 
         <h2 className="display section-label">シリーズのお話</h2>
         <p className="section-lead">1冊に1話。季節がめぐるように、続きのお話もあとから作れます。</p>
-        {SERIES_LIST.map((s) => {
+        {SHOWN_SERIES_LIST.map((s) => {
           const firstReady = openEpisodes(s.episodes).find((e) => hasArt(s.id, e.no));
           // 公開前のシリーズは「準備中」で、開けない
           const soon = !isOpenSeries(s.id);
