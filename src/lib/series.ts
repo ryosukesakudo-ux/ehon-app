@@ -1,4 +1,4 @@
-import { SAMPLE_CHILD_NAME } from "./samples";
+import { SAMPLE_CHILD_NAME, SHOWCASE_PHOTO } from "./samples";
 import type { SeriesId } from "./story-key";
 
 export type { SeriesId };
@@ -53,9 +53,19 @@ export function seriesSheetPath(id: SeriesId) {
   return `series/${id}/characters.png`;
 }
 
+/**
+ * 家族写真を作例スタジオの「この写真から」①（トップの写真）と共用するシリーズ。
+ * 2026-10-12 作道さん：トップとサンプル集で同じ家族に見せる。写真は作例スタジオで作り、絵スタジオでは作らない
+ */
+const SHOWCASE_PHOTO_SERIES: SeriesId[] = ["forest"];
+
+export function usesShowcasePhoto(id: SeriesId) {
+  return SHOWCASE_PHOTO_SERIES.includes(id);
+}
+
 /** サンプル集に出す、シリーズの家族（設定画の3人）そっくりの架空の家族写真。左からママ・主人公・パパの順に並ぶ */
 export function seriesFamilyPhotoPath(id: SeriesId) {
-  return `series/${id}/family-photo.png`;
+  return usesShowcasePhoto(id) ? SHOWCASE_PHOTO : `series/${id}/family-photo.png`;
 }
 
 /** 0 が表紙、1〜12 が場面 */

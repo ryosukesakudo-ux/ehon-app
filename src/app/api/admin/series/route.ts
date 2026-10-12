@@ -1,7 +1,7 @@
 import { toFile } from "openai";
 import { illustrateSeries, makeSeriesFamilyPhoto, makeSeriesFamilyPhotoFromText, makeSeriesSheet } from "@/lib/illustrate";
 import { characterSheetPath } from "@/lib/samples";
-import { seriesFamilyPhotoPath, seriesImagePath, seriesSheetPath } from "@/lib/series";
+import { seriesFamilyPhotoPath, seriesImagePath, seriesSheetPath, usesShowcasePhoto } from "@/lib/series";
 import { getStudioSeries } from "@/lib/series-studio";
 import { SAMPLE_BUCKET, getSupabase } from "@/lib/services";
 
@@ -30,8 +30,14 @@ export async function POST(request: Request) {
   };
 
   const note = typeof body?.note === "string" ? body.note.trim() : "";
+  const noPhoto = usesShowcasePhoto(series.id) ? "先に作例スタジオで「この写真から → この絵本に」の①（家族の写真）を作ってください" : "先に家族写真を作ってください";
 
   try {
+    if (body?.kind === "photo" && usesShowcasePhoto(series.id)) {
+      // トップの写真と共用（作例スタジオで作る）。ここで作るとトップの写真まで変わってしまう
+      return Response.json({ error: "このシリーズの家族写真は、作例スタジオの「この写真から → この絵本に」①を使います。作り直すときは作例スタジオで作ってください" }, { status: 400 });
+    }
+
     if (series.photoFirst && body?.kind === "photo") {
       // 写真が先のシリーズ：家族写真を文章から作る（設定画と場面はこの写真に寄せる）
       await save(seriesFamilyPhotoPath(series.id), await makeSeriesFamilyPhotoFromText(series, note));
@@ -40,7 +46,7 @@ export async function POST(request: Request) {
 
     if (series.photoFirst && body?.kind === "sheet") {
       const photo = await load(seriesFamilyPhotoPath(series.id), "family-photo.png");
-      if (!photo) return Response.json({ error: "先に家族写真を作ってください" }, { status: 400 });
+      if (!photo) return Response.json({ error: noPhoto }, { status: 400 });
       await save(seriesSheetPath(series.id), await makeSeriesSheet(series, null, note, photo));
       return Response.json({ ok: true });
     }
@@ -67,7 +73,7 @@ export async function POST(request: Request) {
     const sheet = await load(seriesSheetPath(series.id), "characters.png");
     if (!sheet) return Response.json({ error: "先に登場人物の設定画を作ってください" }, { status: 400 });
     const photo = series.photoFirst ? await load(seriesFamilyPhotoPath(series.id), "family-photo.png") : null;
-    if (series.photoFirst && !photo) return Response.json({ error: "先に家族写真を作ってください" }, { status: 400 });
+    if (series.photoFirst && !photo) return Response.json({ error: noPhoto }, { status: 400 });
     const quality = body?.quality === "preview" ? "preview" : "final";
     await save(
       seriesImagePath(series.id, episode.no, page),
