@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { samplePublicUrl } from "@/lib/samples";
-import { SERIES_NOTE_MAX, isPhotoFirst, seriesFamilyPhotoPath, seriesSampleChildName, seriesImagePath, seriesSheetPath, type SeriesId } from "@/lib/series";
+import { SERIES_NOTE_MAX, isPhotoFirst, seriesFamilyPhotoPath, seriesSampleChildName, seriesImagePath, seriesSheetPath, usesShowcasePhoto, type SeriesId } from "@/lib/series";
 import { SampleImage } from "@/components/sample-image";
 
 // 台本の絵スタジオ：架空の家族（ふつうは作例と同じ家族。数のお勉強は別の家族で、写真が先）で、台本（シリーズ）の各話の表紙と12場面を水彩で作る。
@@ -26,6 +26,8 @@ export function SeriesStudio({ list }: { list: StudioView[] }) {
   const childName = seriesSampleChildName(seriesId);
   // 写真が先のシリーズ：家族写真 → 設定画（写真そっくり） → 場面（設定画＋写真）の順に作る
   const photoFirst = isPhotoFirst(seriesId);
+  // 森：家族写真はトップの写真（作例スタジオの①）と共用。ここでは作らない
+  const sharedPhoto = usesShowcasePhoto(seriesId);
   const [quality, setQuality] = useState<"preview" | "final">("preview");
   const [busy, setBusy] = useState<Record<string, boolean>>({});
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -107,7 +109,9 @@ export function SeriesStudio({ list }: { list: StudioView[] }) {
       <h2 className="display" style={{ margin: 0, fontSize: 18, color: "var(--navy)" }}>サンプル集の家族写真</h2>
       <p style={{ margin: 0, fontSize: 13, lineHeight: 1.7 }}>
         サンプル集（/samples）の「この写真から → この登場人物に」に出す架空の家族写真です。左からママ・{childName}・パパの順に並べ、画面ではその順に名前を付けます。
-        {photoFirst
+        {sharedPhoto
+          ? "このシリーズは、トップの「この写真から → この絵本に」と同じ写真（作例スタジオの①）を使い、この写真をもとに設定画と場面を描きます。写真を作り直すときは作例スタジオで作り、そのあと設定画と場面も作り直してください。"
+          : photoFirst
           ? "このシリーズは、この写真をもとに設定画と場面を描きます。並びや雰囲気が違ったら、欄に指示を書いて作り直してください（1枚 約40円）。作り直したら、設定画と場面も作り直してください。"
           : "設定画の家族3人にそっくりに作ります。並びが違ったり似ていなかったりしたら、欄に指示を書いて作り直してください（1枚 約40円）。設定画を作り直したら、これも作り直してください。"}
       </p>
@@ -121,6 +125,7 @@ export function SeriesStudio({ list }: { list: StudioView[] }) {
         width={420}
         onMake={makePhoto}
         disabled={anyBusy}
+        readOnly={sharedPhoto}
         {...noteProps("photo")}
       />
     </section>
@@ -206,6 +211,8 @@ function Tile(props: {
   width?: number;
   disabled: boolean;
   onMake: () => void;
+  /** ここでは作らない絵（森の家族写真は作例スタジオで作る） */
+  readOnly?: boolean;
   note: string;
   onNote: (v: string) => void;
 }) {
@@ -237,18 +244,24 @@ function Tile(props: {
         )}
       </div>
       <span style={{ fontSize: 12, lineHeight: 1.6, color: "var(--sub)" }}>{props.label}</span>
-      <textarea
-        value={props.note}
-        onChange={(e) => props.onNote(e.target.value)}
-        maxLength={SERIES_NOTE_MAX}
-        rows={2}
-        placeholder="作り直すときの指示（例：もっと淡い色に）"
-        aria-label={`${props.label}の指示`}
-        style={{ fontSize: 13, lineHeight: 1.5, padding: 8, borderRadius: 8, border: "1px solid #ccc", resize: "vertical" }}
-      />
-      <button type="button" className="ghost" style={{ height: 36 }} disabled={props.disabled} onClick={props.onMake}>
-        作る／作り直す
-      </button>
+      {props.readOnly ? (
+        <a href="/admin/samples" style={{ fontSize: 13 }}>作例スタジオで作る</a>
+      ) : (
+        <>
+          <textarea
+            value={props.note}
+            onChange={(e) => props.onNote(e.target.value)}
+            maxLength={SERIES_NOTE_MAX}
+            rows={2}
+            placeholder="作り直すときの指示（例：もっと淡い色に）"
+            aria-label={`${props.label}の指示`}
+            style={{ fontSize: 13, lineHeight: 1.5, padding: 8, borderRadius: 8, border: "1px solid #ccc", resize: "vertical" }}
+          />
+          <button type="button" className="ghost" style={{ height: 36 }} disabled={props.disabled} onClick={props.onMake}>
+            作る／作り直す
+          </button>
+        </>
+      )}
       {props.error && <span className="error">{props.error}</span>}
     </div>
   );

@@ -359,6 +359,15 @@ export async function illustrate(opts: {
 // --- 作例（トップページなどに載せる見本の絵）---
 // 実在しない家族で描く。お話ごとに「キャラクター設定画」を1枚作り、そのお話の見本はすべて
 // それを参考に描く（テイストが違っても、顔・体つき・服装は同じにする）。
+// 2026-10-12 作道さん「本人に似せたい」：設定画も見本も、トップの「この写真から」①の家族写真（SHOWCASE_PHOTO）に
+// 写真そっくりで寄せて描く（お客様の写真から絵本ができる流れと同じに見せる）。
+
+/** 写真が先の見本で、設定画・場面を家族写真に寄せる指示（作り直しの「写真そっくり」と同じ） */
+const PHOTO_LIKENESS = LIKENESS_LEVELS.find((l) => l.id === "exact")!.prompt;
+
+/** 作例の家族写真の並び（トップの①・森のサンプル集で共通） */
+const SHOWCASE_PHOTO_ORDER = "the mother on the left, the child (the main character) in the middle and the father on the right";
+
 const SAMPLE_CAST: Record<Person, string> = {
   child: "a cheerful five-year-old Japanese boy with short black hair with a small cowlick, round cheeks and a bright smile",
   mom: "a gentle Japanese woman in her thirties with shoulder-length dark brown hair",
@@ -415,21 +424,30 @@ function sampleCast(story: keyof typeof SAMPLE_OUTFITS, people: Person[], withOu
   return people.map((p) => `${role[p]}: ${cast[p]}${withOutfits ? `, wearing ${SAMPLE_OUTFITS[story][p]}` : ""}.`).join(" ");
 }
 
-/** お話ごとのキャラクター設定画を作る（家族3人の全身・正面、白い背景）。 */
-export async function makeCharacterSheet(story: StoryId) {
+/** 服装だけを伝える（顔・髪は写真から取るので、文章の見た目は書かない） */
+function sampleOutfits(story: keyof typeof SAMPLE_OUTFITS, people: Person[]) {
+  const role: Record<Person, string> = { child: "The main character", mom: "The mother", dad: "The father" };
+  return people.map((p) => `${role[p]} wears ${SAMPLE_OUTFITS[story][p]}.`).join(" ");
+}
+
+/** お話ごとのキャラクター設定画を作る（作例の家族写真の3人を写真そっくりに、全身・正面、白い背景）。 */
+export async function makeCharacterSheet(story: StoryId, photo: Uploadable) {
   const ai = getOpenAI();
   if (!ai) throw new Error("OPENAI_API_KEY が未設定です");
-  const result = await ai.images.generate({
+  const result = await ai.images.edit({
     model: process.env.OPENAI_IMAGE_MODEL ?? "gpt-image-2",
+    image: [photo],
     prompt: [
-      "Character reference sheet for a children's picture book about a fictional Japanese family.",
-      sampleCast(story, ["child", "mom", "dad"]),
+      "Character reference sheet for a children's picture book.",
+      `The reference image is a photo of the real family: ${SHOWCASE_PHOTO_ORDER}. Draw these three people as picture-book characters.`,
+      PHOTO_LIKENESS,
+      `Dress them for this story. ${sampleOutfits(story, ["child", "mom", "dad"])}`,
       "Show the three characters standing side by side, full body, front view, on a plain white background, at heights that fit their ages.",
       "Simple, warm picture-book character design with clear shapes and flat colors so the faces, hairstyles and outfits are easy to copy.",
       "Do not draw any letters, words or text.",
     ].join(" "),
     size: "1024x1024",
-    quality: "medium",
+    quality: "high",
     output_format: "png",
   });
   const b64 = result.data?.[0]?.b64_json;
@@ -448,7 +466,8 @@ export function buildSamplePrompt(taste: TasteId, story: StoryId, sceneIndex: nu
     STYLE_ONLY_FROM_TEXT,
     // 設定画はどのテイストでも同じ1枚なので、その平たい塗りに引っぱられて3つのテイストが似てしまわないようにする
     "The character sheet is drawn in a plain neutral style; do not keep any of its look. Someone comparing this picture with the same scene in watercolor, crayon and anime styles must instantly see which one it is.",
-    sampleCast(story, people),
+    `The second reference image is a photo of the real family these characters were drawn from (${SHOWCASE_PHOTO_ORDER}). Keep each person's face, hairstyle and hair color as close to that photo as possible, translated into the picture-book style; take only faces and hair from the photo, not its clothes, background or pose.`,
+    sampleOutfits(story, people),
     `Scene: ${scene.art}.`,
     scene.withMom ? "" : "Do not include the mother in this scene.",
     scene.withDad ? "" : "Do not include the father in this scene.",
@@ -459,13 +478,13 @@ export function buildSamplePrompt(taste: TasteId, story: StoryId, sceneIndex: nu
     .join(" ");
 }
 
-/** キャラクター設定画をもとに作例の1場面を作り、PNG の base64 を返す。 */
-export async function illustrateSample(opts: { taste: TasteId; story: StoryId; sceneIndex: number; quality: Quality; sheet: Uploadable }) {
+/** キャラクター設定画と作例の家族写真をもとに作例の1場面を作り、PNG の base64 を返す。 */
+export async function illustrateSample(opts: { taste: TasteId; story: StoryId; sceneIndex: number; quality: Quality; sheet: Uploadable; photo: Uploadable }) {
   const ai = getOpenAI();
   if (!ai) throw new Error("OPENAI_API_KEY が未設定です");
   const result = await ai.images.edit({
     model: process.env.OPENAI_IMAGE_MODEL ?? "gpt-image-2",
-    image: [opts.sheet],
+    image: [opts.sheet, opts.photo],
     prompt: buildSamplePrompt(opts.taste, opts.story, opts.sceneIndex),
     size: "1024x1024",
     quality: opts.quality === "final" ? "high" : "medium",
@@ -510,9 +529,11 @@ export async function illustrateShowcase(opts: { taste: TasteId; story: StoryId;
     image: [opts.photo],
     prompt: [
       `${t.prompt}.`,
-      "The reference photo shows the family: the child (the main character) in the center, the mother on the left, the father on the right.",
+      `The reference photo shows the family: ${SHOWCASE_PHOTO_ORDER}.`,
       STYLE_ONLY_FROM_TEXT,
-      PICTURE_BOOK_CHARACTERS,
+      PHOTO_LIKENESS,
+      // 森の見本（設定画・27枚・サンプル集）と同じ服にそろえる
+      `Dress them for this story. ${sampleOutfits(opts.story, ["child", "mom", "dad"])}`,
       "Make them look friendly and natural, never caricatured. The result must clearly look like a page from a children's picture book, not a filtered photo.",
       `Scene: ${scene.art}.`,
       SQUARE_FRAMING,
@@ -557,9 +578,6 @@ export async function makeHeroBookPhoto(opts: { title: string; cover: Uploadable
 // もとにし、相棒（森ならりすのポッケ）を加えた「シリーズの設定画」を1枚作って、全場面でそれを参考にする。
 // 作例の設定画が無いシリーズ（海・恐竜）は、家族と相棒の設定画を文章から作る。
 // 写真が先のシリーズ（数のお勉強）は、架空の家族写真を先に作り、設定画と場面はその写真に寄せて描く。
-
-/** 写真が先のシリーズで、設定画・場面を家族写真に寄せる指示（作り直しの「写真そっくり」と同じ） */
-const PHOTO_LIKENESS = LIKENESS_LEVELS.find((l) => l.id === "exact")!.prompt;
 
 /**
  * シリーズの設定画（家族3人＋相棒）を作る。familySheet はお話の作例の設定画（無ければ文章から描く）。
@@ -704,7 +722,8 @@ export function buildSeriesPrompt(series: StudioSeries, scene: SeriesScene, opts
       ? "The second reference image is a photo of the real family these characters were drawn from (the mother on the left, the child in the middle, the father on the right). Keep each person's face, hairstyle and hair color as close to that photo as possible, translated into the picture-book style; take only faces and hair from the photo, not its clothes, background or pose."
       : "",
     STYLE_ONLY_FROM_TEXT,
-    sampleCast(series.id, people, !opts.outfits),
+    // 写真があるときは顔・髪は写真に任せ、文章では服だけ伝える（文章の見た目と写真が食い違わないように）
+    opts.withPhoto ? (opts.outfits ? "" : sampleOutfits(series.id, people)) : sampleCast(series.id, people, !opts.outfits),
     BOOK_CONSISTENCY,
     opts.outfits ? outfitsPrompt(opts.outfits) : "",
     continuityPrompt(opts.continuity, opts.page),

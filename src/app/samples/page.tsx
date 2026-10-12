@@ -70,6 +70,8 @@ export default function SamplesPage() {
               src={samplePublicUrl(seriesFamilyPhotoPath(SERIES))}
               alt={`見本の家族写真（左からママ・${SAMPLE_CHILD_NAME}・パパ）`}
               sizes="(max-width: 480px) 100vw, 440px"
+              // 森の写真はトップと共用の正方形。横長の枠では上下が切れるので、顔のある上寄りを残す
+              style={{ objectPosition: "50% 35%" }}
               fallback={<span className={s.fallback}>家族写真（準備中）</span>}
             />
             {/* 写真は左からママ・主人公・パパの順に並ぶように作っている（絵スタジオ） */}

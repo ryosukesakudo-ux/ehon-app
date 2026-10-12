@@ -15,7 +15,8 @@ import {
 import { SampleImage } from "@/components/sample-image";
 
 // 作例スタジオ：実在しない家族で、トップページ・テイスト選択・お話選択に載せる見本の絵を作る。
-// お話ごとにまずキャラクター設定画を作り（3枚）、それをもとに 3テイスト × 3話 × 見本の3場面 = 27枚 を作る。
+// トップの「この写真から」①の家族写真がすべての元。お話ごとにその写真からキャラクター設定画を作り（3枚）、
+// 設定画と写真をもとに 3テイスト × 3話 × 見本の3場面 = 27枚 を作る（2026-10-12 本人に似せるため写真が先に）。
 // 中画質で約450円、高画質で約850〜1,050円（目安）。
 
 const PARALLEL = 3;
@@ -72,16 +73,10 @@ export default function SamplesPage() {
     }
   }
 
-  // まだ設定画の無いお話だけ、先に設定画を作る
-  async function ensureSheet(story: StoryId) {
-    const url = samplePublicUrl(characterSheetPath(story));
-    const exists = url ? await fetch(url, { method: "HEAD", cache: "no-store" }).then((r) => r.ok).catch(() => false) : false;
-    return exists || makeSheet(story);
-  }
-
+  // 設定画3枚を①の写真から作り直してから、見本27枚を作る
   async function makeAll() {
-    if (!confirm(`キャラクター設定画（未作成のお話のみ）と見本27枚をまとめて作ります（${quality === "final" ? "高画質" : "中画質"}）。よろしいですか？`)) return;
-    const ready = await Promise.all(STORIES.map((s) => ensureSheet(s.id)));
+    if (!confirm(`①の家族写真から、キャラクター設定画3枚と見本27枚をすべて作り直します（${quality === "final" ? "高画質" : "中画質"}）。よろしいですか？`)) return;
+    const ready = await Promise.all(STORIES.map((s) => makeSheet(s.id)));
     const okStories = new Set(STORIES.filter((_, i) => ready[i]).map((s) => s.id));
     const jobs = TASTES.flatMap((t) =>
       STORIES.filter((s) => okStories.has(s.id)).flatMap((s) => SAMPLE_SCENES.map((sc) => () => make(t.id, s.id, sc))),
@@ -123,6 +118,7 @@ export default function SamplesPage() {
       <h1 className="display" style={{ margin: 0, color: "var(--navy)" }}>作例スタジオ</h1>
       <p style={{ margin: 0, fontSize: 14, lineHeight: 1.8 }}>
         実在しない家族（主人公「{SAMPLE_CHILD_NAME}」）で見本の絵を作ります。作った絵はすぐにトップページ・テイスト選択・お話選択に表示されます（反映まで最大5分）。
+        すべての絵は、下の「この写真から → この絵本に」①の家族写真にそっくりに描きます。作る順番：② → 「まとめて作り直す」（設定画3枚＋見本27枚） → 絵本の写真 → 台本の絵スタジオ（森の設定画と1〜4話）。
       </p>
       <div style={{ display: "flex", gap: 12, alignItems: "center", flexWrap: "wrap" }}>
         <label>
@@ -133,7 +129,7 @@ export default function SamplesPage() {
           </select>
         </label>
         <button type="button" className="cta" style={{ width: "auto", height: 48, padding: "0 24px", fontSize: 16 }} disabled={anyBusy} onClick={makeAll}>
-          まとめて作る（設定画＋見本27枚）
+          まとめて作り直す（設定画3枚＋見本27枚）
         </button>
       </div>
       <section className="card" style={{ gap: 14 }}>
@@ -163,7 +159,7 @@ export default function SamplesPage() {
       <section className="card" style={{ gap: 14 }}>
         <h2 className="display" style={{ margin: 0, fontSize: 18, color: "var(--navy)" }}>トップの「この写真から → この絵本に」</h2>
         <p style={{ margin: 0, fontSize: 13, lineHeight: 1.7 }}>
-          ① 架空の家族（子ども・ママ・パパ）の写真風の画像を作る → ② その画像から絵本の1場面を作る、の順に押してください。①を作り直したら②も作り直します。
+          ① 架空の家族（左からママ・子ども・パパ）の写真風の画像を作る → ② その画像から絵本の1場面を作る、の順に押してください。①はこのページの全部の絵と、サンプル集（森）の家族写真の元になります。①を作り直したら、②・設定画・見本・森の絵もすべて作り直してください。
         </p>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))", gap: 12 }}>
           {([["photo", SHOWCASE_PHOTO, "① 写真風の画像を作る"], ["book", SHOWCASE_BOOK, "② この画像から絵本の絵を作る"]] as const).map(([step, path, label]) => (
@@ -206,7 +202,7 @@ export default function SamplesPage() {
             </div>
             <div style={{ display: "flex", flexDirection: "column", gap: 8, flex: "1 1 260px", fontSize: 13, lineHeight: 1.7 }}>
               <strong>キャラクター設定画</strong>
-              <span>このお話の登場人物の顔・体つき・服装を決める1枚です。下の見本はすべてこの絵をもとに描くので、テイストが違っても同じ人物・同じ服装になります。作り直したら、下の見本も作り直してください。</span>
+              <span>①の家族写真の3人を写真そっくりに描いて、このお話の服を着せた1枚です（1枚 約40円）。下の見本はすべてこの絵と①の写真をもとに描くので、テイストが違っても同じ人物・同じ服装になります。作り直したら、下の見本も作り直してください。</span>
               <button type="button" className="ghost" style={{ height: 40, alignSelf: "flex-start" }} disabled={anyBusy} onClick={() => makeSheet(s.id)}>
                 キャラクター設定画を作る／作り直す
               </button>
