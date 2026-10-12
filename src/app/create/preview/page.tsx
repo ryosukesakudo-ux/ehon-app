@@ -229,6 +229,28 @@ function Preview() {
     }
   }
 
+  /** 作り直しなど：残りが足りなければ、足りない分をチャージ（決済）してからこの画面に戻る。足りていればそのまま作る */
+  async function orCharge(cost: number, run: () => unknown) {
+    const short = cost - remaining;
+    if (short <= 0) return run();
+    setCharging(true);
+    setError(null);
+    try {
+      await startCreditCheckout("/create/preview", packsFor(short));
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "購入画面を開けませんでした");
+      setCharging(false);
+    }
+  }
+
+  /** 足りないときの文言（例：10枚チャージして作り直す（500円）） */
+  const withCharge = (cost: number, text: string, plain: string) => {
+    const short = cost - remaining;
+    if (short <= 0) return plain;
+    const packs = packsFor(short);
+    return `${PREVIEW_PACK.credits * packs}枚チャージして${text}（${yen(PREVIEW_PACK.price * packs)}）`;
+  };
+
   /** ボタンの文言：足りないときはチャージする枚数と金額を添える */
   const pagesLabel = (count: number, text: string) => {
     const cost = costOf(count);
@@ -320,8 +342,8 @@ function Preview() {
       // まだ作っていない本文のページ（作る途中で止まったときなど）
       <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 10, padding: 24, textAlign: "center", color: "var(--sub)", fontSize: 13 }}>
         <span>このページの絵はまだありません。</span>
-        <button type="button" className="ghost" disabled={busy || remaining <= 0} onClick={() => generate(scene)}>
-          このページの絵を作る（プレビュー1枚）
+        <button type="button" className="ghost" disabled={busy || charging} onClick={() => orCharge(1, () => generate(scene))}>
+          {withCharge(1, "このページの絵を作る", "このページの絵を作る（プレビュー1枚）")}
         </button>
       </div>
     ) : (
@@ -454,18 +476,21 @@ function Preview() {
                 <span style={{ alignSelf: "flex-end" }}>{[...note].length} / {REDO_NOTE_MAX}</span>
               </label>
               <LikenessPicker value={likeness} onChange={(v) => update({ likeness: v })} />
-              <button type="button" className="ghost" disabled={!!loading[scene] || resetting || remaining <= 0} onClick={() => redoScenes([scene])}>
-                {options.length || note.trim() || likeness !== "normal" ? "この内容で作り直す" : "そのまま作り直す"}（プレビュー1枚）
+              <button type="button" className="ghost" disabled={!!loading[scene] || resetting || charging} onClick={() => orCharge(1, () => redoScenes([scene]))}>
+                {(() => {
+                  const text = options.length || note.trim() || likeness !== "normal" ? "この内容で作り直す" : "そのまま作り直す";
+                  return withCharge(1, text, `${text}（プレビュー1枚）`);
+                })()}
               </button>
               {!confirmed && characters.length > 1 && (
                 <>
-                  <button type="button" className="ghost" disabled={characters.some((i) => loading[i]) || remaining < characters.length} onClick={() => redoScenes(characters)}>
-                    登場人物{characters.length}人まとめて作り直す（{characters.length}枚）
+                  <button type="button" className="ghost" disabled={characters.some((i) => loading[i]) || charging} onClick={() => orCharge(characters.length, () => redoScenes(characters))}>
+                    {withCharge(characters.length, `登場人物${characters.length}人まとめて作り直す`, `登場人物${characters.length}人まとめて作り直す（${characters.length}枚）`)}
                   </button>
                   <div style={{ fontSize: 12, lineHeight: 1.6, color: "var(--sub)" }}>
                     {characters.map(nameOf).join("・")}
                     のキャラクターを、上で選んだ内容でいっしょに作り直します。
-                    {remaining < characters.length && `（プレビューの残りが${characters.length}枚以上必要です。下のボタンで追加できます）`}
+                    {remaining < characters.length && "（残りが足りないので、先にチャージの画面に進みます。支払いのあと、この画面に戻ります）"}
                   </div>
                 </>
               )}
