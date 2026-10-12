@@ -1,3 +1,4 @@
+import { SAMPLE_CHILD_NAME } from "./samples";
 import type { SeriesId } from "./story-key";
 
 export type { SeriesId };
@@ -17,6 +18,28 @@ export type SeriesScene = {
   /** カメラの位置・構図（英語） */
   camera?: string;
 };
+
+/**
+ * 作例とは別の架空の家族で見本を描くシリーズの、主人公の名前（家族の見た目は illustrate.ts の SERIES_SAMPLE_CAST）。
+ * 数のお勉強は 2026-10-12 作道さん「別の家族で」：3歳くらいの女の子とママ・パパ
+ */
+const SERIES_SAMPLE_CHILD_NAME: Partial<Record<SeriesId, string>> = { number: "みお" };
+
+/**
+ * 見本を「写真が先」で作るシリーズ。架空の家族写真を先に作り、設定画と場面はその写真に「写真そっくり」で寄せて描く
+ * （お客様の写真から絵本ができる流れをそのまま見せる。2026-10-12 作道さん「写真に近いイラスト前提で」）。
+ * ほかのシリーズは設定画が先で、家族写真はあとから設定画に似せて作る
+ */
+const PHOTO_FIRST_SERIES: SeriesId[] = ["number"];
+
+export function isPhotoFirst(id: SeriesId) {
+  return PHOTO_FIRST_SERIES.includes(id);
+}
+
+/** そのシリーズの見本の主人公の名前（ふつうは作例と同じ「はると」） */
+export function seriesSampleChildName(id: SeriesId) {
+  return SERIES_SAMPLE_CHILD_NAME[id] ?? SAMPLE_CHILD_NAME;
+}
 
 /** 絵スタジオで1枚ごとに書ける追加の指示の最大文字数 */
 export const SERIES_NOTE_MAX = 200;

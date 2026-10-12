@@ -4,8 +4,8 @@ import { Arrow } from "@/components/icons";
 import { PageHeader } from "@/components/page-header";
 import { SampleImage } from "@/components/sample-image";
 import { SITE_NAME } from "@/components/brand";
-import { SAMPLE_CHILD_NAME, samplePublicUrl } from "@/lib/samples";
-import { SERIES_PAGES, seriesFamilyPhotoPath, seriesImagePath, seriesSheetPath } from "@/lib/series";
+import { samplePublicUrl } from "@/lib/samples";
+import { SERIES_PAGES, seriesFamilyPhotoPath, seriesImagePath, seriesSampleChildName, seriesSheetPath } from "@/lib/series";
 import { SERIES_DATA } from "@/lib/series-data";
 import { OPEN_SERIES, getSeriesInfo, openEpisodes } from "@/lib/story-key";
 import { SampleEpisodes, type SampleEpisode } from "./episodes";
@@ -14,7 +14,7 @@ import s from "./samples.module.css";
 export const metadata: Metadata = { title: `サンプル集 | ${SITE_NAME}` };
 
 // サンプル集：公開中のシリーズ（いまは森）の各話を、表紙と最初の5場面まで読める。6場面目からは「届いてからのお楽しみ」。
-// 見本は架空の家族（はると・ママ・パパ）。どの人の写真からどの登場人物になったかを、家族写真と設定画で見せる。
+// 見本は架空の家族（森は はると・ママ・パパ。シリーズによって違う家族）。どの人の写真からどの登場人物になったかを、家族写真と設定画で見せる。
 
 /** 中身まで読める場面の数（表紙は別） */
 const OPEN_SCENES = 5;
@@ -22,6 +22,8 @@ const OPEN_SCENES = 5;
 const LEVEL_INDEX = 1;
 
 const SERIES = OPEN_SERIES[0];
+/** 見本の主人公の名前（シリーズによって家族が違う） */
+const SAMPLE_CHILD_NAME = seriesSampleChildName(SERIES);
 
 function plainText(text: string) {
   // 多いの ふりがな（漢字《かな》）は外す。普通には無いが念のため
@@ -66,7 +68,7 @@ export default function SamplesPage() {
           <div className={s.photo}>
             <SampleImage
               src={samplePublicUrl(seriesFamilyPhotoPath(SERIES))}
-              alt="見本の家族写真（左からママ・はると・パパ）"
+              alt={`見本の家族写真（左からママ・${SAMPLE_CHILD_NAME}・パパ）`}
               sizes="(max-width: 480px) 100vw, 440px"
               fallback={<span className={s.fallback}>家族写真（準備中）</span>}
             />
