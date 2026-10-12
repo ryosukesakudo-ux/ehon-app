@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { BIRTHDAY_NOTICE_DAYS, CHILD_AGES, REPEAT_COUPON } from "@/lib/catalog";
 import { Check, Chevron } from "@/components/icons";
 import { SampleImage } from "@/components/sample-image";
-import { samplePublicUrl } from "@/lib/samples";
+import { samplePublicUrl, versioned } from "@/lib/samples";
 import { seriesImagePath } from "@/lib/series";
 import { LEVELS, OPEN_SERIES, SERIES_LIST, SHOWN_SERIES_LIST, fixedLevelEpisode, isOpenSeries, isProofread, levelForAge, openEpisodes, parseSeriesKey, seriesKey, type SeriesId } from "@/lib/story-key";
 import { useFlow } from "../flow";
@@ -61,7 +61,7 @@ export default function StoryPage() {
                 disabled={soon}
                 onClick={() => setOpen(expanded ? null : s.id)}
               >
-                <Thumb src={firstReady ? samplePublicUrl(seriesImagePath(s.id, firstReady.no, 0)) : null} alt={`${s.name}の見本`} />
+                <Thumb src={firstReady ? versioned(samplePublicUrl(seriesImagePath(s.id, firstReady.no, 0))) : null} alt={`${s.name}の見本`} />
                 <div style={{ display: "flex", flexDirection: "column", gap: 6, flexGrow: 1 }}>
                   <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
                     <div className="choice-title display">{s.name}</div>
@@ -87,7 +87,7 @@ export default function StoryPage() {
                         disabled={!ok}
                         onClick={() => choose(seriesKey(s.id, ep.no, ep.level ?? (current && !fixed ? current.level : levelForAge(state.childAge))))}
                       >
-                        <Thumb src={ok || comingSoon ? samplePublicUrl(seriesImagePath(s.id, ep.no, 0)) : null} alt={`第${ep.no}話の見本`} size={56} />
+                        <Thumb src={ok || comingSoon ? versioned(samplePublicUrl(seriesImagePath(s.id, ep.no, 0))) : null} alt={`第${ep.no}話の見本`} size={56} />
                         <div style={{ display: "flex", flexDirection: "column", gap: 4, flexGrow: 1 }}>
                           <div style={{ display: "flex", gap: 6, alignItems: "center", flexWrap: "wrap", fontSize: 12, color: "var(--sub)" }}>
                             <span>第{ep.no}話・{ep.season}</span>
