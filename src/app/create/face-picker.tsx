@@ -34,7 +34,7 @@ export function FacePicker({
   const [view, setView] = useState<{ w: number; h: number } | null>(null);
   const [box, setBox] = useState<Box | null>(null);
   const [busy, setBusy] = useState(false);
-  const drag = useRef<{ mode: "move" | "resize"; startX: number; startY: number; start: Box } | null>(null);
+  const drag = useRef<{ mode: "move" | "resize"; id: number; startX: number; startY: number; start: Box } | null>(null);
 
   function onLoad() {
     const img = imgRef.current!;
@@ -45,9 +45,28 @@ export function FacePicker({
     setBox({ x: Math.round((w - size) / 2), y: Math.round((h - size) / 3), size });
   }
 
+  // 画面の向きを変えた・アドレスバーが出入りしたなどで写真の表示サイズが変わったら、枠も同じ割合で合わせる
+  useEffect(() => {
+    const img = imgRef.current;
+    if (!img || !view) return;
+    const ro = new ResizeObserver(() => {
+      const w = img.clientWidth;
+      const h = img.clientHeight;
+      if (!w || !h || (w === view.w && h === view.h)) return;
+      const k = w / view.w;
+      setView({ w, h });
+      setBox((b) => (b ? { x: b.x * k, y: b.y * k, size: b.size * k } : b));
+    });
+    ro.observe(img);
+    return () => ro.disconnect();
+  }, [view]);
+
+  const minSize = view ? Math.max(40, Math.round(Math.min(view.w, view.h) * 0.1)) : 40;
+  const maxSize = view ? Math.min(view.w, view.h) : 40;
+
   const clamp = (b: Box): Box => {
     if (!view) return b;
-    const size = Math.max(40, Math.min(b.size, view.w, view.h));
+    const size = Math.max(minSize, Math.min(b.size, maxSize));
     return {
       size,
       x: Math.min(Math.max(0, b.x), view.w - size),
@@ -55,28 +74,44 @@ export function FacePicker({
     };
   };
 
-  function start(e: ReactPointerEvent, mode: "move" | "resize") {
-    if (!box) return;
+  // 指を置いた場所で動きを決める：右下の丸＝大きさ、枠の中＝移動、枠の外＝そこへ枠を移して、そのまま動かせる
+  function down(e: ReactPointerEvent<HTMLDivElement>) {
+    if (!box || drag.current) return;
     e.preventDefault();
-    e.stopPropagation();
-    (e.target as Element).setPointerCapture(e.pointerId);
-    drag.current = { mode, startX: e.clientX, startY: e.clientY, start: box };
+    const rect = e.currentTarget.getBoundingClientRect();
+    const px = e.clientX - rect.left;
+    const py = e.clientY - rect.top;
+    const onHandle = (e.target as Element).closest(".face-picker-handle") || Math.hypot(px - (box.x + box.size), py - (box.y + box.size)) <= 26;
+    let start = box;
+    let mode: "move" | "resize" = "move";
+    if (onHandle) mode = "resize";
+    else if (px < box.x || px > box.x + box.size || py < box.y || py > box.y + box.size) {
+      start = clamp({ ...box, x: px - box.size / 2, y: py - box.size / 2 });
+      setBox(start);
+    }
+    e.currentTarget.setPointerCapture(e.pointerId);
+    drag.current = { mode, id: e.pointerId, startX: e.clientX, startY: e.clientY, start };
   }
 
   function move(e: ReactPointerEvent) {
     const d = drag.current;
-    if (!d) return;
+    if (!d || d.id !== e.pointerId) return;
     const dx = e.clientX - d.startX;
     const dy = e.clientY - d.startY;
     if (d.mode === "move") setBox(clamp({ ...d.start, x: d.start.x + dx, y: d.start.y + dy }));
-    else setBox(clamp({ ...d.start, size: d.start.size + Math.max(dx, dy) }));
+    else setBox(clamp({ ...d.start, size: d.start.size + (Math.abs(dx) > Math.abs(dy) ? dx : dy) }));
   }
 
-  // 写真のほかの場所をタップしたら、そこへ枠を移す
-  function tap(e: ReactPointerEvent<HTMLDivElement>) {
-    if (!box || drag.current) return;
-    const rect = e.currentTarget.getBoundingClientRect();
-    setBox(clamp({ ...box, x: e.clientX - rect.left - box.size / 2, y: e.clientY - rect.top - box.size / 2 }));
+  function up(e: ReactPointerEvent) {
+    if (drag.current?.id === e.pointerId) drag.current = null;
+  }
+
+  // スライダーで大きさを変える（顔の中心はそのまま）
+  function resizeTo(size: number) {
+    if (!box) return;
+    const cx = box.x + box.size / 2;
+    const cy = box.y + box.size / 2;
+    setBox(clamp({ size, x: cx - size / 2, y: cy - size / 2 }));
   }
 
   async function crop(whole: boolean) {
@@ -124,31 +159,37 @@ export function FacePicker({
       <div className="face-picker-inner">
         <div className="display" style={{ fontSize: 18, fontWeight: 900, color: "var(--navy)" }}>{title}の顔を囲んでください</div>
         <p style={{ margin: 0, fontSize: 13, lineHeight: 1.7, color: "var(--sub)" }}>
-          何人か写っている写真は、登場させたい人の顔に枠を合わせてください。枠は指で動かせます。右下の丸で大きさを変えられます。
+          何人か写っている写真は、登場させたい人の顔に枠を合わせてください。顔をタップすると枠がそこへ移り、そのまま指で動かせます。大きさは下のスライダーか、枠の右下の丸で変えられます。
         </p>
-        <div className="face-picker-stage" onPointerDown={tap}>
+        <div
+          className="face-picker-stage"
+          onPointerDown={down}
+          onPointerMove={move}
+          onPointerUp={up}
+          onPointerCancel={up}
+        >
           {/* eslint-disable-next-line @next/next/no-img-element -- 選んだ写真のその場プレビュー */}
           <img ref={imgRef} src={url} alt="選んだ写真" onLoad={onLoad} onError={onError} draggable={false} />
           {box && (
-            <div
-              className="face-picker-box"
-              style={{ left: box.x, top: box.y, width: box.size, height: box.size }}
-              onPointerDown={(e) => start(e, "move")}
-              onPointerMove={move}
-              onPointerUp={() => (drag.current = null)}
-              onPointerCancel={() => (drag.current = null)}
-            >
-              <span
-                className="face-picker-handle"
-                aria-label="枠の大きさを変える"
-                onPointerDown={(e) => start(e, "resize")}
-                onPointerMove={move}
-                onPointerUp={() => (drag.current = null)}
-                onPointerCancel={() => (drag.current = null)}
-              />
+            <div className="face-picker-box" style={{ left: box.x, top: box.y, width: box.size, height: box.size }}>
+              <span className="face-picker-handle" aria-hidden="true" />
             </div>
           )}
         </div>
+        {box && view && (
+          <label className="face-picker-size">
+            <span>枠の大きさ</span>
+            <input
+              type="range"
+              min={minSize}
+              max={maxSize}
+              step={1}
+              value={Math.round(box.size)}
+              onChange={(e) => resizeTo(Number(e.target.value))}
+              aria-label="枠の大きさ"
+            />
+          </label>
+        )}
         <button type="button" className="cta" disabled={!box || busy} onClick={() => crop(false)}>
           {busy ? "準備しています…" : "この人にする"}
         </button>

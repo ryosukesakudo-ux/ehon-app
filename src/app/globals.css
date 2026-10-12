@@ -313,8 +313,8 @@ button, input { font-family: inherit; }
   padding: 20px;
   background: var(--cream);
 }
-.face-picker-stage { position: relative; align-self: center; overflow: hidden; border-radius: 12px; touch-action: none; user-select: none; }
-.face-picker-stage img { display: block; max-width: 100%; max-height: 60vh; border-radius: 12px; }
+.face-picker-stage { position: relative; align-self: center; overflow: hidden; border-radius: 12px; touch-action: none; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; cursor: crosshair; }
+.face-picker-stage img { display: block; max-width: 100%; max-height: 55vh; border-radius: 12px; pointer-events: none; -webkit-touch-callout: none; }
 .face-picker-box {
   position: absolute;
   border: 3px solid var(--coral);
@@ -335,6 +335,10 @@ button, input { font-family: inherit; }
   cursor: nwse-resize;
   touch-action: none;
 }
+/* 指で押しやすいように、丸の周りも押せる範囲にする */
+.face-picker-handle::after { content: ""; position: absolute; inset: -14px; border-radius: 50%; }
+.face-picker-size { display: flex; align-items: center; gap: 12px; font-size: 13px; font-weight: 800; color: var(--navy); }
+.face-picker-size input { flex: 1; accent-color: var(--coral); height: 32px; }
 
 .link-button {
   padding: 4px 0;
