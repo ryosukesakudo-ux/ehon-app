@@ -98,6 +98,11 @@ export const SERIES_LIST: {
 /** お客様と絵スタジオに出す話の数。5話目は 2026-10-11 に一旦取り下げ（台本とデータは残している） */
 export const OPEN_EPISODES = 4;
 
+/** サイト（お話選び）と絵スタジオに出すシリーズ。星・海・恐竜は 2026-10-12 に外した（台本とデータは残している。戻すときはここに足す） */
+export const SHOWN_SERIES: SeriesId[] = ["forest", "birthday"];
+
+export const SHOWN_SERIES_LIST = SERIES_LIST.filter((s) => SHOWN_SERIES.includes(s.id));
+
 /** 注文できるシリーズ。まずは森だけを公開し、ほかは「準備中」にする（2026-10-11 作道さん） */
 export const OPEN_SERIES: SeriesId[] = ["forest"];
 
