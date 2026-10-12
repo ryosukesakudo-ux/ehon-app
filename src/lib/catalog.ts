@@ -369,6 +369,9 @@ export function firstBookPrice(sizePrice: number, coupon?: { bookPrice?: number 
 /** リピート割引：一度ご注文いただいた会員は、このコードで1冊目が500円引き（何度でも）。誕生日の案内メールと注文完了メールでお知らせする */
 export const REPEAT_COUPON = { code: "MATANE", discount: 500, label: "リピート割引" };
 
+/** チラシ割引：ポスティング・保育園などに置くチラシに載せるコード。1冊目が500円引き（おひとり様1回まで） */
+export const FLYER_COUPON = { code: "EHON500", discount: 500, label: "チラシ割引" };
+
 /** 誕生日の案内メール（続編のお誘い）を送るのは、誕生日の何日前か */
 export const BIRTHDAY_NOTICE_DAYS = 30;
 
