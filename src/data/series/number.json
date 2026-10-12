@@ -11,7 +11,7 @@
  "props": {
   "chick": "a small round fluffy bright-yellow chick with a tiny orange beak, about the size of the child's fist",
   "chicks": "a small round fluffy bright-yellow chick with a tiny orange beak, about the size of the child's fist",
-  "egg carton": "a big light-brown cardboard egg carton with ten round cups in two rows of five, each cup just big enough for one chick to sit in",
+  "chick house": "a small wooden toy-like house for chicks, painted cream with a red roof, with ten little square rooms in two rows of five (two floors), each room just big enough for one chick to sit in, all room fronts open so every chick is visible; it is a wooden house, never a box, carton or anything for food",
   "wooden toy box": "a wooden toy box with a hinged lid, painted cream with a red stripe",
   "crab apple": "a tiny round red crab apple about the size of a cherry, far smaller than an ordinary apple",
   "crab apples": "a tiny round red crab apple about the size of a cherry, far smaller than an ordinary apple",
@@ -45,10 +45,10 @@
     }
    ],
    "cover": {
-    "label": "春の花ばたけで、主人公とカゾエが並んでしゃがみ、たまごの箱（5こずつ2れつ）にすわった10わのひよこを指さして数える",
-    "art": "in a sunny spring flower field full of tulips, the child and Kazoe the bear cub crouch side by side and point at a big egg carton in which exactly ten chicks sit, one in each cup, in two rows of five",
+    "label": "春の花ばたけで、主人公とカゾエが並んでしゃがみ、木の「ひよこのおうち」（10へや、5へやずつ2だん）にすわった10わのひよこを指さして数える",
+    "art": "in a sunny spring flower field full of tulips, the child and Kazoe the bear cub crouch side by side and point at the chick house in which exactly ten chicks sit, one in each room, five rooms on each of its two floors",
     "withSidekick": true,
-    "camera": "Eye-level three-quarter view from slightly in front, the child's smiling face clearly visible as the child points at the chicks, the egg carton large in the foreground and the flower field stretching behind."
+    "camera": "Eye-level three-quarter view from slightly in front, the child's smiling face clearly visible as the child points at the chicks, the chick house large in the foreground and the flower field stretching behind."
    },
    "scenes": [
     {
@@ -158,8 +158,8 @@
      "camera": "Eye-level wide view along the pond bank, the lotus leaf with two chicks and the row of three chicks on the bank both clearly visible, the child pointing from the side."
     },
     {
-     "label": "高い木の上の巣にひよこ3わ。はしごに登る主人公を下から見上げる（あおり）。下に5わが待つ",
-     "art": "a tall tree with a round nest high in its branches holding exactly three chicks; the child climbs a wooden ladder toward the nest while Kazoe holds the bottom of the ladder; at the foot of the tree exactly five chicks wait in a row",
+     "label": "木の枝の巣から3わのひよこが並んで顔を出す（3わともはっきり大きく）。はしごに登る主人公を下から見上げる（あおり）。下に5わが待つ",
+     "art": "a tree with a round nest on a thick branch not far above the ground; exactly three chicks sit side by side in the nest with their whole heads and bodies poking up above its rim, drawn large and bright so all three are clearly visible and easy to count, and they look down cheerfully; the child climbs a short wooden ladder toward the nest, almost reaching it, while Kazoe holds the bottom of the ladder; at the foot of the tree exactly five chicks wait in a row",
      "text": [
       "きの うえにも ひよこ。ろく、なな、はち！",
       "きの うえにも ひよこ。ろく、なな、はち！",
@@ -168,7 +168,7 @@
      "withMom": false,
      "withDad": false,
      "withSidekick": true,
-     "camera": "Low worm's-eye view from the foot of the tree looking up the ladder at the child climbing toward the nest, the bear cub and the row of five chicks in the bottom foreground."
+     "camera": "Low angle from below and slightly to the side of the ladder, close enough that the nest with the three chicks fills the upper part of the frame large and in sharp focus, the climbing child just below it, the bear cub and the row of five chicks small at the bottom."
     },
     {
      "label": "草むらから転がり出るひよこ。全部で9わ。カゾエが首をかしげ、空はまだ薄暗い",
@@ -197,8 +197,8 @@
      "camera": "High overhead view looking straight down on the child and the bear cub sitting in the middle, the nine chicks running in all directions around them."
     },
     {
-     "label": "たまごの箱（5×2）に9わ、1つだけ空いた席を指さす主人公。主人公のフードから10わめのひよこが顔を出す（アップ）",
-     "art": "the child points at the one empty cup of a big egg carton in which exactly nine chicks sit in two rows of five with one cup empty; a tenth chick pokes its head out of the hood of the child's hoodie, peeking over the child's shoulder",
+     "label": "木の「ひよこのおうち」（5へやずつ2だん）に9わ、1つだけ空いたへやを指さす主人公。主人公のフードから10わめのひよこが顔を出す（アップ）",
+     "art": "the child points at the one empty room of the chick house in which exactly nine chicks sit, five rooms on each of its two floors, with one room empty; a tenth chick pokes its head out of the hood of the child's hoodie, peeking over the child's shoulder",
      "text": [
       "「ゆびで ぴっ、ひとつずつ！」 フードの なかで「ぴよ！」",
       "「ゆびで ぴっ、ひとつずつ！」 フードの なかで「ぴよ！」",
@@ -207,11 +207,11 @@
      "withMom": false,
      "withDad": false,
      "withSidekick": true,
-     "camera": "Close-up at the child's eye level over the egg carton, the child's pointing finger and the empty cup in sharp focus, the tenth chick peeking out of the hood just above the child's shoulder."
+     "camera": "Close-up at the child's eye level beside the chick house, the child's pointing finger and the empty room in sharp focus, the tenth chick peeking out of the hood just above the child's shoulder."
     },
     {
-     "label": "見開き。朝日がのぼる花ばたけ、たまごの箱に10わがそろって歌う。主人公が指さし、カゾエがばんざい",
-     "art": "the sun rises over the tulip field; exactly ten chicks sit in the egg carton, one in each cup, in two rows of five, singing with open beaks; the child points at them happily and Kazoe raises both arms in a cheer",
+     "label": "見開き。朝日がのぼる花ばたけ、ひよこのおうちに10わがそろって歌う。主人公が指さし、カゾエがばんざい",
+     "art": "the sun rises over the tulip field; exactly ten chicks sit in the chick house, one in each room, five rooms on each of its two floors, singing with open beaks; the child points at them happily and Kazoe raises both arms in a cheer",
      "text": [
       "いち、に、さん……じゅう！ おひさま、おはよう！",
       "いち、に、さん……じゅう！ おひさま、おはよう！",
@@ -220,7 +220,7 @@
      "withMom": false,
      "withDad": false,
      "withSidekick": true,
-     "camera": "Very wide panoramic view of the sunrise over the flower field, the egg carton with ten chicks near the center, the child and the cheering bear cub on either side."
+     "camera": "Very wide panoramic view of the sunrise over the flower field, the chick house with ten chicks near the center, the child and the cheering bear cub on either side."
     },
     {
      "label": "【パパ】リビングで目をかくして数える主人公。カーテンの下からパパの足がはみ出している",
