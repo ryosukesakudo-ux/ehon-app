@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { BIRTHDAY_NOTICE_DAYS, CHILD_AGES, REPEAT_COUPON, jstDate } from "@/lib/catalog";
+import { BIRTHDAY_NOTICE_DAYS, CHILD_AGES, REPEAT_COUPON } from "@/lib/catalog";
 import { Check, Chevron } from "@/components/icons";
 import { SampleImage } from "@/components/sample-image";
 import { samplePublicUrl } from "@/lib/samples";
@@ -10,6 +10,7 @@ import { LEVELS, OPEN_SERIES, SERIES_LIST, isOpenSeries, levelForAge, openEpisod
 import { useFlow } from "../flow";
 import { CustomStoryPanel } from "./custom";
 import { customStoryComplete, parseCustomKey } from "@/lib/custom-story";
+import { BirthdaySelect } from "../birthday-select";
 import { NextButton, StepHeader, StepTitle } from "../step";
 
 export default function StoryPage() {
@@ -151,13 +152,7 @@ export default function StoryPage() {
         </div>
         <div className="field">
           <label htmlFor="childbirthday" className="display">お誕生日（任意）</label>
-          <input
-            id="childbirthday"
-            type="date"
-            max={jstDate(0)}
-            value={state.childBirthday}
-            onChange={(e) => update({ childBirthday: e.target.value })}
-          />
+          <BirthdaySelect id="childbirthday" value={state.childBirthday} onChange={(v) => update({ childBirthday: v })} />
           <p style={{ margin: 0, fontSize: 12, lineHeight: 1.6, color: "var(--sub)" }}>
             入れておくと、毎年お誕生日の{BIRTHDAY_NOTICE_DAYS === 30 ? "1か月" : `${BIRTHDAY_NOTICE_DAYS}日`}前に、続編の絵本のご案内（{REPEAT_COUPON.discount}円引きのクーポン付き）をメールでお送りします。
           </p>

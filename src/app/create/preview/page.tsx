@@ -3,7 +3,7 @@
 import { Suspense, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { COVER_SCENE, MEMBER_MONTHLY_PREVIEWS, PERSON_LABEL, PREVIEW_PACK, REDO_NOTE_MAX, REDO_OPTIONS, characterOf, yen, type RedoOptionId } from "@/lib/catalog";
+import { COVER_SCENE, LIKENESS_LEVELS, MEMBER_MONTHLY_PREVIEWS, PERSON_LABEL, PREVIEW_PACK, REDO_NOTE_MAX, REDO_OPTIONS, characterOf, yen, type LikenessId, type RedoOptionId } from "@/lib/catalog";
 import { bookTitle } from "@/lib/story-key";
 import { BookCover } from "@/components/book-cover";
 import { Chevron } from "@/components/icons";
@@ -38,6 +38,8 @@ function Preview() {
   // 作り直しの指示（選択肢と一言）
   const [options, setOptions] = useState<RedoOptionId[]>([]);
   const [note, setNote] = useState("");
+  // 本人への似せ方（作り直したあとも選んだまま）
+  const [likeness, setLikeness] = useState<LikenessId>("normal");
 
   const scenes = state.previewScenes;
   const scene = scenes[pos];
@@ -46,8 +48,10 @@ function Preview() {
   const title = bookTitle(state.story, state.childName);
   const whoName = who === "child" ? state.childName || PERSON_LABEL.child : who ? PERSON_LABEL[who] : "";
 
-  async function generate(index: number, redo?: { options: RedoOptionId[]; note: string }) {
-    if (!state.draftId || inFlight.current.has(index)) return;
+  type RedoRequest = { options: RedoOptionId[]; note: string; likeness: LikenessId };
+
+  async function generate(index: number, redo?: RedoRequest): Promise<boolean> {
+    if (!state.draftId || inFlight.current.has(index)) return false;
     inFlight.current.add(index);
     setLoading((l) => ({ ...l, [index]: true }));
     setFailed((f) => {
@@ -73,12 +77,10 @@ function Preview() {
         throw new Error(json.error ?? "絵の作成に失敗しました");
       }
       setPreview(index, json.url);
-      if (redo) {
-        setOptions([]);
-        setNote("");
-      }
+      return true;
     } catch (e) {
       setError(e instanceof Error ? e.message : "絵の作成に失敗しました");
+      return false;
     } finally {
       inFlight.current.delete(index);
       setLoading((l) => ({ ...l, [index]: false }));
@@ -104,6 +106,18 @@ function Preview() {
     for (const i of scenes) if (!state.previews[i]) generate(i);
     // eslint-disable-next-line react-hooks/exhaustive-deps -- 画面を開いたとき（と場面が分かったとき）に一度だけ作る
   }, [ready, state.draftId, scenes.length]);
+
+  // 作り直し：いま見ている絵だけ、または家族（登場人物）全員をまとめて。うまくいったら選択肢と一言を空にする
+  const people = scenes.filter((i) => characterOf(i));
+  const remaining = account?.loggedIn ? account.remaining : Infinity;
+  async function redoScenes(targets: number[]) {
+    const req = { options, note: note.trim(), likeness };
+    const results = await Promise.all(targets.map((i) => generate(i, req)));
+    if (results.every(Boolean)) {
+      setOptions([]);
+      setNote("");
+    }
+  }
 
   const url = scene === undefined ? undefined : state.previews[scene];
   const allDone = scenes.length > 0 && scenes.every((i) => state.previews[i]);
@@ -215,14 +229,55 @@ function Preview() {
               />
               <span style={{ alignSelf: "flex-end" }}>{[...note].length} / {REDO_NOTE_MAX}</span>
             </label>
+            <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+              <div style={{ fontSize: 13, fontWeight: 700, color: "var(--navy)" }}>本人への似せ方</div>
+              <div role="radiogroup" aria-label="本人への似せ方" style={{ display: "flex", gap: 6 }}>
+                {LIKENESS_LEVELS.map((l) => {
+                  const on = likeness === l.id;
+                  return (
+                    <button
+                      key={l.id}
+                      type="button"
+                      role="radio"
+                      aria-checked={on}
+                      onClick={() => setLikeness(l.id)}
+                      style={{ flex: 1, minHeight: 40, padding: "4px 6px", borderRadius: 12, fontSize: 13, cursor: "pointer", border: on ? "2px solid var(--coral)" : "1px solid var(--line)", background: on ? "#FDECE8" : "#fff", color: "var(--navy)", fontWeight: on ? 800 : 500 }}
+                    >
+                      {l.label}
+                    </button>
+                  );
+                })}
+              </div>
+              <div style={{ fontSize: 12, color: "var(--sub)" }}>{LIKENESS_LEVELS.find((l) => l.id === likeness)?.hint}</div>
+            </div>
             <button
               type="button"
               className="ghost"
-              disabled={scene === undefined || !!loading[scene] || (account?.loggedIn && account.remaining <= 0)}
-              onClick={() => generate(scene, { options, note: note.trim() })}
+              disabled={scene === undefined || !!loading[scene] || remaining <= 0}
+              onClick={() => redoScenes([scene])}
             >
-              {options.length || note.trim() ? "この内容で作り直す" : "そのまま作り直す"}（プレビュー1枚）
+              {options.length || note.trim() || likeness !== "normal" ? "この内容で作り直す" : "そのまま作り直す"}（プレビュー1枚）
             </button>
+            {people.length > 1 && (
+              <>
+                <button
+                  type="button"
+                  className="ghost"
+                  disabled={people.some((i) => loading[i]) || remaining < people.length}
+                  onClick={() => redoScenes(people)}
+                >
+                  家族{people.length}人まとめて作り直す（{people.length}枚）
+                </button>
+                <div style={{ fontSize: 12, lineHeight: 1.6, color: "var(--sub)" }}>
+                  {people.map((i) => {
+                    const p = characterOf(i)!;
+                    return p === "child" ? state.childName || PERSON_LABEL.child : PERSON_LABEL[p];
+                  }).join("・")}
+                  のキャラクターを、上で選んだ内容でいっしょに作り直します。
+                  {remaining < people.length && `（プレビューの残りが${people.length}枚以上必要です）`}
+                </div>
+              </>
+            )}
           </section>
         )}
         {account?.loggedIn && (
