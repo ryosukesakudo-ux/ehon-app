@@ -28,9 +28,10 @@ const SERIES_SAMPLE_CHILD_NAME: Partial<Record<SeriesId, string>> = { number: "�
 /**
  * 見本を「写真が先」で作るシリーズ。架空の家族写真を先に作り、設定画と場面はその写真に「写真そっくり」で寄せて描く
  * （お客様の写真から絵本ができる流れをそのまま見せる。2026-10-12 作道さん「写真に近いイラスト前提で」）。
+ * 森も 2026-10-12 作道さん「絵が写真に似ていないと勘違いされる」で、今の家族写真をそのまま使い、設定画と場面を写真に寄せて作り直す。
  * ほかのシリーズは設定画が先で、家族写真はあとから設定画に似せて作る
  */
-const PHOTO_FIRST_SERIES: SeriesId[] = ["number"];
+const PHOTO_FIRST_SERIES: SeriesId[] = ["number", "forest"];
 
 export function isPhotoFirst(id: SeriesId) {
   return PHOTO_FIRST_SERIES.includes(id);
