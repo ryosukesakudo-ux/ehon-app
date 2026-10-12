@@ -1,6 +1,7 @@
 import "server-only";
 import { MEMBER_MONTHLY_PREVIEWS } from "./catalog";
 import { BOOK_BUCKET, PHOTO_BUCKET, getSupabase } from "./services";
+import { viewUrls, withViews } from "./book-images";
 import type { Person } from "./catalog";
 import { faceFromPath, type Face } from "./face";
 
@@ -107,13 +108,13 @@ export async function listCharacters(userId: string): Promise<SavedCharacter[]> 
     .order("updated_at", { ascending: false });
   // characters 表がまだ無い（SQL 未実行）ときは空
   if (error || !rows?.length) return [];
-  const { data: urls } = await db.storage.from(BOOK_BUCKET).createSignedUrls(rows.map((r) => r.path), 60 * 60);
+  const urls = await viewUrls(rows.map((r) => r.path));
   return rows.map((r) => ({
     id: r.id,
     person: r.person,
     taste: r.taste,
     childName: r.child_name,
-    url: urls?.find((u) => u.path === r.path)?.signedUrl ?? "",
+    url: urls.get(r.path) ?? "",
     createdAt: r.created_at,
   }));
 }
@@ -136,7 +137,7 @@ export async function deleteCharacter(userId: string, characterId: string): Prom
     if (busy?.length) return { error: "制作中の絵本で使っているため、完成後に削除できます" };
   }
 
-  const { error } = await db.storage.from(BOOK_BUCKET).remove([character.path]);
+  const { error } = await db.storage.from(BOOK_BUCKET).remove(withViews([character.path]));
   if (error) return { error: "キャラクターの削除に失敗しました" };
   await db.from("characters").delete().eq("id", character.id);
   for (const col of cols) await db.from("drafts").update({ [col]: null }).eq(col, character.path);
