@@ -66,6 +66,8 @@ const BOOK_CONSISTENCY =
   "The same goes for everything on the body from every camera angle: things on the back (a backpack) stay on the back, and an animal or object that rides on, is held by or is tucked into a character " +
   "(on a shoulder, in the arms, inside a coat, in a pocket or a hand) stays in that exact place on the same side; when the camera views from behind or from the side, show it only where that place would really be visible from there. " +
   "Keep recurring animals, objects and places the same shape, colors and size relative to the child. " +
+  // 2026-10-12 トライアルの声「リス増えた？」：窓の外のポッケとは別に、ベッドの上にもりすが描かれた
+  "Each character, including the sidekick and every named animal, appears at most once in the picture: never draw the same character twice, and never add a stuffed toy, doll, picture or look-alike animal of the same kind next to them. " +
   "Do not add accessories, logos, patterns or items to anyone's clothes beyond what is described.";
 
 const escapeRegExp = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");

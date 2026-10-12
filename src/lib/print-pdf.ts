@@ -158,17 +158,24 @@ function fitSize(text: string, font: PDFFont, size: number, maxWidth: number) {
   return s;
 }
 
-// 文章をページの中央に置く。分かち書きの空白で改行し、それでも長いときは文字単位で折り返す。
+// 文章をページの中央に置く。文ごとに行を改め、分かち書きの空白や「、」のあとで改行し、それでも長いときは文字単位で折り返す。
+// 1つの文の行は長さをそろえる（最後の行に「いました。」だけが残るような折り返しにしない。2026-10-12 トライアルの声「改行が変」）。
 // 漢字《かな》 は、かなを漢字の上に小さく置く（ふりがな）。行の間は広めにとってあるので、ふりがなが前の行に重ならない。
 // 長い文（文の量「多い」）で枠に収まらないときは、収まるまで文字を小さくする。
 function drawParagraph(page: PDFPage, text: string, font: PDFFont, size: number, pageSize: number, maxWidth: number, maxHeight: number) {
   const units = toUnits(pdfSafe(text));
-  let s = size;
-  let lines = wrap(units, font, s, maxWidth);
-  while (s > 10 && lines.length * s * 2 > maxHeight) {
-    s -= 0.5;
-    lines = wrap(units, font, s, maxWidth);
-  }
+  const layout = (byLine: boolean, minSize: number) => {
+    let s = size;
+    let lines = wrap(units, font, s, maxWidth, byLine);
+    while (s > minSize && lines.length * s * 2 > maxHeight) {
+      s -= 0.5;
+      lines = wrap(units, font, s, maxWidth, byLine);
+    }
+    return { s, lines };
+  };
+  // 文（。！？ や 」 の区切り）ごとに行を改める。文が多くて文字がだいぶ小さくなるときだけ、文の途中から続けて書く
+  let { s, lines } = layout(true, size * 0.85);
+  if (lines.length * s * 2 > maxHeight) ({ s, lines } = layout(false, 10));
   const lineHeight = s * 2;
   const blockHeight = lineHeight * (lines.length - 1) + s;
   const blockWidth = Math.max(...lines.map((l) => lineWidth(l, font, s)));
@@ -237,14 +244,91 @@ function trimLine(line: Unit[]) {
   return line.slice(0, end);
 }
 
-function wrap(units: Unit[], font: PDFFont, size: number, maxWidth: number) {
+// 文の終わり（。！？ のあと。うしろに 」 などが続くときはそのあと）と、会話の 」 のあとで区切る
+function splitSentences(units: Unit[]) {
+  const out: Unit[][] = [];
+  let cur: Unit[] = [];
+  for (let i = 0; i < units.length; i++) {
+    const u = units[i];
+    if (!cur.length && u.base === " ") continue;
+    cur.push(u);
+    const next = units[i + 1]?.base;
+    const end = (SENTENCE_END.includes(u.base) && !CLOSING.includes(next ?? "")) || (CLOSING_QUOTE.includes(u.base) && (next === " " || next === "「" || next === "『"));
+    if (end) {
+      out.push(cur);
+      cur = [];
+    }
+  }
+  if (trimLine(cur).length) out.push(cur);
+  return out;
+}
+
+const SENTENCE_END = "。！？!?";
+const CLOSING = "」』）)。！？!?…";
+const CLOSING_QUOTE = "」』";
+
+function wrap(units: Unit[], font: PDFFont, size: number, maxWidth: number, byLine = true) {
+  const starts = phraseStarts(units);
+  return (byLine ? splitSentences(units) : [units]).flatMap((s) => balanced(s, font, size, maxWidth, starts));
+}
+
+// 分かち書きの無い文（文の量「多い」）で、ことばの途中で改行しないように、改行してよい位置（その文字の前）を決める。
+// 漢字・カタカナ・「 で始まることばの前と、「の・が・を…」のあとに続く2文字以上のひらがなのことばの前。
+const PARTICLES = new Set(["は", "が", "を", "に", "で", "と", "も", "へ", "の", "や", "から", "まで", "ね", "よ"]);
+const OPENING = "「『（(";
+function phraseStarts(units: Unit[]) {
+  const starts = new Set<Unit>();
+  if (units.some((u) => u.base === " ")) return starts;
+  const at = new Map<number, Unit>();
+  let offset = 0;
+  for (const u of units) {
+    at.set(offset, u);
+    offset += u.base.length;
+  }
+  const text = units.map((u) => u.base).join("");
+  let prev = "";
+  for (const { segment, index } of new Intl.Segmenter("ja", { granularity: "word" }).segment(text)) {
+    const u = at.get(index);
+    const head = segment[0];
+    const ok =
+      u &&
+      index > 0 &&
+      !NO_LINE_START.includes(head) &&
+      !CLOSING.includes(head) &&
+      !OPENING.includes(text[index - 1]) &&
+      (/[\u4e00-\u9fff々ァ-ヴー「『]/.test(head) || (PARTICLES.has(prev) && /^[ぁ-ゖ]{2,}/.test(segment)));
+    if (ok) starts.add(u);
+    prev = segment;
+  }
+  return starts;
+}
+
+// 行数は枠の幅いっぱいに詰めたときと同じまま、いちばん長い行ができるだけ短くなる幅で折り返す
+function balanced(units: Unit[], font: PDFFont, size: number, maxWidth: number, starts: Set<Unit>) {
+  const lines = greedy(units, font, size, maxWidth, starts);
+  if (lines.length < 2) return lines;
+  let lo = 0;
+  let hi = maxWidth;
+  for (let k = 0; k < 16; k++) {
+    const mid = (lo + hi) / 2;
+    if (greedy(units, font, size, mid, starts).length <= lines.length) hi = mid;
+    else lo = mid;
+  }
+  return greedy(units, font, size, hi, starts);
+}
+
+function greedy(units: Unit[], font: PDFFont, size: number, maxWidth: number, starts: Set<Unit>) {
   const fits = (l: Unit[]) => lineWidth(l, font, size) <= maxWidth;
-  // 分かち書きの空白のあとで区切った「ことば」
+  // 分かち書きの空白や「、」のあと（分かち書きの無い文は、ことばの切れ目）で区切った「ことば」
   const words: Unit[][] = [];
   let cur: Unit[] = [];
   for (const u of units) {
+    if (starts.has(u) && trimLine(cur).length) {
+      words.push(cur);
+      cur = [];
+    }
     cur.push(u);
-    if (u.base === " ") {
+    if (u.base === " " || u.base === "、") {
       words.push(cur);
       cur = [];
     }
