@@ -13,7 +13,7 @@ export const FLOW_STEPS = {
   "/create/story": "お話選び",
   "/create/photo": "写真えらび",
   "/create/preview": "できあがりの確認",
-  "/create/size": "サイズ選び",
+  "/create/size": "絵本の種類選び",
   "/create/checkout": "注文内容の確認",
 } as const;
 export type FlowPath = keyof typeof FLOW_STEPS;

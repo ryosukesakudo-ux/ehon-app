@@ -110,7 +110,7 @@ export async function POST(request: Request) {
         currency: "jpy",
         unit_amount: firstPrice,
         product_data: {
-          name: `絵本「${storyLabel(draft.story)}」${size.name}サイズ（${size.spec}）${coupon ? `・クーポン「${coupon.label}」適用` : ""}`,
+          name: `絵本「${storyLabel(draft.story)}」${size.name}（${size.spec}）${coupon ? `・クーポン「${coupon.label}」適用` : ""}`,
         },
       },
     },
@@ -121,7 +121,7 @@ export async function POST(request: Request) {
       price_data: {
         currency: "jpy",
         unit_amount: extraCopyPrice(size.id),
-        product_data: { name: `追加の1冊（${size.name}サイズ・同梱）` },
+        product_data: { name: `追加の1冊（${size.name}・同梱）` },
       },
     });
   }

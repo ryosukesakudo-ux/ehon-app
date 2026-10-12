@@ -144,6 +144,8 @@ export const STORIES: {
 export const SIZES: {
   id: SizeId;
   name: string;
+  /** 表紙の種類（ソフトカバー・ハードカバー） */
+  cover: string;
   spec: string;
   pages: number;
   /** 印刷の仕上がりサイズ（正方形の1辺、mm） */
@@ -151,8 +153,10 @@ export const SIZES: {
   price: number;
   popular?: boolean;
 }[] = [
-  { id: "S", name: "S", spec: "約18cm角・24ページ・ソフトカバー", pages: 24, trimMm: 182, price: 2980 },
-  { id: "M", name: "M", spec: "約21cm角・24ページ・ハードカバー", pages: 24, trimMm: 210, price: 3980, popular: true },
+  // 2026-10-12 作道さん：とりあえずB5スクエアのソフトカバー／ハードカバーの2種類で販売（スタンダード／プレミアムと表記）。
+  // id は以前の注文と合わせるため S・M のまま。
+  { id: "S", name: "スタンダード", cover: "ソフトカバー", spec: "B5スクエア（約18cm角）・24ページ・ソフトカバー", pages: 24, trimMm: 182, price: 2980 },
+  { id: "M", name: "プレミアム", cover: "ハードカバー", spec: "B5スクエア（約18cm角）・24ページ・ハードカバー", pages: 24, trimMm: 182, price: 3980, popular: true },
 ];
 
 // 部数：同じ絵本を何冊でも同梱。2冊目からは1冊ごとに本体価格から1,000円引き（2026-10-10 作道さん決定）
@@ -299,6 +303,13 @@ export function getTaste(id: string) {
 export function getStory(id: string) {
   return STORIES.find((s) => s.id === id);
 }
+
+/** 注文の表示名（例：プレミアム（ハードカバー）） */
+export function sizeLabel(id: string) {
+  const size = getSize(id);
+  return size ? `${size.name}（${size.cover}）` : id;
+}
+
 export function getSize(id: string) {
   return SIZES.find((s) => s.id === id);
 }

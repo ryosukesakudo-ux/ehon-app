@@ -11,14 +11,17 @@ export default function SizePage() {
     <>
       <StepHeader step={5} back="/create/preview" />
       <main className="step-body">
-        <StepTitle title="サイズを選んでください" lead="価格は送料・税込です。" />
+        <StepTitle title="絵本の種類を選んでください" lead="価格は送料・税込です。" />
         {SIZES.map((s) => (
           <button key={s.id} type="button" className="choice" aria-pressed={state.size === s.id} onClick={() => update({ size: s.id })} style={{ padding: 16 }}>
-            <div className="display" style={{ flexShrink: 0, width: 52, height: 52, borderRadius: 12, background: "#F3F6FB", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22, fontWeight: 900, color: "var(--blue)" }}>
-              {s.name}
+            <div className="display" style={{ flexShrink: 0, width: 52, height: 52, borderRadius: 12, background: "#F3F6FB", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13, fontWeight: 900, color: "var(--blue)", textAlign: "center", lineHeight: 1.3 }}>
+              {s.cover.replace("カバー", "")}
+              <br />
+              カバー
             </div>
             <div style={{ display: "flex", flexDirection: "column", gap: 4, flexGrow: 1 }}>
               {s.popular && <div className="tag" style={{ alignSelf: "flex-start" }}>いちばん人気</div>}
+              <div className="display" style={{ fontSize: 17, fontWeight: 800, color: "var(--navy)" }}>{s.name}</div>
               <div className="choice-desc">{s.spec}</div>
               <div className="display" style={{ fontSize: 21, fontWeight: 900 }}>{yen(s.price)}</div>
             </div>
@@ -38,7 +41,7 @@ export default function SizePage() {
           </p>
         </div>
         <div className="card" style={{ padding: 18 }}>
-          <div className="sum-row"><span>絵本（{size.name}サイズ）</span><span>{yen(size.price)}</span></div>
+          <div className="sum-row"><span>絵本（{size.name}）</span><span>{yen(size.price)}</span></div>
           {state.copies > 1 && <div className="sum-row"><span>追加の{state.copies - 1}冊（{yen(extraCopyPrice(state.size))}×{state.copies - 1}）</span><span>{yen(extraCopyPrice(state.size) * (state.copies - 1))}</span></div>}
           <div className="sum-row"><span>送料</span><span>0円</span></div>
           <div className="divider" />

@@ -409,8 +409,15 @@ export default function Home() {
           {SIZES.map((p, i) => (
             <div key={p.id} className={`${s.price} ${p.popular ? s.priceHot : ""}`} data-reveal="up" data-d={i * 2}>
               {p.popular && <div className={`${s.priceRibbon} display`}>いちばん人気</div>}
-              <div className={`${s.priceSize} display`}>{p.name}</div>
-              <div className={s.priceSpec}>{p.spec}</div>
+              <div className={`${s.priceSize} display`}>
+                {p.cover.replace("カバー", "")}
+                <br />
+                カバー
+              </div>
+              <div className={s.priceSpec}>
+                <div className={`${s.priceName} display`}>{p.name}</div>
+                B5スクエア（約18cm角）・{p.pages}ページ
+              </div>
               <div className={`${s.priceYen} display`}>{yen(p.price)}</div>
             </div>
           ))}
