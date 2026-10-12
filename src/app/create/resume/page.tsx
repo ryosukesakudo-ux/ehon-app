@@ -29,6 +29,7 @@ function Resume() {
         childName: save.childName,
         childAge: save.childAge,
         childBirthday: save.childBirthday ?? "",
+        likeness: save.likeness ?? "normal",
         draftId: null,
         demo: false,
         previews: {},

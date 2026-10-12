@@ -9,7 +9,8 @@ import { getOpenAI, getSupabase } from "./services";
 /** 1人が1日に作れる回数（AIの費用の歯止め） */
 export const STORY_GEN_DAILY = 10;
 
-const TEXT_MODEL = () => process.env.OPENAI_TEXT_MODEL ?? "gpt-5-mini";
+/** 文章を作るモデル。環境変数で変えられる。使えないモデルだったときは次の候補で作り直す */
+const TEXT_MODELS = () => [...new Set([process.env.OPENAI_TEXT_MODEL, "gpt-5-mini", "gpt-4.1-mini"].filter((m): m is string => !!m))];
 
 function secret() {
   return process.env.SUPABASE_SERVICE_ROLE_KEY ?? process.env.CRON_SECRET ?? "ehon-demo";
@@ -41,8 +42,7 @@ const SCHEMA = {
     cover: { type: "string", description: "表紙の絵の内容（英語・1〜2文）" },
     scenes: {
       type: "array",
-      minItems: CUSTOM_SCENES,
-      maxItems: CUSTOM_SCENES,
+      description: `ちょうど${CUSTOM_SCENES}場面`,
       items: {
         type: "object",
         additionalProperties: false,
@@ -89,17 +89,29 @@ async function askAi(input: StoryInput) {
     "挿絵の内容（art・cover）は英語で、主人公は必ず \"the child\" と書き、名前は書かない。どの場面にも主人公が出る。絵の中に文字は入れない。毎回同じ見た目で描けるよう、主人公の服装は書かない。",
     "表紙（cover）は、お話の世界を背景に主人公が大きく描かれる横長の絵。",
   ].join("\n");
-  const res = await ai.chat.completions.create({
-    model: TEXT_MODEL(),
-    messages: [
-      { role: "system", content: system },
-      { role: "user", content: `あらすじ：${input.synopsis}` },
-    ],
-    response_format: { type: "json_schema", json_schema: { name: "picture_book", strict: true, schema: SCHEMA } },
-  });
-  const raw = res.choices[0]?.message?.content;
-  if (!raw) throw new Error("お話を作れませんでした。あらすじを変えてお試しください");
-  return JSON.parse(raw) as { title: string; cover: string; scenes: CustomScene[] };
+  let lastError: unknown = null;
+  for (const model of TEXT_MODELS()) {
+    try {
+      const res = await ai.chat.completions.create({
+        model,
+        messages: [
+          { role: "system", content: system },
+          { role: "user", content: `あらすじ：${input.synopsis}` },
+        ],
+        response_format: { type: "json_schema", json_schema: { name: "picture_book", strict: true, schema: SCHEMA } },
+      });
+      const raw = res.choices[0]?.message?.content;
+      if (!raw) throw new Error(`empty response (${res.choices[0]?.finish_reason ?? "no choice"})`);
+      const body = JSON.parse(raw) as { title: string; cover: string; scenes: CustomScene[] };
+      if (!Array.isArray(body.scenes) || body.scenes.length < CUSTOM_SCENES) throw new Error(`scenes: ${body.scenes?.length}`);
+      return body;
+    } catch (e) {
+      // モデルが無い・使えないとき（404・400）は次の候補へ。それ以外（内容の不足など）も一度だけ次で試す
+      console.error(`custom story with ${model} failed`, e);
+      lastError = e;
+    }
+  }
+  throw lastError ?? new Error("no model");
 }
 
 function demoStory(input: StoryInput) {

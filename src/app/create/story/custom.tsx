@@ -27,6 +27,13 @@ export function CustomStoryPanel() {
   const nameOk = state.childName.trim().length > 0;
   const ageOk = !!state.childAge;
 
+  // 開いたら、選んでいたシリーズのお話を外す（オリジナルのお話ができるまで先へ進めないように。
+  // 外さないと、お話を作らずに進んだときシリーズのお話でプレビューが作られてしまう）
+  function toggle() {
+    if (!open && !story && state.story) update({ story: "", previews: {}, draftId: null });
+    setToggled(!open);
+  }
+
   const save = (s: CustomStory) => update({ story: customKey(s), previews: {}, draftId: null });
 
   async function generate() {
@@ -54,7 +61,7 @@ export function CustomStoryPanel() {
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-      <button type="button" className="choice" aria-expanded={open} aria-pressed={!!story} onClick={() => setToggled(!open)}>
+      <button type="button" className="choice" aria-expanded={open} aria-pressed={!!story} onClick={toggle}>
         <div style={{ flexShrink: 0, width: 72, height: 72, borderRadius: 12, background: "#FDECE8", display: "flex", alignItems: "center", justifyContent: "center" }}>
           <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="var(--coral)" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
             <path d="M12 20h9" />
@@ -63,7 +70,7 @@ export function CustomStoryPanel() {
         </div>
         <div style={{ display: "flex", flexDirection: "column", gap: 6, flexGrow: 1 }}>
           <div className="choice-title display">{story ? `オリジナル「${story.title}」` : "オリジナルのお話をつくる"}</div>
-          <div className="choice-desc">あらすじを書くと、AIが12ページのお話にします。文はあとから自由に直せます。</div>
+          <div className="choice-desc">あらすじを書くと、AIが12ページのお話にします。文はあとから自由に直せます。{open && !story && "お話ができると、次へ進めます。"}</div>
         </div>
         <Chevron dir={open ? "up" : "down"} size={18} />
       </button>

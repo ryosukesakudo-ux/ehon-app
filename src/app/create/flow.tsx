@@ -1,7 +1,7 @@
 "use client";
 
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
-import { clampCopies, getSize, type SizeId, type TasteId } from "@/lib/catalog";
+import { clampCopies, getSize, isLikenessId, type LikenessId, type SizeId, type TasteId } from "@/lib/catalog";
 import { isStoryKey, parseSeriesKey, withoutCombo } from "@/lib/story-key";
 import { parseCustomKey } from "@/lib/custom-story";
 import type { Face } from "@/lib/face";
@@ -17,6 +17,8 @@ export type FlowState = {
   childAge: number | null;
   /** 主人公のお誕生日（YYYY-MM-DD・任意）。誕生日の1か月前に続編のご案内メールを送る */
   childBirthday: string;
+  /** 本人への似せ方（写真の画面で選ぶ。プレビューの最初の作成から使う） */
+  likeness: LikenessId;
   draftId: string | null;
   demo: boolean;
   previews: Record<number, string>;
@@ -40,6 +42,7 @@ const initial: FlowState = {
   childName: "",
   childAge: null,
   childBirthday: "",
+  likeness: "normal",
   draftId: null,
   demo: false,
   previews: {},
@@ -97,6 +100,7 @@ export function FlowProvider({ children }: { children: ReactNode }) {
       // 非表示にした1話だけのお話が残っていたら、選び直してもらう
       if (!isStoryKey(restored.story) || !(parseSeriesKey(restored.story) || parseCustomKey(restored.story))) restored.story = initial.story;
       restored.copies = clampCopies(restored.copies);
+      if (!isLikenessId(restored.likeness)) restored.likeness = initial.likeness;
       // eslint-disable-next-line react-hooks/set-state-in-effect -- 保存済みの入力を一度だけ復元する
       setState(restored);
       // 作成済みの絵のURLは1時間で切れるので、下書きがあれば読み直す（ログイン後は会員の下書きとして読める）
