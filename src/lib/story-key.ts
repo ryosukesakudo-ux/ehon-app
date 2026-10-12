@@ -1,4 +1,5 @@
 import { STORIES } from "./catalog";
+import { parseCustomKey } from "./custom-story";
 
 // 台本（シリーズ）のお話の選び方と、注文に保存する「お話の番号」。
 // ブラウザでも使うので、ここには本文を入れない（本文は book.ts がサーバーで読む）。
@@ -7,6 +8,7 @@ import { STORIES } from "./catalog";
 // - 旧版の1話だけのお話： "forest" / "star" / "birthday"
 // - シリーズの1話：       "forest:2:n"（シリーズ:話:文の量）
 //   下書きを作るとき、写真の組み合わせを足して "forest:2:n:mom" のように保存する（写真を消したあとも同じ本文で印刷するため）
+// - オリジナルのお話：     "custom:{...}"（custom-story.ts。お話の中身をそのまま入れる）
 
 export type SeriesId = "forest" | "star" | "birthday" | "sea" | "dinosaur";
 export type LevelId = "s" | "n" | "l";
@@ -138,11 +140,13 @@ export function getSeriesInfo(id: string) {
 
 /** 旧版のお話か、シリーズのお話の番号として正しいか */
 export function isStoryKey(key: string) {
-  return !!STORIES.find((s) => s.id === key) || !!parseSeriesKey(key);
+  return !!STORIES.find((s) => s.id === key) || !!parseSeriesKey(key) || !!parseCustomKey(key);
 }
 
 /** 画面・メールに出すお話の名前（例：もりのだいぼうけん 第2話「ほたるの かわの ひみつ」） */
 export function storyLabel(key: string | null | undefined) {
+  const custom = parseCustomKey(key);
+  if (custom) return `オリジナルのお話「${custom.title}」`;
   const k = parseSeriesKey(key);
   if (!k) return STORIES.find((s) => s.id === key)?.name ?? "";
   const s = getSeriesInfo(k.series)!;
@@ -150,10 +154,10 @@ export function storyLabel(key: string | null | undefined) {
   return `${s.name} 第${ep.no}話「${ep.title}」`;
 }
 
-/** 文の量の名前（シリーズのお話だけ） */
+/** 文の量の名前（シリーズとオリジナルのお話） */
 export function levelLabel(key: string | null | undefined) {
-  const k = parseSeriesKey(key);
-  const l = k && LEVELS.find((x) => x.id === k.level);
+  const level = parseSeriesKey(key)?.level ?? parseCustomKey(key)?.level;
+  const l = level && LEVELS.find((x) => x.id === level);
   return l ? `${l.name}（${l.ages}）` : "";
 }
 
@@ -162,6 +166,8 @@ export function levelLabel(key: string | null | undefined) {
  * シリーズは「はるとの もりのだいぼうけん 第2話」＋「ほたるの かわの ひみつ」
  */
 export function bookTitle(key: string, childName: string) {
+  const custom = parseCustomKey(key);
+  if (custom) return { lead: `${childName}の おはなし`, main: custom.title };
   const k = parseSeriesKey(key);
   if (!k) return { lead: `${childName}の`, main: STORIES.find((s) => s.id === key)?.name ?? "" };
   const s = getSeriesInfo(k.series)!;

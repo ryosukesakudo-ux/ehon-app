@@ -3,6 +3,7 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
 import { clampCopies, getSize, type SizeId, type TasteId } from "@/lib/catalog";
 import { isStoryKey, parseSeriesKey, withoutCombo } from "@/lib/story-key";
+import { parseCustomKey } from "@/lib/custom-story";
 import type { Face } from "@/lib/face";
 import { readLocalFlow, readLocalPhotos, writeLocalFlow, writeLocalPhotos } from "./flow-storage";
 
@@ -94,7 +95,7 @@ export function FlowProvider({ children }: { children: ReactNode }) {
       if (!getSize(restored.size)) restored.size = initial.size;
       restored.story = withoutCombo(String(restored.story ?? ""));
       // 非表示にした1話だけのお話が残っていたら、選び直してもらう
-      if (!isStoryKey(restored.story) || !parseSeriesKey(restored.story)) restored.story = initial.story;
+      if (!isStoryKey(restored.story) || !(parseSeriesKey(restored.story) || parseCustomKey(restored.story))) restored.story = initial.story;
       restored.copies = clampCopies(restored.copies);
       // eslint-disable-next-line react-hooks/set-state-in-effect -- 保存済みの入力を一度だけ復元する
       setState(restored);

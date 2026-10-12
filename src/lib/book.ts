@@ -2,6 +2,7 @@ import "server-only";
 import { STORIES, type Scene } from "./catalog";
 import { LEVELS, getSeriesInfo, parseSeriesKey, type Combo, type SeriesId } from "./story-key";
 import { SERIES_DATA, type Continuity, type SeriesSceneData } from "./series-data";
+import { parseCustomKey } from "./custom-story";
 
 // 注文の「お話の番号」から、絵本の中身（表紙の絵・12場面の文と絵）を組み立てる（サーバー専用）。
 // 旧版の1話だけのお話は catalog.ts の STORIES、シリーズは src/data/series/*.json（確定した台本）から。
@@ -16,6 +17,8 @@ export type Book = {
   coverWithSidekick?: boolean;
   coverCamera?: string;
   scenes: BookScene[];
+  /** オリジナルのお話のとき、本文に 漢字《かな》 のふりがながある（文の量が「多い」） */
+  ruby?: boolean;
   /** シリーズのお話のときだけ */
   series?: {
     id: SeriesId;
@@ -46,6 +49,17 @@ function pick(scene: SeriesSceneData, combo: Combo, level: number): BookScene {
 export function getBook(key: string | null | undefined): Book | null {
   const legacy = STORIES.find((s) => s.id === key);
   if (legacy) return { key: legacy.id, name: legacy.name, cover: legacy.cover, scenes: legacy.scenes };
+
+  const custom = parseCustomKey(key);
+  if (custom) {
+    return {
+      key: key!,
+      name: custom.title,
+      cover: custom.cover,
+      scenes: custom.scenes.map((s) => ({ text: s.text, art: s.art, withMom: s.withMom, withDad: s.withDad })),
+      ruby: custom.level === "l",
+    };
+  }
 
   const k = parseSeriesKey(key);
   if (!k) return null;
