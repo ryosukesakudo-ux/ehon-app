@@ -389,3 +389,5 @@ button, input { font-family: inherit; }
 .preview-thumbs { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; }
 .preview-thumb { flex-shrink: 0; width: 56px; height: 56px; padding: 0; border-radius: 10px; overflow: hidden; border: 1px solid var(--line); background: #F3F6FB; color: var(--sub); font-size: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
 .preview-thumb[aria-selected="true"] { border: 3px solid var(--coral); }
+/* 保存しているキャラクターをそのまま使った（プレビューを使っていない）印 */
+.reused-badge { display: inline-block; margin: 4px 0; padding: 2px 10px; border-radius: 10px; background: #E3F4E8; color: #1E6B3A; font-size: 12px; font-weight: 700; line-height: 1.6; }

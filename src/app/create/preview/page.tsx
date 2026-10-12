@@ -121,6 +121,8 @@ function Preview() {
         throw new Error(json.error ?? "絵の作成に失敗しました");
       }
       setPreview(index, json.url);
+      // 作り直したら、保存しているキャラクターをそのまま使った絵ではなくなる
+      if (state.reused?.includes(index)) update((prev) => ({ reused: prev.reused.filter((n) => n !== index) }));
       return true;
     } catch (e) {
       setError(e instanceof Error ? e.message : "絵の作成に失敗しました");
@@ -320,6 +322,12 @@ function Preview() {
             ) : isChar ? (
               <>
                 <strong>{nameOf(scene)}のキャラクター</strong>
+                {state.reused?.includes(scene) && (
+                  <>
+                    <br />
+                    <span className="reused-badge">保存しているキャラクターをそのまま使っています（プレビュー消費なし）</span>
+                  </>
+                )}
                 <br />
                 <span style={{ fontSize: 13, color: "var(--sub)" }}>この姿をもとに、表紙と本文を描きます。</span>
               </>

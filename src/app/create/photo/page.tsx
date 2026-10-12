@@ -36,6 +36,7 @@ function PhotoSlot({
   characters,
   characterId,
   onPickCharacter,
+  taste,
 }: {
   id: string;
   title: string;
@@ -51,6 +52,8 @@ function PhotoSlot({
   characters: SavedCharacter[];
   characterId: string | null;
   onPickCharacter: (id: string | null) => void;
+  /** 今回のテイスト（保存しているキャラクターと同じなら、描き直さずにそのまま使う） */
+  taste?: string;
 }) {
   const fileUrl = useMemo(() => (file ? URL.createObjectURL(file) : null), [file]);
   useEffect(() => () => { if (fileUrl) URL.revokeObjectURL(fileUrl); }, [fileUrl]);
@@ -156,21 +159,47 @@ function PhotoSlot({
         <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
           <div style={{ fontSize: 12, fontWeight: 700, color: "var(--navy)" }}>前に作ったキャラクターから選ぶ</div>
           <div style={{ display: "flex", gap: 8, overflowX: "auto", paddingBottom: 4 }}>
-            {characters.map((c) => (
-              <button
-                key={c.id}
-                type="button"
-                aria-pressed={characterId === c.id && !file}
-                aria-label={`前に作ったキャラクター（${getTaste(c.taste)?.name ?? ""}）`}
-                onClick={() => onPickCharacter(c.id)}
-                style={{ flexShrink: 0, width: 64, height: 64, padding: 0, borderRadius: 12, overflow: "hidden", cursor: "pointer", border: characterId === c.id && !file ? "3px solid var(--coral)" : "1px solid var(--line)", background: "#fff" }}
-              >
-                {/* eslint-disable-next-line @next/next/no-img-element -- 署名付きURLの一時画像 */}
-                <img src={c.url} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-              </button>
-            ))}
+            {characters.map((c) => {
+              const same = c.taste === taste;
+              return (
+                <button
+                  key={c.id}
+                  type="button"
+                  aria-pressed={characterId === c.id && !file}
+                  aria-label={`前に作ったキャラクター（${getTaste(c.taste)?.name ?? ""}${same ? "・プレビュー消費なし" : "・描き直しでプレビュー1枚"}）`}
+                  onClick={() => onPickCharacter(c.id)}
+                  style={{ flexShrink: 0, display: "flex", flexDirection: "column", alignItems: "stretch", width: 72, padding: 0, borderRadius: 12, overflow: "hidden", cursor: "pointer", border: characterId === c.id && !file ? "3px solid var(--coral)" : "1px solid var(--line)", background: "#fff" }}
+                >
+                  {/* eslint-disable-next-line @next/next/no-img-element -- 署名付きURLの一時画像 */}
+                  <img src={c.url} alt="" style={{ width: "100%", height: 64, objectFit: "cover" }} />
+                  {/* どのテイストで作ったか（今回と同じなら無料、違えば描き直し） */}
+                  <span style={{ fontSize: 10, lineHeight: 1.5, padding: "1px 2px", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", background: same ? "#E3F4E8" : "#ECE8E1", color: same ? "#1E6B3A" : "var(--sub)", fontWeight: 700 }}>
+                    {getTaste(c.taste)?.name ?? "不明"}
+                  </span>
+                </button>
+              );
+            })}
           </div>
-          <div style={{ fontSize: 11, lineHeight: 1.6, color: "var(--sub)" }}>同じテイストなら、そのまま使います（プレビューの枚数を使いません）。</div>
+          {(() => {
+            const picked = !file ? characters.find((c) => c.id === characterId) : undefined;
+            const now = getTaste(taste ?? "")?.name ?? "";
+            if (!picked) {
+              return (
+                <div style={{ fontSize: 11, lineHeight: 1.6, color: "var(--sub)" }}>
+                  今回と同じテイスト（{now}）のキャラクターは、そのまま使います（プレビューの枚数を使いません）。違うテイストのものは、その絵をもとに{now}で描き直します（プレビュー1枚）。
+                </div>
+              );
+            }
+            return picked.taste === taste ? (
+              <p className="info-note" style={{ margin: 0, fontSize: 12 }}>
+                {now}で作ったキャラクターなので、そのまま使います。プレビューの枚数は使いません。
+              </p>
+            ) : (
+              <p className="info-note" style={{ margin: 0, fontSize: 12 }}>
+                {getTaste(picked.taste)?.name ?? "別のテイスト"}で作ったキャラクターです。今回は{now}なので、この絵をもとに描き直します（プレビュー1枚）。
+              </p>
+            );
+          })()}
         </div>
       )}
       {(file || savedId || characterId) && !required && (
@@ -258,7 +287,7 @@ export default function PhotoPage() {
         setNeedLogin(!!json.needLogin);
         throw new Error(json.error ?? "送信に失敗しました");
       }
-      update({ draftId: json.draftId, demo: !!json.demo, previews: json.previews ?? {}, previewScenes: json.previewScenes ?? [], confirmed: false, pageCount: 0 });
+      update({ draftId: json.draftId, demo: !!json.demo, previews: json.previews ?? {}, previewScenes: json.previewScenes ?? [], confirmed: false, pageCount: 0, reused: Object.keys(json.previews ?? {}).map(Number) });
       setPhotos({ child: null, mom: null, dad: null });
       setSavedIds({ child: null, mom: null, dad: null });
       setGuestSavedIds([]);
@@ -297,6 +326,7 @@ export default function PhotoPage() {
           onPickSaved={(id) => { setSavedIds((s) => ({ ...s, child: id })); if (id) { setPhotos({ ...photos, child: null }); setCharacterIds((c) => ({ ...c, child: null })); } }}
           characters={characters.filter((c) => c.person === "child")}
           characterId={characterIds.child}
+          taste={state.taste}
           onPickCharacter={(id) => { setCharacterIds((c) => ({ ...c, child: id })); if (id) { setPhotos({ ...photos, child: null }); setSavedIds((s) => ({ ...s, child: null })); } }}
         />
         <PhotoSlot
@@ -312,6 +342,7 @@ export default function PhotoPage() {
           onPickSaved={(id) => { setSavedIds((s) => ({ ...s, mom: id })); if (id) { setPhotos({ ...photos, mom: null }); setCharacterIds((c) => ({ ...c, mom: null })); } }}
           characters={characters.filter((c) => c.person === "mom")}
           characterId={characterIds.mom}
+          taste={state.taste}
           onPickCharacter={(id) => { setCharacterIds((c) => ({ ...c, mom: id })); if (id) { setPhotos({ ...photos, mom: null }); setSavedIds((s) => ({ ...s, mom: null })); } }}
         />
         <PhotoSlot
@@ -327,6 +358,7 @@ export default function PhotoPage() {
           onPickSaved={(id) => { setSavedIds((s) => ({ ...s, dad: id })); if (id) { setPhotos({ ...photos, dad: null }); setCharacterIds((c) => ({ ...c, dad: null })); } }}
           characters={characters.filter((c) => c.person === "dad")}
           characterId={characterIds.dad}
+          taste={state.taste}
           onPickCharacter={(id) => { setCharacterIds((c) => ({ ...c, dad: id })); if (id) { setPhotos({ ...photos, dad: null }); setSavedIds((s) => ({ ...s, dad: null })); } }}
         />
         {cast.map((c, i) => (

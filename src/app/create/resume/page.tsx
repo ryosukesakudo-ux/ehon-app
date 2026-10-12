@@ -36,6 +36,7 @@ function Resume() {
         previewScenes: [],
         confirmed: false,
         pageCount: 0,
+        reused: [],
         size: save.size,
         copies: save.copies,
         deliveryDate: save.deliveryDate,
@@ -78,6 +79,7 @@ function Resume() {
           previewScenes: json.previewScenes ?? [],
           confirmed: false,
           pageCount: 0,
+          reused: [],
         }));
         router.replace("/create/preview");
       })
