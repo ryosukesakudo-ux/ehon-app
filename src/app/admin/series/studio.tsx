@@ -56,7 +56,11 @@ export function SeriesStudio({ list }: { list: StudioView[] }) {
   }
 
   const makeSheet = () => call("sheet", { kind: "sheet" });
-  const makePhoto = () => call("photo", { kind: "photo" });
+  async function makePhoto() {
+    // 写真が先のシリーズで写真を作り直すと、設定画と場面の元が変わる（森は前の家族写真をそのまま使っている）
+    if (photoFirst && (await exists(seriesFamilyPhotoPath(SERIES_ID))) && !confirm("今の家族写真を、新しく作った写真に置き換えます。設定画と場面もすべて作り直しが必要になります。よろしいですか？")) return false;
+    return call("photo", { kind: "photo" });
+  }
   const makePage = (episode: number, page: number) => call(`${episode}/${page}` satisfies Key, { episode, page, quality });
 
   async function exists(path: string) {
@@ -104,7 +108,7 @@ export function SeriesStudio({ list }: { list: StudioView[] }) {
       <p style={{ margin: 0, fontSize: 13, lineHeight: 1.7 }}>
         サンプル集（/samples）の「この写真から → この登場人物に」に出す架空の家族写真です。左からママ・{childName}・パパの順に並べ、画面ではその順に名前を付けます。
         {photoFirst
-          ? "このシリーズは、この写真をもとに設定画と場面を描きます（3歳くらいの女の子とママ・パパ）。並びや雰囲気が違ったら、欄に指示を書いて作り直してください（1枚 約40円）。作り直したら、設定画と場面も作り直してください。"
+          ? "このシリーズは、この写真をもとに設定画と場面を描きます。並びや雰囲気が違ったら、欄に指示を書いて作り直してください（1枚 約40円）。作り直したら、設定画と場面も作り直してください。"
           : "設定画の家族3人にそっくりに作ります。並びが違ったり似ていなかったりしたら、欄に指示を書いて作り直してください（1枚 約40円）。設定画を作り直したら、これも作り直してください。"}
       </p>
       <Tile
