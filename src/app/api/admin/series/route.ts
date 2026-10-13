@@ -1,7 +1,7 @@
 import { toFile } from "openai";
 import { illustrateSeries, makeSeriesFamilyPhoto, makeSeriesFamilyPhotoFromText, makeSeriesSheet } from "@/lib/illustrate";
 import { characterSheetPath } from "@/lib/samples";
-import { seriesFamilyPhotoPath, seriesImagePath, seriesSheetPath, usesShowcasePhoto } from "@/lib/series";
+import { seriesFamilyPhotoPath, seriesImagePath, seriesSheetPath, seriesSpreadPath, usesShowcasePhoto } from "@/lib/series";
 import { getStudioSeries } from "@/lib/series-studio";
 import { SAMPLE_BUCKET, getSupabase } from "@/lib/services";
 
@@ -11,6 +11,7 @@ export const maxDuration = 300;
 // note：その絵だけに効く追加の指示（日本語でよい）。
 // kind=sheet：シリーズの設定画（作例の設定画＋相棒） / kind=photo：サンプル集に出す、設定画の家族そっくりの架空の家族写真
 // （写真が先のシリーズは逆：photo を文章から先に作り、sheet と場面はその写真に寄せる） / それ以外：その話の表紙（page=0）か場面（1〜12）
+// spread=true：場面を見開き（横長）で描く試作。今の場面の絵とは別の場所に保存する
 export async function POST(request: Request) {
   const body = await request.json().catch(() => null);
   const series = getStudioSeries(String(body?.series ?? ""));
@@ -75,9 +76,11 @@ export async function POST(request: Request) {
     const photo = series.photoFirst ? await load(seriesFamilyPhotoPath(series.id), "family-photo.png") : null;
     if (series.photoFirst && !photo) return Response.json({ error: noPhoto }, { status: 400 });
     const quality = body?.quality === "preview" ? "preview" : "final";
+    const spread = body?.spread === true;
+    if (spread && page === 0) return Response.json({ error: "見開きの試作は場面（1〜12）だけです" }, { status: 400 });
     await save(
-      seriesImagePath(series.id, episode.no, page),
-      await illustrateSeries({ series, scene, page, outfits: episode.outfits, continuity: episode.continuity, note, quality, sheet, photo }),
+      spread ? seriesSpreadPath(series.id, episode.no, page) : seriesImagePath(series.id, episode.no, page),
+      await illustrateSeries({ series, scene, page, outfits: episode.outfits, continuity: episode.continuity, note, quality, sheet, photo, spread }),
     );
     return Response.json({ ok: true });
   } catch (e) {

@@ -72,3 +72,8 @@ export function seriesFamilyPhotoPath(id: SeriesId) {
 export function seriesImagePath(id: SeriesId, episode: number, page: number) {
   return `series/${id}/ep${episode}/${page === 0 ? "cover" : String(page).padStart(2, "0")}.png`;
 }
+
+/** 見開きの試作の絵（場面1〜12。今の場面の絵とは別に保存し、お客様の本には使わない） */
+export function seriesSpreadPath(id: SeriesId, episode: number, page: number) {
+  return `series/${id}/ep${episode}/spread-${String(page).padStart(2, "0")}.png`;
+}

@@ -26,6 +26,8 @@ export type Draft = {
   child_character_path?: string | null;
   mom_character_path?: string | null;
   dad_character_path?: string | null;
+  /** 写真の顔の飾り（シール・メガネなど）を絵では描かない（写真の画面のチェック。列が無いデータベースでは無い） */
+  plain_face?: boolean | null;
   generation_count: number;
   photos_deleted_at: string | null;
   images_deleted_at: string | null;
@@ -223,7 +225,7 @@ export async function generateScene(draft: Draft, sceneIndex: number, quality: Q
     if (character) images.push({ who: g, kind: guest !== null && photo ? "previous" : "character", file: character });
   }
 
-  const b64 = await illustrate({ taste: draft.taste, story: draft.story, sceneIndex, images, quality, detail, childAge: draft.child_age, redo });
+  const b64 = await illustrate({ taste: draft.taste, story: draft.story, sceneIndex, images, quality, detail, childAge: draft.child_age, redo, plainFace: !!draft.plain_face });
   const png = Buffer.from(b64, "base64");
 
   // 会員の写真は「最後に使った日」を更新する（1年使わなければ自動削除）

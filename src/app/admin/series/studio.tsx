@@ -2,7 +2,7 @@
 
 import { useState, useSyncExternalStore } from "react";
 import { samplePublicUrl } from "@/lib/samples";
-import { SERIES_NOTE_MAX, isPhotoFirst, seriesFamilyPhotoPath, seriesSampleChildName, seriesImagePath, seriesSheetPath, usesShowcasePhoto, type SeriesId } from "@/lib/series";
+import { SERIES_NOTE_MAX, isPhotoFirst, seriesFamilyPhotoPath, seriesSampleChildName, seriesImagePath, seriesSheetPath, seriesSpreadPath, usesShowcasePhoto, type SeriesId } from "@/lib/series";
 import { SampleImage } from "@/components/sample-image";
 
 // 台本の絵スタジオ：架空の家族（ふつうは作例と同じ家族。数のお勉強は別の家族で、写真が先）で、台本（シリーズ）の各話の表紙と12場面を水彩で作る。
@@ -16,7 +16,7 @@ export type StudioView = {
   id: SeriesId;
   name: string;
   sidekickLabel: string;
-  episodes: { no: number; title: string; cover: { label: string }; scenes: { label: string }[] }[];
+  episodes: { no: number; title: string; cover: { label: string }; scenes: { label: string; text: string }[] }[];
 };
 
 export function SeriesStudio({ list }: { list: StudioView[] }) {
@@ -64,6 +64,16 @@ export function SeriesStudio({ list }: { list: StudioView[] }) {
     return call("photo", { kind: "photo" });
   }
   const makePage = (episode: number, page: number) => call(`${episode}/${page}` satisfies Key, { episode, page, quality });
+  // 見開きの試作（今の場面の絵とは別に保存）
+  const [spreadEp, setSpreadEp] = useState(series.episodes[0]?.no ?? 1);
+  const [spreadPage, setSpreadPage] = useState(5);
+  const [textSide, setTextSide] = useState<"left" | "right">("right");
+  const spreadKey = `spread/${spreadEp}/${spreadPage}`;
+  const makeSpread = async () => {
+    if (!(await exists(seriesSheetPath(SERIES_ID))) && !(await makeSheet())) return;
+    await call(spreadKey, { episode: spreadEp, page: spreadPage, quality, spread: true });
+  };
+  const spreadEpisode = series.episodes.find((e) => e.no === spreadEp) ?? series.episodes[0];
 
   async function exists(path: string) {
     const url = samplePublicUrl(path);
@@ -158,6 +168,57 @@ export function SeriesStudio({ list }: { list: StudioView[] }) {
       {photoFirst ? photoSection : sheetSection}
       {photoFirst ? sheetSection : photoSection}
 
+      {spreadEpisode && (
+        <section className="card" style={{ gap: 12 }}>
+          <h2 className="display" style={{ margin: 0, fontSize: 18, color: "var(--navy)" }}>見開きの試作</h2>
+          <p style={{ margin: 0, fontSize: 13, lineHeight: 1.7 }}>
+            左右2ページにまたがる大きな絵（横長）で場面を描いて、文を絵に重ねたときの見え方を試します。今の場面の絵とは別に保存するので、お客様の本やサンプル集は変わりません。
+            横長の絵は1枚 約{quality === "final" ? 45 : 23}円です（正方形の約1.5倍）。点線が本の綴じ目（真ん中）、絵は上下を少し切って見開きの形（2:1）にしています。
+          </p>
+          <div style={{ display: "flex", gap: 12, flexWrap: "wrap", alignItems: "center" }}>
+            <label>
+              話：
+              <select value={spreadEpisode.no} disabled={anyBusy} onChange={(e) => setSpreadEp(Number(e.target.value))}>
+                {series.episodes.map((ep) => <option key={ep.no} value={ep.no}>第{ep.no}話</option>)}
+              </select>
+            </label>
+            <label>
+              場面：
+              <select value={spreadPage} disabled={anyBusy} onChange={(e) => setSpreadPage(Number(e.target.value))}>
+                {spreadEpisode.scenes.map((sc, i) => <option key={i} value={i + 1}>場面{i + 1}：{sc.label.slice(0, 24)}</option>)}
+              </select>
+            </label>
+            <label>
+              文の位置：
+              <select value={textSide} onChange={(e) => setTextSide(e.target.value as "left" | "right")}>
+                <option value="right">右ページの下</option>
+                <option value="left">左ページの下</option>
+              </select>
+            </label>
+          </div>
+          <SpreadPreview
+            path={seriesSpreadPath(SERIES_ID, spreadEpisode.no, spreadPage)}
+            version={version[spreadKey]}
+            busy={busy[spreadKey]}
+            text={spreadEpisode.scenes[spreadPage - 1]?.text ?? ""}
+            side={textSide}
+          />
+          <textarea
+            value={notes[spreadKey] ?? ""}
+            onChange={(e) => setNotes((n) => ({ ...n, [spreadKey]: e.target.value }))}
+            maxLength={SERIES_NOTE_MAX}
+            rows={2}
+            placeholder="作り直すときの指示（例：2人を左ページに寄せて、右下は草むらに）"
+            aria-label="見開きの指示"
+            style={{ fontSize: 13, lineHeight: 1.5, padding: 8, borderRadius: 8, border: "1px solid #ccc", resize: "vertical", maxWidth: 720 }}
+          />
+          <button type="button" className="cta" style={{ width: "auto", alignSelf: "flex-start", height: 44, padding: "0 20px", fontSize: 15 }} disabled={anyBusy} onClick={makeSpread}>
+            見開きで作る／作り直す
+          </button>
+          {errors[spreadKey] && <span className="error">{errors[spreadKey]}</span>}
+        </section>
+      )}
+
       {series.episodes.map((ep) => (
         <section key={ep.no} className="card" style={{ gap: 14 }}>
           <div style={{ display: "flex", gap: 12, alignItems: "center", flexWrap: "wrap", justifyContent: "space-between" }}>
@@ -206,6 +267,47 @@ export function SeriesStudio({ list }: { list: StudioView[] }) {
 const PAGE_OPENED_AT = typeof window === "undefined" ? 0 : Date.now();
 const noSubscribe = () => () => {};
 const usePageOpenedAt = () => useSyncExternalStore(noSubscribe, () => PAGE_OPENED_AT, () => 0);
+
+/** 見開きの試作の見え方：2:1 に上下を切り、真ん中に綴じ目の点線、文はぼかした帯で絵に重ねる */
+function SpreadPreview(props: { path: string; version?: number; busy?: boolean; text: string; side: "left" | "right" }) {
+  const url = samplePublicUrl(props.path);
+  const openedAt = usePageOpenedAt();
+  const v = props.version ?? openedAt;
+  return (
+    <div style={{ position: "relative", width: "100%", maxWidth: 900, aspectRatio: "2 / 1", borderRadius: 8, overflow: "hidden", background: "#eee", display: "flex", alignItems: "center", justifyContent: "center" }}>
+      {props.busy || !v ? (
+        <div className="spinner" />
+      ) : (
+        <>
+          <SampleImage key={`${props.path}-${v}`} src={url && `${url}?v=${v}`} unoptimized alt="見開きの試作" style={{ objectFit: "cover" }} fallback={<span style={{ color: "#888" }}>未作成</span>} />
+          <div aria-hidden="true" style={{ position: "absolute", top: 0, bottom: 0, left: "50%", borderLeft: "2px dashed rgba(255,255,255,0.8)" }} />
+          {props.text && (
+            <p
+              style={{
+                position: "absolute",
+                bottom: "6%",
+                [props.side]: "3%",
+                width: "42%",
+                margin: 0,
+                padding: "10px 14px",
+                borderRadius: 18,
+                background: "rgba(255,255,255,0.72)",
+                backdropFilter: "blur(6px)",
+                boxShadow: "0 0 18px 10px rgba(255,255,255,0.55)",
+                fontSize: "clamp(10px, 1.6vw, 15px)",
+                lineHeight: 1.7,
+                color: "#2b2b2b",
+                whiteSpace: "pre-wrap",
+              }}
+            >
+              {props.text}
+            </p>
+          )}
+        </>
+      )}
+    </div>
+  );
+}
 
 function Tile(props: {
   path: string;

@@ -247,6 +247,20 @@ export default function PhotoPage() {
   const reuse = !!state.draftId && !pickedChild && !pickedGuest;
   const canSubmit = reuse || (pickedChild && (!newUpload || consent));
 
+  // 顔の飾りを消すかどうか。作成済みの下書きがあれば保存し、キャラクターは作り直す（似せ方を変えたときと同じ）
+  function changePlainFace(on: boolean) {
+    update({ plainFace: on, previews: {} });
+    if (state.draftId && !state.demo) {
+      fetch(`/api/drafts/${encodeURIComponent(state.draftId)}`, {
+        method: "PATCH",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ plainFace: on }),
+      })
+        .then((r) => (r.ok ? null : r.json().then((j) => setError(j.error ?? "保存できませんでした"))))
+        .catch(() => setError("保存できませんでした。もう一度お試しください"));
+    }
+  }
+
   async function submit() {
     if (reuse) return router.push("/create/preview");
     if (!pickedChild) return;
@@ -259,6 +273,7 @@ export default function PhotoPage() {
     form.set("childName", state.childName);
     if (state.childAge) form.set("childAge", String(state.childAge));
     form.set("consent", String(consent));
+    form.set("plainFace", String(state.plainFace));
     try {
       for (const who of ["child", "mom", "dad"] as const) {
         const face = photos.faces?.[who];
@@ -394,6 +409,13 @@ export default function PhotoPage() {
           <p style={{ margin: 0, fontSize: 12, lineHeight: 1.6, color: "var(--sub)" }}>
             登場人物のキャラクターを、この似せ方で描きます。プレビューを見てから、表情や髪型などを直せます。
           </p>
+          <label style={{ display: "flex", gap: 8, alignItems: "flex-start", fontSize: 14, lineHeight: 1.6, color: "var(--navy)", cursor: "pointer" }}>
+            <input type="checkbox" checked={state.plainFace} onChange={(e) => changePlainFace(e.target.checked)} style={{ marginTop: 4 }} />
+            <span>
+              顔の飾りを消す
+              <span style={{ display: "block", fontSize: 12, color: "var(--sub)" }}>写真に写っているシール・フェイスペイント・メガネなどを、絵では描きません</span>
+            </span>
+          </label>
         </section>
         {reuse ? (
           <p className="demo-note">写真は受け取り済みです。選び直す場合は、もう一度写真をえらんでください。</p>

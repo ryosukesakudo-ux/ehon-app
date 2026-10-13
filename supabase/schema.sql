@@ -29,6 +29,9 @@ alter table drafts add column if not exists child_character_path text;
 alter table drafts add column if not exists mom_character_path text;
 alter table drafts add column if not exists dad_character_path text;
 
+-- 写真の顔の飾り（シール・メガネなど）を絵では描かない（写真の画面のチェック、2026-10-13）
+alter table drafts add column if not exists plain_face boolean not null default false;
+
 create index if not exists drafts_user_idx on drafts (user_id, created_at desc);
 create index if not exists drafts_anon_idx on drafts (anon_id) where user_id is null;
 

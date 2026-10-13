@@ -28,6 +28,7 @@ export type FlowSave = {
   childAge: number | null;
   childBirthday: string;
   likeness: LikenessId;
+  plainFace: boolean;
   draftId: string | null;
   size: SizeId;
   copies: number;
@@ -59,6 +60,7 @@ export function parseFlowSave(input: unknown): FlowSave | null {
     childAge: CHILD_AGES.includes(age) ? age : null,
     childBirthday: parseBirthday(v.childBirthday) ?? "",
     likeness: isLikenessId(v.likeness) ? v.likeness : "normal",
+    plainFace: v.plainFace === true,
     // デモ用の下書き（id に中身を埋め込んだもの）は保存しない
     draftId: draftId && !draftId.startsWith("demo.") ? draftId : null,
     size: getSize(size) ? (size as SizeId) : "M",
