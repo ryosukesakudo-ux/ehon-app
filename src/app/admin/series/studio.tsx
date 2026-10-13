@@ -290,54 +290,64 @@ function SpreadPreview(props: { path: string; textPath: string; version?: number
   const textUrl = samplePublicUrl(props.textPath);
   const openedAt = usePageOpenedAt();
   const v = props.version ?? openedAt;
-  const [found, setFound] = useState<{ key: string; spot: SpreadTextSpot | null }>({ key: "", spot: null });
+  const [found, setFound] = useState<{ key: string; spot: SpreadTextSpot | "none" | null }>({ key: "", spot: null });
   const key = `${textUrl}?v=${v}`;
   useEffect(() => {
     if (!textUrl || !v) return;
     let alive = true;
     fetch(key, { cache: "no-store" })
       .then((r) => (r.ok ? r.json() : null))
-      .then((j) => alive && setFound({ key, spot: typeof j?.spot === "string" ? (j.spot as SpreadTextSpot) : null }))
+      .then((j) => alive && setFound({ key, spot: typeof j?.spot === "string" ? (j.spot as SpreadTextSpot | "none") : null }))
       .catch(() => alive && setFound({ key, spot: null }));
     return () => {
       alive = false;
     };
   }, [key, textUrl, v]);
   // 置き場所がまだ無い絵（前に作った絵）は、選んだページの下に置く
-  const spot = (found.key === key && found.spot) || `${props.side}-bottom`;
+  const got = found.key === key ? found.spot : null;
+  // 人物・動物に被らない場所が無い絵は、文を絵に重ねず下に出して作り直しを促す
+  const noRoom = got === "none";
+  const spot = (got && got !== "none" ? got : null) ?? `${props.side}-bottom`;
   const [h, vert] = spot.split("-") as ["left" | "right", "top" | "middle" | "bottom"];
   const place = vert === "top" ? { top: "7%" } : vert === "bottom" ? { bottom: "7%" } : { top: "50%", transform: "translateY(-50%)" };
   return (
-    <div style={{ position: "relative", width: "100%", maxWidth: 900, aspectRatio: "2 / 1", borderRadius: 8, overflow: "hidden", background: "#eee", display: "flex", alignItems: "center", justifyContent: "center" }}>
-      {props.busy || !v ? (
-        <div className="spinner" />
-      ) : (
-        <>
-          <SampleImage key={`${props.path}-${v}`} src={url && `${url}?v=${v}`} unoptimized alt="見開きの試作" style={{ objectFit: "cover" }} fallback={<span style={{ color: "#888" }}>未作成</span>} />
-          <div aria-hidden="true" style={{ position: "absolute", top: 0, bottom: 0, left: "50%", borderLeft: "2px dashed rgba(255,255,255,0.8)" }} />
-          {props.text && (
-            <p
-              style={{
-                position: "absolute",
-                ...place,
-                [h]: "3%",
-                width: "44%",
-                margin: 0,
-                padding: "10px 14px",
-                borderRadius: 14,
-                background: "rgba(255,255,255,0.55)",
-                fontSize: "clamp(10px, 1.6vw, 15px)",
-                lineHeight: 1.7,
-                color: "#000",
-                whiteSpace: "pre-wrap",
-              }}
-            >
-              {props.text}
-            </p>
-          )}
-        </>
+    <>
+      <div style={{ position: "relative", width: "100%", maxWidth: 900, aspectRatio: "2 / 1", borderRadius: 8, overflow: "hidden", background: "#eee", display: "flex", alignItems: "center", justifyContent: "center" }}>
+        {props.busy || !v ? (
+          <div className="spinner" />
+        ) : (
+          <>
+            <SampleImage key={`${props.path}-${v}`} src={url && `${url}?v=${v}`} unoptimized alt="見開きの試作" style={{ objectFit: "cover" }} fallback={<span style={{ color: "#888" }}>未作成</span>} />
+            <div aria-hidden="true" style={{ position: "absolute", top: 0, bottom: 0, left: "50%", borderLeft: "2px dashed rgba(255,255,255,0.8)" }} />
+            {props.text && !noRoom && (
+              <p
+                style={{
+                  position: "absolute",
+                  ...place,
+                  [h]: "3%",
+                  width: "44%",
+                  margin: 0,
+                  padding: "10px 14px",
+                  borderRadius: 14,
+                  background: "rgba(255,255,255,0.55)",
+                  fontSize: "clamp(10px, 1.6vw, 15px)",
+                  lineHeight: 1.7,
+                  color: "#000",
+                  whiteSpace: "pre-wrap",
+                }}
+              >
+                {props.text}
+              </p>
+            )}
+          </>
+        )}
+      </div>
+      {noRoom && !props.busy && (
+        <p className="error" style={{ maxWidth: 900 }}>
+          人物や動物に被らずに文を置ける場所がありません。指示欄に「右ページの下は空だけに」などと書いて作り直してください。（文：{props.text}）
+        </p>
       )}
-    </div>
+    </>
   );
 }
 
