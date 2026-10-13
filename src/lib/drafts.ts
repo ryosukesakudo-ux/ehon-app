@@ -116,6 +116,14 @@ export function draftPreviewScenes(draft: Draft) {
   return previewScenes({ hasMom: people.includes("mom"), hasDad: people.includes("dad"), guests: draftGuestCount(draft) });
 }
 
+/** お支払いが済んだ注文がある下書きか（文や写真を変えると、印刷する本が変わってしまうので変えない） */
+export async function draftOrdered(draftId: string) {
+  const db = getSupabase();
+  if (!db || isDemoId(draftId)) return false;
+  const { data } = await db.from("orders").select("id").eq("draft_id", draftId).neq("status", "pending").limit(1);
+  return !!data?.length;
+}
+
 /** この下書きで作ったキャラクターの保存先（作り直すと上書きする） */
 export function characterPath(draftId: string, who: Person) {
   return `characters/${draftId}/${who}.png`;
