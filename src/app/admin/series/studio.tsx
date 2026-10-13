@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useSyncExternalStore } from "react";
 import { samplePublicUrl } from "@/lib/samples";
 import { SERIES_NOTE_MAX, isPhotoFirst, seriesFamilyPhotoPath, seriesSampleChildName, seriesImagePath, seriesSheetPath, usesShowcasePhoto, type SeriesId } from "@/lib/series";
 import { SampleImage } from "@/components/sample-image";
@@ -201,6 +201,12 @@ export function SeriesStudio({ list }: { list: StudioView[] }) {
   );
 }
 
+// 画面を開いた時刻。絵のURLに付けて、開くたびに保存されている今の絵を読み直す。
+// 以前は開いた直後の版が常に 0 で、作り直す前に縮めてキャッシュされた古い絵が出ていた（2026-10-13 作道さんの指摘）
+const PAGE_OPENED_AT = typeof window === "undefined" ? 0 : Date.now();
+const noSubscribe = () => () => {};
+const usePageOpenedAt = () => useSyncExternalStore(noSubscribe, () => PAGE_OPENED_AT, () => 0);
+
 function Tile(props: {
   path: string;
   version?: number;
@@ -217,6 +223,8 @@ function Tile(props: {
   onNote: (v: string) => void;
 }) {
   const url = samplePublicUrl(props.path);
+  const openedAt = usePageOpenedAt();
+  const v = props.version ?? openedAt;
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 6, maxWidth: props.width }}>
       <div
@@ -230,13 +238,14 @@ function Tile(props: {
           justifyContent: "center",
         }}
       >
-        {props.busy ? (
+        {props.busy || !v ? (
           <div className="spinner" />
         ) : (
           <a href={url ?? undefined} target="_blank" rel="noreferrer" style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center" }}>
             <SampleImage
-              key={props.version ?? 0}
-              src={url && `${url}?v=${props.version ?? 0}`}
+              key={v}
+              src={url && `${url}?v=${v}`}
+              unoptimized
               alt={props.label}
               fallback={<span style={{ color: "#888" }}>未作成</span>}
             />
