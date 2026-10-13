@@ -23,6 +23,7 @@ import {
 import { bookTitle } from "@/lib/story-key";
 import { parseCustomKey } from "@/lib/custom-story";
 import { BookCover } from "@/components/book-cover";
+import { RubyText } from "@/components/ruby-text";
 import { Chevron } from "@/components/icons";
 import { Lottie } from "@/components/lottie";
 import { BuyPreviewsButton, startCreditCheckout } from "@/components/buy-previews";
@@ -75,6 +76,8 @@ function Preview() {
   const [resetting, setResetting] = useState(false);
   // 本人への似せ方（写真の画面で選んだもの。作り直しのときに変えられ、変えたら次からもそれを使う）
   const likeness = state.likeness;
+  // 本文12場面の文（本に載るのと同じ文。絵の下に出して、どの場面の絵か分かるようにする）
+  const [texts, setTexts] = useState<string[]>([]);
 
   const custom = parseCustomKey(state.story);
   const characters = state.previewScenes.filter(isCharacterScene);
@@ -176,6 +179,19 @@ function Preview() {
     for (const i of todo) generate(i);
     // eslint-disable-next-line react-hooks/exhaustive-deps -- 画面を開いたとき（と場面が分かったとき）に一度だけ作る
   }, [ready, state.draftId, state.previewScenes.length]);
+
+  // 本文の文はサーバーで組み立てる（写真の組み合わせと名前を入れた、本に載るのと同じ文）
+  useEffect(() => {
+    if (!ready || !state.draftId) return;
+    let alive = true;
+    fetch(`/api/drafts/${encodeURIComponent(state.draftId)}`)
+      .then((r) => (r.ok ? r.json() : null))
+      .then((json) => alive && Array.isArray(json?.texts) && setTexts(json.texts))
+      .catch(() => {});
+    return () => {
+      alive = false;
+    };
+  }, [ready, state.draftId]);
 
   // 登場人物を確定して、表紙を描く
   function confirm() {
@@ -400,10 +416,12 @@ function Preview() {
             ) : (
               <>
                 <strong>{scene + 1}ページ</strong>
-                {custom?.scenes[scene]?.text && (
+                {texts[scene] && (
                   <>
                     <br />
-                    <span style={{ fontSize: 14, whiteSpace: "pre-wrap" }}>{custom.scenes[scene].text.replace(/《[^》]*》/g, "")}</span>
+                    <span style={{ fontSize: 15, lineHeight: 2.1, whiteSpace: "pre-wrap" }}>
+                      <RubyText text={texts[scene]} />
+                    </span>
                   </>
                 )}
               </>
