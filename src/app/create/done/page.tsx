@@ -5,6 +5,7 @@ import { Lottie } from "@/components/lottie";
 import { currentUser } from "@/lib/auth";
 import { SELLER } from "@/lib/seller";
 import { getStripe, getSupabase } from "@/lib/services";
+import { syncPendingOrders } from "@/lib/order-sync";
 
 type Shipping = { name?: string | null; address?: { postal_code?: string | null; state?: string | null; city?: string | null; line1?: string | null; line2?: string | null } | null };
 
@@ -16,6 +17,8 @@ async function loadShipping(orderId: string): Promise<Shipping | null> {
   if (!db || !user || !/^[0-9a-f-]{36}$/i.test(orderId)) return null;
   const { data: o } = await db.from("orders").select("user_id, shipping, stripe_session_id").eq("id", orderId).maybeSingle();
   if (!o || o.user_id !== user.id) return null;
+  // 通知（webhook）より先にこの画面が開くこともあるので、Stripe に確かめて記録しておく
+  if (!o.shipping) await syncPendingOrders({ orderId });
   if (o.shipping) return o.shipping as Shipping;
   const stripe = getStripe();
   if (!stripe || !o.stripe_session_id) return null;
