@@ -73,3 +73,23 @@ export async function findSpreadTextSpot(png: Buffer, side: "left" | "right"): P
   // 選べなくても絵は保存する（空けるよう頼んだ側の下に置く）
   return fallback;
 }
+
+// 文字の後ろの明るさ（0〜255）がこれより暗いと、黒い字が読みにくいので薄い白を敷く（2026-10-13 作道さん：白い背景は基本なし）
+const DARK_BELOW = 115;
+
+/** 選んだ場所（文の枠のあたり）の絵が暗いか。見え方（studio.tsx の SpreadPreview）と同じ枠：横は片ページの端から3%〜47%、縦は上7%〜67%／真ん中20%〜80%／下33%〜93% */
+export async function isSpotDark(png: Buffer, spot: SpreadTextSpot): Promise<boolean> {
+  const meta = await sharp(png).metadata();
+  const w = meta.width ?? 1536;
+  const h = meta.height ?? 1024;
+  const visible = Math.min(h, Math.round(w / 2));
+  const top0 = Math.round((h - visible) / 2);
+  const [side, vert] = spot.split("-") as ["left" | "right", "top" | "middle" | "bottom"];
+  const x0 = side === "left" ? 0.03 : 0.53;
+  const y0 = vert === "top" ? 0.07 : vert === "middle" ? 0.2 : 0.33;
+  const { channels } = await sharp(png)
+    .extract({ left: Math.round(w * x0), top: top0 + Math.round(visible * y0), width: Math.round(w * 0.44), height: Math.round(visible * 0.6) })
+    .greyscale()
+    .stats();
+  return channels[0].mean < DARK_BELOW;
+}
