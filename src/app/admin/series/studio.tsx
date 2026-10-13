@@ -284,7 +284,7 @@ const PAGE_OPENED_AT = typeof window === "undefined" ? 0 : Date.now();
 const noSubscribe = () => () => {};
 const usePageOpenedAt = () => useSyncExternalStore(noSubscribe, () => PAGE_OPENED_AT, () => 0);
 
-/** 見開きの試作の見え方：2:1 に上下を切り、真ん中に綴じ目の点線。文は人物・動物のいない所（AIが選んだ場所）に黒い字で重ねる（後ろが暗いときだけ薄い白を敷く） */
+/** 見開きの試作の見え方：2:1 に上下を切り、真ん中に綴じ目の点線。文は人物・動物のいない所（AIが選んだ場所）に、透明度高めの白の四角に黒い字で重ねる（2026-10-13 作道さん：白なしは見づらかった） */
 function SpreadPreview(props: { path: string; textPath: string; version?: number; busy?: boolean; text: string; side: "left" | "right" }) {
   const url = samplePublicUrl(props.path);
   const textUrl = samplePublicUrl(props.textPath);
@@ -307,8 +307,6 @@ function SpreadPreview(props: { path: string; textPath: string; version?: number
   const got = found.key === key ? found.spot : null;
   // 人物・動物に被らない場所が無い絵は、文を絵に重ねず下に出して作り直しを促す
   const noRoom = got === "none";
-  // 白い背景は基本なし。文字の後ろの絵が暗いときだけ、薄い白を敷く
-  const dark = found.key === key && found.dark === true;
   const spot = (got && got !== "none" ? got : null) ?? `${props.side}-bottom`;
   const [h, vert] = spot.split("-") as ["left" | "right", "top" | "middle" | "bottom"];
   const place = vert === "top" ? { top: "7%" } : vert === "bottom" ? { bottom: "7%" } : { top: "50%", transform: "translateY(-50%)" };
@@ -331,7 +329,7 @@ function SpreadPreview(props: { path: string; textPath: string; version?: number
                   margin: 0,
                   padding: "10px 14px",
                   borderRadius: 14,
-                  background: dark ? "rgba(255,255,255,0.35)" : "transparent",
+                  background: "rgba(255,255,255,0.4)",
                   fontSize: "clamp(10px, 1.6vw, 15px)",
                   lineHeight: 1.7,
                   color: "#000",
