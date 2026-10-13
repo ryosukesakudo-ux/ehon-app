@@ -118,7 +118,7 @@ export default async function AdminPage() {
             <details>
               <summary>
                 ページ一覧（{pages.filter((p) => p.url).length}/{pages.length} 枚作成済み
-                {pages.some((p) => !p.url && p.previewUrl) && `・うちプレビューを使う ${pages.filter((p) => !p.url && p.previewUrl).length} 枚`}）
+                {pages.some((p) => !p.url && p.previewUrl) && `・プレビューを使う ${pages.filter((p) => !p.url && p.previewUrl).length} 枚`}）
               </summary>
               <ol style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(160px, 1fr))", gap: 12, padding: 0, listStyle: "none" }}>
                 {pages.map((p, i) => (
