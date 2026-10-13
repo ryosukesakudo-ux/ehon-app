@@ -40,7 +40,7 @@ export async function findSpreadTextSpot(png: Buffer, side: "left" | "right"): P
     .toBuffer();
   const prompt = [
     "This image is a two-page spread of a square picture book. The vertical center line is the fold between the left page and the right page.",
-    "A short text (a few lines) will be placed on a semi-transparent white box covering about 42% of the width of the whole spread and about one third of its height, inside one of these spots:",
+    "A text of up to about ten lines will be placed on a semi-transparent white box covering about 45% of the width of the whole spread (almost one whole page) and up to about 60% of its height, inside one of these spots:",
     ...SPREAD_TEXT_SPOTS.map((s) => `- ${s}: ${SPOT_LABEL[s]}`),
     "Choose the spot where the box would cover no person, no animal, no face, no hand and no important object; only background such as sky, ground, grass, water, a wall or foliage.",
     `If several spots are free, prefer ${fallback}, then other spots on the ${side} page, then lower spots.`,
