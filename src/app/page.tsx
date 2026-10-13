@@ -3,7 +3,11 @@ import Link from "next/link";
 import type { CSSProperties, ReactNode } from "react";
 import { Arrow, Sparkle, Star } from "@/components/icons";
 import { DELIVERY_MIN_DAYS, EXTRA_COPY_DISCOUNT, MEMBER_MONTHLY_PREVIEWS, PREVIEW_PACK, SIZES, STORIES, TASTES, sceneText, yen } from "@/lib/catalog";
-import { SAMPLE_CHILD_NAME, SAMPLE_SCENES, SHOWCASE, SHOWCASE_BOOK, SHOWCASE_PHOTO, samplePublicUrl, sampleUrl, versioned } from "@/lib/samples";
+import { SAMPLE_CHILD_NAME, SHOWCASE, SHOWCASE_BOOK, SHOWCASE_PHOTO, samplePublicUrl, sampleUrl, versioned } from "@/lib/samples";
+import { seriesImagePath, seriesSampleChildName } from "@/lib/series";
+import { SERIES_DATA } from "@/lib/series-data";
+import { OPEN_SERIES, SHOWN_SERIES_LIST, isOpenSeries, openEpisodes } from "@/lib/story-key";
+import { TopBook } from "./top-book";
 import { SampleImage } from "@/components/sample-image";
 import { Brand, SITE_NAME } from "@/components/brand";
 import { Lottie } from "@/components/lottie";
@@ -38,10 +42,10 @@ function Eyebrow({ children, color }: { children: ReactNode; color: string }) {
   );
 }
 
-function Cta({ yellow = false }: { yellow?: boolean }) {
+function Cta({ yellow = false, label = "絵本をつくってみる" }: { yellow?: boolean; label?: string }) {
   return (
     <Link href="/create/taste" className={`cta${yellow ? " yellow" : ""}`} style={{ height: 62, fontSize: 19 }}>
-      絵本をつくってみる
+      {label}
       <Arrow size={22} />
     </Link>
   );
@@ -130,7 +134,40 @@ const FAQ = [
   { q: "写真はどう扱われますか？", a: "絵本の制作にだけ使います。マイページからいつでも削除でき、1年使わなければ自動で削除します。", color: "#2F5DA8" },
   { q: "届くまでどのくらいかかりますか？", a: `ご注文から2週間ほどでお届けします。お誕生日などに合わせて、ご注文の${DELIVERY_MIN_DAYS}日後以降の日付を「この日までに届けてほしい日」として選ぶこともできます。`, color: "#F08A6C" },
   { q: "気に入らない絵があったら？", a: "見本のページは、ご注文前に絵を作り直せます。", color: "#7CC7A8" },
+  { q: "料金はいくらですか？", a: `ソフトカバー${yen(SIZES[0].price)}、ハードカバー${yen(SIZES[1].price)}（どちらも税込・送料込み）です。2冊目からは1冊${yen(EXTRA_COPY_DISCOUNT)}引きになります。見本の絵づくりは無料です。`, color: "#F07FA0" },
+  { q: "キャンセルや返金はできますか？", a: "印刷の手配前であれば、メールでご連絡いただければ全額返金します。印刷の手配後はキャンセルできません。印刷・製本の不良や配送中の破損は、到着後7日以内にご連絡いただければ、無料で作り直すか返金します。", color: "#F6A93B" },
 ];
+
+// 安心の約束（2026-10-13 作道さん：TaleCoco のように、写真の扱いとキャンセルの条件をトップで分かるように）
+const PROMISES = [
+  { title: "写真はAIの学習に使いません", desc: "絵本の制作にだけ使い、マイページからいつでも削除できます。", bg: "#CDEEDD" },
+  { title: "印刷の手配前なら全額返金", desc: "ご注文のあとでも、印刷の手配前ならキャンセルできます。", bg: "#FFE6A6" },
+  { title: "不良は作り直しか返金", desc: "印刷・製本の不良や配送中の破損は、無料で作り直すか返金します。", bg: "#FFD4C7" },
+  { title: "お支払いは見本を見てから", desc: "絵本の見本を確認して、納得してからご注文ください。", bg: "#DCEBFB" },
+];
+
+/** トップの見本の絵本で読めるページ数（表紙は別。サンプル集と同じ） */
+const TOP_BOOK_PAGES = 5;
+
+/** トップの見本の絵本：公開中のシリーズ（森）の第1話。文の量「普通」、ママもパパもいる形 */
+function topBook() {
+  const id = OPEN_SERIES[0];
+  const data = SERIES_DATA[id];
+  const ep = openEpisodes(data.episodes)[0];
+  const name = seriesSampleChildName(id);
+  return {
+    lead: `${name}の ${data.name} 第${ep.no}話`,
+    title: ep.title,
+    cover: versioned(samplePublicUrl(seriesImagePath(id, ep.no, 0))),
+    pages: ep.scenes.slice(0, TOP_BOOK_PAGES).map((sc, i) => {
+      const v = sc.alt?.both ?? sc;
+      return {
+        url: versioned(samplePublicUrl(seriesImagePath(id, ep.no, i + 1))),
+        text: (v.text[1] ?? v.text[0]).replaceAll("{name}", name).replace(/《[^》]*》/g, ""),
+      };
+    }),
+  };
+}
 
 // 見出しの1文字ずつの色と傾き（はずむカラフル文字、2026-10-10 作道さん選択）
 const BOUNCE_COLORS = ["#F08A6C", "#F6A93B", "#5CBF8F", "#3E8EE0", "#F07FA0"];
@@ -189,6 +226,11 @@ export default function Home() {
           <br />
           <BouncyLine text="絵本、つくりませんか" offset={8} />
         </h1>
+        {/* 価格は最初の画面で見せる（2026-10-13 作道さん：TaleCoco との比較から） */}
+        <div className={`${s.heroPrice} display`}>
+          <span className={s.heroPriceYen}>{yen(Math.min(...SIZES.map((p) => p.price)))}</span>から
+          <span className={s.heroPriceNote}>（税込・送料込み）</span>
+        </div>
         <p className={s.lead}>
           <span className={`${s.leadKey} display`}>写真を1枚えらぶだけ。</span>
           <span className={s.leadBody}>
@@ -214,11 +256,8 @@ export default function Home() {
           </div>
         </div>
         <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-          <Cta />
-          <Link href="/login?next=/create/taste" className="ghost" style={{ height: 52, fontSize: 16, borderColor: "var(--navy)", color: "var(--navy)" }}>
-            無料会員登録・ログインしてつくる
-          </Link>
-          <div className={s.note}>登録なしでも1回お試しOK・お支払いは見本を確認してから</div>
+          <Cta label="絵本をつくってみる（無料）" />
+          <div className={s.note}><span className="nowrap">登録なしでも1回お試しOK・</span><span className="nowrap">お支払いは見本を確認してから</span></div>
         </div>
       </section>
 
@@ -316,16 +355,10 @@ export default function Home() {
           <br />
           <span className="nowrap"><Pop color="#F07FA0">その子だけ</Pop>の物語。</span>
         </h2>
-        <div className={s.sample} data-reveal="up">
-          <div className={s.sampleBack} />
-          <div className={s.sampleCard}>
-            <div className={s.sampleArt}>
-              <SampleImage src={sampleUrl("watercolor", "forest", 3)} alt="ママと手をつないで、ひかる木の実を見つける場面" fallback="[見開きの見本：ママと手をつないで歩く場面]" />
-            </div>
-            <p className={s.sampleText}>{sceneText(STORIES[0].scenes[3], SAMPLE_CHILD_NAME)}</p>
-          </div>
-          <div className={`${s.sampleTag} display`} data-reveal="pop" data-d={4}>名前が入る！</div>
+        <div data-reveal="up">
+          <TopBook {...topBook()} />
         </div>
+        <div className={s.note}>見本はAIで作った架空の家族です。横にめくれます</div>
         <div className={s.tastes}>
           {[
             { id: "watercolor", bg: "#CFE3F0", bd: "#2F5DA8", c: "#43505C" },
@@ -349,32 +382,29 @@ export default function Home() {
       <Wave from="#FFFFFF" to="#E6F3FB" />
       <section className={s.section} style={{ background: "#E6F3FB" }}>
         <Star size={20} className={s.deco} style={{ right: 24, top: 22, transform: "rotate(-8deg)" }} />
-        <Eyebrow color="#2F5DA8">3つのお話</Eyebrow>
+        <Eyebrow color="#2F5DA8">えらべるお話</Eyebrow>
         <h2 className={`${s.h2} display`} data-reveal="up">
           <span className="nowrap">こんな絵本が</span>
           <br />
           <span className="nowrap"><Pop color="#F6A93B">できあがり</Pop>ます。</span>
         </h2>
+        {/* お話選びの画面で選べるシリーズと同じものを出す（以前は旧版の3話を出していて、選べないお話が混ざっていた） */}
         <div className={s.gallery}>
-          {STORIES.map((st, i) => (
-            <div key={st.id} className={s.galleryCard} data-reveal="up" data-d={i * 2}>
-              <div className={s.galleryMain}>
-                <SampleImage src={sampleUrl("watercolor", st.id, SAMPLE_SCENES[0])} alt={`${st.name}の見本`} fallback={<span className={s.galleryFallback}>[見本の絵]</span>} />
+          {SHOWN_SERIES_LIST.map((st, i) => {
+            const open = isOpenSeries(st.id);
+            return (
+              <div key={st.id} className={s.galleryCard} data-reveal="up" data-d={i * 2}>
+                <div className={s.galleryMain} style={{ aspectRatio: "3 / 2", ...(open ? {} : { filter: "grayscale(0.4)", opacity: 0.75 }) }}>
+                  <SampleImage src={versioned(samplePublicUrl(seriesImagePath(st.id, 1, 0)))} alt={`${st.name}の見本`} fallback={<span className={s.galleryFallback}>準備中</span>} />
+                </div>
+                <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
+                  <div className={`${s.galleryTitle} display`}>{st.name}</div>
+                  {open ? <div className="tag">えらべます</div> : <div className="tag" style={{ background: "#eee", color: "var(--sub)" }}>準備中</div>}
+                </div>
+                <div className={s.galleryDesc}>{st.description}</div>
               </div>
-              <div className={s.galleryThumbs}>
-                {SAMPLE_SCENES.slice(1).map((sc) => (
-                  <div key={sc} className={s.galleryThumb}>
-                    <SampleImage src={sampleUrl("watercolor", st.id, sc)} alt="" fallback={null} sizes="(max-width: 640px) 50vw, 240px" />
-                  </div>
-                ))}
-              </div>
-              <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
-                <div className={`${s.galleryTitle} display`}>{st.name}</div>
-                <div className="tag">{st.ages}</div>
-              </div>
-              <div className={s.galleryDesc}>{st.description}</div>
-            </div>
-          ))}
+            );
+          })}
         </div>
         <div className={s.note}>見本の絵は、架空の家族で作っています</div>
       </section>
@@ -430,6 +460,26 @@ export default function Home() {
           </div>
         </div>
         <div style={{ fontSize: 12, color: "var(--sub)" }}>税込</div>
+      </section>
+
+      <section className={s.section} style={{ background: CREAM, paddingTop: 8 }}>
+        <Eyebrow color="#5CBF8F">安心の約束</Eyebrow>
+        <h2 className={`${s.h2} display`} data-reveal="up">
+          <span className="nowrap">はじめてでも、</span>
+          <br />
+          <span className="nowrap"><Pop color="#5CBF8F">安心</Pop>してどうぞ。</span>
+        </h2>
+        <div className={s.promises}>
+          {PROMISES.map((p, i) => (
+            <div key={p.title} className={s.promise} data-reveal="up" data-d={i}>
+              <div className={s.promiseIcon} style={{ background: p.bg }}>{icon(<><path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6z" /><path d="M9 12l2 2 4-4" /></>, 22)}</div>
+              <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
+                <div className={`${s.promiseTitle} display`}>{p.title}</div>
+                <div className={s.promiseDesc}>{p.desc}</div>
+              </div>
+            </div>
+          ))}
+        </div>
       </section>
 
       <section className={s.section} style={{ background: CREAM, paddingTop: 8, paddingBottom: 48 }}>

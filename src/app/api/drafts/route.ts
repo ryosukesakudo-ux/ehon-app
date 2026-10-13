@@ -28,6 +28,7 @@ export async function POST(request: Request) {
   const childName = String(form.get("childName") ?? "").trim();
   const childAge = Number(form.get("childAge"));
   const consent = form.get("consent") === "true";
+  const plainFace = form.get("plainFace") === "true";
   const childPhoto = form.get("childPhoto");
   const momPhoto = form.get("momPhoto");
   const dadPhoto = form.get("dadPhoto");
@@ -165,7 +166,7 @@ export async function POST(request: Request) {
       }
       guestPaths.push(f instanceof File ? await upload(f, `guest${i}`) : await saved(guestPhotoIds[i]));
     }
-    const row = {
+    const base = {
       id,
       user_id: user?.id ?? null,
       anon_id: anonId,
@@ -182,7 +183,13 @@ export async function POST(request: Request) {
       ...(characters.mom && { mom_character_path: characters.mom.path }),
       ...(characters.dad && { dad_character_path: characters.dad.path }),
     };
-    const { error } = await db.from("drafts").insert(row);
+    const row = plainFace ? { ...base, plain_face: true } : base;
+    let { error } = await db.from("drafts").insert(row);
+    if (error && plainFace && /plain_face/.test(error.message)) {
+      // 列が無い（schema.sql 未実行の）データベース：飾りを消す指定なしで作る
+      console.error("drafts.plain_face column missing; run schema.sql", error);
+      ({ error } = await db.from("drafts").insert(base));
+    }
     if (error) throw new Error(error.message);
     // 同じテイストで作ったキャラクターは、そのままプレビューに使う（違うテイストは描き直す）
     const sameTaste = (["child", "mom", "dad"] as const).filter((who) => characters[who]?.taste === taste);

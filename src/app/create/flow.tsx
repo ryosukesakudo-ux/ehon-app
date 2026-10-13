@@ -19,6 +19,8 @@ export type FlowState = {
   childBirthday: string;
   /** 本人への似せ方（写真の画面で選ぶ。プレビューの最初の作成から使う） */
   likeness: LikenessId;
+  /** 写真の顔の飾り（シール・メガネなど）を絵では描かない（写真の画面のチェック） */
+  plainFace: boolean;
   draftId: string | null;
   demo: boolean;
   previews: Record<number, string>;
@@ -49,6 +51,7 @@ const initial: FlowState = {
   childAge: null,
   childBirthday: "",
   likeness: "normal",
+  plainFace: false,
   draftId: null,
   demo: false,
   previews: {},
@@ -117,6 +120,7 @@ export function FlowProvider({ children }: { children: ReactNode }) {
       if (!isStoryKey(restored.story) || !(parseSeriesKey(restored.story) || parseCustomKey(restored.story))) restored.story = initial.story;
       restored.copies = clampCopies(restored.copies);
       if (!isLikenessId(restored.likeness)) restored.likeness = initial.likeness;
+      restored.plainFace = restored.plainFace === true;
       restored.confirmed = restored.confirmed === true;
       restored.reused = Array.isArray(restored.reused) ? restored.reused.filter((n) => typeof n === "number") : [];
       restored.pageCount = [0, FIRST_PAGES, BOOK_SCENE_COUNT].includes(restored.pageCount) ? restored.pageCount : 0;

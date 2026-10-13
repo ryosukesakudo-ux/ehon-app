@@ -40,6 +40,7 @@ const LEVEL_IDS: LevelId[] = ["s", "n", "l"];
 export async function PATCH(request: Request, ctx: RouteContext<"/api/drafts/[id]">) {
   const { id } = await ctx.params;
   const body = await request.json().catch(() => ({}));
+  if (typeof body?.plainFace === "boolean") return setPlainFace(id, body.plainFace);
   const level = LEVEL_IDS.find((l) => l === body?.level);
   if (!level) return Response.json({ error: "文の量を選んでください" }, { status: 400 });
   const owned = await loadOwnedDraft(id);
@@ -63,6 +64,22 @@ export async function PATCH(request: Request, ctx: RouteContext<"/api/drafts/[id
     }
   }
   return Response.json({ draftId, story: withoutCombo(story), texts: textsOf({ story, child_name: draft.child_name }) });
+}
+
+/** 写真の顔の飾りを描かない指定を変える（写真の画面のチェック。キャラクターは画面側で作り直す） */
+async function setPlainFace(id: string, plainFace: boolean) {
+  const owned = await loadOwnedDraft(id);
+  if (!owned) return Response.json({ error: "下書きが見つかりません" }, { status: 404 });
+  if (isDemoId(id)) return Response.json({ ok: true });
+  if (await draftOrdered(id)) return Response.json({ error: "ご注文済みの絵本は変更できません" }, { status: 409 });
+  const db = getSupabase();
+  if (!db) return Response.json({ error: "保存できませんでした" }, { status: 500 });
+  const { error } = await db.from("drafts").update({ plain_face: plainFace }).eq("id", id);
+  if (error) {
+    console.error("draft plain_face update failed", error);
+    return Response.json({ error: "保存できませんでした。もう一度お試しください" }, { status: 500 });
+  }
+  return Response.json({ ok: true });
 }
 
 // 会員ページの「この絵本を消す」。注文していない作りかけの絵本だけ消せる（2026-10-12 作道さん）。

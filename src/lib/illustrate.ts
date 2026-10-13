@@ -39,6 +39,22 @@ function cameraPrompt(camera?: string) {
     .join(" ");
 }
 
+// 見開きの試作（2026-10-13 作道さん：TaleCoco のように左右2ページにまたがる大きな絵を試したい）。
+// AIの横長は 3:2（1536x1024）なので、見開き（2:1）にするとき上下を少し切る。綴じ目（真ん中）に顔や大事な物を置かない。
+// 文は絵の上に重ねるので、反対側の下のほうを空けておく。
+const SPREAD_FRAMING =
+  "This picture will be printed across a two-page spread of a square picture book: the final shape is twice as wide as it is tall, so about the top sixth and the bottom sixth of this image will be trimmed off. " +
+  "Make a wide, panoramic landscape composition that fills the whole frame edge to edge. Keep every face, hand and important object inside the middle two-thirds of the image height. " +
+  "The vertical center line of the image is the binding fold of the book: never place a face, a hand or an important object on or near the center line; put the characters clearly on the left half or on the right half. " +
+  "On the opposite half, keep a calm, simple area in the lower part (open sky, ground, grass, a wall or soft foliage, with no faces) where a short text will be overlaid later. " +
+  "Never crop, fade out or hide any part of the characters' bodies at the edges, except the trimmed top and bottom margins, which must contain only background. Do not leave an empty or blank band anywhere. Do not draw any letters, words or text in the image.";
+
+// 写真に写っている顔の飾り（シール・メガネなど）を絵では描かない（2026-10-13 作道さん：TaleCoco の本で、写真の目の下のシールが
+// 泣く場面・眠る場面も含めて全ページに残っていた）。写真の画面のチェックで選んだときだけ、キャラクターと全ページに付ける
+const PLAIN_FACE =
+  "Important, this overrides the other instructions: do not copy face decorations or accessories from the reference photos. Never draw stickers, rhinestones, face paint, glitter, temporary tattoos, bandages, glasses or sunglasses on anyone's face. " +
+  "Draw clean, natural faces, and keep everything else about each person (face shape, eyes, hairstyle and hair color) the same.";
+
 /** 寄り（クローズアップ）のときは「全身を入れる」構図の指示を外す */
 function framing(camera?: string) {
   return camera && /close-up|close up/i.test(camera)
@@ -331,6 +347,8 @@ export async function illustrate(opts: {
   redo?: Redo | null;
   /** 出力サイズを指定するとき（画質くらべ用）。省略時は品質と場面から決める */
   size?: "1024x1024" | "2048x2048";
+  /** 写真の顔の飾り（シール・メガネなど）を描かない */
+  plainFace?: boolean;
 }): Promise<string> {
   const ai = getOpenAI();
   if (!ai) throw new Error("OPENAI_API_KEY が未設定です");
@@ -343,9 +361,14 @@ export async function illustrate(opts: {
   const result = await ai.images.edit({
     model: process.env.OPENAI_IMAGE_MODEL ?? "gpt-image-2",
     image: opts.images.map((i) => i.file),
-    prompt: character !== null
-      ? buildCharacterPrompt(opts.taste, character, opts.images, opts.childAge, opts.redo, opts.story)
-      : buildPrompt(opts.taste, opts.story, opts.sceneIndex, opts.images, opts.childAge, opts.redo),
+    prompt: [
+      character !== null
+        ? buildCharacterPrompt(opts.taste, character, opts.images, opts.childAge, opts.redo, opts.story)
+        : buildPrompt(opts.taste, opts.story, opts.sceneIndex, opts.images, opts.childAge, opts.redo),
+      opts.plainFace ? PLAIN_FACE : "",
+    ]
+      .filter(Boolean)
+      .join(" "),
     // 表紙は横長（タイトルは絵の上の帯に置くので、絵に文字の場所はいらない）
     size: opts.size ?? (isCover ? COVER_SIZE : "1024x1024"),
     quality: opts.detail ?? (opts.quality === "final" ? "high" : "medium"),
@@ -709,7 +732,7 @@ function seriesNote(note?: string) {
   return n ? `Additional instructions from the art director (may be written in Japanese); follow them carefully, they take priority over the instructions above: ${n}` : "";
 }
 
-export function buildSeriesPrompt(series: StudioSeries, scene: SeriesScene, opts: { cover: boolean; page: number; outfits?: string; continuity?: Continuity[]; note?: string; withPhoto?: boolean }) {
+export function buildSeriesPrompt(series: StudioSeries, scene: SeriesScene, opts: { cover: boolean; page: number; outfits?: string; continuity?: Continuity[]; note?: string; withPhoto?: boolean; spread?: boolean }) {
   const t = getTaste("watercolor")!;
   const people: Person[] = ["child", ...(scene.withMom ? (["mom"] as const) : []), ...(scene.withDad ? (["dad"] as const) : [])];
   return [
@@ -739,23 +762,25 @@ export function buildSeriesPrompt(series: StudioSeries, scene: SeriesScene, opts
     cameraPrompt(scene.camera),
     opts.cover
       ? "This is the front cover of the picture book: a wide landscape composition with the child large and clearly visible near the center, the scene filling the whole frame. Do not draw any letters, words, title or text in the image."
-      : framing(scene.camera),
+      : opts.spread
+        ? SPREAD_FRAMING
+        : framing(scene.camera),
     seriesNote(opts.note),
   ]
     .filter(Boolean)
     .join(" ");
 }
 
-/** シリーズの1ページ（表紙または場面）を水彩で描き、PNG の base64 を返す。 */
-export async function illustrateSeries(opts: { series: StudioSeries; scene: SeriesScene; page: number; outfits?: string; continuity?: Continuity[]; note?: string; quality: Quality; sheet: Uploadable; photo?: Uploadable | null }) {
+/** シリーズの1ページ（表紙または場面）を水彩で描き、PNG の base64 を返す。spread：見開きの試作（横長 1536x1024） */
+export async function illustrateSeries(opts: { series: StudioSeries; scene: SeriesScene; page: number; outfits?: string; continuity?: Continuity[]; note?: string; quality: Quality; sheet: Uploadable; photo?: Uploadable | null; spread?: boolean }) {
   const cover = opts.page === 0;
   const ai = getOpenAI();
   if (!ai) throw new Error("OPENAI_API_KEY が未設定です");
   const result = await ai.images.edit({
     model: process.env.OPENAI_IMAGE_MODEL ?? "gpt-image-2",
     image: opts.photo ? [opts.sheet, opts.photo] : [opts.sheet],
-    prompt: buildSeriesPrompt(opts.series, opts.scene, { cover, page: opts.page, outfits: opts.outfits, continuity: opts.continuity, note: opts.note, withPhoto: !!opts.photo }),
-    size: cover ? COVER_SIZE : "1024x1024",
+    prompt: buildSeriesPrompt(opts.series, opts.scene, { cover, page: opts.page, outfits: opts.outfits, continuity: opts.continuity, note: opts.note, withPhoto: !!opts.photo, spread: opts.spread && !cover }),
+    size: cover ? COVER_SIZE : opts.spread ? "1536x1024" : "1024x1024",
     quality: opts.quality === "final" ? "high" : "medium",
     output_format: "png",
   });
