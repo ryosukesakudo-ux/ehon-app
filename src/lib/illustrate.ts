@@ -763,3 +763,43 @@ export async function illustrateSeries(opts: { series: StudioSeries; scene: Seri
   if (!b64) throw new Error("画像が生成されませんでした");
   return b64;
 }
+
+// --- デフォルメ調の試作（2026-10-13 作道さん「これくらいデフォルメされた絵柄も作ってみたい」）---
+// まだお客様には出さない。管理画面の「デフォルメ試作」で、作例の家族写真から3人の登場人物を1枚に描いて見るだけ。
+// 参考：幼児向けボードブックのような、大きな丸顔・太い輪郭・点や丸の目・赤いほっぺ・はっきりした塗り。
+export const DEFORME_STYLE =
+  "ART STYLE: a strongly simplified, chunky cartoon style like a Japanese picture book for babies and toddlers. " +
+  "Big round heads about one third of the body height (two-and-a-half to three heads tall), very short round bodies and stubby arms and legs, mitten-like simple hands. " +
+  "Thick, bold, slightly wobbly dark brown hand-drawn outlines around every shape. " +
+  "Very simple faces: small round eyes drawn as solid black dots or simple white circles with a black dot pupil, short curved eyebrows, a tiny round nose, a big simple curved smile, " +
+  "and large soft red-orange blush circles on both cheeks. Hair drawn as one simple solid shape with only a few strokes. " +
+  "Bright, cheerful, flat colors painted with thick gouache or poster paint, with visible brush texture and slightly uneven edges, little or no shading, no realistic detail. " +
+  "Warm, funny and lovable, instantly readable from far away. " +
+  "It must NOT look like watercolor, anime, manga or realistic illustration: no detailed irises, no eye highlights, no thin lines, no gradients, no realistic proportions";
+
+/** デフォルメ調で、作例の家族写真の3人（左からママ・子ども・パパ）を並べた登場人物の絵を1枚作る */
+export async function makeDeformeCharacters(photo: Uploadable, note?: string) {
+  const ai = getOpenAI();
+  if (!ai) throw new Error("OPENAI_API_KEY が未設定です");
+  const result = await ai.images.edit({
+    model: process.env.OPENAI_IMAGE_MODEL ?? "gpt-image-2",
+    image: [photo],
+    prompt: [
+      `${DEFORME_STYLE}.`,
+      `The reference image is a photo of the real family: ${SHOWCASE_PHOTO_ORDER}.`,
+      "Use the photo only to know who the people are. Keep the traits that make each person recognizable even in this simplified style: hairstyle and hair color, glasses, face shape and their clothes and colors.",
+      "Ignore the photo's realism, lighting and texture and draw everything strictly in the ART STYLE above.",
+      "Character lineup for a picture book: the three characters standing side by side in the same order as the photo, full body, front view, smiling, on a plain light cream background, with the child clearly smaller than the parents.",
+      "Do not draw any letters, words or text.",
+      seriesNote(note),
+    ]
+      .filter(Boolean)
+      .join(" "),
+    size: "1536x1024",
+    quality: "high",
+    output_format: "png",
+  });
+  const b64 = result.data?.[0]?.b64_json;
+  if (!b64) throw new Error("画像が生成されませんでした");
+  return b64;
+}

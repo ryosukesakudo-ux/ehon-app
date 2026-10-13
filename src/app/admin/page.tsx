@@ -29,6 +29,7 @@ export default async function AdminPage() {
         <p><a href="/admin/samples">作例スタジオ（見本の絵を作る）</a></p>
         <p><a href="/admin/series">台本の絵スタジオ（台本の各話の絵を作例の家族で作る）</a></p>
         <p><a href="/admin/compare">画質くらべ（以前の方式と今のA方式を1枚ずつ）</a></p>
+        <p><a href="/admin/deforme">デフォルメ試作（新しい絵柄を1枚ためす）</a></p>
       </main>
     );
   }
@@ -70,6 +71,7 @@ export default async function AdminPage() {
       <a href="/admin/samples">作例スタジオ（トップページなどの見本の絵を作る）</a>
       <a href="/admin/series">台本の絵スタジオ（台本の各話の絵を作例の家族で作る）</a>
       <a href="/admin/compare">画質くらべ（以前の方式と今のA方式を1枚ずつ作って比べる）</a>
+      <a href="/admin/deforme">デフォルメ試作（新しい絵柄で家族3人を1枚ためす）</a>
       <a href="/admin/coupons">クーポン管理（コードの発行・停止、使われた回数）</a>
       {rows.length === 0 && <p>まだ注文はありません。</p>}
       {rows.map(({ order: o, pages }) => {
