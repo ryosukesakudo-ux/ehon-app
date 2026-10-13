@@ -26,6 +26,12 @@ function DetailSelect() {
   );
 }
 
+// しまうまプリントのフォトブック（lib/shimauma.ts の SHIMAUMA_PRODUCTS と同じ）
+const SHIMAUMA_BUTTONS = [
+  { product: "a5square", label: "フォトブック 148mm角" },
+  { product: "pictures", label: "PICTURES 182mm角" },
+];
+
 export function OrderActions({
   orderId,
   status,
@@ -52,7 +58,7 @@ export function OrderActions({
   const [busy, setBusy] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [pdfs, setPdfs] = useState<Record<string, { body: string; cover: string; spread: string }>>({});
-  const [shimauma, setShimauma] = useState<string | null>(null);
+  const [shimauma, setShimauma] = useState<Record<string, string>>({});
   // 製本直送.comの表紙画像の背幅（mm）。表紙アップロード画面の「表紙サイズが不明な方は、こちら」で確認した値を入れる
   const [spineMm, setSpineMm] = useState("2");
   const refundable = amount - refunded;
@@ -136,13 +142,17 @@ export function OrderActions({
       setPdfs((p) => ({ ...p, [size]: json.urls }));
     });
 
-  // しまうまプリント「PICTURES」B5スクエア（182mm角）24ページ用の画像（表紙＋本文23枚）をZIPで作る（リンクは1時間有効）
-  const makeShimauma = () =>
-    run("shimauma", async () => {
-      const res = await fetch(`/api/admin/orders/${orderId}/shimauma`, { method: "POST" });
+  // しまうまプリントのフォトブック用の画像（表紙＋本文）をZIPで作る（リンクは1時間有効）
+  const makeShimauma = (product: string) =>
+    run(`shimauma:${product}`, async () => {
+      const res = await fetch(`/api/admin/orders/${orderId}/shimauma`, {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ product }),
+      });
       const json = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(json.error ?? `失敗しました (${res.status})`);
-      setShimauma(json.url);
+      setShimauma((s) => ({ ...s, [product]: json.url }));
     });
 
   return (
@@ -204,14 +214,15 @@ export function OrderActions({
             )}
           </span>
         ))}
-      {status !== "pending" && (
-        <span style={{ display: "inline-flex", gap: 8, alignItems: "center" }}>
-          <button type="button" className="ghost" disabled={!!busy} onClick={makeShimauma}>
-            {busy === "shimauma" ? "画像を作成中…" : "しまうま用の画像を作る（PICTURES 182mm角）"}
-          </button>
-          {shimauma && <a href={shimauma}>しまうま用の画像（ZIP）</a>}
-        </span>
-      )}
+      {status !== "pending" &&
+        SHIMAUMA_BUTTONS.map(({ product, label }) => (
+          <span key={product} style={{ display: "inline-flex", gap: 8, alignItems: "center" }}>
+            <button type="button" className="ghost" disabled={!!busy} onClick={() => makeShimauma(product)}>
+              {busy === `shimauma:${product}` ? "画像を作成中…" : `しまうま用の画像を作る（${label}）`}
+            </button>
+            {shimauma[product] && <a href={shimauma[product]}>しまうま用の画像（{label}・ZIP）</a>}
+          </span>
+        ))}
       {status !== "pending" && refundable > 0 && (
         <span style={{ display: "inline-flex", gap: 6, alignItems: "center" }}>
           返金
