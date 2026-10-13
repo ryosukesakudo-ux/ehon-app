@@ -9,8 +9,8 @@ export function profileOk(name: string, age: number | null) {
   return n > 0 && n <= 12 && !!age;
 }
 
-/** 主人公の名前・年齢・お誕生日（オリジナルのお話を作るときにも使うので、お話より先に聞く） */
-export function ProfileSection({ onNext }: { onNext: () => void }) {
+/** 主人公の名前・年齢・お誕生日（オリジナルのお話を作るときにも使うので、お話より先に聞く。名前と年齢が入ると、お話の項目が出る） */
+export function ProfileSection() {
   const { state, update } = useFlow();
   return (
     <>
@@ -46,9 +46,6 @@ export function ProfileSection({ onNext }: { onNext: () => void }) {
           入れておくと、毎年お誕生日の{BIRTHDAY_NOTICE_DAYS === 30 ? "1か月" : `${BIRTHDAY_NOTICE_DAYS}日`}前に、続編の絵本のご案内（{REPEAT_COUPON.discount}円引きのクーポン付き）をメールでお送りします。
         </p>
       </div>
-      <button type="button" className="cta flow-next" disabled={!profileOk(state.childName, state.childAge)} onClick={onNext}>
-        次へ：お話を選ぶ
-      </button>
     </>
   );
 }

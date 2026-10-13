@@ -474,23 +474,20 @@ button, input { font-family: inherit; }
   .step-footer .cta::after, .drawing-wait-wash, .drawing-float, .drawing-wait-msg, .drawing-wait-bar > span, .drawing-wait-tip, .reveal-pop { animation: none !important; }
 }
 
-/* --- 1ページの作成画面（one-page.tsx）：済んだ項目は1行にたたみ、次の項目が下に出てくる --- */
+/* --- 1ページの作成画面（one-page.tsx）：選んだ項目は開いたまま、次の項目が下に出てくる --- */
 .step-header.sticky { position: sticky; top: 0; z-index: 20; }
 .flow-section { display: flex; flex-direction: column; gap: 20px; scroll-margin-top: 150px; animation: step-in 0.5s cubic-bezier(0.2, 0.8, 0.3, 1) both; }
-.flow-page > section { scroll-margin-top: 150px; }
 .flow-page[data-last] { padding-bottom: 0; }
-.flow-done { display: flex; align-items: center; gap: 12px; width: 100%; padding: 12px 14px; border: 1px solid var(--line); border-radius: 18px; background: #fff; text-align: left; cursor: pointer; box-shadow: 0 3px 0 rgba(30, 47, 87, 0.06); animation: done-in 0.45s cubic-bezier(0.3, 1.4, 0.5, 1) both; }
-.flow-done:active { scale: 0.98; }
-.flow-done-mark { display: flex; flex-shrink: 0; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 50%; background: #FDECE8; color: var(--coral); font-size: 14px; font-weight: 900; }
-.flow-done-text { display: flex; flex-direction: column; gap: 2px; flex-grow: 1; min-width: 0; }
-.flow-done-label { font-size: 11px; font-weight: 700; color: var(--sub); }
-.flow-done-value { display: -webkit-box; overflow: hidden; -webkit-box-orient: vertical; -webkit-line-clamp: 2; font-size: 15px; font-weight: 800; line-height: 1.45; color: var(--navy); }
-.flow-done-edit { flex-shrink: 0; padding: 6px 12px; border-radius: 14px; background: #f3f6fb; color: var(--blue); font-size: 12px; font-weight: 800; }
-@keyframes done-in { from { opacity: 0; scale: 0.96; } to { opacity: 1; scale: 1; } }
-.flow-later { display: flex; align-items: center; gap: 12px; padding: 10px 14px; border: 2px dashed #dde4ef; border-radius: 18px; color: #9aa9c4; font-size: 14px; font-weight: 800; }
-.flow-later .flow-done-mark { background: #f3f6fb; color: #9aa9c4; }
-.flow-next { position: relative; overflow: hidden; }
+.flow-hint { margin: 0; padding: 14px; border: 2px dashed #dde4ef; border-radius: 18px; color: #8396b8; font-size: 13px; font-weight: 700; text-align: center; }
 .flow-footer { position: sticky; bottom: 0; z-index: 10; margin: 0 -20px; }
+/* タッチは小さめのカードを横に3つ */
+.taste-row { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.taste-row .taste-choice { gap: 8px; padding: 6px 6px 10px; border-radius: 16px; }
+.taste-row .taste-art { border-radius: 11px; }
+.taste-row .taste-check { top: 5px; right: 5px; width: 24px; height: 24px; }
+.taste-row .taste-check svg { width: 14px; height: 14px; }
+.taste-name { font-size: 15px; text-align: center; }
+.taste-about { display: flex; flex-direction: column; gap: 8px; animation: msg-in 0.35s ease both; }
 @media (prefers-reduced-motion: reduce) {
-  .flow-section, .flow-done { animation: none !important; }
+  .flow-section, .taste-about { animation: none !important; }
 }
