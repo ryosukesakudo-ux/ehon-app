@@ -4,6 +4,7 @@ import { getOpenAI } from "./services";
 import { SPREAD_TEXT_SPOTS, type SpreadTextSpot } from "./series";
 
 // 見開きの試作：できた絵をAIに見せて、文を置いても人物・動物・大事な物に被らない場所を選んでもらう（2026-10-13 作道さん）。
+// 優先順位（2026-10-13 作道さん）：人物・動物に被せるのは絶対NG（被らない場所が無ければ "none"）→ 次に空など情報量の少ない背景。
 // 見開きは 2:1 なので、横長（3:2）の絵の上下1/6を切った、本に載る範囲だけを見せる。
 
 const MODELS = () => [...new Set([process.env.OPENAI_TEXT_MODEL, "gpt-5-mini", "gpt-4.1-mini"].filter((m): m is string => !!m))];
@@ -21,11 +22,11 @@ const SCHEMA = {
   type: "object",
   additionalProperties: false,
   required: ["spot"],
-  properties: { spot: { type: "string", enum: [...SPREAD_TEXT_SPOTS] } },
+  properties: { spot: { type: "string", enum: [...SPREAD_TEXT_SPOTS, "none"] } },
 } as const;
 
-/** 文を置く場所を選ぶ。side：絵を描くときに空けておくよう頼んだページ（そこが空いていれば下を優先） */
-export async function findSpreadTextSpot(png: Buffer, side: "left" | "right"): Promise<SpreadTextSpot> {
+/** 文を置く場所を選ぶ。side：絵を描くときに空けておくよう頼んだページ（条件が同じならこちらを優先）。被らない場所が無ければ "none" */
+export async function findSpreadTextSpot(png: Buffer, side: "left" | "right"): Promise<SpreadTextSpot | "none"> {
   const fallback: SpreadTextSpot = `${side}-bottom`;
   const ai = getOpenAI();
   if (!ai) return fallback;
@@ -42,9 +43,10 @@ export async function findSpreadTextSpot(png: Buffer, side: "left" | "right"): P
     "This image is a two-page spread of a square picture book. The vertical center line is the fold between the left page and the right page.",
     "A text of up to about ten lines will be placed on a semi-transparent white box covering about 45% of the width of the whole spread (almost one whole page) and up to about 60% of its height, inside one of these spots:",
     ...SPREAD_TEXT_SPOTS.map((s) => `- ${s}: ${SPOT_LABEL[s]}`),
-    "Choose the spot where the box would cover no person, no animal, no face, no hand and no important object; only background such as sky, ground, grass, water, a wall or foliage.",
-    `If several spots are free, prefer ${fallback}, then other spots on the ${side} page, then lower spots.`,
-    "If no spot is completely free, choose the one that covers the least of the characters (never a face).",
+    "Rule 1 (absolute, never break it): the box must not cover any part of any person or animal, not even a little: no face, hair, hand, foot, body, tail or wing, including small animals, birds and insects. A spot that would touch any of them is forbidden.",
+    "Rule 2: among the allowed spots, choose the one whose background has the least visual information: plain open sky is best, then calm water, plain ground or grass, or a plain wall. Avoid busy areas with many details, flowers, objects or important props.",
+    `Rule 3 (only to break a tie): prefer the ${side} page, then lower spots.`,
+    'If every spot breaks rule 1, answer "none".',
   ].join("\n");
   for (const model of MODELS()) {
     try {
@@ -55,14 +57,14 @@ export async function findSpreadTextSpot(png: Buffer, side: "left" | "right"): P
             role: "user",
             content: [
               { type: "text", text: prompt },
-              { type: "image_url", image_url: { url: `data:image/jpeg;base64,${jpg.toString("base64")}`, detail: "low" } },
+              { type: "image_url", image_url: { url: `data:image/jpeg;base64,${jpg.toString("base64")}`, detail: "high" } },
             ],
           },
         ],
         response_format: { type: "json_schema", json_schema: { name: "spread_text_spot", strict: true, schema: SCHEMA } },
       });
       const spot = JSON.parse(res.choices[0]?.message?.content ?? "{}").spot;
-      if ((SPREAD_TEXT_SPOTS as readonly string[]).includes(spot)) return spot as SpreadTextSpot;
+      if (spot === "none" || (SPREAD_TEXT_SPOTS as readonly string[]).includes(spot)) return spot as SpreadTextSpot | "none";
       throw new Error(`spot: ${spot}`);
     } catch (e) {
       console.error(`spread text spot with ${model} failed`, e);
