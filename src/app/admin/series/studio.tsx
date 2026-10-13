@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useSyncExternalStore } from "react";
+import { useEffect, useState, useSyncExternalStore } from "react";
 import { samplePublicUrl } from "@/lib/samples";
-import { SERIES_NOTE_MAX, isPhotoFirst, seriesFamilyPhotoPath, seriesSampleChildName, seriesImagePath, seriesSheetPath, seriesSpreadPath, usesShowcasePhoto, type SeriesId } from "@/lib/series";
+import { SERIES_NOTE_MAX, isPhotoFirst, seriesFamilyPhotoPath, seriesSampleChildName, seriesImagePath, seriesSheetPath, seriesSpreadPath, seriesSpreadTextPath, usesShowcasePhoto, type SeriesId, type SpreadTextSpot } from "@/lib/series";
 import { SampleImage } from "@/components/sample-image";
 
 // 台本の絵スタジオ：架空の家族（ふつうは作例と同じ家族。数のお勉強は別の家族で、写真が先）で、台本（シリーズ）の各話の表紙と12場面を水彩で作る。
@@ -71,8 +71,10 @@ export function SeriesStudio({ list }: { list: StudioView[] }) {
   const spreadKey = `spread/${spreadEp}/${spreadPage}`;
   const makeSpread = async () => {
     if (!(await exists(seriesSheetPath(SERIES_ID))) && !(await makeSheet())) return;
-    await call(spreadKey, { episode: spreadEp, page: spreadPage, quality, spread: true });
+    await call(spreadKey, { episode: spreadEp, page: spreadPage, quality, spread: true, textSide });
   };
+  // 今ある見開きの絵で、文の置き場所だけAIに選び直してもらう（絵は変わらない）
+  const findSpreadText = () => call(spreadKey, { kind: "spreadText", episode: spreadEp, page: spreadPage, textSide });
   const spreadEpisode = series.episodes.find((e) => e.no === spreadEp) ?? series.episodes[0];
 
   async function exists(path: string) {
@@ -189,10 +191,10 @@ export function SeriesStudio({ list }: { list: StudioView[] }) {
               </select>
             </label>
             <label>
-              文の位置：
+              文を置くページ：
               <select value={textSide} onChange={(e) => setTextSide(e.target.value as "left" | "right")}>
-                <option value="right">右ページの下</option>
-                <option value="left">左ページの下</option>
+                <option value="right">右ページ（人物は左に）</option>
+                <option value="left">左ページ（人物は右に）</option>
               </select>
             </label>
           </div>
@@ -200,6 +202,7 @@ export function SeriesStudio({ list }: { list: StudioView[] }) {
             path={seriesSpreadPath(SERIES_ID, spreadEpisode.no, spreadPage)}
             version={version[spreadKey]}
             busy={busy[spreadKey]}
+            textPath={seriesSpreadTextPath(SERIES_ID, spreadEpisode.no, spreadPage)}
             text={spreadEpisode.scenes[spreadPage - 1]?.text ?? ""}
             side={textSide}
           />
@@ -214,6 +217,9 @@ export function SeriesStudio({ list }: { list: StudioView[] }) {
           />
           <button type="button" className="cta" style={{ width: "auto", alignSelf: "flex-start", height: 44, padding: "0 20px", fontSize: 15 }} disabled={anyBusy} onClick={makeSpread}>
             見開きで作る／作り直す
+          </button>
+          <button type="button" className="ghost" style={{ width: "auto", alignSelf: "flex-start", height: 40, padding: "0 16px", fontSize: 14 }} disabled={anyBusy} onClick={findSpreadText}>
+            文の置き場所だけ探し直す（絵はそのまま・約1円）
           </button>
           {errors[spreadKey] && <span className="error">{errors[spreadKey]}</span>}
         </section>
@@ -268,11 +274,29 @@ const PAGE_OPENED_AT = typeof window === "undefined" ? 0 : Date.now();
 const noSubscribe = () => () => {};
 const usePageOpenedAt = () => useSyncExternalStore(noSubscribe, () => PAGE_OPENED_AT, () => 0);
 
-/** 見開きの試作の見え方：2:1 に上下を切り、真ん中に綴じ目の点線、文はぼかした帯で絵に重ねる */
-function SpreadPreview(props: { path: string; version?: number; busy?: boolean; text: string; side: "left" | "right" }) {
+/** 見開きの試作の見え方：2:1 に上下を切り、真ん中に綴じ目の点線。文は人物・動物のいない所（AIが選んだ場所）に、半透明の白の四角に黒い字で重ねる */
+function SpreadPreview(props: { path: string; textPath: string; version?: number; busy?: boolean; text: string; side: "left" | "right" }) {
   const url = samplePublicUrl(props.path);
+  const textUrl = samplePublicUrl(props.textPath);
   const openedAt = usePageOpenedAt();
   const v = props.version ?? openedAt;
+  const [found, setFound] = useState<{ key: string; spot: SpreadTextSpot | null }>({ key: "", spot: null });
+  const key = `${textUrl}?v=${v}`;
+  useEffect(() => {
+    if (!textUrl || !v) return;
+    let alive = true;
+    fetch(key, { cache: "no-store" })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((j) => alive && setFound({ key, spot: typeof j?.spot === "string" ? (j.spot as SpreadTextSpot) : null }))
+      .catch(() => alive && setFound({ key, spot: null }));
+    return () => {
+      alive = false;
+    };
+  }, [key, textUrl, v]);
+  // 置き場所がまだ無い絵（前に作った絵）は、選んだページの下に置く
+  const spot = (found.key === key && found.spot) || `${props.side}-bottom`;
+  const [h, vert] = spot.split("-") as ["left" | "right", "top" | "middle" | "bottom"];
+  const place = vert === "top" ? { top: "7%" } : vert === "bottom" ? { bottom: "7%" } : { top: "50%", transform: "translateY(-50%)" };
   return (
     <div style={{ position: "relative", width: "100%", maxWidth: 900, aspectRatio: "2 / 1", borderRadius: 8, overflow: "hidden", background: "#eee", display: "flex", alignItems: "center", justifyContent: "center" }}>
       {props.busy || !v ? (
@@ -285,18 +309,16 @@ function SpreadPreview(props: { path: string; version?: number; busy?: boolean; 
             <p
               style={{
                 position: "absolute",
-                bottom: "6%",
-                [props.side]: "3%",
+                ...place,
+                [h]: "3%",
                 width: "42%",
                 margin: 0,
                 padding: "10px 14px",
-                borderRadius: 18,
-                background: "rgba(255,255,255,0.72)",
-                backdropFilter: "blur(6px)",
-                boxShadow: "0 0 18px 10px rgba(255,255,255,0.55)",
+                borderRadius: 14,
+                background: "rgba(255,255,255,0.75)",
                 fontSize: "clamp(10px, 1.6vw, 15px)",
                 lineHeight: 1.7,
-                color: "#2b2b2b",
+                color: "#000",
                 whiteSpace: "pre-wrap",
               }}
             >

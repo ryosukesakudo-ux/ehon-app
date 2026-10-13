@@ -77,3 +77,12 @@ export function seriesImagePath(id: SeriesId, episode: number, page: number) {
 export function seriesSpreadPath(id: SeriesId, episode: number, page: number) {
   return `series/${id}/ep${episode}/spread-${String(page).padStart(2, "0")}.png`;
 }
+
+/** 見開きの試作で、文を置く場所（人物や動物のいない所。AIが絵を見て決める）。JSON で絵の隣に保存 */
+export function seriesSpreadTextPath(id: SeriesId, episode: number, page: number) {
+  return seriesSpreadPath(id, episode, page).replace(/\.png$/, "-text.json");
+}
+
+/** 見開きの文の置き場所：左右どちらのページの、上・真ん中・下か */
+export const SPREAD_TEXT_SPOTS = ["left-top", "left-middle", "left-bottom", "right-top", "right-middle", "right-bottom"] as const;
+export type SpreadTextSpot = (typeof SPREAD_TEXT_SPOTS)[number];
