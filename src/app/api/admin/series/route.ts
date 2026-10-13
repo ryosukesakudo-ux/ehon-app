@@ -2,7 +2,7 @@ import { toFile } from "openai";
 import { illustrateSeries, makeSeriesFamilyPhoto, makeSeriesFamilyPhotoFromText, makeSeriesSheet } from "@/lib/illustrate";
 import { characterSheetPath } from "@/lib/samples";
 import { seriesFamilyPhotoPath, seriesImagePath, seriesSheetPath, seriesSpreadPath, seriesSpreadTextPath, usesShowcasePhoto } from "@/lib/series";
-import { findSpreadTextSpot } from "@/lib/spread-text";
+import { findSpreadTextSpot, isSpotDark } from "@/lib/spread-text";
 import { getStudioSeries } from "@/lib/series-studio";
 import { SAMPLE_BUCKET, getSupabase } from "@/lib/services";
 
@@ -35,9 +35,11 @@ export async function POST(request: Request) {
 
   const saveSpot = async (episode: number, page: number, png: Buffer, side: "left" | "right") => {
     const spot = await findSpreadTextSpot(png, side);
+    // 文字の後ろが暗いときだけ、見え方で薄い白を敷く
+    const dark = spot !== "none" && (await isSpotDark(png, spot));
     const { error } = await db.storage
       .from(SAMPLE_BUCKET)
-      .upload(seriesSpreadTextPath(series.id, episode, page), JSON.stringify({ spot }), { contentType: "application/json", upsert: true, cacheControl: "300" });
+      .upload(seriesSpreadTextPath(series.id, episode, page), JSON.stringify({ spot, dark }), { contentType: "application/json", upsert: true, cacheControl: "300" });
     if (error) throw new Error(error.message);
   };
   const textSide = body?.textSide === "left" ? "left" : "right";
