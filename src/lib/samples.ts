@@ -16,7 +16,7 @@ export function sampleUrl(taste: TasteId, story: StoryId, scene: number) {
 
 // サイトの見本の絵は、表示用に縮めたものを1日キャッシュしている（next.config.ts の minimumCacheTTL）。
 // 作例スタジオで作り直したら、この日付を変えて公開すると、すぐに新しい絵に切り替わる。
-export const SAMPLES_VERSION = "2026-10-11";
+export const SAMPLES_VERSION = "2026-10-13";
 
 /** 見本の絵のURLに版を付ける（キャッシュされた古い絵を出さないため） */
 export function versioned(url: string | null) {

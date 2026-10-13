@@ -1,10 +1,10 @@
 import { getStudioSeries } from "@/lib/series-studio";
-import { SERIES_LIST } from "@/lib/story-key";
+import { SHOWN_SERIES_LIST } from "@/lib/story-key";
 import { SeriesStudio, type StudioView } from "./studio";
 
 // 台本の絵スタジオ。台本（場面の説明）はサーバーで読み、画面に要る分だけ渡す。
 export default function SeriesPage() {
-  const list: StudioView[] = SERIES_LIST.map((info) => {
+  const list: StudioView[] = SHOWN_SERIES_LIST.map((info) => {
     const s = getStudioSeries(info.id)!;
     return {
       id: s.id,

@@ -1,0 +1,1096 @@
+{
+ "id": "number",
+ "name": "かずの くにの だいぼうけん",
+ "sidekick": "Kazoe, a small light-brown bear cub standing on two legs, about as tall as the child's chest, with round ears, a cream-colored muzzle and tummy, big friendly black eyes, a blue vest worn open over his fur and a small round red cap; he is an animal, not a person, and wears nothing else unless the page says so",
+ "sidekickLabel": "なかよしのこぐま「カゾエ」",
+ "cast": {
+  "Bubu": "a round pink pig standing on two legs, about as tall as the child, wearing a small red happi festival coat; an animal, not a person",
+  "Grandma Bear": "Kazoe's grandmother, a plump light-brown bear standing on two legs, a little taller than the child, with small round glasses and a white apron",
+  "Shiro": "an old polar bear who runs the cookie shop, big and white, standing on two legs, wearing a white baker's cap; an animal, not a person"
+ },
+ "props": {
+  "chick": "a small round fluffy bright-yellow chick with a tiny orange beak, about the size of the child's fist",
+  "chicks": "a small round fluffy bright-yellow chick with a tiny orange beak, about the size of the child's fist",
+  "chick house": "a small wooden toy-like house for chicks, painted cream with a red roof, with ten little square rooms in two rows of five (two floors), each room just big enough for one chick to sit in, all room fronts open so every chick is visible; it is a wooden house, never a box, carton or anything for food",
+  "wooden toy box": "a wooden toy box with a hinged lid, painted cream with a red stripe",
+  "crab apple": "a tiny round red crab apple about the size of a cherry, far smaller than an ordinary apple",
+  "crab apples": "a tiny round red crab apple about the size of a cherry, far smaller than an ordinary apple",
+  "small wicker basket": "the child's small woven wicker basket with a handle, about the size of the child's two hands",
+  "small basket": "the child's small woven wicker basket with a handle, about the size of the child's two hands",
+  "big basket": "Grandma Bear's big round wicker basket, wide enough for many apples",
+  "star cookie": "a golden-brown star-shaped cookie about the size of the child's palm",
+  "star cookies": "a golden-brown star-shaped cookie about the size of the child's palm",
+  "cookie box": "a flat white paper box with a clear window lid, with room for exactly ten star cookies in two rows of five"
+ },
+ "episodes": [
+  {
+   "no": 1,
+   "title": "ひよこの かぞえうた",
+   "outfits": "the child: a light-green zip-up hoodie with a hood, a white T-shirt, beige pants, white socks and yellow sneakers; the mother: a pale-pink knit sweater and light-blue jeans; the father: a white-and-navy striped long-sleeved shirt and khaki pants.",
+   "continuity": [
+    {
+     "from": 1,
+     "to": 3,
+     "text": "This page is inside the family's home: everyone is in socks or barefoot, with no outdoor shoes."
+    },
+    {
+     "from": 11,
+     "to": 11,
+     "text": "This page is inside the family's home: everyone is in socks or barefoot, with no outdoor shoes."
+    },
+    {
+     "from": 12,
+     "to": 12,
+     "text": "On this page the child wears plain light-yellow pajamas instead of the usual clothes."
+    }
+   ],
+   "cover": {
+    "label": "春の花ばたけで、主人公とカゾエが並んでしゃがみ、木の「ひよこのおうち」（10へや、5へやずつ2だん）にすわった10わのひよこを指さして数える",
+    "art": "in a sunny spring flower field full of tulips, the child and Kazoe the bear cub crouch side by side and point at the chick house in which exactly ten chicks sit, one in each room, five rooms on each of its two floors",
+    "withSidekick": true,
+    "camera": "Eye-level three-quarter view from slightly in front, the child's smiling face clearly visible as the child points at the chicks, the chick house large in the foreground and the flower field stretching behind."
+   },
+   "scenes": [
+    {
+     "label": "【ママ】子ども部屋で、つみきを数えて首をかしげる主人公。横でママがほほえみ、人さし指を立てて見せる",
+     "art": "in a cozy child's bedroom on a spring afternoon, the child sits on the rug counting a row of colorful wooden toy blocks and tilts their head, puzzled; the mother sits beside the child, smiling, and holds up one index finger to show how to point at each block; a closed wooden toy box stands in the corner",
+     "text": [
+      "「いち、に、さん……あれ？」 ママ「ゆびで ぴっ、ひとつずつ だよ」",
+      "「いち、に、さん……あれ？」 ママ「ゆびで ぴっ、ひとつずつ だよ」",
+      "「いち、に、さん……あれ？」 ママ「ゆびで ぴっ、ひとつずつ だよ」"
+     ],
+     "withMom": true,
+     "withDad": false,
+     "withSidekick": false,
+     "camera": "Eye-level medium shot across the rug, the child's puzzled face and the mother's raised index finger both clearly visible, the wooden toy box in the corner behind them.",
+     "alt": {
+      "both": {
+       "label": "ママが人さし指を立て、パパもそばで見守る",
+       "art": "in a cozy child's bedroom on a spring afternoon, the child sits on the rug counting a row of colorful wooden toy blocks and tilts their head, puzzled; the mother kneels beside the child, smiling, and holds up one index finger to show how to point at each block, and the father sits nearby watching warmly; a closed wooden toy box stands in the corner",
+       "text": [
+        "「いち、に、さん……あれ？」 ママ「ゆびで ぴっ、ひとつずつ だよ」",
+        "「いち、に、さん……あれ？」 ママ「ゆびで ぴっ、ひとつずつ だよ」",
+        "「いち、に、さん……あれ？」 ママ「ゆびで ぴっ、ひとつずつ だよ」"
+       ],
+       "withMom": true,
+       "withDad": true,
+       "withSidekick": false,
+       "camera": "Eye-level medium shot across the rug, the child's puzzled face, the mother's raised index finger and the smiling father all clearly visible, the wooden toy box in the corner behind them."
+      },
+      "dad": {
+       "label": "パパが人さし指を立てて見せる",
+       "art": "in a cozy child's bedroom on a spring afternoon, the child sits on the rug counting a row of colorful wooden toy blocks and tilts their head, puzzled; the father sits beside the child, smiling, and holds up one index finger to show how to point at each block; a closed wooden toy box stands in the corner",
+       "text": [
+        "「いち、に、さん……あれ？」 パパ「ゆびで ぴっ、ひとつずつ だよ」",
+        "「いち、に、さん……あれ？」 パパ「ゆびで ぴっ、ひとつずつ だよ」",
+        "「いち、に、さん……あれ？」 パパ「ゆびで ぴっ、ひとつずつ だよ」"
+       ],
+       "withMom": false,
+       "withDad": true,
+       "withSidekick": false,
+       "camera": "Eye-level medium shot across the rug, the child's puzzled face and the father's raised index finger both clearly visible, the wooden toy box in the corner behind them."
+      },
+      "none": {
+       "label": "ひとりでつみきを数える主人公。おもちゃ箱が少し光っている",
+       "art": "in a cozy child's bedroom on a spring afternoon, the child sits alone on the rug counting a row of colorful wooden toy blocks and tilts their head, puzzled; in the corner the closed wooden toy box glows softly from the gap under its lid",
+       "text": [
+        "「いち、に、さん……あれ？」 おもちゃばこから「ゆびで ぴっ、ひとつずつ だよ」",
+        "「いち、に、さん……あれ？」 おもちゃばこから「ゆびで ぴっ、ひとつずつ だよ」",
+        "「いち、に、さん……あれ？」 おもちゃばこから「ゆびで ぴっ、ひとつずつ だよ」"
+       ],
+       "withMom": false,
+       "withDad": false,
+       "withSidekick": false,
+       "camera": "Eye-level medium shot across the rug, the child's puzzled face clearly visible, the softly glowing toy box in the corner behind."
+      }
+     }
+    },
+    {
+     "label": "おもちゃ箱のふたが開き、青いチョッキと赤い帽子のこぐまが顔を出す。驚く主人公の後ろ姿（背面）",
+     "art": "the lid of the wooden toy box pops open and Kazoe the bear cub pops his head and arms out with a cheerful wave; the child jumps back in surprise; Kazoe appears only once in the picture: there is no other bear, teddy bear or toy bear anywhere",
+     "text": [
+      "がたがた。おもちゃばこから こぐまの カゾエが ぴょこん！",
+      "がたがた。おもちゃばこから こぐまの カゾエが ぴょこん！",
+      "がたがた。おもちゃばこから こぐまの カゾエが ぴょこん！"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true,
+     "camera": "Over-the-shoulder view from behind the child, the child's back to the viewer, looking at the toy box where the bear cub pops out with toys tumbling around him."
+    },
+    {
+     "label": "主人公とカゾエが手をつないでおもちゃ箱へジャンプ。箱から光と花びらがあふれる（動き）",
+     "art": "the child and Kazoe hold hands and leap toward the open wooden toy box, which bursts with golden light and swirling pink flower petals",
+     "text": [
+      "「ひよこが にげちゃった。いっしょに さがして！」 いち、に、さん、ジャンプ！",
+      "「ひよこが にげちゃった。いっしょに さがして！」 いち、に、さん、ジャンプ！",
+      "「ひよこが にげちゃった。いっしょに さがして！」 いち、に、さん、ジャンプ！"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true,
+     "camera": "Dynamic side view mid-jump, both in the air with knees bent and hands joined, light and petals streaming out of the toy box toward them."
+    },
+    {
+     "label": "大きなチューリップの花ばたけ。花の下からひよこがちょうど3わ顔を出す",
+     "art": "in a huge field of tall red, yellow and pink tulips, exactly three chicks, no more, peek out from under the tulip flowers; the child and Kazoe crouch and point at them one by one",
+     "text": [
+      "はなの したに ひよこ。いち、に、さん！",
+      "はなの したに ひよこ。いち、に、さん！",
+      "はなの したに ひよこ。いち、に、さん！"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true,
+     "camera": "Low ground-level view among the tulip stems, the three chicks large in the foreground and the child's delighted face just behind them."
+    },
+    {
+     "label": "青い池。蓮の葉の上にひよこが2わ、岸に3わ並ぶ（合わせて5わ）",
+     "art": "beside a clear blue pond, exactly two chicks sit on a floating round lotus leaf and exactly three chicks stand in a row on the grassy bank, five chicks in all; the child points at them and Kazoe counts along",
+     "text": [
+      "いけの はっぱにも ひよこ。し、ご！",
+      "いけの はっぱにも ひよこ。し、ご！",
+      "いけの はっぱにも ひよこ。し、ご！"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true,
+     "camera": "Eye-level wide view along the pond bank, the lotus leaf with two chicks and the row of three chicks on the bank both clearly visible, the child pointing from the side."
+    },
+    {
+     "label": "木の枝の巣から3わのひよこが並んで顔を出す（3わともはっきり大きく）。はしごに登る主人公を下から見上げる（あおり）。下に5わが待つ",
+     "art": "a tree with a round nest on a thick branch not far above the ground; exactly three chicks sit side by side in the nest with their whole heads and bodies poking up above its rim, drawn large and bright so all three are clearly visible and easy to count, and they look down cheerfully; the child climbs a short wooden ladder toward the nest, almost reaching it, while Kazoe holds the bottom of the ladder; at the foot of the tree exactly five chicks wait in a row",
+     "text": [
+      "きの うえにも ひよこ。ろく、なな、はち！",
+      "きの うえにも ひよこ。ろく、なな、はち！",
+      "きの うえにも ひよこ。ろく、なな、はち！"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true,
+     "camera": "Low angle from below and slightly to the side of the ladder, close enough that the nest with the three chicks fills the upper part of the frame large and in sharp focus, the climbing child just below it, the bear cub and the row of five chicks small at the bottom."
+    },
+    {
+     "label": "草むらから転がり出るひよこ。全部で9わ。カゾエが首をかしげ、空はまだ薄暗い",
+     "art": "one more chick tumbles out of the tall grass to join the others, so exactly nine chicks stand together in the grass; Kazoe tilts his head as if asking where the last one is; the child looks around; the sky is still dim and bluish before sunrise",
+     "text": [
+      "くさの なかに もう いちわ。……く！ あと いちわ、どこ？",
+      "くさの なかに もう いちわ。……く！ あと いちわ、どこ？",
+      "くさの なかに もう いちわ。……く！ あと いちわ、どこ？"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true,
+     "camera": "Eye-level medium shot, the nine chicks clearly countable in the foreground, the child and the puzzled bear cub behind them under the dim sky."
+    },
+    {
+     "label": "散らばって走り回る9わのひよこ。座りこむ主人公と涙ぐむカゾエを上から見下ろす（俯瞰）。空は暗い",
+     "art": "exactly nine chicks scatter and run around in every direction; the child sits down in the grass looking upset and Kazoe has tears in his eyes; the sky is dark before dawn",
+     "text": [
+      "ひよこが うごいて わからない。もう いや……。",
+      "ひよこが うごいて わからない。もう いや……。",
+      "ひよこが うごいて わからない。もう いや……。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true,
+     "camera": "High overhead view looking straight down on the child and the bear cub sitting in the middle, the nine chicks running in all directions around them."
+    },
+    {
+     "label": "木の「ひよこのおうち」（5へやずつ2だん）に9わ、1つだけ空いたへやを指さす主人公。主人公のフードから10わめのひよこが顔を出す（アップ）",
+     "art": "the child points at the one empty room of the chick house in which exactly nine chicks sit, five rooms on each of its two floors, with one room empty; a tenth chick pokes its head out of the hood of the child's hoodie, peeking over the child's shoulder",
+     "text": [
+      "「ゆびで ぴっ、ひとつずつ！」 フードの なかで「ぴよ！」",
+      "「ゆびで ぴっ、ひとつずつ！」 フードの なかで「ぴよ！」",
+      "「ゆびで ぴっ、ひとつずつ！」 フードの なかで「ぴよ！」"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true,
+     "camera": "Close-up at the child's eye level beside the chick house, the child's pointing finger and the empty room in sharp focus, the tenth chick peeking out of the hood just above the child's shoulder."
+    },
+    {
+     "label": "見開き。朝日がのぼる花ばたけ、ひよこのおうちに10わがそろって歌う。主人公が指さし、カゾエがばんざい",
+     "art": "the sun rises over the tulip field; exactly ten chicks sit in the chick house, one in each room, five rooms on each of its two floors, singing with open beaks; the child points at them happily and Kazoe raises both arms in a cheer",
+     "text": [
+      "いち、に、さん……じゅう！ おひさま、おはよう！",
+      "いち、に、さん……じゅう！ おひさま、おはよう！",
+      "いち、に、さん……じゅう！ おひさま、おはよう！"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true,
+     "camera": "Very wide panoramic view of the sunrise over the flower field, the chick house with ten chicks near the center, the child and the cheering bear cub on either side."
+    },
+    {
+     "label": "【パパ】リビングで目をかくして数える主人公。カーテンの下からパパの足がはみ出している",
+     "art": "playing hide-and-seek in the living room, the child stands facing the wall and covers their eyes with both hands, counting; the father hides behind the long window curtain, and only his feet and lower legs stick out from under it",
+     "text": [
+      "パパと かくれんぼ。いち、に……じゅう！ みーつけた！",
+      "パパと かくれんぼ。いち、に……じゅう！ みーつけた！",
+      "パパと かくれんぼ。いち、に……じゅう！ みーつけた！"
+     ],
+     "withMom": false,
+     "withDad": true,
+     "withSidekick": false,
+     "camera": "Eye-level wide view of the living room, the counting child on one side and the curtain with the father's feet sticking out on the other, both clearly visible.",
+     "alt": {
+      "both": {
+       "label": "カーテンの下からパパの足、ソファの後ろからママの頭が少し見える",
+       "art": "playing hide-and-seek in the living room, the child stands facing the wall and covers their eyes with both hands, counting; the father hides behind the long window curtain with his feet sticking out from under it, and the top of the mother's head peeks out from behind the sofa",
+       "text": [
+        "ママと パパと かくれんぼ。いち、に……じゅう！ みーつけた！",
+        "ママと パパと かくれんぼ。いち、に……じゅう！ みーつけた！",
+        "ママと パパと かくれんぼ。いち、に……じゅう！ みーつけた！"
+       ],
+       "withMom": true,
+       "withDad": true,
+       "withSidekick": false,
+       "camera": "Eye-level wide view of the living room, the counting child on one side, the curtain with the father's feet and the sofa with the mother's head peeking out on the other."
+      },
+      "mom": {
+       "label": "カーテンの下からママのスリッパがのぞく",
+       "art": "playing hide-and-seek in the living room, the child stands facing the wall and covers their eyes with both hands, counting; the mother hides behind the long window curtain, and only her feet in slippers stick out from under it",
+       "text": [
+        "ママと かくれんぼ。いち、に……じゅう！ みーつけた！",
+        "ママと かくれんぼ。いち、に……じゅう！ みーつけた！",
+        "ママと かくれんぼ。いち、に……じゅう！ みーつけた！"
+       ],
+       "withMom": true,
+       "withDad": false,
+       "withSidekick": false,
+       "camera": "Eye-level wide view of the living room, the counting child on one side and the curtain with the mother's slippers sticking out on the other."
+      },
+      "none": {
+       "label": "おもちゃ箱に10こ（5×2）のおもちゃをしまう主人公",
+       "art": "in the child's bedroom, the child tidies up, pointing at exactly ten small toys (wooden blocks and little cars) lined up on the rug in two rows of five, next to the open wooden toy box",
+       "text": [
+        "おもちゃを かたづけよう。いち、に……じゅう！",
+        "おもちゃを かたづけよう。いち、に……じゅう！",
+        "おもちゃを かたづけよう。いち、に……じゅう！"
+       ],
+       "withMom": false,
+       "withDad": false,
+       "withSidekick": false,
+       "camera": "High angle looking down at the rug, the two rows of five toys clearly countable, the child pointing at them beside the toy box."
+      }
+     }
+    },
+    {
+     "label": "夜の窓の外の木の枝に、ひよこ10わ（5わずつ2段）とカゾエが並んで手をふる。部屋の中の主人公の後ろ姿（背面）",
+     "art": "at night, outside the bedroom window, exactly ten chicks sit on two branches of a tree, five on each branch, with Kazoe beside them waving goodbye; inside the dark room the child waves back; Kazoe appears only once in the picture: there is no other bear, teddy bear or toy bear anywhere inside the room",
+     "text": [
+      "よる、まどの そとで ひよこが ぴよぴよ。おやすみ、じゅうわの ひよこ。",
+      "よる、まどの そとで ひよこが ぴよぴよ。おやすみ、じゅうわの ひよこ。",
+      "よる、まどの そとで ひよこが ぴよぴよ。おやすみ、じゅうわの ひよこ。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true,
+     "camera": "From inside the dark bedroom behind the child, the child's back to the viewer, looking out through the window at the chicks and the bear cub on the moonlit branches."
+    }
+   ]
+  },
+  {
+   "no": 2,
+   "title": "100この ふうせん まつり",
+   "outfits": "the child: a light-blue jinbei (a Japanese summer festival top and shorts) with a simple white wave pattern and wooden geta sandals with red straps; the mother: a white T-shirt and a navy long skirt; the father: a light-gray T-shirt and navy shorts.",
+   "continuity": [
+    {
+     "from": 11,
+     "to": 11,
+     "text": "This page is inside the family's home: everyone is barefoot, with no sandals or shoes."
+    },
+    {
+     "from": 12,
+     "to": 12,
+     "text": "On this page the child wears plain light-blue pajamas instead of the usual clothes."
+    }
+   ],
+   "cover": {
+    "label": "夏祭りの夕空、色ちがいのふうせんのたばをたくさん持って、ふわりと浮かぶ主人公とカゾエ。下に提灯の並ぶお祭り",
+    "art": "in the evening sky above a summer festival, the child and Kazoe the bear cub float gently upward, each holding several bundles of balloons, every bundle a different color; below them a festival with rows of glowing red-and-white paper lanterns",
+    "withSidekick": true,
+    "camera": "Slightly low angle from below, the child's happy face clearly visible as they float up, the balloon bundles filling the sky and the lantern-lit festival at the bottom of the frame."
+   },
+   "scenes": [
+    {
+     "label": "【パパ】夏の夕方の玄関前。ふうせんの絵がいっぱいのお祭りのチラシを見る主人公と、両手を大きく広げるパパ",
+     "art": "on a summer evening in front of the family's front door, the child holds a festival flyer covered with drawings of balloons and looks up; the father spreads both arms wide to show how big a hundred is",
+     "text": [
+      "「ひゃくって どれくらい？」 パパ「とーっても たくさん！」",
+      "「ひゃくって どれくらい？」 パパ「とーっても たくさん！」",
+      "「ひゃくって どれくらい？」 パパ「とーっても たくさん！」"
+     ],
+     "withMom": false,
+     "withDad": true,
+     "withSidekick": false,
+     "camera": "Eye-level medium shot in front of the door, the child's curious face and the father's wide-open arms both clearly visible in the warm evening light.",
+     "alt": {
+      "both": {
+       "label": "パパが両手を広げ、ママがほほえむ",
+       "art": "on a summer evening in front of the family's front door, the child holds a festival flyer covered with drawings of balloons and looks up; the father spreads both arms wide to show how big a hundred is, and the mother stands beside them smiling",
+       "text": [
+        "「ひゃくって どれくらい？」 パパ「とーっても たくさん！」",
+        "「ひゃくって どれくらい？」 パパ「とーっても たくさん！」",
+        "「ひゃくって どれくらい？」 パパ「とーっても たくさん！」"
+       ],
+       "withMom": true,
+       "withDad": true,
+       "withSidekick": false,
+       "camera": "Eye-level medium shot in front of the door, the child's curious face, the father's wide-open arms and the smiling mother all clearly visible in the warm evening light."
+      },
+      "mom": {
+       "label": "ママが両手を広げる",
+       "art": "on a summer evening in front of the family's front door, the child holds a festival flyer covered with drawings of balloons and looks up; the mother spreads both arms wide to show how big a hundred is",
+       "text": [
+        "「ひゃくって どれくらい？」 ママ「とーっても たくさん！」",
+        "「ひゃくって どれくらい？」 ママ「とーっても たくさん！」",
+        "「ひゃくって どれくらい？」 ママ「とーっても たくさん！」"
+       ],
+       "withMom": true,
+       "withDad": false,
+       "withSidekick": false,
+       "camera": "Eye-level medium shot in front of the door, the child's curious face and the mother's wide-open arms both clearly visible in the warm evening light."
+      },
+      "none": {
+       "label": "チラシを持って一番星を見上げる主人公",
+       "art": "on a summer evening in front of the family's front door, the child holds a festival flyer covered with drawings of balloons and looks up at the first star twinkling in the evening sky",
+       "text": [
+        "「ひゃくって どれくらい？」 {name}は そらを みあげたよ。",
+        "「ひゃくって どれくらい？」 {name}は そらを みあげたよ。",
+        "「ひゃくって どれくらい？」 {name}は そらを みあげたよ。"
+       ],
+       "withMom": false,
+       "withDad": false,
+       "withSidekick": false,
+       "camera": "Low angle from beside the child looking up toward the evening sky, the child's wondering face and the first star both visible."
+      }
+     }
+    },
+    {
+     "label": "夕暮れの庭で、青いチョッキと赤い帽子のこぐまと手をつないでジャンプする主人公（動き）",
+     "art": "in the garden at dusk, Kazoe the bear cub arrives and the child and Kazoe hold hands and jump high together, little sparkles bursting around them",
+     "text": [
+      "こぐまの カゾエが きたよ。「おまつり いこう！」 いち、に、さん、ジャンプ！",
+      "こぐまの カゾエが きたよ。「おまつり いこう！」 いち、に、さん、ジャンプ！",
+      "こぐまの カゾエが きたよ。「おまつり いこう！」 いち、に、さん、ジャンプ！"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true,
+     "camera": "Dynamic side view mid-jump, both in the air with knees bent and hands joined against the orange dusk sky."
+    },
+    {
+     "label": "提灯の並ぶ祭りの広場。ぶたのブーブさんが、もじゃもじゃの大きなふうせんの山を抱えて困り顔",
+     "art": "a festival square with rows of glowing red-and-white paper lanterns; Bubu the pig hugs a huge, messy, tangled mountain of colorful balloons and looks troubled; the child and Kazoe look up at him",
+     "text": [
+      "ぶたの ブーブさんが こまってる。「ふうせん、ひゃっこ あるかな？」",
+      "ぶたの ブーブさんが こまってる。「ふうせん、ひゃっこ あるかな？」",
+      "ぶたの ブーブさんが こまってる。「ふうせん、ひゃっこ あるかな？」"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true,
+     "camera": "Eye-level wide view of the lantern-lit square, the pig with the giant balloon mountain in the center and the child and bear cub in the foreground."
+    },
+    {
+     "label": "ふうせんの山にもぐってひもを数える主人公とカゾエ。ひもがこんがらがっている",
+     "art": "the child and Kazoe dig into the mountain of balloons trying to count the strings one by one, but the strings are hopelessly tangled together",
+     "text": [
+      "いち、に、さん……あれ？ ふうせんが ゆれて わからない。",
+      "いち、に、さん……あれ？ ふうせんが ゆれて わからない。",
+      "いち、に、さん……あれ？ ふうせんが ゆれて わからない。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true,
+     "camera": "Close medium shot from inside the balloon mountain, the child's confused face among the tangled strings and swaying balloons."
+    },
+    {
+     "label": "風に飛ばされたふうせんのひもを、空中でつかむ主人公（動き・あおり）",
+     "art": "a gust of wind blows a few balloons away; the child leaps up and grabs their strings in mid-air while Kazoe reaches up below",
+     "text": [
+      "ぴゅう！ かぜで ふうせんが にげちゃう。まって！",
+      "ぴゅう！ かぜで ふうせんが にげちゃう。まって！",
+      "ぴゅう！ かぜで ふうせんが にげちゃう。まって！"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true,
+     "camera": "Low worm's-eye view looking up at the child stretched out in mid-air, the escaping balloons against the evening sky."
+    },
+    {
+     "label": "屋台の前で、かえる・うさぎ・りすが口々に叫び、ブーブさんが目を回す",
+     "art": "in front of festival stalls, a frog, a rabbit and a squirrel each shout a different answer all at once with wide-open mouths, while Bubu the pig's eyes spin in confusion; the child and Kazoe cover their ears",
+     "text": [
+      "みんなで かぞえたら……こたえが ばらばら！",
+      "みんなで かぞえたら……こたえが ばらばら！",
+      "みんなで かぞえたら……こたえが ばらばら！"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true,
+     "camera": "Eye-level medium-wide shot in front of the stalls, the three shouting animals and the dizzy pig clearly visible, the child and the bear cub at the side."
+    },
+    {
+     "label": "ふうせんのひもにぐるぐる巻きになって浮きかけるカゾエ。奥で夕日が山に沈みかける",
+     "art": "Kazoe is wrapped round and round in balloon strings and starts floating up off the ground with a surprised face; the child stares up at him; far behind, the setting sun is sinking behind the mountains",
+     "text": [
+      "カゾエが ひもに からまって、ぐるぐる まき！",
+      "カゾエが ひもに からまって、ぐるぐる まき！",
+      "カゾエが ひもに からまって、ぐるぐる まき！"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true,
+     "camera": "Medium shot from slightly below, the tangled bear cub lifting off in the center, the sunset over the mountains in the distance."
+    },
+    {
+     "label": "提灯の下に座りこむ主人公と、耳をたれたブーブさんを上から見下ろす（俯瞰）。空はむらさき",
+     "art": "under the paper lanterns, the child sits on the ground looking sad, with Bubu the pig sitting beside them with drooping ears and Kazoe leaning on the child; the sky has turned purple",
+     "text": [
+      "ひゃくなんて むり……。{name}は しょんぼり。",
+      "ひゃくなんて むり……。{name}は しょんぼり。",
+      "ひゃくなんて むり……。{name}は しょんぼり。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true,
+     "camera": "High overhead view looking down on the child, the pig and the bear cub sitting together under the lanterns."
+    },
+    {
+     "label": "自分の両手を広げて見つめる主人公。その横で、ふうせんを10こずつリボンで束ねた色ちがいのたばができはじめている（アップ）",
+     "art": "the child holds up both hands with all ten fingers spread and looks at them with a bright idea; beside the child, Kazoe and Bubu the pig have begun tying balloons together with ribbons into bundles of exactly ten balloons each, every bundle a single color, a different color for each bundle",
+     "text": [
+      "ゆびは じゅっぽん。「じゅっこずつ たばに しよう！」",
+      "ゆびは じゅっぽん。「じゅっこずつ たばに しよう！」",
+      "ゆびは じゅっぽん。「じゅっこずつ たばに しよう！」"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true,
+     "camera": "Close-up at the child's eye level, the spread ten fingers large in the foreground and the first neat ten-balloon bundles just behind."
+    },
+    {
+     "label": "見開き。夜空の花火と、10色のふうせんのたば10こがいっせいに舞い上がる。主人公・カゾエ・ブーブさんが見上げる（あおり）",
+     "art": "fireworks bloom in the night sky as exactly ten bundles of balloons rise into the sky together, each bundle ten balloons of one color, in ten different colors; the child, Kazoe and Bubu the pig look up and cheer",
+     "text": [
+      "いち たば、に たば……じゅう たば！ ひゃっこ、とんでけー！",
+      "いち たば、に たば……じゅう たば！ ひゃっこ、とんでけー！",
+      "いち たば、に たば……じゅう たば！ ひゃっこ、とんでけー！"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true,
+     "camera": "Very wide low-angle view from the ground, the ten balloon bundles and the fireworks filling the sky, the three cheering figures small at the bottom."
+    },
+    {
+     "label": "【ママ】テーブルでおはじきを10こずつ（5×2）並べる主人公と、のぞきこむママ",
+     "art": "at the dining table at home, the child lines up colorful glass marbles (ohajiki) in a group of exactly ten, two rows of five; the mother leans in to watch with a smile",
+     "text": [
+      "ママと おはじき。じゅっこずつ ならべたよ。",
+      "ママと おはじき。じゅっこずつ ならべたよ。",
+      "ママと おはじき。じゅっこずつ ならべたよ。"
+     ],
+     "withMom": true,
+     "withDad": false,
+     "withSidekick": false,
+     "camera": "High angle over the table, the two rows of five marbles clearly countable, the child's proud face and the smiling mother both visible.",
+     "alt": {
+      "both": {
+       "label": "テーブルを囲む主人公・ママ・パパ",
+       "art": "at the dining table at home, the child lines up colorful glass marbles (ohajiki) in a group of exactly ten, two rows of five; the mother and the father sit around the table and watch with smiles",
+       "text": [
+        "ママと パパと おはじき。じゅっこずつ ならべたよ。",
+        "ママと パパと おはじき。じゅっこずつ ならべたよ。",
+        "ママと パパと おはじき。じゅっこずつ ならべたよ。"
+       ],
+       "withMom": true,
+       "withDad": true,
+       "withSidekick": false,
+       "camera": "High angle over the table, the two rows of five marbles clearly countable, the child, the mother and the father around it."
+      },
+      "dad": {
+       "label": "パパとおはじきを並べる",
+       "art": "at the dining table at home, the child lines up colorful glass marbles (ohajiki) in a group of exactly ten, two rows of five; the father leans in to watch with a smile",
+       "text": [
+        "パパと おはじき。じゅっこずつ ならべたよ。",
+        "パパと おはじき。じゅっこずつ ならべたよ。",
+        "パパと おはじき。じゅっこずつ ならべたよ。"
+       ],
+       "withMom": false,
+       "withDad": true,
+       "withSidekick": false,
+       "camera": "High angle over the table, the two rows of five marbles clearly countable, the child's proud face and the smiling father both visible."
+      },
+      "none": {
+       "label": "テーブルでひとりおはじきを並べる主人公",
+       "art": "at the dining table at home, the child alone lines up colorful glass marbles (ohajiki) in a group of exactly ten, two rows of five, with a proud smile",
+       "text": [
+        "おはじきを じゅっこずつ ならべたよ。",
+        "おはじきを じゅっこずつ ならべたよ。",
+        "おはじきを じゅっこずつ ならべたよ。"
+       ],
+       "withMom": false,
+       "withDad": false,
+       "withSidekick": false,
+       "camera": "High angle over the table, the two rows of five marbles clearly countable and the child's proud face."
+      }
+     }
+    },
+    {
+     "label": "夜、窓から空に浮かぶ色とりどりのふうせんを見上げる主人公の後ろ姿（背面）",
+     "art": "at night, the child looks out of the bedroom window at colorful balloons floating high in the night sky like stars",
+     "text": [
+      "よぞらに ふうせん。まるで おほしさま。おやすみ。",
+      "よぞらに ふうせん。まるで おほしさま。おやすみ。",
+      "よぞらに ふうせん。まるで おほしさま。おやすみ。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": false,
+     "camera": "From inside the dark bedroom behind the child, the child's back to the viewer, looking out through the window at the balloons scattered across the night sky."
+    }
+   ]
+  },
+  {
+   "no": 3,
+   "title": "りんごの もりの あわせて パイ",
+   "outfits": "the child: a mustard-yellow knit sweater, brown corduroy pants and red sneakers; the mother: a burgundy cardigan over a cream blouse and navy pants; the father: a dark-green flannel shirt and jeans.",
+   "continuity": [
+    {
+     "from": 11,
+     "to": 11,
+     "text": "This page is inside the family's home: everyone is in socks or barefoot, with no outdoor shoes."
+    },
+    {
+     "from": 12,
+     "to": 12,
+     "text": "On this page the child wears plain light-green pajamas instead of the usual clothes."
+    },
+    {
+     "to": 9,
+     "text": "Crab apples are tiny round red apples about the size of a cherry, far smaller than the ordinary big red apples; never draw them the same size as the big apples."
+    }
+   ],
+   "cover": {
+    "label": "紅葉したりんごの森で、主人公が小さなカゴのひめりんごを差し出し、カゾエとくまのおばあちゃんが笑顔でのぞきこむ",
+    "art": "in an apple forest with red and golden autumn leaves, the child holds out a small wicker basket of tiny crab apples, and Kazoe the bear cub and Grandma Bear lean in with big smiles",
+    "withSidekick": true,
+    "camera": "Eye-level three-quarter view, the child's shy smiling face and the small basket clearly visible, the bear cub and Grandma Bear leaning in from the side, autumn trees behind."
+   },
+   "scenes": [
+    {
+     "label": "【ママ】秋の庭の小さなりんごの木の下。ママがひめりんご5この入った小さなカゴを渡し、主人公が不満そうにのぞきこむ",
+     "art": "in the family's autumn garden under a small crab apple tree, the mother hands the child a small wicker basket holding exactly five crab apples, and the child peers into it looking disappointed",
+     "text": [
+      "あきの にわ。ママが、ちいさな ひめりんごを 5こ かごに いれて くれました。「おやつに どうぞ」 「えー、こんなに ちいさいの？」",
+      "あきの にわ。ママが、ちいさな ひめりんごを 5こ かごに いれて くれました。「おやつに どうぞ」 「えー、こんなに ちいさいの？」",
+      "あきの にわ。ママが、ちいさな ひめりんごを 5こ かごに いれて くれました。「おやつに どうぞ」 「えー、こんなに ちいさいの？」"
+     ],
+     "withMom": true,
+     "withDad": false,
+     "withSidekick": false,
+     "camera": "Eye-level medium shot under the little tree, the five crab apples in the basket clearly countable, the child's pouting face and the kind mother both visible.",
+     "alt": {
+      "both": {
+       "label": "ママがカゴを渡し、パパがはしごの上からりんごを摘む",
+       "art": "in the family's autumn garden under a small crab apple tree, the mother hands the child a small wicker basket holding exactly five crab apples while the father picks crab apples from the tree on a short stepladder; the child peers into the basket looking disappointed",
+       "text": [
+        "あきの にわ。ママと パパが、ちいさな ひめりんごを 5こ かごに いれて くれました。ママが いいました。「おやつに どうぞ」 「えー、こんなに ちいさいの？」",
+        "あきの にわ。ママと パパが、ちいさな ひめりんごを 5こ かごに いれて くれました。ママが いいました。「おやつに どうぞ」 「えー、こんなに ちいさいの？」",
+        "あきの にわ。ママと パパが、ちいさな ひめりんごを 5こ かごに いれて くれました。ママが いいました。「おやつに どうぞ」 「えー、こんなに ちいさいの？」"
+       ],
+       "withMom": true,
+       "withDad": true,
+       "withSidekick": false,
+       "camera": "Eye-level medium shot under the little tree, the five crab apples in the basket clearly countable, the child's pouting face, the mother and the father on the stepladder all visible."
+      },
+      "dad": {
+       "label": "パパがカゴを渡す",
+       "art": "in the family's autumn garden under a small crab apple tree, the father hands the child a small wicker basket holding exactly five crab apples, and the child peers into it looking disappointed",
+       "text": [
+        "あきの にわ。パパが、ちいさな ひめりんごを 5こ かごに いれて くれました。「おやつに どうぞ」 「えー、こんなに ちいさいの？」",
+        "あきの にわ。パパが、ちいさな ひめりんごを 5こ かごに いれて くれました。「おやつに どうぞ」 「えー、こんなに ちいさいの？」",
+        "あきの にわ。パパが、ちいさな ひめりんごを 5こ かごに いれて くれました。「おやつに どうぞ」 「えー、こんなに ちいさいの？」"
+       ],
+       "withMom": false,
+       "withDad": true,
+       "withSidekick": false,
+       "camera": "Eye-level medium shot under the little tree, the five crab apples in the basket clearly countable, the child's pouting face and the kind father both visible."
+      },
+      "none": {
+       "label": "主人公がひとりで小さなりんごの木からひめりんごを摘む",
+       "art": "in the family's autumn garden, the child alone picks crab apples from a small crab apple tree into a small wicker basket that holds exactly five crab apples, looking a little disappointed at how small they are",
+       "text": [
+        "あきの にわ。{name}は ちいさな ひめりんごを 5こ つんで、かごに いれました。「こんなに ちいさいのしか ないのかあ……」",
+        "あきの にわ。{name}は ちいさな ひめりんごを 5こ つんで、かごに いれました。「こんなに ちいさいのしか ないのかあ……」",
+        "あきの にわ。{name}は ちいさな ひめりんごを 5こ つんで、かごに いれました。「こんなに ちいさいのしか ないのかあ……」"
+       ],
+       "withMom": false,
+       "withDad": false,
+       "withSidekick": false,
+       "camera": "Eye-level medium shot under the little tree, the five crab apples in the basket clearly countable and the child's pouting face."
+      }
+     }
+    },
+    {
+     "label": "落ち葉の山から飛び出す、青いチョッキと赤い帽子のこぐま。手をつないでジャンプする主人公。まわりに赤い葉が舞う（動き）",
+     "art": "Kazoe the bear cub bursts out of a pile of fallen leaves; the child, holding the small basket in one hand, takes his hand and they jump together, red leaves swirling around them",
+     "text": [
+      "「りんごの もりへ いこう！」 なかよしの こぐま、カゾエが おちばの やまから かおを だしました。ふたりは「いち、に、さん！」で ジャンプ！",
+      "「りんごの もりへ いこう！」 なかよしの こぐま、カゾエが おちばの やまから かおを だしました。ふたりは「いち、に、さん！」で ジャンプ！",
+      "「りんごの もりへ いこう！」 なかよしの こぐま、カゾエが おちばの やまから かおを だしました。ふたりは「いち、に、さん！」で ジャンプ！"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true,
+     "camera": "Dynamic side view mid-jump, both in the air with knees bent and hands joined, red leaves flying all around."
+    },
+    {
+     "label": "りんごの森の小さな家の前。エプロンのくまのおばあちゃんが空の大きなカゴを持ち、主人公は小さなカゴを背中に隠す",
+     "art": "in front of a small cottage in the apple forest, Grandma Bear in her apron holds an empty big basket and smiles at them; the child hides the small basket behind their back; Kazoe stands beside the child",
+     "text": [
+      "りんごの もりの おうちで、カゾエの おばあちゃんが まって いました。「パイには りんごが 10こ いるのよ。みんなで あつめて くれる？」 {name}は、ちいさな かごを せなかに かくしました。",
+      "りんごの もりの おうちで、カゾエの おばあちゃんが まって いました。「パイには りんごが 10こ いるのよ。みんなで あつめて くれる？」 {name}は、ちいさな かごを せなかに かくしました。",
+      "りんごの もりの おうちで、カゾエの おばあちゃんが まって いました。「パイには りんごが 10こ いるのよ。みんなで あつめて くれる？」 {name}は、ちいさな かごを せなかに かくしました。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true,
+     "camera": "Three-quarter view from slightly behind the child so the small basket hidden behind the child's back is visible to the viewer, Grandma Bear with the empty big basket facing them."
+    },
+    {
+     "label": "カゾエが抱えるりんご3こと、うさぎが抱えるりんご1こ。大きなカゴに入れるところ",
+     "art": "Kazoe carries exactly three big red apples in his arms and a rabbit carries exactly one big red apple; they drop them into Grandma Bear's big basket; the child watches",
+     "text": [
+      "カゾエが りんごを 3こ とって きました。うさぎさんも 1こ。「3と 1で、あわせて 4こ！」 おばあちゃんの かごに ころん。",
+      "カゾエが りんごを 3こ とって きました。うさぎさんも 1こ。「3と 1で、あわせて 4こ！」 おばあちゃんの かごに ころん。",
+      "カゾエが りんごを 3こ とって きました。うさぎさんも 1こ。「3と 1で、あわせて 4こ！」 おばあちゃんの かごに ころん。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true,
+     "camera": "Eye-level medium shot, the three apples in the bear cub's arms and the one apple held by the rabbit clearly countable above the big basket."
+    },
+    {
+     "label": "りすがりんご2こを転がしてくる。大きなカゴにはりんご4こ",
+     "art": "a squirrel rolls exactly two big red apples along the ground toward Grandma Bear's big basket, which already holds exactly four big red apples; the child and Kazoe cheer",
+     "text": [
+      "つぎは りすさんが 2こ。「4と 2で、あわせて 6こ！」 りんごの かごが、すこし おもく なりました。",
+      "つぎは りすさんが 2こ。「4と 2で、あわせて 6こ！」 りんごの かごが、すこし おもく なりました。",
+      "つぎは りすさんが 2こ。「4と 2で、あわせて 6こ！」 りんごの かごが、すこし おもく なりました。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true,
+     "camera": "Low ground-level view, the two rolling apples large in the foreground and the big basket with four apples just behind."
+    },
+    {
+     "label": "たぬきがりんごの木をゆらし、りんご2こが落ちてくる。下から見上げる構図（あおり）",
+     "art": "a tanuki (Japanese raccoon dog) shakes an apple tree with both paws and exactly two big red apples fall from the branches; the child and Kazoe look up, ready to catch them",
+     "text": [
+      "たぬきさんが きを ゆさゆさ。りんごが 2こ、ぽとん ぽとん。「6と 2で、あわせて 8こ！」 あと 2こで 10こです。",
+      "たぬきさんが きを ゆさゆさ。りんごが 2こ、ぽとん ぽとん。「6と 2で、あわせて 8こ！」 あと 2こで 10こです。",
+      "たぬきさんが きを ゆさゆさ。りんごが 2こ、ぽとん ぽとん。「6と 2で、あわせて 8こ！」 あと 2こで 10こです。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true,
+     "camera": "Low worm's-eye view from the foot of the tree looking up at the two falling apples and the shaking branches."
+    },
+    {
+     "label": "落ち葉の山にしりもちをつくカゾエ。頭に赤い葉っぱが乗っている。後ろにりんごのない木",
+     "art": "Kazoe has landed on his bottom in a pile of fallen leaves with a red leaf on his head, looking dazed; behind him stands an apple tree with no apples left at all",
+     "text": [
+      "カゾエが いちばん うえの りんごに ジャンプ！ でも、どしん。おちばの なかに しりもち。きの りんごは、もう ひとつも ありません。",
+      "カゾエが いちばん うえの りんごに ジャンプ！ でも、どしん。おちばの なかに しりもち。きの りんごは、もう ひとつも ありません。",
+      "カゾエが いちばん うえの りんごに ジャンプ！ でも、どしん。おちばの なかに しりもち。きの りんごは、もう ひとつも ありません。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true,
+     "camera": "Eye-level medium shot of the bear cub in the leaf pile, the empty apple tree clearly visible behind him."
+    },
+    {
+     "label": "大きなカゴの赤いりんご8こを囲む仲間たちを上から（俯瞰）。端で主人公が背中の小さなカゴを握り、うつむく",
+     "art": "Grandma Bear, Kazoe, the rabbit, the squirrel and the tanuki gather around the big basket holding exactly eight big red apples; at the edge, the child grips the small basket hidden behind their back and looks down",
+     "text": [
+      "「あと 2こ たりないね」 おばあちゃんが ざんねんそうに いいました。{name}の かごには りんごが 5こ。でも、こんなに ちいさい りんごじゃ……。",
+      "「あと 2こ たりないね」 おばあちゃんが ざんねんそうに いいました。{name}の かごには りんごが 5こ。でも、こんなに ちいさい りんごじゃ……。",
+      "「あと 2こ たりないね」 おばあちゃんが ざんねんそうに いいました。{name}の かごには りんごが 5こ。でも、こんなに ちいさい りんごじゃ……。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true,
+     "camera": "High overhead view looking down on the circle of friends around the big basket, the eight apples clearly countable, the child standing a little apart at the edge."
+    },
+    {
+     "label": "テーブルに、大きな赤いりんご8こと小さなひめりんご2こが5こずつ2れつ（計10こ）。横にひめりんご3こ。主人公が指さす",
+     "art": "on a wooden table outside the cottage, exactly ten apples are lined up in two rows of five: eight big red apples and two crab apples at the end of the second row; beside them the small basket still holds exactly three crab apples; the child points at the apples one by one while Grandma Bear smiles",
+     "text": [
+      "でも、{name}は かおを あげました。「ちいさいけど……どうぞ！」 「まあ、ひめりんご！ いちばん あまいのよ」 ゆびで ぴっ、ひとつずつ。8こに 2こ たして、ぴったり 10こ！",
+      "でも、{name}は かおを あげました。「ちいさいけど……どうぞ！」 「まあ、ひめりんご！ いちばん あまいのよ」 ゆびで ぴっ、ひとつずつ。8こに 2こ たして、ぴったり 10こ！",
+      "でも、{name}は かおを あげました。「ちいさいけど……どうぞ！」 「まあ、ひめりんご！ いちばん あまいのよ」 ゆびで ぴっ、ひとつずつ。8こに 2こ たして、ぴったり 10こ！"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true,
+     "camera": "High angle over the table, the two rows of five apples and the small basket of three crab apples clearly countable, the child's pointing finger in the foreground."
+    },
+    {
+     "label": "見開き。森の家の庭のテーブルに焼きたての大きなりんごパイと焼きりんご3こ。おばあちゃん・カゾエ・うさぎ・りす・たぬきと主人公が囲む",
+     "art": "in the garden of the forest cottage, a big freshly baked apple pie and exactly three baked crab apples sit on the table, steaming; Grandma Bear, Kazoe, the rabbit, the squirrel, the tanuki and the child gather around, smiling",
+     "text": [
+      "8 たす 2は 10。ぴったり 10この りんごで、おおきな パイが やけました。のこりの 3こは やきりんご。「{name}の りんごの おかげだね！」",
+      "8 たす 2は 10。ぴったり 10この りんごで、おおきな パイが やけました。のこりの 3こは やきりんご。「{name}の りんごの おかげだね！」",
+      "8 たす 2は 10。ぴったり 10この りんごで、おおきな パイが やけました。のこりの 3こは やきりんご。「{name}の りんごの おかげだね！」"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true,
+     "camera": "Very wide eye-level panoramic view of the garden party, the pie and the three baked crab apples at the center, everyone around the table under the autumn trees."
+    },
+    {
+     "label": "【パパ】夜のリビング。テーブルの上にサイコロ2こ（4の目と3の目）。主人公が指でさし、パパがのぞきこむ",
+     "art": "at night in the living room, two dice lie on the table, one showing four dots and the other showing three dots; the child points at the dots one by one and the father leans in, smiling",
+     "text": [
+      "その よる、パパと サイコロあそび。ころころ……4と 3が でました。「4 たす 3は？」 {name}は ゆびで ぴっ、ひとつずつ。「7！」 「せいかい！」",
+      "その よる、パパと サイコロあそび。ころころ……4と 3が でました。「4 たす 3は？」 {name}は ゆびで ぴっ、ひとつずつ。「7！」 「せいかい！」",
+      "その よる、パパと サイコロあそび。ころころ……4と 3が でました。「4 たす 3は？」 {name}は ゆびで ぴっ、ひとつずつ。「7！」 「せいかい！」"
+     ],
+     "withMom": false,
+     "withDad": true,
+     "withSidekick": false,
+     "camera": "High angle over the table, the two dice with four and three dots clearly visible, the child's pointing finger and the smiling father.",
+     "alt": {
+      "both": {
+       "label": "テーブルを囲む主人公・パパ・ママ",
+       "art": "at night in the living room, two dice lie on the table, one showing four dots and the other showing three dots; the child points at the dots one by one while the father and the mother sit around the table, smiling",
+       "text": [
+        "その よる、パパと ママと サイコロあそび。ころころ……4と 3が でました。「4 たす 3は？」と パパ。{name}は ゆびで ぴっ、ひとつずつ。「7！」 「せいかい！」",
+        "その よる、パパと ママと サイコロあそび。ころころ……4と 3が でました。「4 たす 3は？」と パパ。{name}は ゆびで ぴっ、ひとつずつ。「7！」 「せいかい！」",
+        "その よる、パパと ママと サイコロあそび。ころころ……4と 3が でました。「4 たす 3は？」と パパ。{name}は ゆびで ぴっ、ひとつずつ。「7！」 「せいかい！」"
+       ],
+       "withMom": true,
+       "withDad": true,
+       "withSidekick": false,
+       "camera": "High angle over the table, the two dice with four and three dots clearly visible, the child, the father and the mother around it."
+      },
+      "mom": {
+       "label": "ママとサイコロをのぞきこむ",
+       "art": "at night in the living room, two dice lie on the table, one showing four dots and the other showing three dots; the child points at the dots one by one and the mother leans in, smiling",
+       "text": [
+        "その よる、ママと サイコロあそび。ころころ……4と 3が でました。「4 たす 3は？」 {name}は ゆびで ぴっ、ひとつずつ。「7！」 「せいかい！」",
+        "その よる、ママと サイコロあそび。ころころ……4と 3が でました。「4 たす 3は？」 {name}は ゆびで ぴっ、ひとつずつ。「7！」 「せいかい！」",
+        "その よる、ママと サイコロあそび。ころころ……4と 3が でました。「4 たす 3は？」 {name}は ゆびで ぴっ、ひとつずつ。「7！」 「せいかい！」"
+       ],
+       "withMom": true,
+       "withDad": false,
+       "withSidekick": false,
+       "camera": "High angle over the table, the two dice with four and three dots clearly visible, the child's pointing finger and the smiling mother."
+      },
+      "none": {
+       "label": "ひとりでサイコロを振る主人公",
+       "art": "at night in the living room, the child alone rolls two dice on the table; one shows four dots and the other shows three dots, and the child points at the dots one by one",
+       "text": [
+        "その よる、{name}は ひとりで サイコロを ころころ。4と 3が でました。ゆびで ぴっ、ひとつずつ。「4 たす 3は 7！」",
+        "その よる、{name}は ひとりで サイコロを ころころ。4と 3が でました。ゆびで ぴっ、ひとつずつ。「4 たす 3は 7！」",
+        "その よる、{name}は ひとりで サイコロを ころころ。4と 3が でました。ゆびで ぴっ、ひとつずつ。「4 たす 3は 7！」"
+       ],
+       "withMom": false,
+       "withDad": false,
+       "withSidekick": false,
+       "camera": "High angle over the table, the two dice with four and three dots clearly visible and the child's pointing finger."
+      }
+     }
+    },
+    {
+     "label": "月明かりの窓の外で手をふるカゾエと、窓辺で指を折る主人公の顔のアップ",
+     "art": "at night, the child at the bedroom window counts on their fingers with a happy face, while outside in the moonlight Kazoe waves goodbye; Kazoe appears only once in the picture: there is no other bear, teddy bear or toy bear anywhere inside the room",
+     "text": [
+      "ねる まえ、まどの そとで カゾエが てを ふって いました。「きょうの パイ、おいしかったね！」 {name}は ゆびを おって かぞえます。「8と 2で 10。ぴったり だったね」",
+      "ねる まえ、まどの そとで カゾエが てを ふって いました。「きょうの パイ、おいしかったね！」 {name}は ゆびを おって かぞえます。「8と 2で 10。ぴったり だったね」",
+      "ねる まえ、まどの そとで カゾエが てを ふって いました。「きょうの パイ、おいしかったね！」 {name}は ゆびを おって かぞえます。「8と 2で 10。ぴったり だったね」"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true,
+     "camera": "Close-up of the child's face and counting fingers at the window from inside the room, the bear cub waving in the moonlight just beyond the glass."
+    }
+   ]
+  },
+  {
+   "no": 4,
+   "title": "ゆきの ひの クッキーやさん",
+   "outfits": "the child: a navy duffle coat with wooden toggles and one large patch pocket on the front, a white knitted hat with a pom-pom, white mittens, a white knitted turtleneck sweater, gray pants and brown snow boots; the mother: a cream turtleneck sweater and a long brown skirt; the father: a red-and-black checked flannel shirt and jeans.",
+   "continuity": [
+    {
+     "text": "In this winter story Kazoe also wears a red knitted scarf around his neck, on every page."
+    },
+    {
+     "from": 1,
+     "to": 1,
+     "text": "This page is inside the family's home: the child wears only the white turtleneck sweater and gray pants with socks, no coat, hat, mittens or boots, and everyone is in socks."
+    },
+    {
+     "from": 11,
+     "to": 11,
+     "text": "This page is inside the family's home: the child wears only the white turtleneck sweater and gray pants with socks, no coat, hat, mittens or boots, and everyone is in socks."
+    },
+    {
+     "from": 12,
+     "to": 12,
+     "text": "On this page the child wears plain light-blue pajamas instead of the usual clothes."
+    }
+   ],
+   "cover": {
+    "label": "雪の町の小さなクッキー屋さんの前で、星の形のクッキーが入った箱を抱える主人公と、赤いマフラーを巻いたカゾエ。窓にあたたかな明かり",
+    "art": "in front of a little cookie shop in a snowy town, the child hugs a cookie box full of star cookies and Kazoe the bear cub stands beside the child; warm light glows in the shop windows and snow is falling softly",
+    "withSidekick": true,
+    "camera": "Eye-level three-quarter view, the child's smiling face and the cookie box clearly visible, the bear cub beside the child and the glowing shop windows behind."
+   },
+   "scenes": [
+    {
+     "label": "【パパ】雪の朝のリビング。クッキー3まいを背中に隠す主人公と、手を差し出して苦笑いするパパ。窓の外は雪",
+     "art": "on a snowy morning in the living room, the child hides exactly three cookies behind their back with a stubborn face, and the father holds out his hand with a wry smile; snow falls outside the window",
+     "text": [
+      "ゆきの あさ。{name}は おやつの クッキーを 3まい もって いました。「ひとつ ちょうだい」と パパ。「やだ！ あげたら へっちゃうもん」",
+      "ゆきの あさ。{name}は おやつの クッキーを 3まい もって いました。「ひとつ ちょうだい」と パパ。「やだ！ あげたら へっちゃうもん」",
+      "ゆきの あさ。{name}は おやつの クッキーを 3まい もって いました。「ひとつ ちょうだい」と パパ。「やだ！ あげたら へっちゃうもん」"
+     ],
+     "withMom": false,
+     "withDad": true,
+     "withSidekick": false,
+     "camera": "Three-quarter view from slightly behind the child so the three cookies hidden behind the child's back are visible to the viewer, the father's outstretched hand and the snowy window beyond.",
+     "alt": {
+      "both": {
+       "label": "パパが手を差し出し、ママが後ろでくすくす笑う",
+       "art": "on a snowy morning in the living room, the child hides exactly three cookies behind their back with a stubborn face; the father holds out his hand with a wry smile and the mother giggles behind him; snow falls outside the window",
+       "text": [
+        "ゆきの あさ。{name}は おやつの クッキーを 3まい もって いました。「ひとつ ちょうだい」と パパ。「やだ！ あげたら へっちゃうもん」",
+        "ゆきの あさ。{name}は おやつの クッキーを 3まい もって いました。「ひとつ ちょうだい」と パパ。「やだ！ あげたら へっちゃうもん」",
+        "ゆきの あさ。{name}は おやつの クッキーを 3まい もって いました。「ひとつ ちょうだい」と パパ。「やだ！ あげたら へっちゃうもん」"
+       ],
+       "withMom": true,
+       "withDad": true,
+       "withSidekick": false,
+       "camera": "Three-quarter view from slightly behind the child so the three cookies hidden behind the child's back are visible, the father's outstretched hand and the giggling mother beyond."
+      },
+      "mom": {
+       "label": "ママが手を差し出す",
+       "art": "on a snowy morning in the living room, the child hides exactly three cookies behind their back with a stubborn face, and the mother holds out her hand with a wry smile; snow falls outside the window",
+       "text": [
+        "ゆきの あさ。{name}は おやつの クッキーを 3まい もって いました。「ひとつ ちょうだい」と ママ。「やだ！ あげたら へっちゃうもん」",
+        "ゆきの あさ。{name}は おやつの クッキーを 3まい もって いました。「ひとつ ちょうだい」と ママ。「やだ！ あげたら へっちゃうもん」",
+        "ゆきの あさ。{name}は おやつの クッキーを 3まい もって いました。「ひとつ ちょうだい」と ママ。「やだ！ あげたら へっちゃうもん」"
+       ],
+       "withMom": true,
+       "withDad": false,
+       "withSidekick": false,
+       "camera": "Three-quarter view from slightly behind the child so the three cookies hidden behind the child's back are visible, the mother's outstretched hand and the snowy window beyond."
+      },
+      "none": {
+       "label": "窓辺の小鳥からクッキーを隠す主人公",
+       "art": "on a snowy morning in the living room, a little round sparrow sits on the snowy windowsill on the other side of the glass, and the child hides exactly three cookies behind their back with a stubborn face",
+       "text": [
+        "ゆきの あさ。{name}は おやつの クッキーを 3まい もって いました。まどべの ことりが「ひとつ ちょうだい」。「やだ！ あげたら へっちゃうもん」",
+        "ゆきの あさ。{name}は おやつの クッキーを 3まい もって いました。まどべの ことりが「ひとつ ちょうだい」。「やだ！ あげたら へっちゃうもん」",
+        "ゆきの あさ。{name}は おやつの クッキーを 3まい もって いました。まどべの ことりが「ひとつ ちょうだい」。「やだ！ あげたら へっちゃうもん」"
+       ],
+       "withMom": false,
+       "withDad": false,
+       "withSidekick": false,
+       "camera": "Three-quarter view from slightly behind the child so the three cookies hidden behind the child's back are visible, the sparrow on the windowsill beyond."
+      }
+     }
+    },
+    {
+     "label": "雪の庭。雪だるまの影から青いチョッキ・赤い帽子・赤いマフラーのこぐまがとび出し、主人公と手をつないでジャンプ（動き）",
+     "art": "in the snowy garden, Kazoe the bear cub has popped out from behind a snowman, and the child, now in the winter coat, takes his hand and they jump together, snow flying up around them",
+     "text": [
+      "「むかえに きたよ！」 なかよしの こぐま、カゾエが ゆきだるまの かげから かおを だしました。ふたりは「いち、に、さん！」で ジャンプ！",
+      "「むかえに きたよ！」 なかよしの こぐま、カゾエが ゆきだるまの かげから かおを だしました。ふたりは「いち、に、さん！」で ジャンプ！",
+      "「むかえに きたよ！」 なかよしの こぐま、カゾエが ゆきだるまの かげから かおを だしました。ふたりは「いち、に、さん！」で ジャンプ！"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true,
+     "camera": "Dynamic side view mid-jump, both in the air with knees bent and hands joined, the snowman behind them and powder snow flying."
+    },
+    {
+     "label": "クッキー屋の厨房。奥のベッドで鼻をかむしろくまのシロさん。手前で主人公が星のクッキー10まい（5まいずつ2れつ）の箱を持ち、2まいをポケットにしまう",
+     "art": "in the warm kitchen of a little cookie shop, Shiro the old polar bear lies in a bed at the back, blowing his nose; in front, the child holds the cookie box with exactly ten star cookies in two rows of five, and with the other hand slips exactly two more star cookies into the front pocket of the coat; Kazoe watches",
+     "text": [
+      "ゆきの まちの クッキーやさん。しろくまの シロさんが、かぜで ねこんで いました。「みんなに クッキーを くばって おくれ」 ほしの クッキーを 10まい はこに。のこりの 2まいは、{name}が こっそり ポケットに。",
+      "ゆきの まちの クッキーやさん。しろくまの シロさんが、かぜで ねこんで いました。「みんなに クッキーを くばって おくれ」 ほしの クッキーを 10まい はこに。のこりの 2まいは、{name}が こっそり ポケットに。",
+      "ゆきの まちの クッキーやさん。しろくまの シロさんが、かぜで ねこんで いました。「みんなに クッキーを くばって おくれ」 ほしの クッキーを 10まい はこに。のこりの 2まいは、{name}が こっそり ポケットに。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true,
+     "camera": "Eye-level medium shot in the kitchen, the box of ten cookies and the two cookies going into the pocket clearly countable in the foreground, the polar bear in bed behind."
+    },
+    {
+     "label": "雪の屋台。ペンギン3わがクッキーを1まいずつ抱えて喜ぶ。箱には7まい。主人公は少し不満そう",
+     "art": "at a snowy stall, three penguin siblings each hug one star cookie happily; the cookie box in the child's hands now holds exactly seven star cookies; the child looks a little reluctant; Kazoe stands beside the child",
+     "text": [
+      "さいしょの おきゃくは、ペンギンの きょうだい 3わ。{name}は しぶしぶ わたしました。「10まいから 3まい とると……のこりは 7まい」 へっちゃった……。",
+      "さいしょの おきゃくは、ペンギンの きょうだい 3わ。{name}は しぶしぶ わたしました。「10まいから 3まい とると……のこりは 7まい」 へっちゃった……。",
+      "さいしょの おきゃくは、ペンギンの きょうだい 3わ。{name}は しぶしぶ わたしました。「10まいから 3まい とると……のこりは 7まい」 へっちゃった……。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true,
+     "camera": "Eye-level medium shot, the three happy penguins with one cookie each and the box with seven cookies clearly countable, the child's reluctant face."
+    },
+    {
+     "label": "りすの親子がクッキーをほおばる。箱には5まい。主人公の顔が少しゆるむ（アップ）",
+     "art": "a squirrel mother and her little one munch star cookies happily, one cookie each; the cookie box holds exactly five star cookies; the child's face softens into a small smile",
+     "text": [
+      "つぎは りすの おやこ。「7まいから 2まい とると、のこりは 5まい」 りすの こが、にっこり わらいました。",
+      "つぎは りすの おやこ。「7まいから 2まい とると、のこりは 5まい」 りすの こが、にっこり わらいました。",
+      "つぎは りすの おやこ。「7まいから 2まい とると、のこりは 5まい」 りすの こが、にっこり わらいました。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true,
+     "camera": "Close-up at the child's eye level, the child's softening smile and the box with five cookies in the foreground, the two squirrels munching beside."
+    },
+    {
+     "label": "ほっぺをふくらませたカゾエと、腰に手を当てる主人公。箱には4まい",
+     "art": "Kazoe grins with his cheeks puffed out, munching one star cookie; the child stands with hands on hips pretending to be cross; the cookie box on the stall holds exactly four star cookies",
+     "text": [
+      "「あっ！」 カゾエが 1まい ぱくっ。「えへへ、あじみ」 「5まいから 1まい へって、のこりは 4まい！」 ふたりとも ふきだしました。",
+      "「あっ！」 カゾエが 1まい ぱくっ。「えへへ、あじみ」 「5まいから 1まい へって、のこりは 4まい！」 ふたりとも ふきだしました。",
+      "「あっ！」 カゾエが 1まい ぱくっ。「えへへ、あじみ」 「5まいから 1まい へって、のこりは 4まい！」 ふたりとも ふきだしました。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true,
+     "camera": "Eye-level medium shot, the bear cub's puffed cheeks and the child's hands-on-hips pose, the box with four cookies clearly countable on the stall."
+    },
+    {
+     "label": "吹雪の中、木の影で寄りそうこぎつね5ひき。主人公とカゾエは後ろ姿で吹雪に向かう（背面）",
+     "art": "in a sudden snowstorm, exactly five little fox kits huddle together in the shelter of a tree, shivering; the child, holding the cookie box, and Kazoe walk into the blowing snow toward them",
+     "text": [
+      "とつぜん、ふぶきに なりました。ゆきの なかで、こぎつねが 5ひき ふるえて います。「おなか ぺこぺこ……」 はこの クッキーは、もう 4まいしか ありません。",
+      "とつぜん、ふぶきに なりました。ゆきの なかで、こぎつねが 5ひき ふるえて います。「おなか ぺこぺこ……」 はこの クッキーは、もう 4まいしか ありません。",
+      "とつぜん、ふぶきに なりました。ゆきの なかで、こぎつねが 5ひき ふるえて います。「おなか ぺこぺこ……」 はこの クッキーは、もう 4まいしか ありません。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true,
+     "camera": "View from behind the child and the bear cub, their backs to the viewer, walking into the swirling snow toward the five fox kits under the tree."
+    },
+    {
+     "label": "吹雪の中、ポケットを押さえて迷う主人公と、手を握るカゾエ、こぎつね5ひきを上から見下ろす（俯瞰）",
+     "art": "in the blowing snow, the child presses one hand over the coat's front pocket, hesitating; Kazoe holds the child's other hand and looks up worriedly; exactly five fox kits look up at them",
+     "text": [
+      "{name}の ポケットには、ないしょの 2まい。でも、あげたら なくなっちゃう。{name}は ポケットを ぎゅっと おさえました。カゾエが しんぱいそうに みて います。",
+      "{name}の ポケットには、ないしょの 2まい。でも、あげたら なくなっちゃう。{name}は ポケットを ぎゅっと おさえました。カゾエが しんぱいそうに みて います。",
+      "{name}の ポケットには、ないしょの 2まい。でも、あげたら なくなっちゃう。{name}は ポケットを ぎゅっと おさえました。カゾエが しんぱいそうに みて います。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true,
+     "camera": "High overhead view looking down through the falling snow on the child, the bear cub and the five fox kits."
+    },
+    {
+     "label": "主人公がこぎつね5ひきに1まいずつクッキーを手渡す。箱には1まい残る。吹雪が弱まりはじめる",
+     "art": "the child hands one star cookie to each of exactly five fox kits; the cookie box held by Kazoe has exactly one star cookie left; the snowstorm is beginning to calm",
+     "text": [
+      "{name}は ポケットから 2まい だしました。「はこの 4まいと あわせて、6まい。ゆびで ぴっ、ひとつずつ……どうぞ！」 5ひきに 1まいずつ。「6まいから 5まい あげて、のこりは 1まい！」",
+      "{name}は ポケットから 2まい だしました。「はこの 4まいと あわせて、6まい。ゆびで ぴっ、ひとつずつ……どうぞ！」 5ひきに 1まいずつ。「6まいから 5まい あげて、のこりは 1まい！」",
+      "{name}は ポケットから 2まい だしました。「はこの 4まいと あわせて、6まい。ゆびで ぴっ、ひとつずつ……どうぞ！」 5ひきに 1まいずつ。「6まいから 5まい あげて、のこりは 1まい！」"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true,
+     "camera": "Eye-level medium shot, the child's outstretched hands with a cookie, the five fox kits each with one cookie and the box with the last cookie clearly countable."
+    },
+    {
+     "label": "見開き。雪まつりの灯りの広場で、ペンギン3わ・りすの親子・こぎつね5ひきが主人公とカゾエを囲み、湯気の立つココアを飲む。主人公はクッキー1まいの箱を抱える",
+     "art": "in a snow festival square lit by warm lanterns after the storm, the three penguins, the squirrel mother and her little one and the five fox kits gather around the child and Kazoe, all drinking steaming cups of cocoa; the child hugs the cookie box with exactly one star cookie inside",
+     "text": [
+      "ふぶきが やむと、ゆきまつりの あかりが ともりました。ペンギンさんも りすさんも こぎつねたちも あつまって、あったかい ココアを わけて くれました。のこりの 1まいは、シロさんへの おみやげです。",
+      "ふぶきが やむと、ゆきまつりの あかりが ともりました。ペンギンさんも りすさんも こぎつねたちも あつまって、あったかい ココアを わけて くれました。のこりの 1まいは、シロさんへの おみやげです。",
+      "ふぶきが やむと、ゆきまつりの あかりが ともりました。ペンギンさんも りすさんも こぎつねたちも あつまって、あったかい ココアを わけて くれました。のこりの 1まいは、シロさんへの おみやげです。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true,
+     "camera": "Very wide eye-level panoramic view of the lantern-lit square, the child and the bear cub at the center surrounded by all the animals with steaming cups."
+    },
+    {
+     "label": "【ママ】夕方のリビング。テーブルのクッキーをママに差し出す主人公。皿にはクッキー2まい。ママがうれしそうに受け取る",
+     "art": "in the living room in the evening, the child holds out one cookie to the mother, who receives it happily; a plate on the table holds exactly two cookies",
+     "text": [
+      "いえに かえると、テーブルに クッキーが 3まい。{name}は 1まい とって、ママに わたしました。「ママ、どうぞ！ 1まい あげても、まだ 2まい あるよ」 ママは うれしそうに わらいました。",
+      "いえに かえると、テーブルに クッキーが 3まい。{name}は 1まい とって、ママに わたしました。「ママ、どうぞ！ 1まい あげても、まだ 2まい あるよ」 ママは うれしそうに わらいました。",
+      "いえに かえると、テーブルに クッキーが 3まい。{name}は 1まい とって、ママに わたしました。「ママ、どうぞ！ 1まい あげても、まだ 2まい あるよ」 ママは うれしそうに わらいました。"
+     ],
+     "withMom": true,
+     "withDad": false,
+     "withSidekick": false,
+     "camera": "Eye-level medium shot, the child's outstretched cookie and the mother's happy face, the plate with two cookies clearly countable on the table.",
+     "alt": {
+      "both": {
+       "label": "主人公がママとパパに1まいずつ差し出す。皿には1まい",
+       "art": "in the living room in the evening, the child gives one cookie each to the mother and the father, who receive them happily; a plate on the table holds exactly one cookie",
+       "text": [
+        "いえに かえると、テーブルに クッキーが 3まい。{name}は ママと パパに 1まいずつ わたしました。「3まいから 2まい あげても、まだ 1まい あるよ」 ママと パパは うれしそうに わらいました。",
+        "いえに かえると、テーブルに クッキーが 3まい。{name}は ママと パパに 1まいずつ わたしました。「3まいから 2まい あげても、まだ 1まい あるよ」 ママと パパは うれしそうに わらいました。",
+        "いえに かえると、テーブルに クッキーが 3まい。{name}は ママと パパに 1まいずつ わたしました。「3まいから 2まい あげても、まだ 1まい あるよ」 ママと パパは うれしそうに わらいました。"
+       ],
+       "withMom": true,
+       "withDad": true,
+       "withSidekick": false,
+       "camera": "Eye-level medium shot, the child handing cookies to the mother and the father, the plate with one cookie clearly visible on the table."
+      },
+      "dad": {
+       "label": "パパにクッキーを差し出す（場面1のお返し）",
+       "art": "in the living room in the evening, the child holds out one cookie to the father, who receives it happily; a plate on the table holds exactly two cookies",
+       "text": [
+        "いえに かえると、テーブルに クッキーが 3まい。{name}は 1まい とって、パパに わたしました。「パパ、どうぞ！ 1まい あげても、まだ 2まい あるよ」 パパは うれしそうに わらいました。",
+        "いえに かえると、テーブルに クッキーが 3まい。{name}は 1まい とって、パパに わたしました。「パパ、どうぞ！ 1まい あげても、まだ 2まい あるよ」 パパは うれしそうに わらいました。",
+        "いえに かえると、テーブルに クッキーが 3まい。{name}は 1まい とって、パパに わたしました。「パパ、どうぞ！ 1まい あげても、まだ 2まい あるよ」 パパは うれしそうに わらいました。"
+       ],
+       "withMom": false,
+       "withDad": true,
+       "withSidekick": false,
+       "camera": "Eye-level medium shot, the child's outstretched cookie and the father's happy face, the plate with two cookies clearly countable on the table."
+      },
+      "none": {
+       "label": "窓辺の小鳥にクッキーのかけらをあげる主人公",
+       "art": "in the living room in the evening, the child opens the window and gives pieces of one cookie to the little round sparrow on the snowy windowsill; a plate on the table behind holds exactly two cookies",
+       "text": [
+        "いえに かえると、まどべに あの ことり。{name}は クッキーを 1まい わって、ことりに あげました。「3まいから 1まい あげても、まだ 2まい あるよ」",
+        "いえに かえると、まどべに あの ことり。{name}は クッキーを 1まい わって、ことりに あげました。「3まいから 1まい あげても、まだ 2まい あるよ」",
+        "いえに かえると、まどべに あの ことり。{name}は クッキーを 1まい わって、ことりに あげました。「3まいから 1まい あげても、まだ 2まい あるよ」"
+       ],
+       "withMom": false,
+       "withDad": false,
+       "withSidekick": false,
+       "camera": "Eye-level medium shot at the window, the child feeding the sparrow, the plate with two cookies visible on the table behind."
+      }
+     }
+    },
+    {
+     "label": "雪の夜の窓。外で手をふるカゾエと、ふとんから顔を出して手をふり返す主人公。外から部屋を見る構図",
+     "art": "on a snowy night, Kazoe stands in the snow outside the bedroom window waving, and the child, tucked into a futon, peeks out and waves back; Kazoe appears only once in the picture: there is no other bear, teddy bear or toy bear anywhere inside the room",
+     "text": [
+      "その よる、まどの そとに カゾエが いました。「きょうは ありがとう。また あそぼうね」 {name}は、ぽかぽかの きもちで ふとんに もぐりこみました。",
+      "その よる、まどの そとに カゾエが いました。「きょうは ありがとう。また あそぼうね」 {name}は、ぽかぽかの きもちで ふとんに もぐりこみました。",
+      "その よる、まどの そとに カゾエが いました。「きょうは ありがとう。また あそぼうね」 {name}は、ぽかぽかの きもちで ふとんに もぐりこみました。"
+     ],
+     "withMom": false,
+     "withDad": false,
+     "withSidekick": true,
+     "camera": "From outside in the snow looking in through the lit window, the bear cub's waving back in the foreground and the child's smiling face in the futon inside."
+    }
+   ]
+  }
+ ]
+}

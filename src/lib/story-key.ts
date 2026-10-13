@@ -10,7 +10,7 @@ import { parseCustomKey } from "./custom-story";
 //   下書きを作るとき、写真の組み合わせを足して "forest:2:n:mom" のように保存する（写真を消したあとも同じ本文で印刷するため）
 // - オリジナルのお話：     "custom:{...}"（custom-story.ts。お話の中身をそのまま入れる）
 
-export type SeriesId = "forest" | "star" | "birthday" | "sea" | "dinosaur";
+export type SeriesId = "forest" | "star" | "birthday" | "sea" | "dinosaur" | "number";
 export type LevelId = "s" | "n" | "l";
 /** 写真の組み合わせ：ママとパパ / ママだけ / パパだけ / 子どもだけ */
 export type Combo = "both" | "mom" | "dad" | "none";
@@ -31,7 +31,11 @@ export const SERIES_LIST: {
   id: SeriesId;
   name: string;
   description: string;
-  episodes: { no: number; title: string; season: string }[];
+  /**
+   * level・ages は、文の量が話ごとに1つに決まっているシリーズ（数のお勉強）だけ。
+   * お話選びで文の量を選ばせず、対象年齢を表示する
+   */
+  episodes: { no: number; title: string; season: string; level?: LevelId; ages?: string }[];
 }[] = [
   {
     id: "forest",
@@ -93,10 +97,27 @@ export const SERIES_LIST: {
       { no: 5, title: "にじの たにの おかあさん", season: "春" },
     ],
   },
+  {
+    // 2026-10-12 作道さん：数のお勉強。1話完結で、文は話ごとに対象年齢の1種類だけ（台本 /mnt/project-files/stories/number-script.md）
+    id: "number",
+    name: "かずの くにの だいぼうけん",
+    description: "こぐまの「カゾエ」と、かぞえる・たす・ひくを楽しく覚えるお話",
+    episodes: [
+      { no: 1, title: "ひよこの かぞえうた", season: "春", level: "s", ages: "2〜3歳" },
+      { no: 2, title: "100この ふうせん まつり", season: "夏", level: "s", ages: "2〜3歳" },
+      { no: 3, title: "りんごの もりの あわせて パイ", season: "秋", level: "n", ages: "4〜6歳" },
+      { no: 4, title: "ゆきの ひの クッキーやさん", season: "冬", level: "n", ages: "4〜6歳" },
+    ],
+  },
 ];
 
 /** お客様と絵スタジオに出す話の数。5話目は 2026-10-11 に一旦取り下げ（台本とデータは残している） */
 export const OPEN_EPISODES = 4;
+
+/** サイト（お話選び）と絵スタジオに出すシリーズ。星・海・恐竜は 2026-10-12 に外した（台本とデータは残している。戻すときはここに足す） */
+export const SHOWN_SERIES: SeriesId[] = ["forest", "birthday", "number"];
+
+export const SHOWN_SERIES_LIST = SERIES_LIST.filter((s) => SHOWN_SERIES.includes(s.id));
 
 /** 注文できるシリーズ。まずは森だけを公開し、ほかは「準備中」にする（2026-10-11 作道さん） */
 export const OPEN_SERIES: SeriesId[] = ["forest"];
@@ -119,7 +140,7 @@ export function openEpisodes<E extends { no: number }>(episodes: E[]) {
 
 export type SeriesKey = { series: SeriesId; episode: number; level: LevelId; combo: Combo | null };
 
-const KEY_RE = /^(forest|star|birthday|sea|dinosaur):([1-5]):([snl])(?::(both|mom|dad|none))?$/;
+const KEY_RE = /^(forest|star|birthday|sea|dinosaur|number):([1-5]):([snl])(?::(both|mom|dad|none))?$/;
 
 /** シリーズのお話の番号を読む。旧版のお話やおかしな値なら null */
 export function parseSeriesKey(key: string | null | undefined): SeriesKey | null {
@@ -161,8 +182,17 @@ export function storyLabel(key: string | null | undefined) {
   return `${s.name} 第${ep.no}話「${ep.title}」`;
 }
 
-/** 文の量の名前（シリーズとオリジナルのお話） */
+/** 文の量が決まっている話なら、その話（level と対象年齢 ages）。文の量を選べる話は null */
+export function fixedLevelEpisode(series: SeriesId, episode: number) {
+  const ep = getSeriesInfo(series)?.episodes.find((e) => e.no === episode);
+  return ep?.level ? (ep as { level: LevelId; ages?: string }) : null;
+}
+
+/** 文の量の名前（シリーズとオリジナルのお話）。文の量が決まっている話は対象年齢 */
 export function levelLabel(key: string | null | undefined) {
+  const k = parseSeriesKey(key);
+  const fixed = k && fixedLevelEpisode(k.series, k.episode);
+  if (fixed) return fixed.ages ? `${fixed.ages}向け` : "";
   const level = parseSeriesKey(key)?.level ?? parseCustomKey(key)?.level;
   const l = level && LEVELS.find((x) => x.id === level);
   return l ? `${l.name}（${l.ages}）` : "";

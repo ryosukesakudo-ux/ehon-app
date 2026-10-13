@@ -2,6 +2,7 @@ import { COVER_SCENE, bookScenes, deliveryLabel, getSize, getTaste, plainText, s
 import { getBook } from "@/lib/book";
 import { levelLabel, storyLabel } from "@/lib/story-key";
 import { BOOK_BUCKET, getSupabase } from "@/lib/services";
+import { isViewPath, viewUrls } from "@/lib/book-images";
 import { OrderActions, OrderDetailProvider, RedoSceneButton } from "./actions";
 
 export const dynamic = "force-dynamic";
@@ -29,6 +30,7 @@ export default async function AdminPage() {
         <p><a href="/admin/samples">作例スタジオ（見本の絵を作る）</a></p>
         <p><a href="/admin/series">台本の絵スタジオ（台本の各話の絵を作例の家族で作る）</a></p>
         <p><a href="/admin/compare">画質くらべ（以前の方式と今のA方式を1枚ずつ）</a></p>
+        <p><a href="/admin/deforme">デフォルメ試作（新しい絵柄を1枚ためす）</a></p>
       </main>
     );
   }
@@ -46,10 +48,9 @@ export default async function AdminPage() {
     (orders ?? []).map(async (o) => {
       const story = getBook(o.drafts.story)!;
       const { data: files } = await db.storage.from(BOOK_BUCKET).list(`${o.draft_id}/final`);
-      const paths = (files ?? []).map((f) => `${o.draft_id}/final/${f.name}`);
-      const { data: urls } = paths.length
-        ? await db.storage.from(BOOK_BUCKET).createSignedUrls(paths, 60 * 60)
-        : { data: [] };
+      const paths = (files ?? []).map((f) => `${o.draft_id}/final/${f.name}`).filter((p) => !isViewPath(p));
+      // 画面には表示用の軽い絵を出す（印刷用の 2048px の PNG は大きすぎるため）
+      const urls = await viewUrls(paths);
       return {
         order: o,
         story,
@@ -57,7 +58,7 @@ export default async function AdminPage() {
         pages: bookScenes().map((i) => ({
           index: i,
           text: i === COVER_SCENE ? "表紙" : plainText(sceneText(story.scenes[i], o.drafts.child_name)),
-          url: urls?.find((u) => u.path?.endsWith(`/${String(i).padStart(2, "0")}.png`))?.signedUrl ?? null,
+          url: urls.get(`${o.draft_id}/final/${String(i).padStart(2, "0")}.png`) ?? null,
         })),
       };
     }),
@@ -70,6 +71,7 @@ export default async function AdminPage() {
       <a href="/admin/samples">作例スタジオ（トップページなどの見本の絵を作る）</a>
       <a href="/admin/series">台本の絵スタジオ（台本の各話の絵を作例の家族で作る）</a>
       <a href="/admin/compare">画質くらべ（以前の方式と今のA方式を1枚ずつ作って比べる）</a>
+      <a href="/admin/deforme">デフォルメ試作（新しい絵柄で家族3人を1枚ためす）</a>
       <a href="/admin/coupons">クーポン管理（コードの発行・停止、使われた回数）</a>
       {rows.length === 0 && <p>まだ注文はありません。</p>}
       {rows.map(({ order: o, pages }) => {

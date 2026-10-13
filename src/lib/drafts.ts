@@ -6,6 +6,7 @@ import { BOOK_SCENE_COUNT, CHARACTER_SCENES, COVER_SCENE, MAX_GUESTS, PERSON_LAB
 import { getBook } from "./book";
 import { customPhotos, parseCustomKey } from "./custom-story";
 import { upscalePng } from "./upscale";
+import { copyBookImage, isViewPath, uploadBookImage, viewUrl, viewUrls, withViews } from "./book-images";
 import { currentUser, type Member } from "./auth";
 import { getAnonId } from "./anon";
 
@@ -114,6 +115,14 @@ export function draftGuestCount(draft: Pick<Draft, "story">) {
 export function draftPreviewScenes(draft: Draft) {
   const people = draftPeople(draft);
   return previewScenes({ hasMom: people.includes("mom"), hasDad: people.includes("dad"), guests: draftGuestCount(draft) });
+}
+
+/** お支払いが済んだ注文がある下書きか（文や写真を変えると、印刷する本が変わってしまうので変えない） */
+export async function draftOrdered(draftId: string) {
+  const db = getSupabase();
+  if (!db || isDemoId(draftId)) return false;
+  const { data } = await db.from("orders").select("id").eq("draft_id", draftId).neq("status", "pending").limit(1);
+  return !!data?.length;
 }
 
 /** この下書きで作ったキャラクターの保存先（作り直すと上書きする） */
@@ -225,21 +234,21 @@ export async function generateScene(draft: Draft, sceneIndex: number, quality: Q
 
   if (target) await saveCharacter(draft, target, png);
   if (guest !== null) {
-    const { error } = await db.storage.from(BOOK_BUCKET).upload(guestCharacterPath(draft.id, guest), png, { contentType: "image/png", upsert: true });
+    const { error } = await uploadBookImage(guestCharacterPath(draft.id, guest), png);
     if (error) throw new Error(`キャラクターの保存に失敗しました: ${error.message}`);
   }
 
   const path = pagePath(draft.id, quality, sceneIndex);
-  const { error } = await db.storage.from(BOOK_BUCKET).upload(path, png, { contentType: "image/png", upsert: true });
+  const { error } = await uploadBookImage(path, png);
   if (error) throw new Error(`画像の保存に失敗しました: ${error.message}`);
-  return signedUrl(path);
+  return viewUrl(path);
 }
 
 /** キャラクターの絵を保存し、下書きに結びつける（会員はマイページの「保存しているキャラクター」にも入る）。 */
 async function saveCharacter(draft: Draft, who: Person, png: Buffer) {
   const db = getSupabase()!;
   const path = characterPath(draft.id, who);
-  const { error } = await db.storage.from(BOOK_BUCKET).upload(path, png, { contentType: "image/png", upsert: true });
+  const { error } = await uploadBookImage(path, png);
   if (error) throw new Error(`キャラクターの保存に失敗しました: ${error.message}`);
   draft[`${who}_character_path`] = path;
   const { error: draftError } = await db.from("drafts").update({ [`${who}_character_path`]: path }).eq("id", draft.id);
@@ -266,7 +275,7 @@ export async function copySavedCharacters(draft: Draft, sameTaste: Person[]) {
   for (const who of sameTaste) {
     const from = characterPathOf(draft, who);
     if (!from) continue;
-    const { error } = await db.storage.from(BOOK_BUCKET).copy(from, pagePath(draft.id, "preview", CHARACTER_SCENES[who]));
+    const { error } = await copyBookImage(from, pagePath(draft.id, "preview", CHARACTER_SCENES[who]));
     if (error) console.error("character copy failed", error);
   }
 }
@@ -276,13 +285,13 @@ export async function previewUrls(draftId: string): Promise<Record<number, strin
   const db = getSupabase();
   if (!db || isDemoId(draftId)) return {};
   const { data: files } = await db.storage.from(BOOK_BUCKET).list(`${draftId}/preview`);
-  const paths = (files ?? []).map((f) => `${draftId}/preview/${f.name}`);
+  const paths = (files ?? []).map((f) => `${draftId}/preview/${f.name}`).filter((p) => !isViewPath(p));
   if (!paths.length) return {};
-  const { data } = await db.storage.from(BOOK_BUCKET).createSignedUrls(paths, 60 * 60);
+  const urls = await viewUrls(paths);
   const out: Record<number, string> = {};
-  for (const u of data ?? []) {
-    const m = u.path?.match(/\/(\d+)\.png$/);
-    if (m && u.signedUrl) out[Number(m[1])] = u.signedUrl;
+  for (const [path, url] of urls) {
+    const m = path.match(/\/(\d+)\.png$/);
+    if (m) out[Number(m[1])] = url;
   }
   return out;
 }
@@ -299,9 +308,9 @@ export async function finalFromPreview(draft: Draft, sceneIndex: number): Promis
   const b64 = Buffer.from(await data.arrayBuffer()).toString("base64");
   const png = Buffer.from(sceneIndex === COVER_SCENE ? b64 : await upscalePng(b64, FINAL_PX), "base64");
   const path = pagePath(draft.id, "final", sceneIndex);
-  const { error } = await db.storage.from(BOOK_BUCKET).upload(path, png, { contentType: "image/png", upsert: true });
+  const { error } = await uploadBookImage(path, png);
   if (error) throw new Error(`画像の保存に失敗しました: ${error.message}`);
-  return signedUrl(path);
+  return viewUrl(path);
 }
 
 /** プレビューの表紙と本文の絵を消す（登場人物を直すとき。古いキャラクターで描いた絵が本に使われないように） */
@@ -309,7 +318,7 @@ export async function deletePreviewBook(draftId: string) {
   const db = getSupabase();
   if (!db || isDemoId(draftId)) return;
   const scenes = [COVER_SCENE, ...Array.from({ length: BOOK_SCENE_COUNT }, (_, i) => i)];
-  const { error } = await db.storage.from(BOOK_BUCKET).remove(scenes.map((i) => pagePath(draftId, "preview", i)));
+  const { error } = await db.storage.from(BOOK_BUCKET).remove(withViews(scenes.map((i) => pagePath(draftId, "preview", i))));
   if (error) throw new Error(`絵の削除に失敗しました: ${error.message}`);
 }
 
@@ -328,13 +337,6 @@ export async function deleteDraftImages(draftId: string) {
   await db.from("drafts").update({ images_deleted_at: new Date().toISOString() }).eq("id", draftId);
 }
 
-export async function signedUrl(path: string) {
-  const db = getSupabase()!;
-  const { data, error } = await db.storage.from(BOOK_BUCKET).createSignedUrl(path, 60 * 60);
-  if (error || !data) throw new Error(`画像URLの作成に失敗しました: ${error?.message}`);
-  return data.signedUrl;
-}
-
 /** 登録前のお試しの顔写真とキャラクターを削除する（会員の写真・キャラクターは user_photos・characters 側で管理する）。 */
 export async function deleteDraftPhotos(draft: Pick<Draft, "id" | "child_photo_path" | "mom_photo_path" | "dad_photo_path">) {
   const db = getSupabase();
@@ -346,7 +348,7 @@ export async function deleteDraftPhotos(draft: Pick<Draft, "id" | "child_photo_p
   }
   const { error: charError } = await db.storage
     .from(BOOK_BUCKET)
-    .remove([...PEOPLE.map((p) => characterPath(draft.id, p)), ...Array.from({ length: MAX_GUESTS }, (_, i) => guestCharacterPath(draft.id, i))]);
+    .remove(withViews([...PEOPLE.map((p) => characterPath(draft.id, p)), ...Array.from({ length: MAX_GUESTS }, (_, i) => guestCharacterPath(draft.id, i))]));
   if (charError) throw new Error(`キャラクターの削除に失敗しました: ${charError.message}`);
   await db
     .from("drafts")

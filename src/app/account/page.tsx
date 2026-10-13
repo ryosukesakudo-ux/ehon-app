@@ -6,6 +6,7 @@ import { listCharacters, listPhotos, previewQuota } from "@/lib/account";
 import { konbiniVoucher } from "@/lib/konbini";
 import { BuyPreviewsButton } from "@/components/buy-previews";
 import { BOOK_BUCKET, getSupabase } from "@/lib/services";
+import { isViewPath, viewUrls } from "@/lib/book-images";
 import { PageHeader } from "@/components/page-header";
 import { FLOW_STEPS, getFlowSave } from "@/lib/flow-save";
 import { DeletePhotoButton } from "./delete-photo";
@@ -62,10 +63,10 @@ export default async function AccountPage({ searchParams }: PageProps<"/account"
       if (db && !d.images_deleted_at) {
         for (const quality of paid ? ["final", "preview"] : ["preview"]) {
           const { data: files } = await db.storage.from(BOOK_BUCKET).list(`${d.id}/${quality}`);
-          const paths = (files ?? []).map((f) => `${d.id}/${quality}/${f.name}`);
+          const paths = (files ?? []).map((f) => `${d.id}/${quality}/${f.name}`).filter((p) => !isViewPath(p));
           if (!paths.length) continue;
-          const { data } = await db.storage.from(BOOK_BUCKET).createSignedUrls(paths, 60 * 60);
-          urls = (data ?? []).map((u) => u.signedUrl).filter((u): u is string => !!u);
+          const signed = await viewUrls(paths);
+          urls = paths.map((p) => signed.get(p)).filter((u): u is string => !!u);
           break;
         }
       }

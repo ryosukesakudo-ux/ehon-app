@@ -391,3 +391,9 @@ button, input { font-family: inherit; }
 .preview-thumb[aria-selected="true"] { border: 3px solid var(--coral); }
 /* 保存しているキャラクターをそのまま使った（プレビューを使っていない）印 */
 .reused-badge { display: inline-block; margin: 4px 0; padding: 2px 10px; border-radius: 10px; background: #E3F4E8; color: #1E6B3A; font-size: 12px; font-weight: 700; line-height: 1.6; }
+
+/* プレビューの本文の下：文の量の切り替え（少ない・普通・多い） */
+.level-switch { display: flex; align-items: center; gap: 6px; margin-top: 12px; font-size: 12px; color: var(--sub); }
+.level-switch > span { margin-right: 4px; font-weight: 700; }
+.level-switch button { height: 32px; padding: 0 14px; border-radius: 16px; border: 1px solid var(--line); background: #fff; color: var(--navy); font-size: 13px; cursor: pointer; }
+.level-switch button[aria-pressed="true"] { border: 2px solid var(--coral); background: #FDECE8; font-weight: 700; }

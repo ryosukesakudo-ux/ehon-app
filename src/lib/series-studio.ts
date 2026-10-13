@@ -1,7 +1,7 @@
 import "server-only";
 import type { StoryId } from "./catalog";
 import { SERIES_DATA, type Continuity } from "./series-data";
-import { SERIES_PAGES, seriesImagePath, type SeriesScene } from "./series";
+import { SERIES_PAGES, isPhotoFirst, seriesImagePath, type SeriesScene } from "./series";
 import { SERIES_LIST, isOpenSeries, openEpisodes, type SeriesId } from "./story-key";
 import { SAMPLE_BUCKET, getSupabase } from "./services";
 
@@ -14,6 +14,8 @@ export type StudioSeries = {
   name: string;
   /** 作例スタジオの家族の設定画があるお話（その設定画に相棒を足してシリーズの設定画にする）。無ければ文章から作る */
   familyStory: StoryId | null;
+  /** 家族写真が先（設定画・場面は写真に寄せて描く） */
+  photoFirst: boolean;
   sidekick: string;
   sidekickLabel: string;
   cast: Record<string, string>;
@@ -30,6 +32,7 @@ export function getStudioSeries(id: string): StudioSeries | null {
     id: data.id,
     name: data.name,
     familyStory: FAMILY_STORY[data.id] ?? null,
+    photoFirst: isPhotoFirst(data.id),
     sidekick: data.sidekick,
     sidekickLabel: data.sidekickLabel,
     cast: data.cast,

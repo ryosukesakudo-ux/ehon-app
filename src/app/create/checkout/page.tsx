@@ -16,6 +16,7 @@ import {
 } from "@/lib/catalog";
 import type { Coupon } from "@/lib/coupons";
 import { levelLabel, storyLabel } from "@/lib/story-key";
+import { DatePicker } from "@/components/date-picker";
 import { useFlow } from "../flow";
 import { NextButton, StepHeader, StepTitle } from "../step";
 
@@ -141,17 +142,13 @@ export default function CheckoutPage() {
         <div className="card" style={{ padding: 18, gap: 12 }}>
           <div className="display" style={{ fontSize: 15, fontWeight: 800, color: "var(--navy)" }}>お届け日</div>
           <div className="field">
-            <label htmlFor="delivery-date">お届け希望日（この日までにお届け）</label>
-            <input
-              id="delivery-date"
-              type="date"
-              min={minDate}
-              max={maxDate}
-              value={state.deliveryDate}
-              onChange={(e) => update({ deliveryDate: e.target.value })}
-            />
+            <div style={{ fontSize: 14, fontWeight: 800, color: "var(--navy)" }}>お届け希望日（この日までにお届け）</div>
+            <DatePicker value={state.deliveryDate} min={minDate} max={maxDate} onChange={(d) => update({ deliveryDate: d })} />
+            {state.deliveryDate && (
+              <p style={{ margin: 0, fontSize: 14, fontWeight: 700, color: "var(--navy)" }}>{dateLabel(state.deliveryDate)}までにお届け</p>
+            )}
             <p style={{ margin: 0, fontSize: 12, lineHeight: 1.6, color: "var(--sub)" }}>
-              ご注文日から{DELIVERY_MIN_DAYS}日後以降の日付を選べます。選んだ日までに届くように発送します。空欄のときは、できあがり次第お届けします（{dateLabel(minDate)}ごろまでにお届け予定）。印刷・製本を外部の製本会社に依頼しているため、時間帯は指定できません。
+              ご注文日から{DELIVERY_MIN_DAYS}日後以降（色の付いた日）を選べます。選んだ日までに届くように発送します。日付を選ばないときは、できあがり次第お届けします（{dateLabel(minDate)}ごろまでにお届け予定）。印刷・製本を外部の製本会社に依頼しているため、時間帯は指定できません。
             </p>
             {state.deliveryDate && (
               <button type="button" className="ghost" style={{ alignSelf: "flex-start", height: 36, padding: "0 14px", fontSize: 13 }} onClick={() => update({ deliveryDate: "" })}>
@@ -168,6 +165,9 @@ export default function CheckoutPage() {
           </svg>
           <span>カード・Apple Pay・Google Pay・コンビニ払い・PayPay に対応。決済サービス（Stripe）の安全な画面で入力します</span>
         </div>
+        <p style={{ margin: 0, fontSize: 13, lineHeight: 1.7, color: "var(--navy)", background: "var(--cream)", border: "1px solid var(--coral)", borderRadius: 12, padding: "10px 14px" }}>
+          <strong>Apple Pay・Google Pay の方へ：</strong>Apple Pay・Google Pay に登録済みの住所にお届けします。支払う前に、表示される「配送先」の住所をご確認ください。
+        </p>
         <p style={{ margin: 0, fontSize: 12, lineHeight: 1.7, color: "var(--sub)" }}>
           コンビニ払いは、お支払い番号が表示された画面で手続き完了です（このサイトには戻りません）。お支払い番号と手順はメールでもお送りし、マイページからも開けます。
         </p>
