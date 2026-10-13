@@ -21,8 +21,8 @@ export function storyChosen(story: string, ready: ReadyEpisodes) {
   return !!k && !!ready?.[k.series]?.includes(k.episode) && isProofread(k.series, k.episode);
 }
 
-/** お話選び。シリーズの話を押したら次の項目へ進む（オリジナルのお話は、できあがってから「次へ」） */
-export function StorySection({ ready, onPicked }: { ready: ReadyEpisodes; onPicked: () => void }) {
+/** お話選び。話を選ぶと、すぐ下に文の量が出る（選び終わると、写真の項目が下に出る） */
+export function StorySection({ ready }: { ready: ReadyEpisodes }) {
   const { state, update } = useFlow();
   const current = parseSeriesKey(state.story);
   // 最初は公開中のシリーズ（森）を開いておく
@@ -76,10 +76,7 @@ export function StorySection({ ready, onPicked }: { ready: ReadyEpisodes; onPick
                       className="choice episode-choice"
                       aria-pressed={selected}
                       disabled={!ok}
-                      onClick={() => {
-                        choose(seriesKey(s.id, ep.no, ep.level ?? (current && !fixed ? current.level : levelForAge(state.childAge))));
-                        onPicked();
-                      }}
+                      onClick={() => choose(seriesKey(s.id, ep.no, ep.level ?? (current && !fixed ? current.level : levelForAge(state.childAge))))}
                     >
                       <Thumb src={ok || comingSoon ? versioned(samplePublicUrl(seriesImagePath(s.id, ep.no, 0))) : null} alt={`第${ep.no}話の見本`} size={56} />
                       <div style={{ display: "flex", flexDirection: "column", gap: 4, flexGrow: 1 }}>
@@ -131,11 +128,6 @@ export function StorySection({ ready, onPicked }: { ready: ReadyEpisodes; onPick
       <p className="section-lead">お子さまの好きなものや、家族の思い出をお話にできます。</p>
       <CustomStoryPanel />
 
-      {storyChosen(state.story, ready) && (
-        <button type="button" className="cta flow-next" onClick={onPicked}>
-          次へ：写真をえらぶ
-        </button>
-      )}
     </>
   );
 }
