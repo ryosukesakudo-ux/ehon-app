@@ -455,7 +455,7 @@
     },
     {
      "label": "手を差し出すポッケ。後ろに心配そうな仲間たち",
-     "art": "Pokke gently holds out his little paw to the child sitting in the river; behind him the beaver children and the two rabbit siblings watch with concern; the orange sunset sky glows behind them",
+     "art": "Pokke gently holds out his little paw to the child sitting in the river; the child still looks frustrated and sad, lips pressed tight, eyebrows drawn together and eyes wet with held-back tears, not smiling yet; behind him the beaver children and the two rabbit siblings watch with concern; the orange sunset sky glows behind them",
      "text": [
       "りすのポッケが てを のばして くれたよ。",
       "「いっしょに やろうよ」 ポッケが ちいさな てを さしだしました。ビーバーたちも、うさぎの きょうだいも、かけよって きます。",
@@ -464,11 +464,11 @@
      "withMom": false,
      "withDad": false,
      "withSidekick": true,
-     "camera": "Medium three-quarter side view, the squirrel's paw extended toward the child in the water, the worried friends gathered in the distance."
+     "camera": "Medium three-quarter side view, the squirrel's paw extended toward the child in the water, the child's frustrated, teary face clearly visible, the worried friends gathered in the distance."
     },
     {
      "label": "一列に並んで石を手渡しする動物たちと主人公",
-     "art": "under the orange sunset sky the child, Pokke, the beaver children and the rabbit siblings stand in a line passing the smaller stones of the dam from hand to hand, and all pull a rope tied around the biggest stone, working together cheerfully",
+     "art": "under the orange sunset sky the child, Pokke, the beaver children and the rabbit siblings stand in a line passing the smaller stones of the dam from hand to hand, and all pull a rope tied around the biggest stone, working together cheerfully; the child now has a big bright happy smile",
      "text": [
       "みんなで せーの！",
       "「みんなで やろう！」 みんなは いちれつに ならんで、いしを てわたしで はこびました。「せーの！」「よいしょ！」",
@@ -477,7 +477,7 @@
      "withMom": false,
      "withDad": false,
      "withSidekick": true,
-     "camera": "Dynamic wide side view along the line of friends passing stones hand to hand in warm orange sunset light, stones mid-air, energetic diagonal rhythm."
+     "camera": "Dynamic wide side view along the line of friends passing stones hand to hand in warm orange sunset light, the child's big smile clearly visible, stones mid-air, energetic diagonal rhythm."
     },
     {
      "label": "【見開き】川一面に光るほたる。歓声をあげる仲間たち",
