@@ -51,10 +51,19 @@ export default async function AdminPage() {
   const rows = await Promise.all(
     (orders ?? []).map(async (o) => {
       const story = getBook(o.drafts.story)!;
-      const { data: files } = await db.storage.from(BOOK_BUCKET).list(`${o.draft_id}/final`);
-      const paths = (files ?? []).map((f) => `${o.draft_id}/final/${f.name}`).filter((p) => !isViewPath(p));
+      // 印刷用の絵（final）と、お客様が作ったプレビューの絵（preview）。
+      // プレビューは「全ページの絵を作る」で印刷用にそのまま使われるので、印刷用がまだ無いページはプレビューを出す
+      const [{ data: files }, { data: previewFiles }] = await Promise.all([
+        db.storage.from(BOOK_BUCKET).list(`${o.draft_id}/final`),
+        db.storage.from(BOOK_BUCKET).list(`${o.draft_id}/preview`),
+      ]);
+      const paths = [
+        ...(files ?? []).map((f) => `${o.draft_id}/final/${f.name}`),
+        ...(previewFiles ?? []).map((f) => `${o.draft_id}/preview/${f.name}`),
+      ].filter((p) => !isViewPath(p));
       // 画面には表示用の軽い絵を出す（印刷用の 2048px の PNG は大きすぎるため）
       const urls = await viewUrls(paths);
+      const file = (i: number) => `${String(i).padStart(2, "0")}.png`;
       return {
         order: o,
         story,
@@ -62,7 +71,8 @@ export default async function AdminPage() {
         pages: bookScenes().map((i) => ({
           index: i,
           text: i === COVER_SCENE ? "表紙" : plainText(sceneText(story.scenes[i], o.drafts.child_name)),
-          url: urls.get(`${o.draft_id}/final/${String(i).padStart(2, "0")}.png`) ?? null,
+          url: urls.get(`${o.draft_id}/final/${file(i)}`) ?? null,
+          previewUrl: urls.get(`${o.draft_id}/preview/${file(i)}`) ?? null,
         })),
       };
     }),
@@ -106,7 +116,10 @@ export default async function AdminPage() {
             </div>
             <OrderActions orderId={o.id} status={o.status} scenes={pages.map((p) => p.index)} doneScenes={pages.flatMap((p) => (p.url ? [p.index] : []))} printSizes={SIZES.map((s) => s.id)} amount={o.amount} refunded={o.refunded_amount ?? 0} />
             <details>
-              <summary>ページ一覧（{pages.filter((p) => p.url).length}/{pages.length} 枚作成済み）</summary>
+              <summary>
+                ページ一覧（{pages.filter((p) => p.url).length}/{pages.length} 枚作成済み
+                {pages.some((p) => !p.url && p.previewUrl) && `・プレビューを使う ${pages.filter((p) => !p.url && p.previewUrl).length} 枚`}）
+              </summary>
               <ol style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(160px, 1fr))", gap: 12, padding: 0, listStyle: "none" }}>
                 {pages.map((p, i) => (
                   <li key={i} style={{ fontSize: 12, lineHeight: 1.6 }}>
@@ -114,6 +127,12 @@ export default async function AdminPage() {
                       <a href={p.url} target="_blank" rel="noreferrer">
                         {/* eslint-disable-next-line @next/next/no-img-element -- 署名付きURLの一時画像 */}
                         <img src={p.url} alt={p.text} style={{ width: "100%", aspectRatio: p.index === COVER_SCENE ? "3 / 2" : "1 / 1", objectFit: "cover", borderRadius: 8 }} />
+                      </a>
+                    ) : p.previewUrl ? (
+                      <a href={p.previewUrl} target="_blank" rel="noreferrer" style={{ position: "relative", display: "block" }}>
+                        {/* eslint-disable-next-line @next/next/no-img-element -- 署名付きURLの一時画像 */}
+                        <img src={p.previewUrl} alt={p.text} style={{ width: "100%", aspectRatio: p.index === COVER_SCENE ? "3 / 2" : "1 / 1", objectFit: "cover", borderRadius: 8, opacity: 0.85 }} />
+                        <span className="tag" style={{ position: "absolute", top: 6, left: 6, fontSize: 11 }}>プレビューを使用</span>
                       </a>
                     ) : (
                       <div style={{ aspectRatio: "1 / 1", borderRadius: 8, background: "#eee", display: "flex", alignItems: "center", justifyContent: "center" }}>未作成</div>
