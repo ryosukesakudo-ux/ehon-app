@@ -13,6 +13,7 @@ import { useFlow } from "../flow";
 import { castLabel, parseCustomKey } from "@/lib/custom-story";
 import { FacePicker } from "../face-picker";
 import { LikenessPicker } from "../likeness-picker";
+import { DrawingWait } from "../drawing-wait";
 import { loginHref, useAccount } from "../account";
 import { NextButton, StepHeader, StepTitle } from "../step";
 
@@ -435,6 +436,11 @@ export default function PhotoPage() {
           <Link href={loginHref("/create/photo")} className="ghost">無料会員登録・ログインへ</Link>
         )}
       </main>
+      {sending && (
+        <div className="wait-overlay">
+          <DrawingWait title="写真を送っています" messages={["しゃしんを とどけています", "かおの いちを たしかめています", "えのぐを じゅんびしています"]} estimate={10} />
+        </div>
+      )}
       <NextButton onClick={submit} disabled={!canSubmit || sending}>
         {sending ? "送信中…" : "絵本をつくる"}
       </NextButton>

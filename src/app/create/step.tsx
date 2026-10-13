@@ -10,6 +10,36 @@ import { Brand } from "@/components/brand";
 
 export const TOTAL_STEPS = 6;
 
+/** 進み具合の各ステップの名前（ヘッダーの丸の下に出す） */
+const STEP_LABELS = ["タッチ", "お話", "写真", "見本", "サイズ", "注文"];
+
+/**
+ * 進み具合：丸と線でつないだステップ。今のステップの丸がぽんと大きくなり、線が前のステップから伸びる
+ * （2026-10-13 作道さん：ステップが進んでいく見せ方を華やかに）
+ */
+function Stepper({ step }: { step: number }) {
+  const pct = (n: number) => `${(Math.max(0, n - 1) / (TOTAL_STEPS - 1)) * 100}%`;
+  return (
+    <div className="flow-steps" role="progressbar" aria-valuemin={1} aria-valuemax={TOTAL_STEPS} aria-valuenow={step} aria-label={`進み具合 ${step}/${TOTAL_STEPS}：${STEP_LABELS[step - 1]}`}>
+      <div className="flow-steps-track" aria-hidden="true">
+        <div className="flow-steps-fill" style={{ ["--from" as string]: pct(step - 1), ["--to" as string]: pct(step) }} />
+      </div>
+      <ol className="flow-steps-dots" aria-hidden="true">
+        {STEP_LABELS.map((label, i) => {
+          const n = i + 1;
+          const state = n < step ? "done" : n === step ? "now" : "";
+          return (
+            <li key={label} className={state} style={{ ["--d" as string]: `${i * 40}ms` }}>
+              <span className="flow-steps-dot display">{n < step ? "✓" : n}</span>
+              <span className="flow-steps-label display">{label}</span>
+            </li>
+          );
+        })}
+      </ol>
+    </div>
+  );
+}
+
 export function StepHeader({ step, back }: { step: number; back?: string }) {
   const { update, ready } = useFlow();
   const pathname = usePathname();
@@ -20,8 +50,8 @@ export function StepHeader({ step, back }: { step: number; back?: string }) {
   }, [ready, pathname]);
   return (
     <header className="step-header">
-      <Star size={14} style={{ position: "absolute", left: "58%", top: 6 }} />
-      <Sparkle size={12} style={{ position: "absolute", left: 90, top: 40 }} />
+      <Star size={14} className="twinkle" style={{ position: "absolute", left: "58%", top: 6 }} />
+      <Sparkle size={12} className="twinkle" style={{ position: "absolute", left: 90, top: 40, animationDelay: "1.2s" }} />
       <div className="step-header-row">
         {back ? (
           <Link href={back} className="back-link display">
@@ -37,16 +67,7 @@ export function StepHeader({ step, back }: { step: number; back?: string }) {
         <Brand size={26} mark={false} />
         <SaveAndExit />
       </div>
-      <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-        <div className="progress" style={{ flex: 1 }} role="progressbar" aria-valuemin={1} aria-valuemax={TOTAL_STEPS} aria-valuenow={step} aria-label="進み具合">
-          {Array.from({ length: TOTAL_STEPS }, (_, i) => (
-            <span key={i} className={i < step ? "on" : ""} />
-          ))}
-        </div>
-        <div className="display" style={{ fontSize: 13, fontWeight: 800, color: "var(--navy)" }}>
-          {step}/{TOTAL_STEPS}
-        </div>
-      </div>
+      <Stepper step={step} />
     </header>
   );
 }

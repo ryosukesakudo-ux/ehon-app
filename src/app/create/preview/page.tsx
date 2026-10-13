@@ -27,7 +27,7 @@ import { parseCustomKey } from "@/lib/custom-story";
 import { BookCover } from "@/components/book-cover";
 import { RubyText } from "@/components/ruby-text";
 import { Chevron } from "@/components/icons";
-import { Lottie } from "@/components/lottie";
+import { DrawingWait } from "../drawing-wait";
 import { BuyPreviewsButton, startCreditCheckout } from "@/components/buy-previews";
 import { useFlow } from "../flow";
 import { LikenessPicker } from "../likeness-picker";
@@ -423,8 +423,9 @@ function Preview() {
         </div>
       </div>
     ) : url && !loading[scene!] ? (
+      // 描き上がった絵は、ぱっと出てきらりと光る（key で絵が変わるたびに動かす）
       // eslint-disable-next-line @next/next/no-img-element -- 署名付きURLの一時画像
-      <img src={url} alt={isCover ? "表紙の絵" : isChar ? `${nameOf(scene!)}のキャラクター` : `${scene! + 1}ページの絵`} style={{ width: "100%", height: "100%", objectFit: isChar ? "contain" : "cover" }} />
+      <img key={url} className="reveal-pop" src={url} alt={isCover ? "表紙の絵" : isChar ? `${nameOf(scene!)}のキャラクター` : `${scene! + 1}ページの絵`} style={{ width: "100%", height: "100%", objectFit: isChar ? "contain" : "cover" }} />
     ) : scene !== undefined && !loading[scene] && !isChar && !isCover ? (
       // まだ作っていない本文のページ（作る途中で止まったときなど）
       <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 10, padding: 24, textAlign: "center", color: "var(--sub)", fontSize: 13 }}>
@@ -434,10 +435,10 @@ function Preview() {
         </button>
       </div>
     ) : (
-      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 12, color: "var(--sub)", fontSize: 13 }}>
-        <Lottie name="drawing" style={{ width: 200, height: 150 }} />
-        <span>絵をかいています…（1分ほどかかります）</span>
-      </div>
+      <DrawingWait
+        name={state.childName}
+        what={scene === undefined ? "絵" : isCover ? "表紙" : isChar ? `${nameOf(scene)}のキャラクター` : `${scene + 1}ページの絵`}
+      />
     );
 
   return (
