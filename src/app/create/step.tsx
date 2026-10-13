@@ -40,16 +40,17 @@ function Stepper({ step }: { step: number }) {
   );
 }
 
-export function StepHeader({ step, back }: { step: number; back?: string }) {
+/** trackPath=false：開いている画面の記録は呼び出し側で行う（1ページの作成画面）。sticky：スクロールしても上に残す */
+export function StepHeader({ step, back, trackPath = true, sticky = false }: { step: number; back?: string; trackPath?: boolean; sticky?: boolean }) {
   const { update, ready } = useFlow();
   const pathname = usePathname();
   // 最後に開いていた画面を覚えておく（ログイン後やマイページから、この画面に戻れるように）
   useEffect(() => {
-    if (ready) update({ path: pathname });
+    if (ready && trackPath) update({ path: pathname });
     // eslint-disable-next-line react-hooks/exhaustive-deps -- 画面が変わったときだけ記録する
   }, [ready, pathname]);
   return (
-    <header className="step-header">
+    <header className={sticky ? "step-header sticky" : "step-header"}>
       <Star size={14} className="twinkle" style={{ position: "absolute", left: "58%", top: 6 }} />
       <Sparkle size={12} className="twinkle" style={{ position: "absolute", left: 90, top: 40, animationDelay: "1.2s" }} />
       <div className="step-header-row">
