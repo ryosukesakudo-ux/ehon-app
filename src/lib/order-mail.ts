@@ -42,7 +42,7 @@ export async function sendOrderConfirmation(orderId: string, base: string) {
     ["注文番号", orderNo],
     ["お話", `${storyLabel(o.drafts?.story)}（主人公：${o.drafts?.child_name ?? ""}）`],
     ["テイスト", getTaste(o.drafts?.taste)?.name ?? ""],
-    ["サイズ", `${size?.name ?? o.size}サイズ（${size?.spec ?? ""}）×${copies}冊`],
+    ["絵本の種類", `${size?.name ?? o.size}（${size?.spec ?? ""}）×${copies}冊`],
     ...(discount > 0 ? ([["クーポン", `${o.coupon_code}（${yen(discount)}引き）`]] as [string, string][]) : []),
     ["お支払い金額", `${yen(o.amount)}（送料・税込）`],
     ["お届け先", a ? `〒${a.postal_code ?? ""} ${a.state ?? ""}${a.city ?? ""}${a.line1 ?? ""} ${a.line2 ?? ""}　${ship?.name ?? ""} 様` : ""],

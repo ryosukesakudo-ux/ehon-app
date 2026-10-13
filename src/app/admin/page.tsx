@@ -1,4 +1,4 @@
-import { COVER_SCENE, bookScenes, deliveryLabel, getSize, getTaste, plainText, sceneText, SIZES, yen } from "@/lib/catalog";
+import { COVER_SCENE, bookScenes, deliveryLabel, sizeLabel, getTaste, plainText, sceneText, SIZES, yen } from "@/lib/catalog";
 import { getBook } from "@/lib/book";
 import { levelLabel, storyLabel } from "@/lib/story-key";
 import { BOOK_BUCKET, getSupabase } from "@/lib/services";
@@ -88,7 +88,7 @@ export default async function AdminPage() {
               </span>
             </div>
             <div style={{ fontSize: 14, lineHeight: 1.8 }}>
-              {storyLabel(o.drafts.story)}{levelLabel(o.drafts.story) && `（文の量：${levelLabel(o.drafts.story)}）`}／{getTaste(o.drafts.taste)?.name}／主人公「{o.drafts.child_name}」／{getSize(o.size)?.name}サイズ
+              {storyLabel(o.drafts.story)}{levelLabel(o.drafts.story) && `（文の量：${levelLabel(o.drafts.story)}）`}／{getTaste(o.drafts.taste)?.name}／主人公「{o.drafts.child_name}」／{sizeLabel(o.size)}
               {copiesOf(o) > 1 ? `×${copiesOf(o)}冊` : ""}／{yen(o.amount)}
               {o.coupon_code ? `（クーポン ${o.coupon_code}：${yen(o.discount ?? 0)}引き）` : ""}
               <br />

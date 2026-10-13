@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { MEMBER_MONTHLY_PREVIEWS, PERSON_LABEL, RETENTION, getSize, getTaste, yen } from "@/lib/catalog";
+import { MEMBER_MONTHLY_PREVIEWS, PERSON_LABEL, RETENTION, getTaste, sizeLabel, yen } from "@/lib/catalog";
 import { currentUser } from "@/lib/auth";
 import { listCharacters, listPhotos, previewQuota } from "@/lib/account";
 import { konbiniVoucher } from "@/lib/konbini";
@@ -160,7 +160,7 @@ export default async function AccountPage({ searchParams }: PageProps<"/account"
               )}
               {orders.map((o) => (
                 <div key={o.id} style={{ fontSize: 13, color: "var(--sub)" }}>
-                  ご注文：{getSize(o.size)?.name}サイズ／{yen(o.amount)}
+                  ご注文：{sizeLabel(o.size)}／{yen(o.amount)}
                   {o.paid_at ? `／${date(o.paid_at)} お支払い` : ""}
                   {o.refunded_amount ? `／${yen(o.refunded_amount)} 返金済み` : ""}
                   {vouchers[o.id] && (

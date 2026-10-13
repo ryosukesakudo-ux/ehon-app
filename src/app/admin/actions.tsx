@@ -203,7 +203,7 @@ export function OrderActions({
         printSizes.map((size) => (
           <span key={size} style={{ display: "inline-flex", gap: 8, alignItems: "center" }}>
             <button type="button" className="ghost" disabled={!!busy} onClick={() => makePdf(size)}>
-              {busy === `pdf:${size}` ? "PDFを作成中…" : `入稿用PDFを作る（${size}サイズ）`}
+              {busy === `pdf:${size}` ? "PDFを作成中…" : `入稿用PDFを作る（${size === "S" ? "ソフト" : "ハード"}カバー・182mm角）`}
             </button>
             {pdfs[size] && (
               <>

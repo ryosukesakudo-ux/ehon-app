@@ -91,7 +91,7 @@ export default function CheckoutPage() {
           <div className="sum-row"><span>テイスト</span><span>{getTaste(state.taste)?.name}</span></div>
           <div className="sum-row"><span>主人公</span><span>{state.childName}{state.childAge ? `（${state.childAge}さい）` : ""}</span></div>
           {state.childBirthday && <div className="sum-row"><span>お誕生日</span><span>{state.childBirthday.replaceAll("-", "/")}</span></div>}
-          <div className="sum-row"><span>サイズ</span><span>{size.name}（{size.spec}）</span></div>
+          <div className="sum-row"><span>絵本の種類</span><span>{size.name}（{size.spec}）</span></div>
           <div className="divider" />
           <div className="sum-row"><span>絵本</span><span>{yen(size.price)}</span></div>
           {coupon && <div className="sum-row" style={{ color: "var(--coral)" }}><span>クーポン（{coupon.label}）</span><span>−{yen(size.price - firstPrice)}</span></div>}
