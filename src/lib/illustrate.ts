@@ -49,7 +49,7 @@ const spreadFraming = (textSide: "left" | "right") => {
     "Make a wide, panoramic landscape composition that fills the whole frame edge to edge. Keep every face, hand and important object inside the middle two-thirds of the image height. " +
     "The vertical center line of the image is the binding fold of the book: never place a face, a hand or an important object on or near the center line. " +
     `Put all the characters, animals and important objects clearly on the ${other} half of the image. ` +
-    `On the ${textSide} half, keep the lower part a calm, simple area of background only (open sky, ground, grass, water, a wall or soft foliage, with no people, no animals and no faces) where a short text will be overlaid later. ` +
+    `On the ${textSide} half, keep the whole lower half a calm, simple area of background only (open sky, ground, grass, water, a wall or soft foliage, with no people, no animals and no faces) where a short text will be overlaid later. ` +
     "Never crop, fade out or hide any part of the characters' bodies at the edges, except the trimmed top and bottom margins, which must contain only background. Do not leave an empty or blank band anywhere. Do not draw any letters, words or text in the image."
     );
 };

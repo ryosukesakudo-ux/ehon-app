@@ -16,7 +16,7 @@ export type StudioView = {
   id: SeriesId;
   name: string;
   sidekickLabel: string;
-  episodes: { no: number; title: string; cover: { label: string }; scenes: { label: string; text: string }[] }[];
+  episodes: { no: number; title: string; cover: { label: string }; scenes: { label: string; texts: string[] }[] }[];
 };
 
 export function SeriesStudio({ list }: { list: StudioView[] }) {
@@ -68,6 +68,8 @@ export function SeriesStudio({ list }: { list: StudioView[] }) {
   const [spreadEp, setSpreadEp] = useState(series.episodes[0]?.no ?? 1);
   const [spreadPage, setSpreadPage] = useState(5);
   const [textSide, setTextSide] = useState<"left" | "right">("right");
+  // 重ねて見せる文の量（0 少ない / 1 普通 / 2 多い）。置き場所は「多い」の枠で探すので、どれでも被らない
+  const [spreadLevel, setSpreadLevel] = useState(1);
   const spreadKey = `spread/${spreadEp}/${spreadPage}`;
   const makeSpread = async () => {
     if (!(await exists(seriesSheetPath(SERIES_ID))) && !(await makeSheet())) return;
@@ -197,13 +199,21 @@ export function SeriesStudio({ list }: { list: StudioView[] }) {
                 <option value="left">左ページ（人物は右に）</option>
               </select>
             </label>
+            <label>
+              文の量：
+              <select value={spreadLevel} onChange={(e) => setSpreadLevel(Number(e.target.value))}>
+                <option value={0}>少ない</option>
+                <option value={1}>普通</option>
+                <option value={2}>多い</option>
+              </select>
+            </label>
           </div>
           <SpreadPreview
             path={seriesSpreadPath(SERIES_ID, spreadEpisode.no, spreadPage)}
             version={version[spreadKey]}
             busy={busy[spreadKey]}
             textPath={seriesSpreadTextPath(SERIES_ID, spreadEpisode.no, spreadPage)}
-            text={spreadEpisode.scenes[spreadPage - 1]?.text ?? ""}
+            text={spreadEpisode.scenes[spreadPage - 1]?.texts[spreadLevel] ?? ""}
             side={textSide}
           />
           <textarea
@@ -311,11 +321,11 @@ function SpreadPreview(props: { path: string; textPath: string; version?: number
                 position: "absolute",
                 ...place,
                 [h]: "3%",
-                width: "42%",
+                width: "44%",
                 margin: 0,
                 padding: "10px 14px",
                 borderRadius: 14,
-                background: "rgba(255,255,255,0.75)",
+                background: "rgba(255,255,255,0.55)",
                 fontSize: "clamp(10px, 1.6vw, 15px)",
                 lineHeight: 1.7,
                 color: "#000",
