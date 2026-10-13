@@ -42,14 +42,17 @@ function cameraPrompt(camera?: string) {
 // 見開きの試作（2026-10-13 作道さん：TaleCoco のように左右2ページにまたがる大きな絵を試したい）。
 // AIの横長は 3:2（1536x1024）なので、見開き（2:1）にするとき上下を少し切る。綴じ目（真ん中）に顔や大事な物を置かない。
 // 文は絵の上に重ねるので、文を置くページ（textSide）の下のほうを空けておく。人物は反対のページに寄せる。
+// 空ける側も同じ場所のつづき（2026-10-13 作道さん：トンネルの場面で、右ページがトンネルの中に見えなかった）。
 const spreadFraming = (textSide: "left" | "right") => {
   const other = textSide === "left" ? "right" : "left";
   return (
     "This picture will be printed across a two-page spread of a square picture book: the final shape is twice as wide as it is tall, so about the top sixth and the bottom sixth of this image will be trimmed off. " +
-    "Make a wide, panoramic landscape composition that fills the whole frame edge to edge. Keep every face, hand and important object inside the middle two-thirds of the image height. " +
+    "Make a wide, panoramic composition of this scene's setting that fills the whole frame edge to edge. Keep every face, hand and important object inside the middle two-thirds of the image height. " +
     "The vertical center line of the image is the binding fold of the book: never place a face, a hand or an important object on or near the center line. " +
     `Put all the characters, animals and important objects clearly on the ${other} half of the image. ` +
-    `On the ${textSide} half, keep the whole lower half a calm, simple area of background only (open sky, ground, grass, water, a wall or soft foliage, with no people, no animals and no faces) where a short text will be overlaid later. ` +
+    "Both halves show one single continuous place at the same moment: the same location, the same light and the same time of day, flowing seamlessly across the fold. " +
+    "The other half is never a different place: if the scene is inside a tunnel, a cave, a room or a forest, the whole width is inside that same tunnel, cave, room or forest; do not open it up into a meadow, sky or landscape that the scene does not have. " +
+    `On the ${textSide} half, keep the whole lower half a calm, simple area of that same setting (for example the plain tunnel wall or floor, a plain wall of the room, the ground, or open sky only when the scene is outdoors), with no people, no animals and no faces, where a short text will be overlaid later. ` +
     "Never crop, fade out or hide any part of the characters' bodies at the edges, except the trimmed top and bottom margins, which must contain only background. Do not leave an empty or blank band anywhere. Do not draw any letters, words or text in the image."
     );
 };
