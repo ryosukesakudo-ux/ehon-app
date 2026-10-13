@@ -8,6 +8,7 @@ import { SampleImage } from "@/components/sample-image";
 import { Brand, SITE_NAME } from "@/components/brand";
 import { Lottie } from "@/components/lottie";
 import { ScrollFx } from "@/components/scroll-fx";
+import { AccountLink } from "@/components/account-link";
 import s from "./top.module.css";
 
 const NAVY = "#1E2F57";
@@ -172,7 +173,7 @@ export default function Home() {
           <Brand size={29} />
         </Link>
         <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
-          <Link href="/login?next=/account" className={`${s.headerLink} display`}>ログイン</Link>
+          <AccountLink className={`${s.headerLink} display`} />
           <Link href="/create/taste" className={`${s.headerCta} display`}>つくる</Link>
         </div>
       </header>

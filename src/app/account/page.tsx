@@ -11,6 +11,7 @@ import { PageHeader } from "@/components/page-header";
 import { FLOW_STEPS, getFlowSave } from "@/lib/flow-save";
 import { DeletePhotoButton } from "./delete-photo";
 import { FacePhoto } from "@/components/face-photo";
+import { DeleteDraftButton } from "./delete-draft";
 import { DeleteSaveButton } from "./delete-save";
 import { SyncLocalFlow } from "./local-flow";
 import { storyLabel } from "@/lib/story-key";
@@ -175,6 +176,7 @@ export default async function AccountPage({ searchParams }: PageProps<"/account"
               {!paid && (d.child_photo_path || d.child_character_path) && !d.images_deleted_at && (
                 <Link href={`/create/resume?draft=${d.id}`} className="ghost">つづきから</Link>
               )}
+              {orders.length === 0 && <DeleteDraftButton id={d.id} />}
             </article>
           ))}
         </section>
