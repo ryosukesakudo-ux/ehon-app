@@ -1,11 +1,11 @@
 "use client";
 
-import { useState } from "react";
-import { SAMPLE_CHILD_NAME, samplePublicUrl } from "@/lib/samples";
-import { SERIES_NOTE_MAX, seriesFamilyPhotoPath, seriesImagePath, seriesSheetPath, type SeriesId } from "@/lib/series";
+import { useState, useSyncExternalStore } from "react";
+import { samplePublicUrl } from "@/lib/samples";
+import { SERIES_NOTE_MAX, isPhotoFirst, seriesFamilyPhotoPath, seriesSampleChildName, seriesImagePath, seriesSheetPath, usesShowcasePhoto, type SeriesId } from "@/lib/series";
 import { SampleImage } from "@/components/sample-image";
 
-// 台本の絵スタジオ：作例と同じ架空の家族で、台本（シリーズ）の各話の表紙と12場面を水彩で作る。
+// 台本の絵スタジオ：架空の家族（ふつうは作例と同じ家族。数のお勉強は別の家族で、写真が先）で、台本（シリーズ）の各話の表紙と12場面を水彩で作る。
 // ① 登場人物の設定画（家族＋相棒）→ ② 話ごとに「まとめて作る」。気に入らない絵は1枚ずつ作り直せる。
 
 const PARALLEL = 3;
@@ -23,6 +23,11 @@ export function SeriesStudio({ list }: { list: StudioView[] }) {
   const [seriesId, setSeriesId] = useState<SeriesId>(list[0].id);
   const series = list.find((s) => s.id === seriesId)!;
   const SERIES_ID = seriesId;
+  const childName = seriesSampleChildName(seriesId);
+  // 写真が先のシリーズ：家族写真 → 設定画（写真そっくり） → 場面（設定画＋写真）の順に作る
+  const photoFirst = isPhotoFirst(seriesId);
+  // 森：家族写真はトップの写真（作例スタジオの①）と共用。ここでは作らない
+  const sharedPhoto = usesShowcasePhoto(seriesId);
   const [quality, setQuality] = useState<"preview" | "final">("preview");
   const [busy, setBusy] = useState<Record<string, boolean>>({});
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -53,18 +58,23 @@ export function SeriesStudio({ list }: { list: StudioView[] }) {
   }
 
   const makeSheet = () => call("sheet", { kind: "sheet" });
-  const makePhoto = () => call("photo", { kind: "photo" });
+  async function makePhoto() {
+    // 写真が先のシリーズで写真を作り直すと、設定画と場面の元が変わる（森は前の家族写真をそのまま使っている）
+    if (photoFirst && (await exists(seriesFamilyPhotoPath(SERIES_ID))) && !confirm("今の家族写真を、新しく作った写真に置き換えます。設定画と場面もすべて作り直しが必要になります。よろしいですか？")) return false;
+    return call("photo", { kind: "photo" });
+  }
   const makePage = (episode: number, page: number) => call(`${episode}/${page}` satisfies Key, { episode, page, quality });
 
-  async function sheetExists() {
-    const url = samplePublicUrl(seriesSheetPath(SERIES_ID));
+  async function exists(path: string) {
+    const url = samplePublicUrl(path);
     return url ? fetch(url, { method: "HEAD", cache: "no-store" }).then((r) => r.ok).catch(() => false) : false;
   }
 
   async function makeEpisode(no: number) {
     const per = quality === "final" ? 30 : 15;
     if (!confirm(`第${no}話の表紙と12場面（13枚）をまとめて作ります。AI代は約${13 * per}円です。よろしいですか？`)) return;
-    if (!(await sheetExists()) && !(await makeSheet())) return;
+    if (photoFirst && !(await exists(seriesFamilyPhotoPath(SERIES_ID))) && !(await makePhoto())) return;
+    if (!(await exists(seriesSheetPath(SERIES_ID))) && !(await makeSheet())) return;
     const jobs = Array.from({ length: 13 }, (_, page) => () => makePage(no, page));
     const run = async () => {
       for (let job = jobs.shift(); job; job = jobs.shift()) await job();
@@ -74,13 +84,62 @@ export function SeriesStudio({ list }: { list: StudioView[] }) {
 
   const anyBusy = Object.values(busy).some(Boolean);
 
+  const sheetSection = (
+    <section className="card" style={{ gap: 12 }}>
+      <h2 className="display" style={{ margin: 0, fontSize: 18, color: "var(--navy)" }}>登場人物の設定画</h2>
+      <p style={{ margin: 0, fontSize: 13, lineHeight: 1.7 }}>
+        {photoFirst ? "上の家族写真の3人を写真そっくりに絵にして" : "作例スタジオの家族3人（無いシリーズは文章から描きます）に"}、{series.sidekickLabel}を加えた1枚です。すべての場面がこの絵をもとに描かれます。作り直したら、場面も作り直してください（1枚 約50円）。
+      </p>
+      <Tile
+        path={seriesSheetPath(SERIES_ID)}
+        version={version.sheet}
+        busy={busy.sheet}
+        error={errors.sheet}
+        label="家族＋相棒の設定画"
+        aspect="3 / 2"
+        width={420}
+        onMake={makeSheet}
+        disabled={anyBusy}
+        {...noteProps("sheet")}
+      />
+    </section>
+  );
+  const photoSection = (
+    <section className="card" style={{ gap: 12 }}>
+      <h2 className="display" style={{ margin: 0, fontSize: 18, color: "var(--navy)" }}>サンプル集の家族写真</h2>
+      <p style={{ margin: 0, fontSize: 13, lineHeight: 1.7 }}>
+        サンプル集（/samples）の「この写真から → この登場人物に」に出す架空の家族写真です。左からママ・{childName}・パパの順に並べ、画面ではその順に名前を付けます。
+        {sharedPhoto
+          ? "このシリーズは、トップの「この写真から → この絵本に」と同じ写真（作例スタジオの①）を使い、この写真をもとに設定画と場面を描きます。写真を作り直すときは作例スタジオで作り、そのあと設定画と場面も作り直してください。"
+          : photoFirst
+          ? "このシリーズは、この写真をもとに設定画と場面を描きます。並びや雰囲気が違ったら、欄に指示を書いて作り直してください（1枚 約40円）。作り直したら、設定画と場面も作り直してください。"
+          : "設定画の家族3人にそっくりに作ります。並びが違ったり似ていなかったりしたら、欄に指示を書いて作り直してください（1枚 約40円）。設定画を作り直したら、これも作り直してください。"}
+      </p>
+      <Tile
+        path={seriesFamilyPhotoPath(SERIES_ID)}
+        version={version.photo}
+        busy={busy.photo}
+        error={errors.photo}
+        label="架空の家族写真（左からママ・主人公・パパ）"
+        aspect="3 / 2"
+        width={420}
+        onMake={makePhoto}
+        disabled={anyBusy}
+        readOnly={sharedPhoto}
+        {...noteProps("photo")}
+      />
+    </section>
+  );
+
   return (
     <main style={{ maxWidth: 1100, margin: "0 auto", padding: "24px 16px 64px", display: "flex", flexDirection: "column", gap: 20 }}>
       <a href="/admin">← 注文管理へ</a>
       <h1 className="display" style={{ margin: 0, color: "var(--navy)" }}>台本の絵スタジオ</h1>
       <p style={{ margin: 0, fontSize: 14, lineHeight: 1.8 }}>
-        作例と同じ架空の家族（主人公「{SAMPLE_CHILD_NAME}」とママ・パパ）で、「{series.name}」の台本の見本の絵を水彩で作ります。表紙と12場面の13枚がそろった話から、お客様がお話選びの画面で選べるようになります（表紙はその見本として表示されます）。
-        まず「まとめて作る」を押してください（登場人物の設定画がまだなければ先に作ります）。気に入らない絵は、その絵の下の欄に直してほしいこと（日本語で大丈夫です）を書いて、ボタンで1枚ずつ作り直せます。指示はその絵にだけ効きます。
+        {childName === seriesSampleChildName("forest") ? "作例と同じ" : "このシリーズ用の"}架空の家族（主人公「{childName}」とママ・パパ）で、「{series.name}」の台本の見本の絵を水彩で作ります。表紙と12場面の13枚がそろった話から、お客様がお話選びの画面で選べるようになります（表紙はその見本として表示されます）。
+        {photoFirst
+          ? "このシリーズは、先に架空の家族写真を作り、設定画と場面はその写真にそっくりに寄せて描きます（お客様の写真から絵本ができる流れと同じです）。まず「まとめて作る」を押してください（家族写真と設定画がまだなければ、その順に先に作ります）。"
+          : "まず「まとめて作る」を押してください（登場人物の設定画がまだなければ先に作ります）。"}気に入らない絵は、その絵の下の欄に直してほしいこと（日本語で大丈夫です）を書いて、ボタンで1枚ずつ作り直せます。指示はその絵にだけ効きます。
       </p>
       <label>
         シリーズ：
@@ -96,44 +155,8 @@ export function SeriesStudio({ list }: { list: StudioView[] }) {
         </select>
       </label>
 
-      <section className="card" style={{ gap: 12 }}>
-        <h2 className="display" style={{ margin: 0, fontSize: 18, color: "var(--navy)" }}>登場人物の設定画</h2>
-        <p style={{ margin: 0, fontSize: 13, lineHeight: 1.7 }}>
-          作例スタジオの家族3人（無いシリーズは文章から描きます）に、{series.sidekickLabel}を加えた1枚です。すべての場面がこの絵をもとに描かれます。作り直したら、場面も作り直してください（1枚 約50円）。
-        </p>
-        <Tile
-          path={seriesSheetPath(SERIES_ID)}
-          version={version.sheet}
-          busy={busy.sheet}
-          error={errors.sheet}
-          label="家族＋相棒の設定画"
-          aspect="3 / 2"
-          width={420}
-          onMake={makeSheet}
-          disabled={anyBusy}
-          {...noteProps("sheet")}
-        />
-      </section>
-
-      <section className="card" style={{ gap: 12 }}>
-        <h2 className="display" style={{ margin: 0, fontSize: 18, color: "var(--navy)" }}>サンプル集の家族写真</h2>
-        <p style={{ margin: 0, fontSize: 13, lineHeight: 1.7 }}>
-          サンプル集（/samples）の「この写真から → この登場人物に」に出す、設定画の家族3人にそっくりな架空の家族写真です。左からママ・{SAMPLE_CHILD_NAME}・パパの順に並べ、画面ではその順に名前を付けます。
-          並びが違ったり似ていなかったりしたら、欄に指示を書いて作り直してください（1枚 約40円）。設定画を作り直したら、これも作り直してください。
-        </p>
-        <Tile
-          path={seriesFamilyPhotoPath(SERIES_ID)}
-          version={version.photo}
-          busy={busy.photo}
-          error={errors.photo}
-          label="架空の家族写真（左からママ・主人公・パパ）"
-          aspect="3 / 2"
-          width={420}
-          onMake={makePhoto}
-          disabled={anyBusy}
-          {...noteProps("photo")}
-        />
-      </section>
+      {photoFirst ? photoSection : sheetSection}
+      {photoFirst ? sheetSection : photoSection}
 
       {series.episodes.map((ep) => (
         <section key={ep.no} className="card" style={{ gap: 14 }}>
@@ -178,6 +201,12 @@ export function SeriesStudio({ list }: { list: StudioView[] }) {
   );
 }
 
+// 画面を開いた時刻。絵のURLに付けて、開くたびに保存されている今の絵を読み直す。
+// 以前は開いた直後の版が常に 0 で、作り直す前に縮めてキャッシュされた古い絵が出ていた（2026-10-13 作道さんの指摘）
+const PAGE_OPENED_AT = typeof window === "undefined" ? 0 : Date.now();
+const noSubscribe = () => () => {};
+const usePageOpenedAt = () => useSyncExternalStore(noSubscribe, () => PAGE_OPENED_AT, () => 0);
+
 function Tile(props: {
   path: string;
   version?: number;
@@ -188,10 +217,14 @@ function Tile(props: {
   width?: number;
   disabled: boolean;
   onMake: () => void;
+  /** ここでは作らない絵（森の家族写真は作例スタジオで作る） */
+  readOnly?: boolean;
   note: string;
   onNote: (v: string) => void;
 }) {
   const url = samplePublicUrl(props.path);
+  const openedAt = usePageOpenedAt();
+  const v = props.version ?? openedAt;
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 6, maxWidth: props.width }}>
       <div
@@ -205,13 +238,14 @@ function Tile(props: {
           justifyContent: "center",
         }}
       >
-        {props.busy ? (
+        {props.busy || !v ? (
           <div className="spinner" />
         ) : (
           <a href={url ?? undefined} target="_blank" rel="noreferrer" style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center" }}>
             <SampleImage
-              key={props.version ?? 0}
-              src={url && `${url}?v=${props.version ?? 0}`}
+              key={v}
+              src={url && `${url}?v=${v}`}
+              unoptimized
               alt={props.label}
               fallback={<span style={{ color: "#888" }}>未作成</span>}
             />
@@ -219,18 +253,24 @@ function Tile(props: {
         )}
       </div>
       <span style={{ fontSize: 12, lineHeight: 1.6, color: "var(--sub)" }}>{props.label}</span>
-      <textarea
-        value={props.note}
-        onChange={(e) => props.onNote(e.target.value)}
-        maxLength={SERIES_NOTE_MAX}
-        rows={2}
-        placeholder="作り直すときの指示（例：もっと淡い色に）"
-        aria-label={`${props.label}の指示`}
-        style={{ fontSize: 13, lineHeight: 1.5, padding: 8, borderRadius: 8, border: "1px solid #ccc", resize: "vertical" }}
-      />
-      <button type="button" className="ghost" style={{ height: 36 }} disabled={props.disabled} onClick={props.onMake}>
-        作る／作り直す
-      </button>
+      {props.readOnly ? (
+        <a href="/admin/samples" style={{ fontSize: 13 }}>作例スタジオで作る</a>
+      ) : (
+        <>
+          <textarea
+            value={props.note}
+            onChange={(e) => props.onNote(e.target.value)}
+            maxLength={SERIES_NOTE_MAX}
+            rows={2}
+            placeholder="作り直すときの指示（例：もっと淡い色に）"
+            aria-label={`${props.label}の指示`}
+            style={{ fontSize: 13, lineHeight: 1.5, padding: 8, borderRadius: 8, border: "1px solid #ccc", resize: "vertical" }}
+          />
+          <button type="button" className="ghost" style={{ height: 36 }} disabled={props.disabled} onClick={props.onMake}>
+            作る／作り直す
+          </button>
+        </>
+      )}
       {props.error && <span className="error">{props.error}</span>}
     </div>
   );

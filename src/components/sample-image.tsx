@@ -14,6 +14,7 @@ export function SampleImage({
   fallback,
   style,
   sizes = "(max-width: 640px) 100vw, 640px",
+  unoptimized,
 }: {
   src: string | null;
   alt: string;
@@ -21,6 +22,8 @@ export function SampleImage({
   style?: CSSProperties;
   /** 画面上での表示幅の目安。小さく出す所では小さい値にすると、さらに軽くなる */
   sizes?: string;
+  /** 縮めずに元の絵をそのまま読む（管理画面で、作り直した直後の絵を確実に見るため） */
+  unoptimized?: boolean;
 }) {
   // 読み込めなかったURLを覚えておく（src が変われば、もう一度読み込みを試す）
   const [failedSrc, setFailedSrc] = useState<string | null>(null);
@@ -32,6 +35,7 @@ export function SampleImage({
       width={1024}
       height={1024}
       sizes={sizes}
+      unoptimized={unoptimized}
       onError={() => setFailedSrc(src)}
       style={{ width: "100%", height: "100%", objectFit: "cover", display: "block", ...style }}
     />

@@ -20,14 +20,18 @@ import {
   type LikenessId,
   type RedoOptionId,
 } from "@/lib/catalog";
-import { bookTitle } from "@/lib/story-key";
+import { LEVELS, bookTitle, fixedLevelEpisode, parseSeriesKey, type LevelId } from "@/lib/story-key";
+import { faceToField } from "@/lib/face";
+import { shrinkPhoto } from "@/lib/shrink-photo";
 import { parseCustomKey } from "@/lib/custom-story";
 import { BookCover } from "@/components/book-cover";
+import { RubyText } from "@/components/ruby-text";
 import { Chevron } from "@/components/icons";
 import { Lottie } from "@/components/lottie";
 import { BuyPreviewsButton, startCreditCheckout } from "@/components/buy-previews";
 import { useFlow } from "../flow";
 import { LikenessPicker } from "../likeness-picker";
+import { PhotoSwap, type PhotoChoice, type Saved } from "../photo-swap";
 import { loginHref, useAccount } from "../account";
 import { NextButton, StepHeader, StepTitle } from "../step";
 
@@ -75,6 +79,14 @@ function Preview() {
   const [resetting, setResetting] = useState(false);
   // 本人への似せ方（写真の画面で選んだもの。作り直しのときに変えられ、変えたら次からもそれを使う）
   const likeness = state.likeness;
+  // 本文12場面の文（本に載るのと同じ文。絵の下に出して、どの場面の絵か分かるようにする）
+  const [texts, setTexts] = useState<string[]>([]);
+  // 文の量の切り替え（シリーズのお話で、文の量が決まっていない話だけ。絵はそのままで文だけ変わる）
+  const seriesKey = parseSeriesKey(state.story);
+  const levelSwitch = !!seriesKey && !fixedLevelEpisode(seriesKey.series, seriesKey.episode);
+  const [levelBusy, setLevelBusy] = useState(false);
+  // 写真の差し替えで選べる、会員の保存している写真
+  const [savedPhotos, setSavedPhotos] = useState<Saved[]>([]);
 
   const custom = parseCustomKey(state.story);
   const characters = state.previewScenes.filter(isCharacterScene);
@@ -176,6 +188,81 @@ function Preview() {
     for (const i of todo) generate(i);
     // eslint-disable-next-line react-hooks/exhaustive-deps -- 画面を開いたとき（と場面が分かったとき）に一度だけ作る
   }, [ready, state.draftId, state.previewScenes.length]);
+
+  // 本文の文はサーバーで組み立てる（写真の組み合わせと名前を入れた、本に載るのと同じ文）
+  useEffect(() => {
+    if (!ready || !state.draftId) return;
+    let alive = true;
+    fetch(`/api/drafts/${encodeURIComponent(state.draftId)}`)
+      .then((r) => (r.ok ? r.json() : null))
+      .then((json) => alive && Array.isArray(json?.texts) && setTexts(json.texts))
+      .catch(() => {});
+    return () => {
+      alive = false;
+    };
+  }, [ready, state.draftId]);
+
+  useEffect(() => {
+    if (!account?.loggedIn) return;
+    fetch("/api/account/photos")
+      .then((r) => (r.ok ? r.json() : null))
+      .then((j) => j?.photos && setSavedPhotos(j.photos))
+      .catch(() => {});
+  }, [account?.loggedIn]);
+
+  // 文の量を切り替える（プレビューの枚数は使わない）
+  async function changeLevel(level: LevelId) {
+    if (!state.draftId || level === seriesKey?.level) return;
+    setLevelBusy(true);
+    setError(null);
+    try {
+      const res = await fetch(`/api/drafts/${encodeURIComponent(state.draftId)}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ level }),
+      });
+      const json = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(json.error ?? "文の量を変えられませんでした");
+      setTexts(json.texts ?? []);
+      update({ story: json.story, draftId: json.draftId });
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "文の量を変えられませんでした");
+    } finally {
+      setLevelBusy(false);
+    }
+  }
+
+  // 1人だけ写真を変えて、その人のキャラクターを作り直す（ほかの人はそのまま）。写真を保存できたら true
+  async function swapPhoto(target: number, choice: PhotoChoice) {
+    if (!state.draftId) return false;
+    const p = characterOf(target);
+    const form = new FormData();
+    form.set("who", p ?? `guest${guestOf(target)}`);
+    setError(null);
+    try {
+      if ("file" in choice) {
+        form.set("photo", await shrinkPhoto(choice.file));
+        form.set("consent", "true");
+        if (choice.face) form.set("face", faceToField(choice.face));
+      } else form.set("photoId", choice.savedId);
+      const res = await fetch(`/api/drafts/${encodeURIComponent(state.draftId)}/photo`, { method: "POST", body: form });
+      const json = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        setNeedLogin(!!json.needLogin);
+        throw new Error(json.error ?? "写真の保存に失敗しました");
+      }
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "写真の保存に失敗しました");
+      return false;
+    }
+    // 前の写真で描いた絵は外して、新しい写真で描く
+    update((prev) => ({
+      previews: Object.fromEntries(Object.entries(prev.previews).filter(([k]) => Number(k) !== target)),
+      reused: prev.reused.filter((n) => n !== target),
+    }));
+    void generate(target);
+    return true;
+  }
 
   // 登場人物を確定して、表紙を描く
   function confirm() {
@@ -400,11 +487,23 @@ function Preview() {
             ) : (
               <>
                 <strong>{scene + 1}ページ</strong>
-                {custom?.scenes[scene]?.text && (
+                {texts[scene] && (
                   <>
                     <br />
-                    <span style={{ fontSize: 14, whiteSpace: "pre-wrap" }}>{custom.scenes[scene].text.replace(/《[^》]*》/g, "")}</span>
+                    <span style={{ fontSize: 15, lineHeight: 2.1, whiteSpace: "pre-wrap" }}>
+                      <RubyText text={texts[scene]} />
+                    </span>
                   </>
+                )}
+                {levelSwitch && (
+                  <span className="level-switch" role="group" aria-label="文の量">
+                    <span>文の量</span>
+                    {LEVELS.map((l) => (
+                      <button key={l.id} type="button" aria-pressed={seriesKey?.level === l.id} disabled={levelBusy} onClick={() => changeLevel(l.id)}>
+                        {l.name}
+                      </button>
+                    ))}
+                  </span>
                 )}
               </>
             )}
@@ -493,6 +592,20 @@ function Preview() {
                     {remaining < characters.length && "（残りが足りないので、先にチャージの画面に進みます。支払いのあと、この画面に戻ります）"}
                   </div>
                 </>
+              )}
+              {!confirmed && isChar && (
+                <PhotoSwap
+                  key={scene}
+                  name={nameOf(scene)}
+                  saved={savedPhotos}
+                  disabled={!!loading[scene] || resetting || charging}
+                  label={withCharge(1, "この写真で作り直す", "この写真で作り直す（プレビュー1枚）")}
+                  onSubmit={(choice) => {
+                    if (remaining >= 1) return swapPhoto(scene, choice);
+                    void orCharge(1, () => {});
+                    return Promise.resolve(false);
+                  }}
+                />
               )}
             </section>
           )

@@ -4,6 +4,7 @@ import path from "node:path";
 import fontkit from "@pdf-lib/fontkit";
 import { PDFDocument, rgb } from "pdf-lib";
 import sharp from "sharp";
+import { toUnits, type Unit } from "./ruby";
 
 // 印刷会社に渡す入稿用PDF。
 // - 本文：左に文章・右に絵の見開きを12場面。左綴じなので1ページ目は右ページになる。
@@ -224,30 +225,6 @@ const RUBY_SCALE = 0.48;
 // フォントに無い文字を、形の近い文字に置きかえる（「――」の横棒はこのフォントに無い）
 function pdfSafe(text: string) {
   return text.replaceAll("―", "—");
-}
-
-/** 1文字、または ふりがな付きの漢字のまとまり */
-type Unit = { base: string; ruby?: string };
-
-const KANJI = /[\u4e00-\u9fff々〆ヶ]/;
-
-export function toUnits(text: string): Unit[] {
-  const units: Unit[] = [];
-  const re = /《([^》]*)》/g;
-  let last = 0;
-  for (let m = re.exec(text); m; m = re.exec(text)) {
-    const before = [...text.slice(last, m.index)];
-    // 《》の直前に続く漢字が、ふりがなの付く文字
-    let k = before.length;
-    while (k > 0 && KANJI.test(before[k - 1])) k--;
-    for (const ch of before.slice(0, k)) units.push({ base: ch });
-    const base = before.slice(k).join("");
-    if (base) units.push({ base, ruby: m[1] });
-    else units.push(...[...m[1]].map((ch) => ({ base: ch })));
-    last = m.index + m[0].length;
-  }
-  for (const ch of text.slice(last)) units.push({ base: ch });
-  return units;
 }
 
 function unitWidth(u: Unit, font: TextFont, size: number) {

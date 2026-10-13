@@ -1,7 +1,7 @@
 import { toFile } from "openai";
-import { illustrateSeries, makeSeriesFamilyPhoto, makeSeriesSheet } from "@/lib/illustrate";
+import { illustrateSeries, makeSeriesFamilyPhoto, makeSeriesFamilyPhotoFromText, makeSeriesSheet } from "@/lib/illustrate";
 import { characterSheetPath } from "@/lib/samples";
-import { seriesFamilyPhotoPath, seriesImagePath, seriesSheetPath } from "@/lib/series";
+import { seriesFamilyPhotoPath, seriesImagePath, seriesSheetPath, usesShowcasePhoto } from "@/lib/series";
 import { getStudioSeries } from "@/lib/series-studio";
 import { SAMPLE_BUCKET, getSupabase } from "@/lib/services";
 
@@ -9,7 +9,8 @@ export const maxDuration = 300;
 
 // 台本の絵スタジオから呼ぶ。作例の家族でシリーズの絵を1枚作り、公開ストレージ（samples）に保存する。
 // note：その絵だけに効く追加の指示（日本語でよい）。
-// kind=sheet：シリーズの設定画（作例の設定画＋相棒） / kind=photo：サンプル集に出す、設定画の家族そっくりの架空の家族写真 / それ以外：その話の表紙（page=0）か場面（1〜12）
+// kind=sheet：シリーズの設定画（作例の設定画＋相棒） / kind=photo：サンプル集に出す、設定画の家族そっくりの架空の家族写真
+// （写真が先のシリーズは逆：photo を文章から先に作り、sheet と場面はその写真に寄せる） / それ以外：その話の表紙（page=0）か場面（1〜12）
 export async function POST(request: Request) {
   const body = await request.json().catch(() => null);
   const series = getStudioSeries(String(body?.series ?? ""));
@@ -29,8 +30,27 @@ export async function POST(request: Request) {
   };
 
   const note = typeof body?.note === "string" ? body.note.trim() : "";
+  const noPhoto = usesShowcasePhoto(series.id) ? "先に作例スタジオで「この写真から → この絵本に」の①（家族の写真）を作ってください" : "先に家族写真を作ってください";
 
   try {
+    if (body?.kind === "photo" && usesShowcasePhoto(series.id)) {
+      // トップの写真と共用（作例スタジオで作る）。ここで作るとトップの写真まで変わってしまう
+      return Response.json({ error: "このシリーズの家族写真は、作例スタジオの「この写真から → この絵本に」①を使います。作り直すときは作例スタジオで作ってください" }, { status: 400 });
+    }
+
+    if (series.photoFirst && body?.kind === "photo") {
+      // 写真が先のシリーズ：家族写真を文章から作る（設定画と場面はこの写真に寄せる）
+      await save(seriesFamilyPhotoPath(series.id), await makeSeriesFamilyPhotoFromText(series, note));
+      return Response.json({ ok: true });
+    }
+
+    if (series.photoFirst && body?.kind === "sheet") {
+      const photo = await load(seriesFamilyPhotoPath(series.id), "family-photo.png");
+      if (!photo) return Response.json({ error: noPhoto }, { status: 400 });
+      await save(seriesSheetPath(series.id), await makeSeriesSheet(series, null, note, photo));
+      return Response.json({ ok: true });
+    }
+
     if (body?.kind === "sheet") {
       // 作例スタジオに家族の設定画があるお話はそれに相棒を足す。無いシリーズ（海・恐竜）は文章から描く
       const family = series.familyStory ? await load(characterSheetPath(series.familyStory), "family.png") : null;
@@ -52,10 +72,12 @@ export async function POST(request: Request) {
     if (!episode || !scene) return Response.json({ error: "指定が正しくありません" }, { status: 400 });
     const sheet = await load(seriesSheetPath(series.id), "characters.png");
     if (!sheet) return Response.json({ error: "先に登場人物の設定画を作ってください" }, { status: 400 });
+    const photo = series.photoFirst ? await load(seriesFamilyPhotoPath(series.id), "family-photo.png") : null;
+    if (series.photoFirst && !photo) return Response.json({ error: noPhoto }, { status: 400 });
     const quality = body?.quality === "preview" ? "preview" : "final";
     await save(
       seriesImagePath(series.id, episode.no, page),
-      await illustrateSeries({ series, scene, page, outfits: episode.outfits, continuity: episode.continuity, note, quality, sheet }),
+      await illustrateSeries({ series, scene, page, outfits: episode.outfits, continuity: episode.continuity, note, quality, sheet, photo }),
     );
     return Response.json({ ok: true });
   } catch (e) {

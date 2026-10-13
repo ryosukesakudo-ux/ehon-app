@@ -1,5 +1,5 @@
 import "server-only";
-import { REPEAT_COUPON } from "./catalog";
+import { FLYER_COUPON, REPEAT_COUPON } from "./catalog";
 import { getSupabase } from "./services";
 
 /** bookPrice：1冊目の値段を決めるクーポン。discount：1冊目から値引きするクーポン（リピート割引） */
@@ -20,16 +20,25 @@ export async function findCoupon(rawCode: unknown, userId: string): Promise<{ co
   if (!code) return { error: "クーポンコードを入力してください" };
   if (!db) return { error: "デモモードではクーポンは使えません" };
   if (code === REPEAT_COUPON.code) return findRepeatCoupon(userId);
+  if (code === FLYER_COUPON.code) {
+    if (await usedCoupon(code, userId)) return { error: "このクーポンはご利用済みです（おひとり様1回まで）" };
+    return { coupon: { code: FLYER_COUPON.code, label: `${FLYER_COUPON.label} ${FLYER_COUPON.discount}円引き`, discount: FLYER_COUPON.discount } };
+  }
   const { data: row } = await db.from("coupons").select("code, label, book_price, active").eq("code", code).maybeSingle();
   if (!row || !row.active) return { error: "このクーポンコードは使えません" };
-  const { count } = await db
+  if (await usedCoupon(code, userId)) return { error: "このクーポンはご利用済みです（おひとり様1回まで）" };
+  return { coupon: { code: row.code, label: row.label, bookPrice: row.book_price } };
+}
+
+/** その人がこのコードをもう使ったか（決済画面で止めた注文は数えない） */
+async function usedCoupon(code: string, userId: string) {
+  const { count } = await getSupabase()!
     .from("orders")
     .select("id", { count: "exact", head: true })
     .eq("coupon_code", code)
     .eq("user_id", userId)
     .or("status.neq.pending,checkout_completed_at.not.is.null");
-  if (count) return { error: "このクーポンはご利用済みです（おひとり様1回まで）" };
-  return { coupon: { code: row.code, label: row.label, bookPrice: row.book_price } };
+  return !!count;
 }
 
 /** リピート割引：支払い済みの注文が1件でもある会員なら、何度でも使える */
