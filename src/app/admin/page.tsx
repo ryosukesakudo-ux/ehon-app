@@ -2,6 +2,7 @@ import { COVER_SCENE, bookScenes, deliveryLabel, sizeLabel, getTaste, plainText,
 import { getBook } from "@/lib/book";
 import { levelLabel, storyLabel } from "@/lib/story-key";
 import { BOOK_BUCKET, getSupabase } from "@/lib/services";
+import { syncPendingOrders } from "@/lib/order-sync";
 import { isViewPath, viewUrls } from "@/lib/book-images";
 import { OrderActions, OrderDetailProvider, RedoSceneButton } from "./actions";
 
@@ -34,6 +35,9 @@ export default async function AdminPage() {
       </main>
     );
   }
+
+  // Stripe からの通知が届かなかった直近の支払いがあれば、ここで Stripe に確かめて「支払い済み」にする
+  await syncPendingOrders({});
 
   const { data: orders, error } = await db
     .from("orders")

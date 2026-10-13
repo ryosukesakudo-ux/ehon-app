@@ -6,6 +6,7 @@ import { listCharacters, listPhotos, previewQuota } from "@/lib/account";
 import { konbiniVoucher } from "@/lib/konbini";
 import { BuyPreviewsButton } from "@/components/buy-previews";
 import { BOOK_BUCKET, getSupabase } from "@/lib/services";
+import { syncPendingOrders } from "@/lib/order-sync";
 import { isViewPath, viewUrls } from "@/lib/book-images";
 import { PageHeader } from "@/components/page-header";
 import { FLOW_STEPS, getFlowSave } from "@/lib/flow-save";
@@ -38,6 +39,8 @@ export default async function AccountPage({ searchParams }: PageProps<"/account"
   const user = await currentUser();
   if (!user) redirect("/login?next=/account");
   const db = getSupabase();
+  // Stripe からの通知が届かなかった支払いがあれば、ここで Stripe に確かめて「支払い済み」にする
+  await syncPendingOrders({ userId: user.id });
 
   const [save, quota, photos, characters, { data: drafts }] = await Promise.all([
     getFlowSave(),
