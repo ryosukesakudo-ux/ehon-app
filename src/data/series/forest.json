@@ -22,7 +22,9 @@
   "baby owl": "a round fluffy pale-gray baby owl with big yellow eyes, small enough to fit inside the front of the child's coat",
   "mother owl": "a big soft-gray-and-white mother owl with wide wings and gentle yellow eyes",
   "owl mother": "a big soft-gray-and-white mother owl with wide wings and gentle yellow eyes",
-  "small tent": "a small orange dome tent"
+  "small tent": "a small orange dome tent",
+  "dam": "the beavers' dam: one pile of gray river stones and sticks about as tall as the child, blocking the river from bank to bank; most stones are fist-sized to melon-sized, and at the front of the pile sits the biggest stone",
+  "biggest stone": "the biggest stone of the dam: one smooth round gray boulder exactly as tall as the child's waist, clearly bigger than every other stone in the dam; always drawn at this same size next to the child, never bigger than the child and never pebble-sized"
  },
  "episodes": [
   {
@@ -305,6 +307,11 @@
      "from": 12,
      "to": 12,
      "text": "On this page the child wears plain light-blue pajamas instead of the usual clothes. Leaf badges are small softly glowing leaf-shaped badges about the size of a coin, pinned in a neat horizontal row on the front of the child's top, on the child's own left chest over the heart, on whatever the child wears; they are never on the back, shoulders, sleeves, hat or bag, and when the child is seen from behind the badges are hidden and must not be drawn; whenever the front of the child's top can be seen, the badges must be drawn clearly and never left out: exactly two badges, a cherry-blossom-pink leaf and a fresh-green leaf."
+    },
+    {
+     "from": 7,
+     "to": 9,
+     "text": "Time of day: pages 7 to 9 happen in the same early evening at sunset, so the sky is orange and pink and the whole scene is lit by warm orange sunset light with long shadows; never a daytime blue sky and not yet night."
     }
    ],
    "cover": {
@@ -409,7 +416,7 @@
     },
     {
      "label": "石と枝の山で塞がれた川。困り顔のビーバーの子ども3匹",
-     "art": "the river is completely blocked by a big pile of stones and branches; three little beaver children stand beside it with troubled faces, and the child and Pokke arrive",
+     "art": "the river is completely blocked by the dam, a big pile of stones and sticks with the biggest stone at its front; three little beaver children stand beside it with troubled faces, and the child and Pokke arrive",
      "text": [
       "おおきな いしの やまが あったよ。",
       "ばつじるしの ばしょには、いしと えだが やまのように つみあがって いました。ビーバーの こどもたちが あそびで つくった ダムです。",
@@ -418,7 +425,7 @@
      "withMom": false,
      "withDad": false,
      "withSidekick": true,
-     "camera": "Over-the-shoulder view from behind the child as they arrive, looking at the towering dam of stones and branches with the three worried beaver children beside it."
+     "camera": "Over-the-shoulder view from behind the child as they arrive, looking at the dam of stones and sticks (about as tall as the child, the biggest stone reaching the child's waist at its front) with the three worried beaver children beside it."
     },
     {
      "label": "顔を真っ赤にして大きな石を押す主人公",
@@ -431,7 +438,7 @@
      "withMom": false,
      "withDad": false,
      "withSidekick": true,
-     "camera": "Low-angle close-up on the child's straining red face and hands pushing the huge stone, strong diagonal of effort, the squirrel's paw reaching in from the frame edge."
+     "camera": "Low-angle close-up on the child's straining red face and hands pushing the biggest stone, strong diagonal of effort, the squirrel's paw reaching in from the frame edge."
     },
     {
      "label": "夕焼けの川で尻もちをつき、涙ぐむ主人公",
@@ -448,7 +455,7 @@
     },
     {
      "label": "手を差し出すポッケ。後ろに心配そうな仲間たち",
-     "art": "Pokke gently holds out his little paw to the child sitting in the river; behind him the beaver children and the two rabbit siblings watch with concern",
+     "art": "Pokke gently holds out his little paw to the child sitting in the river; behind him the beaver children and the two rabbit siblings watch with concern; the orange sunset sky glows behind them",
      "text": [
       "りすのポッケが てを のばして くれたよ。",
       "「いっしょに やろうよ」 ポッケが ちいさな てを さしだしました。ビーバーたちも、うさぎの きょうだいも、かけよって きます。",
@@ -461,7 +468,7 @@
     },
     {
      "label": "一列に並んで石を手渡しする動物たちと主人公",
-     "art": "the child, Pokke, the beaver children and the rabbit siblings stand in a line passing stones from hand to hand to clear the dam, working together cheerfully",
+     "art": "under the orange sunset sky the child, Pokke, the beaver children and the rabbit siblings stand in a line passing the smaller stones of the dam from hand to hand, and all pull a rope tied around the biggest stone, working together cheerfully",
      "text": [
       "みんなで せーの！",
       "「みんなで やろう！」 みんなは いちれつに ならんで、いしを てわたしで はこびました。「せーの！」「よいしょ！」",
@@ -470,7 +477,7 @@
      "withMom": false,
      "withDad": false,
      "withSidekick": true,
-     "camera": "Dynamic wide side view along the line of friends passing stones hand to hand, stones mid-air, energetic diagonal rhythm."
+     "camera": "Dynamic wide side view along the line of friends passing stones hand to hand in warm orange sunset light, stones mid-air, energetic diagonal rhythm."
     },
     {
      "label": "【見開き】川一面に光るほたる。歓声をあげる仲間たち",
