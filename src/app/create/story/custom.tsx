@@ -5,7 +5,7 @@ import Link from "next/link";
 import { CAST_ABOUT_MAX, CAST_KIND_LABEL, CAST_NAME_MAX, CUSTOM_TEXT_MAX, CUSTOM_TITLE_MAX, MAX_CAST, SYNOPSIS_MAX, castLabel, customKey, parseCustomKey, type CastInput, type CastKind, type CustomStory } from "@/lib/custom-story";
 import { LEVELS, levelForAge, type LevelId } from "@/lib/story-key";
 import { Chevron } from "@/components/icons";
-import { Lottie } from "@/components/lottie";
+import { DrawingWait } from "../drawing-wait";
 import { useFlow } from "../flow";
 
 /** 質問への答えの長さ（サーバーの ANSWER_MAX と同じ） */
@@ -235,10 +235,12 @@ export function CustomStoryPanel() {
             無料会員の方が使えます（1日10回まで・プレビューの枚数は減りません）。作り直すと、直した文は新しいお話に置きかわります。
           </p>
           {busy && (
-            <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 6, fontSize: 13, color: "var(--sub)" }}>
-              <Lottie name="drawing" style={{ width: 160, height: 120 }} />
-              <span>{busy === "asking" ? "10秒ほどかかります" : "30秒ほどかかります"}</span>
-            </div>
+            <DrawingWait
+              key={busy}
+              title={busy === "asking" ? "あらすじを読んでいます" : "お話を書いています"}
+              messages={busy === "asking" ? ["あらすじを よんでいます", "わからない ところを さがしています"] : ["ばめんを かんがえています", "ことばを えらんでいます", "ページを ならべています", "さいごの ページを かいています"]}
+              estimate={busy === "asking" ? 10 : 30}
+            />
           )}
           {error && <p className="error" role="alert">{error}</p>}
           {needLogin && <Link href={loginHref("/create/story")} className="ghost">無料会員登録・ログインへ</Link>}
