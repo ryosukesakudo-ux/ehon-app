@@ -324,10 +324,21 @@ export async function deletePreviewBook(draftId: string) {
   if (error) throw new Error(`絵の削除に失敗しました: ${error.message}`);
 }
 
-/** 下書きの絵（プレビューと本番）をすべて削除する。 */
+/** 注文の確認画面でアップロードした「思い出の写真」の置き場所（PHOTO_BUCKET） */
+export function memoryPhotoDir(draftId: string) {
+  return `memory/${draftId}`;
+}
+
+/** 下書きの絵（プレビューと本番）と、思い出の写真をすべて削除する。 */
 export async function deleteDraftImages(draftId: string) {
   const db = getSupabase();
   if (!db) return;
+  const { data: memory } = await db.storage.from(PHOTO_BUCKET).list(memoryPhotoDir(draftId));
+  const memoryPaths = (memory ?? []).map((f) => `${memoryPhotoDir(draftId)}/${f.name}`);
+  if (memoryPaths.length) {
+    const { error } = await db.storage.from(PHOTO_BUCKET).remove(memoryPaths);
+    if (error) throw new Error(`思い出の写真の削除に失敗しました: ${error.message}`);
+  }
   for (const quality of ["preview", "final"] as const) {
     const { data: files } = await db.storage.from(BOOK_BUCKET).list(`${draftId}/${quality}`);
     const paths = (files ?? []).map((f) => `${draftId}/${quality}/${f.name}`);

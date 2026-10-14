@@ -29,6 +29,7 @@ function Resume() {
         childName: save.childName,
         childAge: save.childAge,
         childBirthday: save.childBirthday ?? "",
+        childHonorific: save.childHonorific ?? "",
         likeness: save.likeness ?? "normal",
         plainFace: save.plainFace === true,
         draftId: null,
@@ -74,6 +75,7 @@ function Resume() {
           childAge: json.childAge ?? null,
           // お誕生日は下書きに保存していないので、同じ主人公のときだけ残す
           childBirthday: prev.childName === json.childName ? prev.childBirthday : "",
+          childHonorific: prev.childName === json.childName ? prev.childHonorific : "",
           draftId,
           demo: false,
           previews: json.previews,

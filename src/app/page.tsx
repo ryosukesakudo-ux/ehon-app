@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import type { CSSProperties, ReactNode } from "react";
 import { Arrow, Sparkle, Star } from "@/components/icons";
-import { DELIVERY_MIN_DAYS, EXTRA_COPY_DISCOUNT, MEMBER_MONTHLY_PREVIEWS, PREVIEW_PACK, SIZES, STORIES, TASTES, sceneText, yen } from "@/lib/catalog";
+import { BOOK_FORMAT, DELIVERY_MIN_DAYS, EXTRA_COPY_DISCOUNT, MEMBER_MONTHLY_PREVIEWS, PREVIEW_PACK, SIZES, STORIES, TASTES, sceneText, yen } from "@/lib/catalog";
 import { SAMPLE_CHILD_NAME, SHOWCASE, SHOWCASE_BOOK, SHOWCASE_PHOTO, samplePublicUrl, sampleUrl, versioned } from "@/lib/samples";
 import { seriesImagePath, seriesSampleChildName } from "@/lib/series";
 import { SERIES_DATA } from "@/lib/series-data";
@@ -447,7 +447,7 @@ export default function Home() {
               </div>
               <div className={s.priceSpec}>
                 <div className={`${s.priceName} display`}>{p.name}</div>
-                B5スクエア（約18cm角）・{p.pages}ページ
+                {BOOK_FORMAT}・{p.pages}ページ
               </div>
               <div className={`${s.priceYen} display`}>{yen(p.price)}</div>
             </div>

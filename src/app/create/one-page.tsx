@@ -39,7 +39,7 @@ export function OnePageFlow({ start }: { start: SectionId }) {
   }, []);
 
   // 前の項目が済んでいれば、次の項目を出す（タッチは最初から水彩を選んであるので、主人公までは最初から見える）
-  const profileDone = profileOk(state.childName, state.childAge);
+  const profileDone = profileOk(state.childName, state.childAge, state.childHonorific);
   const storyDone = profileDone && storyChosen(state.story, ready);
   const shown: SectionId[] = ["taste", "profile", ...(profileDone ? (["story"] as const) : []), ...(storyDone ? (["photo"] as const) : [])];
   const last = shown[shown.length - 1];
