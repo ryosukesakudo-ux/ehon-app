@@ -171,7 +171,7 @@ function EpisodeDialog({ series, ready, onClose, onDecide }: { series: SeriesId;
                   if (ep.level) setLevel(ep.level);
                 }}
               >
-                <Thumb src={ok || comingSoon ? versioned(samplePublicUrl(seriesImagePath(series, ep.no, 0))) : null} alt={`第${ep.no}話の見本`} size={56} />
+                <Thumb src={ok || comingSoon ? versioned(samplePublicUrl(seriesImagePath(series, ep.no, 0))) : null} alt={`第${ep.no}話の見本`} size={44} />
                 <div style={{ display: "flex", flexDirection: "column", gap: 4, flexGrow: 1 }}>
                   <div style={{ display: "flex", gap: 6, alignItems: "center", flexWrap: "wrap", fontSize: 12, color: "var(--sub)" }}>
                     <span>第{ep.no}話・{ep.season}</span>

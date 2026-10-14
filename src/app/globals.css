@@ -231,15 +231,14 @@ button, input { font-family: inherit; }
 .story-card-art { width: 100%; aspect-ratio: 1 / 1; border-radius: 12px; display: flex; align-items: center; justify-content: center; }
 .story-card-title { font-size: 14px; line-height: 1.4; }
 .story-card-check { position: absolute; top: 14px; right: 14px; box-shadow: 0 0 0 3px #fff; }
-/* 話を選ぶポップアップ。スマホでは下から出るシート */
-.story-dialog-backdrop { position: fixed; inset: 0; z-index: 50; display: flex; align-items: flex-end; justify-content: center; background: rgba(30, 47, 87, 0.45); animation: dialog-fade 0.2s ease both; }
-.story-dialog { display: flex; flex-direction: column; gap: 14px; width: 100%; max-width: 560px; max-height: 88vh; overflow-y: auto; padding: 18px 16px calc(18px + env(safe-area-inset-bottom)); border-radius: 22px 22px 0 0; background: var(--cream); box-shadow: 0 -6px 24px rgba(30, 47, 87, 0.2); animation: dialog-up 0.3s cubic-bezier(0.2, 0.8, 0.3, 1) both; }
-@media (min-width: 640px) {
-  .story-dialog-backdrop { align-items: center; }
-  .story-dialog { border-radius: 22px; }
-}
+/* 話を選ぶポップアップ。画面の内側に浮かせ、後ろのページが透けて見えるように（2026-10-14 作道さん） */
+.story-dialog-backdrop { position: fixed; inset: 0; z-index: 50; display: flex; align-items: center; justify-content: center; padding: 48px 24px calc(48px + env(safe-area-inset-bottom)); background: rgba(30, 47, 87, 0.28); animation: dialog-fade 0.2s ease both; }
+.story-dialog { display: flex; flex-direction: column; gap: 14px; width: 100%; max-width: 520px; max-height: 100%; overflow-y: auto; padding: 18px 16px; border-radius: 22px; background: var(--cream); box-shadow: 0 12px 36px rgba(30, 47, 87, 0.28); animation: dialog-up 0.28s cubic-bezier(0.2, 0.8, 0.3, 1) both; }
+/* 4話と文の量が収まるように、ポップアップの中は少し詰める */
+.story-dialog .episode-choice { padding: 6px 10px; }
+.story-dialog .level-choice { padding: 8px; gap: 4px; }
 @keyframes dialog-fade { from { opacity: 0; } }
-@keyframes dialog-up { from { translate: 0 40px; opacity: 0; } }
+@keyframes dialog-up { from { scale: 0.94; opacity: 0; } }
 @media (prefers-reduced-motion: reduce) { .story-dialog-backdrop, .story-dialog { animation: none; } }
 .level-row { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
 .level-choice { flex-direction: column; align-items: flex-start; gap: 6px; padding: 12px 10px; border-radius: 18px; }
