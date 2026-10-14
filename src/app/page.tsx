@@ -8,6 +8,7 @@ import { seriesImagePath, seriesSampleChildName } from "@/lib/series";
 import { SERIES_DATA } from "@/lib/series-data";
 import { OPEN_SERIES, SHOWN_SERIES_LIST, isOpenSeries, openEpisodes } from "@/lib/story-key";
 import { TopBook } from "./top-book";
+import { StepCards } from "./step-cards";
 import { SampleImage } from "@/components/sample-image";
 import { Brand, SITE_NAME } from "@/components/brand";
 import { Lottie } from "@/components/lottie";
@@ -285,17 +286,21 @@ export default function Home() {
           <br />
           <span className="nowrap"><Pop color="#F08A6C">かんたん</Pop>に作れます。</span>
         </h2>
-        <div className={s.steps}>
-          {STEPS.map((st, i) => (
-            <div key={st.title} className={s.stepCard} style={{ boxShadow: `0 4px 0 ${st.shadow}` }} data-reveal="up" data-d={i}>
-              <div className={`${s.stepNum} display`} style={{ background: st.color }}>{i + 1}</div>
-              <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
-                <div className={`${s.stepTitle} display`}>{st.title}</div>
-                <div className={s.stepDesc}>{st.desc}</div>
-              </div>
-            </div>
-          ))}
-        </div>
+        <StepCards
+          steps={STEPS}
+          details={{
+            tastes: (["watercolor", "crayon", "anime"] as const).map((id) => {
+              const t = TASTES.find((x) => x.id === id)!;
+              return { name: t.name, img: sampleUrl(t.id, "forest", 0), points: t.points.slice(0, 2).join("・") };
+            }),
+            stories: SHOWN_SERIES_LIST.map((st) => ({ name: st.name, open: isOpenSeries(st.id) })),
+            showcasePhoto: versioned(samplePublicUrl(SHOWCASE_PHOTO)),
+            showcaseBook: versioned(samplePublicUrl(SHOWCASE_BOOK)),
+            sizes: SIZES.map((z) => ({ name: z.name, cover: z.cover, price: yen(z.price) })),
+            deliveryDays: DELIVERY_MIN_DAYS,
+            extraCopy: yen(EXTRA_COPY_DISCOUNT),
+          }}
+        />
       </section>
 
       <section className={s.section} style={{ background: CREAM, paddingTop: 8 }}>
