@@ -44,7 +44,11 @@ export function LoginForm({ next, google }: { next: string; google: boolean }) {
 
   async function signInGoogle() {
     setError(null);
-    const { error } = await client().auth.signInWithOAuth({ provider: "google", options: { redirectTo: callback() } });
+    const { error } = await client().auth.signInWithOAuth({
+      provider: "google",
+      // 毎回 Google のアカウントを選ぶ画面を出す（出さないと、前にログインしたアカウントで自動的に入ってしまい、別のアカウントに切り替えられない）
+      options: { redirectTo: callback(), queryParams: { prompt: "select_account" } },
+    });
     if (error) setError("Google でのログインを開始できませんでした");
   }
 

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { clearLocalFlow } from "../create/flow-storage";
 
 export function DeleteSaveButton() {
   const router = useRouter();
@@ -13,6 +14,8 @@ export function DeleteSaveButton() {
     const res = await fetch("/api/flow-save", { method: "DELETE" });
     const json = await res.json().catch(() => ({}));
     if (!res.ok) alert(json.error ?? "消せませんでした");
+    // このブラウザに残っている作りかけも消す（残っているとマイページを開き直したときにアカウントへ引き継がれ、消えないように見える）
+    else clearLocalFlow();
     setBusy(false);
     router.replace("/account");
     router.refresh();
