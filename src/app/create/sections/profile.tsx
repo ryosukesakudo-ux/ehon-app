@@ -1,15 +1,15 @@
 "use client";
 
-import { BIRTHDAY_NOTICE_DAYS, CHILD_AGES, REPEAT_COUPON } from "@/lib/catalog";
+import { BIRTHDAY_NOTICE_DAYS, CHILD_AGES, HONORIFICS, REPEAT_COUPON, calledName, isHonorificId } from "@/lib/catalog";
 import { useFlow } from "../flow";
 import { BirthdaySelect } from "../birthday-select";
 
-export function profileOk(name: string, age: number | null) {
+export function profileOk(name: string, age: number | null, honorific: string) {
   const n = name.trim().length;
-  return n > 0 && n <= 12 && !!age;
+  return n > 0 && n <= 12 && !!age && isHonorificId(honorific);
 }
 
-/** 主人公の名前・年齢・お誕生日（オリジナルのお話を作るときにも使うので、お話より先に聞く。名前と年齢が入ると、お話の項目が出る） */
+/** 主人公の名前・呼び方・年齢・お誕生日（オリジナルのお話を作るときにも使うので、お話より先に聞く。名前と年齢が入ると、お話の項目が出る） */
 export function ProfileSection() {
   const { state, update } = useFlow();
   return (
@@ -24,6 +24,26 @@ export function ProfileSection() {
           value={state.childName}
           onChange={(e) => update({ childName: e.target.value, previews: {}, draftId: null })}
         />
+      </div>
+      <div className="field">
+        <div className="display" id="childhonorific" style={{ fontSize: 15, fontWeight: 800, color: "var(--navy)" }}>呼び方</div>
+        <div role="radiogroup" aria-labelledby="childhonorific" style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+          {HONORIFICS.map((h) => (
+            <button
+              key={h.id}
+              type="button"
+              role="radio"
+              className="cast-kind"
+              aria-checked={state.childHonorific === h.id}
+              onClick={() => update({ childHonorific: h.id })}
+            >
+              {h.label}
+            </button>
+          ))}
+        </div>
+        <p style={{ margin: 0, fontSize: 12, lineHeight: 1.6, color: "var(--sub)" }}>
+          絵本の最初のページの「{calledName(state.childName.trim() || "はると", isHonorificId(state.childHonorific) ? state.childHonorific : "kun")}へ」などに使います。
+        </p>
       </div>
       <div className="field">
         <label htmlFor="childage" className="display">主人公の年齢</label>

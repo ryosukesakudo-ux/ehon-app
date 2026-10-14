@@ -17,6 +17,8 @@ export type FlowState = {
   childAge: number | null;
   /** 主人公のお誕生日（YYYY-MM-DD・任意）。誕生日の1か月前に続編のご案内メールを送る */
   childBirthday: string;
+  /** 主人公の呼び方（kun / chan / none。catalog.ts の HONORIFICS）。献辞などの特別ページで使う。空は未選択 */
+  childHonorific: string;
   /** 本人への似せ方（写真の画面で選ぶ。プレビューの最初の作成から使う） */
   likeness: LikenessId;
   /** 写真の顔の飾り（シール・メガネなど）を絵では描かない（写真の画面のチェック） */
@@ -35,6 +37,10 @@ export type FlowState = {
   size: SizeId;
   /** 部数（1〜10） */
   copies: number;
+  /** 絵本の最後のページに入れる、おうちの方からのメッセージ（任意） */
+  bookMessage: string;
+  /** 思い出の写真（任意・注文の確認画面でアップロード）の保存先。空は無し（そのページはおえかきページになる） */
+  memoryPhotoPath: string;
   /** お届け希望日（YYYY-MM-DD）。空は最短 */
   deliveryDate: string;
   /** お届け時間帯（以前の保存データとの互換用。いまは選べない） */
@@ -50,6 +56,7 @@ const initial: FlowState = {
   childName: "",
   childAge: null,
   childBirthday: "",
+  childHonorific: "",
   likeness: "normal",
   plainFace: false,
   draftId: null,
@@ -61,6 +68,8 @@ const initial: FlowState = {
   reused: [],
   size: "M",
   copies: 1,
+  bookMessage: "",
+  memoryPhotoPath: "",
   deliveryDate: "",
   deliveryTime: "",
   path: "/create/taste",

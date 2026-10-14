@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import {
+  BOOK_MESSAGE_MAX,
   DELIVERY_MAX_DAYS,
   DELIVERY_MIN_DAYS,
   dateLabel,
@@ -17,6 +18,8 @@ import {
 import type { Coupon } from "@/lib/coupons";
 import { levelLabel, storyLabel } from "@/lib/story-key";
 import { DatePicker } from "@/components/date-picker";
+import { toViewablePhoto } from "@/lib/heic-photo";
+import { shrinkPhoto } from "@/lib/shrink-photo";
 import { useFlow } from "../flow";
 import { NextButton, StepHeader, StepTitle } from "../step";
 
@@ -34,6 +37,35 @@ export default function CheckoutPage() {
   const [couponError, setCouponError] = useState<string | null>(null);
   const [checking, setChecking] = useState(false);
   const firstPrice = firstBookPrice(size.price, coupon);
+  const [extrasOpen, setExtrasOpen] = useState(!!(state.bookMessage || state.memoryPhotoPath));
+  const [photoBusy, setPhotoBusy] = useState(false);
+  const [photoError, setPhotoError] = useState<string | null>(null);
+  const [photoView, setPhotoView] = useState<string | null>(null);
+
+  // 思い出の写真は選んだらすぐ送って、保存先を覚えておく（印刷するので長い辺 2400px に縮める）
+  async function pickMemoryPhoto(file: File | undefined) {
+    if (!file || !state.draftId) return;
+    setPhotoBusy(true);
+    setPhotoError(null);
+    try {
+      const small = await shrinkPhoto(await toViewablePhoto(file), 2400);
+      const form = new FormData();
+      form.set("photo", small);
+      const res = await fetch(`/api/drafts/${encodeURIComponent(state.draftId)}/memory-photo`, { method: "POST", body: form });
+      const json = await res.json();
+      if (json.needLogin) {
+        router.push(`/login?next=${encodeURIComponent("/create/checkout")}`);
+        return;
+      }
+      if (!res.ok || !json.path) throw new Error(json.error ?? "写真を送れませんでした");
+      update({ memoryPhotoPath: json.path });
+      setPhotoView(URL.createObjectURL(small));
+    } catch (e) {
+      setPhotoError(e instanceof Error ? e.message : "写真を送れませんでした");
+    } finally {
+      setPhotoBusy(false);
+    }
+  }
 
   async function applyCoupon() {
     setChecking(true);
@@ -63,6 +95,9 @@ export default function CheckoutPage() {
           copies: state.copies,
           coupon: coupon?.code ?? "",
           childBirthday: state.childBirthday,
+          childHonorific: state.childHonorific,
+          bookMessage: state.bookMessage,
+          memoryPhotoPath: state.memoryPhotoPath,
           deliveryDate: state.deliveryDate,
         }),
       });
@@ -140,6 +175,81 @@ export default function CheckoutPage() {
           )}
         </div>
         <div className="card" style={{ padding: 18, gap: 12 }}>
+          <button
+            type="button"
+            aria-expanded={extrasOpen}
+            onClick={() => setExtrasOpen((o) => !o)}
+            style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8, padding: 0, border: 0, background: "none", cursor: "pointer", textAlign: "left" }}
+          >
+            <span className="display" style={{ fontSize: 15, fontWeight: 800, color: "var(--navy)" }}>絵本に入れるおまけ（任意）</span>
+            <span aria-hidden="true" style={{ fontSize: 13, fontWeight: 700, color: "var(--coral)", flexShrink: 0 }}>{extrasOpen ? "閉じる ▲" : "開く ▼"}</span>
+          </button>
+          <p style={{ margin: 0, fontSize: 12, lineHeight: 1.6, color: "var(--sub)" }}>
+            おうちの方からのメッセージと、思い出の写真を1枚、絵本の最後の方のページに入れられます。入れないときは、そのページはおえかきページになります。
+          </p>
+          {extrasOpen && (
+            <>
+              <div className="field">
+                <label htmlFor="bookmessage" style={{ fontSize: 14, fontWeight: 800, color: "var(--navy)" }}>
+                  おうちの方からのメッセージ（{BOOK_MESSAGE_MAX}文字まで）
+                </label>
+                <textarea
+                  id="bookmessage"
+                  rows={4}
+                  maxLength={BOOK_MESSAGE_MAX}
+                  placeholder="例：うまれてきてくれて ありがとう。だいすきだよ。"
+                  value={state.bookMessage}
+                  onChange={(e) => update({ bookMessage: e.target.value })}
+                />
+                <p style={{ margin: 0, fontSize: 12, color: "var(--sub)", textAlign: "right" }}>
+                  {state.bookMessage.length}/{BOOK_MESSAGE_MAX}
+                </p>
+              </div>
+              <div className="field">
+                <div style={{ fontSize: 14, fontWeight: 800, color: "var(--navy)" }}>思い出の写真（1枚）</div>
+                {state.memoryPhotoPath ? (
+                  <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                    {photoView && (
+                      // eslint-disable-next-line @next/next/no-img-element -- 選んだ写真のその場の表示
+                      <img src={photoView} alt="選んだ思い出の写真" style={{ width: 72, height: 72, objectFit: "cover", borderRadius: 10 }} />
+                    )}
+                    <span style={{ fontSize: 14 }}>写真を入れます</span>
+                    <button
+                      type="button"
+                      className="ghost"
+                      style={{ height: 36, padding: "0 14px", fontSize: 13, marginLeft: "auto" }}
+                      onClick={() => {
+                        update({ memoryPhotoPath: "" });
+                        setPhotoView(null);
+                      }}
+                    >
+                      取り消す
+                    </button>
+                  </div>
+                ) : (
+                  <label className="ghost" style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", height: 44, padding: "0 18px", alignSelf: "flex-start", cursor: "pointer" }}>
+                    {photoBusy ? "写真を送っています…" : "写真を選ぶ"}
+                    <input
+                      type="file"
+                      accept="image/*,.heic,.heif"
+                      hidden
+                      disabled={photoBusy}
+                      onChange={(e) => {
+                        pickMemoryPhoto(e.target.files?.[0]);
+                        e.target.value = "";
+                      }}
+                    />
+                  </label>
+                )}
+                {photoError && <p className="error" role="alert">{photoError}</p>}
+                <p style={{ margin: 0, fontSize: 12, lineHeight: 1.6, color: "var(--sub)" }}>
+                  写真は1ページにそのまま印刷します（絵にはしません）。印刷のためだけに使い、お支払いから100日で削除します。
+                </p>
+              </div>
+            </>
+          )}
+        </div>
+        <div className="card" style={{ padding: 18, gap: 12 }}>
           <div className="display" style={{ fontSize: 15, fontWeight: 800, color: "var(--navy)" }}>お届け日</div>
           <div className="field">
             <div style={{ fontSize: 14, fontWeight: 800, color: "var(--navy)" }}>お届け希望日（この日までにお届け）</div>
@@ -176,7 +286,7 @@ export default function CheckoutPage() {
         </p>
         {error && <p className="error" role="alert">{error}</p>}
       </main>
-      <NextButton onClick={pay} disabled={sending || !state.draftId || !dateOk}>
+      <NextButton onClick={pay} disabled={sending || photoBusy || !state.draftId || !dateOk}>
         {sending ? "決済画面を開いています…" : "お届け先とお支払いへ"}
       </NextButton>
     </>

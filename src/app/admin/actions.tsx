@@ -28,7 +28,8 @@ function DetailSelect() {
 
 // しまうまプリントのフォトブック（lib/shimauma.ts の SHIMAUMA_PRODUCTS と同じ）
 const SHIMAUMA_BUTTONS = [
-  { product: "a5square", label: "フォトブック 148mm角" },
+  { product: "a5square36", label: "フォトブック 148mm角・36ページ" },
+  { product: "a5square", label: "フォトブック 148mm角・24ページ" },
   { product: "pictures", label: "PICTURES 182mm角" },
 ];
 

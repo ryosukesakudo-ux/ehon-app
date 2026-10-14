@@ -141,6 +141,9 @@ export const STORIES: {
   },
 ];
 
+/** 本の大きさの表記（トップの値段・注文画面） */
+export const BOOK_FORMAT = "A5スクエア（約15cm角）";
+
 export const SIZES: {
   id: SizeId;
   name: string;
@@ -153,11 +156,36 @@ export const SIZES: {
   price: number;
   popular?: boolean;
 }[] = [
-  // 2026-10-12 作道さん：とりあえずB5スクエアのソフトカバー／ハードカバーの2種類で販売（スタンダード／プレミアムと表記）。
+  // 2026-10-12 作道さん：とりあえずソフトカバー／ハードカバーの2種類で販売（スタンダード／プレミアムと表記）。
+  // 2026-10-14 作道さん：しまうまプリントのフォトブック A5スクエア（148mm角）36ページにそろえる（ソフト＝スタンダード、ハード＝プレミアムハード）。
+  // ハードは 4,980円。36ページはお話のほかに、献辞・登場人物しょうかい・おえかきページなどの特別ページが入る（lib/shimauma.ts）。
   // id は以前の注文と合わせるため S・M のまま。
-  { id: "S", name: "スタンダード", cover: "ソフトカバー", spec: "B5スクエア（約18cm角）・24ページ・ソフトカバー", pages: 24, trimMm: 182, price: 2980 },
-  { id: "M", name: "プレミアム", cover: "ハードカバー", spec: "B5スクエア（約18cm角）・24ページ・ハードカバー", pages: 24, trimMm: 182, price: 3980, popular: true },
+  { id: "S", name: "スタンダード", cover: "ソフトカバー", spec: `${BOOK_FORMAT}・36ページ・ソフトカバー`, pages: 36, trimMm: 148, price: 2980 },
+  { id: "M", name: "プレミアム", cover: "ハードカバー", spec: `${BOOK_FORMAT}・36ページ・ハードカバー`, pages: 36, trimMm: 148, price: 4980, popular: true },
 ];
+
+/**
+ * 主人公の呼び方（献辞・登場人物しょうかいなどの特別ページで「はるとくんへ」のように使う）。
+ * 2026-10-14 作道さん：性別ではなく呼び方を選んでもらう（くん・ちゃん・名前だけ）
+ */
+export const HONORIFICS = [
+  { id: "kun", label: "くん", suffix: "くん" },
+  { id: "chan", label: "ちゃん", suffix: "ちゃん" },
+  { id: "none", label: "名前だけ", suffix: "" },
+] as const;
+export type HonorificId = (typeof HONORIFICS)[number]["id"];
+
+export function isHonorificId(v: unknown): v is HonorificId {
+  return HONORIFICS.some((h) => h.id === v);
+}
+
+/** 呼び方をつけた名前（例：はるとくん）。呼び方が無い・分からないときは名前だけ */
+export function calledName(name: string, honorific: string | null | undefined) {
+  return name + (HONORIFICS.find((h) => h.id === honorific)?.suffix ?? "");
+}
+
+/** 絵本の最後のページに入れる、おうちの方からのメッセージの最大文字数（任意） */
+export const BOOK_MESSAGE_MAX = 100;
 
 // 部数：同じ絵本を何冊でも同梱。2冊目からは1冊ごとに本体価格から1,000円引き（2026-10-10 作道さん決定）
 export const EXTRA_COPY_DISCOUNT = 1000;

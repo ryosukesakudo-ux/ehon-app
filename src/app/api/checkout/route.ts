@@ -12,6 +12,7 @@ import {
   parseBirthday,
   type SizeId,
 } from "@/lib/catalog";
+import { parseBookExtras, saveBookExtras } from "@/lib/book-extras";
 import { findCoupon, normalizeCouponCode, type Coupon } from "@/lib/coupons";
 import { isDemoId, loadOwnedDraft } from "@/lib/drafts";
 import { getStripe, getSupabase, siteUrl } from "@/lib/services";
@@ -101,6 +102,13 @@ export async function POST(request: Request) {
   if (error) {
     console.error("order insert failed", error);
     return Response.json({ error: "注文の作成に失敗しました" }, { status: 500 });
+  }
+  // 特別ページに入れる呼び方・メッセージ・思い出の写真（任意）
+  try {
+    await saveBookExtras(db, draft.id, orderId, parseBookExtras(draft.id, body ?? {}));
+  } catch (e) {
+    console.error("book extras save failed", e);
+    return Response.json({ error: "注文の作成に失敗しました。もう一度お試しください" }, { status: 500 });
   }
 
   const lineItems = [

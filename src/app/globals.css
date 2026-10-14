@@ -276,6 +276,18 @@ button, input { font-family: inherit; }
   color: var(--ink);
 }
 
+.field textarea {
+  padding: 12px 14px;
+  border-radius: 14px;
+  border: 2px solid #d9cfbd;
+  background: #fff;
+  font: inherit;
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--ink);
+  resize: vertical;
+}
+
 .consent { display: flex; gap: 10px; align-items: flex-start; font-size: 13px; line-height: 1.7; }
 .consent input { width: 22px; height: 22px; margin: 2px 0 0; flex-shrink: 0; }
 
