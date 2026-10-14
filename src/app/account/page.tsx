@@ -15,6 +15,7 @@ import { FacePhoto } from "@/components/face-photo";
 import { DeleteDraftButton } from "./delete-draft";
 import { DeleteSaveButton } from "./delete-save";
 import { SyncLocalFlow } from "./local-flow";
+import { SignOutButton } from "./sign-out";
 import { storyLabel } from "@/lib/story-key";
 
 export const dynamic = "force-dynamic";
@@ -224,9 +225,7 @@ export default async function AccountPage({ searchParams }: PageProps<"/account"
 
         <div style={{ fontSize: 13, color: "var(--sub)" }}>ログイン中：{user.email}</div>
         <Link href="/account/password" className="ghost">パスワードを設定・変更する</Link>
-        <form action="/auth/signout" method="post">
-          <button type="submit" className="ghost" style={{ width: "100%" }}>ログアウト</button>
-        </form>
+        <SignOutButton />
       </main>
     </div>
   );
