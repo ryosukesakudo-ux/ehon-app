@@ -303,8 +303,8 @@ export const ANON_TRIAL_IP_DAYS = 30;
 // 会員が1か月（日本時間の月初リセット）に無料で作れるプレビューの枚数（作り直しを含む）。AI費用の歯止め。
 export const MEMBER_MONTHLY_PREVIEWS = 10;
 
-// 無料枠を使い切ったあとの追加枠：500円で10枚。使い切るまで有効（月をまたいでも残る）
-export const PREVIEW_PACK = { credits: 10, price: 500 };
+// 無料枠を使い切ったあとの追加枠：500円で15枚（2026-10-14 作道さん。本文12枚まで見て作り直しても1回の購入で済むように）。使い切るまで有効（月をまたいでも残る）
+export const PREVIEW_PACK = { credits: 15, price: 500 };
 /** 一度にまとめて買えるセット数（足りない分に合わせて買う） */
 export const MAX_PACKS = 3;
 /** 足りない枚数に必要なセット数 */

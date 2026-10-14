@@ -330,7 +330,7 @@ function Preview() {
     }
   }
 
-  /** 足りないときの文言（例：10枚チャージして作り直す（500円）） */
+  /** 足りないときの文言（例：15枚チャージして作り直す（500円）） */
   const withCharge = (cost: number, text: string, plain: string) => {
     const short = cost - remaining;
     if (short <= 0) return plain;
