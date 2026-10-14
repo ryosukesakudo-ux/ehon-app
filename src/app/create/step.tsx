@@ -17,21 +17,33 @@ const STEP_LABELS = ["タッチ", "お話", "写真", "見本", "サイズ", "�
  * 進み具合：丸と線でつないだステップ。今のステップの丸がぽんと大きくなり、線が前のステップから伸びる
  * （2026-10-13 作道さん：ステップが進んでいく見せ方を華やかに）
  */
-function Stepper({ step }: { step: number }) {
+function Stepper({ step, onStep, reachable = 0 }: { step: number; onStep?: (n: number) => void; reachable?: number }) {
   const pct = (n: number) => `${(Math.max(0, n - 1) / (TOTAL_STEPS - 1)) * 100}%`;
   return (
     <div className="flow-steps" role="progressbar" aria-valuemin={1} aria-valuemax={TOTAL_STEPS} aria-valuenow={step} aria-label={`進み具合 ${step}/${TOTAL_STEPS}：${STEP_LABELS[step - 1]}`}>
       <div className="flow-steps-track" aria-hidden="true">
         <div className="flow-steps-fill" style={{ ["--from" as string]: pct(step - 1), ["--to" as string]: pct(step) }} />
       </div>
-      <ol className="flow-steps-dots" aria-hidden="true">
+      <ol className="flow-steps-dots" aria-hidden={onStep ? undefined : true}>
         {STEP_LABELS.map((label, i) => {
           const n = i + 1;
           const state = n < step ? "done" : n === step ? "now" : "";
-          return (
-            <li key={label} className={state} style={{ ["--d" as string]: `${i * 40}ms` }}>
+          const inner = (
+            <>
               <span className="flow-steps-dot display">{n < step ? "✓" : n}</span>
               <span className="flow-steps-label display">{label}</span>
+            </>
+          );
+          return (
+            <li key={label} className={state} style={{ ["--d" as string]: `${i * 40}ms` }}>
+              {/* 1ページの作成画面では、出ている項目の丸を押すとその項目へ戻れる（2026-10-14 作道さん） */}
+              {onStep && n <= reachable ? (
+                <button type="button" className="flow-steps-jump" onClick={() => onStep(n)} aria-label={`${label}へ戻る`}>
+                  {inner}
+                </button>
+              ) : (
+                inner
+              )}
             </li>
           );
         })}
@@ -41,7 +53,22 @@ function Stepper({ step }: { step: number }) {
 }
 
 /** trackPath=false：開いている画面の記録は呼び出し側で行う（1ページの作成画面）。sticky：スクロールしても上に残す */
-export function StepHeader({ step, back, trackPath = true, sticky = false }: { step: number; back?: string; trackPath?: boolean; sticky?: boolean }) {
+export function StepHeader({
+  step,
+  back,
+  trackPath = true,
+  sticky = false,
+  onStep,
+  reachable,
+}: {
+  step: number;
+  back?: string;
+  trackPath?: boolean;
+  sticky?: boolean;
+  /** 丸を押したとき（1ページの作成画面で、その項目へ戻る）。reachable までのステップだけ押せる */
+  onStep?: (n: number) => void;
+  reachable?: number;
+}) {
   const { update, ready } = useFlow();
   const pathname = usePathname();
   // 最後に開いていた画面を覚えておく（ログイン後やマイページから、この画面に戻れるように）
@@ -68,7 +95,7 @@ export function StepHeader({ step, back, trackPath = true, sticky = false }: { s
         <Brand size={26} mark={false} />
         <SaveAndExit />
       </div>
-      <Stepper step={step} />
+      <Stepper step={step} onStep={onStep} reachable={reachable} />
     </header>
   );
 }

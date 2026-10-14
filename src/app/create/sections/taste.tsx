@@ -8,7 +8,8 @@ import { sampleUrl } from "@/lib/samples";
 import { useFlow } from "../flow";
 
 /** 絵のテイスト。小さめのカードを横に3つ並べ、選んでいるタッチの説明を下に出す */
-export function TasteSection() {
+/** onPick：テイストを押したとき（選んでいるものを押し直したときも）。1ページの作成画面で次の項目を出す */
+export function TasteSection({ onPick }: { onPick?: () => void } = {}) {
   const { state, update } = useFlow();
   // テイストごとの見本は旧版の3つのお話にある。シリーズを選んでいるときは同じ名前のお話（無ければ森）の見本を出す
   const id = parseSeriesKey(state.story)?.series ?? state.story;
@@ -24,7 +25,10 @@ export function TasteSection() {
             role="radio"
             className="choice taste-choice"
             aria-checked={state.taste === t.id}
-            onClick={() => state.taste !== t.id && update({ taste: t.id, previews: {}, draftId: null })}
+            onClick={() => {
+              if (state.taste !== t.id) update({ taste: t.id, previews: {}, draftId: null });
+              onPick?.();
+            }}
           >
             <div className="taste-art" style={{ background: t.swatch }}>
               <SampleImage src={sampleUrl(t.id, sampleStory, 0)} alt={`${t.name}の見本`} fallback="[見本]" sizes="150px" />
