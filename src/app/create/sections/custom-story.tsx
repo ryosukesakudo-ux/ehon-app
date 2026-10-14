@@ -16,12 +16,17 @@ import { loginHref } from "../account";
 
 const textareaStyle = { padding: "10px 12px", borderRadius: 12, border: "2px solid #d9cfbd", fontSize: 16, lineHeight: 1.7, fontFamily: "inherit", resize: "vertical" } as const;
 
-export function CustomStoryPanel() {
+/**
+ * open・onOpenChange を渡すと、開く・閉じるを呼び出し側で決め、この中の大きなボタンは出さない
+ * （お話選びの2×2のカードから開くとき）
+ */
+export function CustomStoryPanel({ open: openProp, onOpenChange }: { open?: boolean; onOpenChange?: (open: boolean) => void } = {}) {
   const { state, update } = useFlow();
   const story = parseCustomKey(state.story);
   // 開くかどうか（未操作なら、オリジナルのお話を選んでいるときに開く。保存していた入力をあとから読むため）
   const [toggled, setToggled] = useState<boolean | null>(null);
-  const open = toggled ?? !!story;
+  const controlled = openProp !== undefined;
+  const open = controlled ? openProp : (toggled ?? !!story);
   const [synopsis, setSynopsis] = useState("");
   const [level, setLevel] = useState<LevelId>(story?.level ?? levelForAge(state.childAge));
   // ほかの登場人物（ペットやおばあちゃんなど）。お話を作ったあとは、そのお話の登場人物から始める
@@ -44,6 +49,7 @@ export function CustomStoryPanel() {
   function toggle() {
     if (!open && !story && state.story) update({ story: "", previews: {}, draftId: null });
     setToggled(!open);
+    onOpenChange?.(!open);
   }
 
   const save = (s: CustomStory) => update({ story: customKey(s), previews: {}, draftId: null });
@@ -104,7 +110,7 @@ export function CustomStoryPanel() {
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-      <button type="button" className="choice" aria-expanded={open} aria-pressed={!!story} onClick={toggle}>
+      {!controlled && <button type="button" className="choice" aria-expanded={open} aria-pressed={!!story} onClick={toggle}>
         <div style={{ flexShrink: 0, width: 72, height: 72, borderRadius: 12, background: "#FDECE8", display: "flex", alignItems: "center", justifyContent: "center" }}>
           <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="var(--coral)" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
             <path d="M12 20h9" />
@@ -116,7 +122,7 @@ export function CustomStoryPanel() {
           <div className="choice-desc">あらすじを書くと、AIが12ページのお話にします。ペットやおばあちゃんなども、写真から登場させられます。{open && !story && "お話ができると、次へ進めます。"}</div>
         </div>
         <Chevron dir={open ? "up" : "down"} size={18} />
-      </button>
+      </button>}
       {open && (
         <div className="card" style={{ gap: 12 }}>
           <div className="field">
