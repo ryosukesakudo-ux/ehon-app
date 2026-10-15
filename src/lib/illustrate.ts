@@ -99,7 +99,9 @@ const BOOK_CONSISTENCY =
   "Keep recurring animals, objects and places the same shape, colors and size relative to the child. " +
   // 2026-10-12 トライアルの声「リス増えた？」：窓の外のポッケとは別に、ベッドの上にもりすが描かれた
   "Each character, including the sidekick and every named animal, appears at most once in the picture: never draw the same character twice, and never add a stuffed toy, doll, picture or look-alike animal of the same kind next to them. " +
-  "Do not add accessories, logos, patterns or items to anyone's clothes beyond what is described.";
+  "Do not add accessories, logos, patterns or items to anyone's clothes beyond what is described. " +
+  // 2026-10-15 作道さん（見開き版の本のレビュー）：服の説明に無いリュックが場面5・8・9だけに描かれ、ほかの場面では消えていた
+  "Nobody carries a backpack, bag, satchel or basket unless the clothes, the continuity notes or this scene mention it.";
 
 const escapeRegExp = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
@@ -865,6 +867,38 @@ export async function makeSeriesCharacter(opts: { series: StudioSeries; who: Per
       `Character design of ${LABEL[opts.who]} only, for a children's picture book: the same person as on the character sheet, standing alone, full body from head to toes, front view, relaxed natural pose, friendly expression.`,
       opts.outfits ? `Clothes: ${opts.outfits} Draw exactly this person's clothes and colors from this list instead of the clothes in the reference images.` : "",
       "Plain soft light background with no scenery and no other people or animals. Leave a little space above the head and below the feet.",
+      "Do not draw any letters, words or text in the image.",
+      seriesNote(opts.note),
+    ]
+      .filter(Boolean)
+      .join(" "),
+    size: "1024x1024",
+    quality: "medium",
+    output_format: "png",
+  });
+  const b64 = result.data?.[0]?.b64_json;
+  if (!b64) throw new Error("画像が生成されませんでした");
+  return b64;
+}
+
+/**
+ * 登場人物しょうかいのページ用に、シリーズの相棒（森ならりすのポッケ）ひとりだけを全身で描く。
+ * 家族のキャラクターの絵（makeSeriesCharacter）と同じ水彩で、無地の明るい背景に相棒だけ
+ */
+export async function makeSeriesSidekick(opts: { series: StudioSeries; sheet: Uploadable; note?: string }) {
+  const t = getTaste("watercolor")!;
+  const ai = getOpenAI();
+  if (!ai) throw new Error("OPENAI_API_KEY が未設定です");
+  const result = await ai.images.edit({
+    model: process.env.OPENAI_IMAGE_MODEL ?? "gpt-image-2",
+    image: [opts.sheet],
+    prompt: [
+      `${t.prompt}.`,
+      "The reference image is the character sheet for this picture book series.",
+      STYLE_ONLY_FROM_TEXT,
+      `Character design of the series sidekick only, for a children's picture book: ${opts.series.sidekick}.`,
+      "The same sidekick as on the character sheet, alone, full body, front view, relaxed natural pose, friendly expression, filling about two thirds of the height of the picture.",
+      "Plain soft light background with no scenery, no people and no other animals. Leave a little space above the head and below the feet.",
       "Do not draw any letters, words or text in the image.",
       seriesNote(opts.note),
     ]

@@ -104,6 +104,19 @@ export function seriesCharacterPath(id: SeriesId, episode: number, who: "child" 
   return `series/${id}/ep${episode}/chara-${who}.png`;
 }
 
+/**
+ * 登場人物しょうかいのページに出す、相棒（森ならりすのポッケ）ひとりだけの絵。相棒は話や服で変わらないので、シリーズに1枚。
+ * 見本の本・自分の写真の本・お客様の本のどれでも同じ絵を使う（2026-10-15 作道さん「登場人物にポッケも」）
+ */
+export function seriesSidekickPath(id: SeriesId) {
+  return `series/${id}/chara-sidekick.png`;
+}
+
+/** 相棒の名前（例：「相棒のりす「ポッケ」」→「ポッケ」） */
+export function sidekickShortName(label: string) {
+  return label.match(/「(.+?)」/)?.[1] ?? label;
+}
+
 /** 見開き版の本を並べた画像（見開きごと）とPDF。level は文の量（s / n / l） */
 export function seriesBookViewPath(id: SeriesId, episode: number, combo: string, level: string, index: number) {
   return `series/${id}/ep${episode}/book-${combo}/view-${level}-${String(index).padStart(2, "0")}.jpg`;

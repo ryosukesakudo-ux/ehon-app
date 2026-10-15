@@ -1,7 +1,7 @@
 import { toFile } from "openai";
 import { calledName, isHonorificId, sceneText, type HonorificId } from "@/lib/catalog";
 import { getBook } from "@/lib/book";
-import { illustrateSeries, makeOwnSeriesSheet, makeSeriesCharacter, makeSeriesFamilyPhoto, makeSeriesFamilyPhotoFromText, makeSeriesSheet } from "@/lib/illustrate";
+import { illustrateSeries, makeOwnSeriesSheet, makeSeriesCharacter, makeSeriesFamilyPhoto, makeSeriesFamilyPhotoFromText, makeSeriesSheet, makeSeriesSidekick } from "@/lib/illustrate";
 import { characterSheetPath, samplePublicUrl } from "@/lib/samples";
 import {
   SPREAD_TEXT_SPOTS,
@@ -22,7 +22,9 @@ import {
   seriesImagePath,
   seriesSampleChildName,
   seriesSheetPath,
+  seriesSidekickPath,
   seriesSpreadPath,
+  sidekickShortName,
   seriesSpreadTextPath,
   usesShowcasePhoto,
   type SpreadTextSpot,
@@ -52,7 +54,7 @@ export const maxDuration = 300;
 // できた絵をAIが見て文の置き場所（人物・動物のいない所）を決めて、隣にJSONで保存する
 // kind=spreadText：今ある見開きの絵で、文の置き場所だけ選び直す
 // 見開き版の本の試作（combo＝写真の組み合わせ both / mom / dad / none）：
-// kind=bookChara：登場人物しょうかい用に、ひとり分（who）のキャラクターの絵を作る / kind=bookSpread：その組み合わせの場面（page 1〜12）を見開きで描く
+// kind=bookChara：登場人物しょうかい用に、ひとり分（who）のキャラクターの絵を作る。who=sidekick は相棒（シリーズに1枚、見本の設定画から描いて公開の samples に置く） / kind=bookSpread：その組み合わせの場面（page 1〜12）を見開きで描く
 // kind=bookRender：表紙から最後のページまでを見開きごとの画像とPDFにする（level＝文の量 s / n / l）。できた画像とPDFのURLを返す
 // own=true：「自分の写真で試す」。写真（kind=ownPhoto、フォームで送る）と、その写真から描いた絵を非公開の books に保存する。
 // kind=ownList：今ある写真と絵の、期限付きのURLを返す / kind=ownCover：その話の表紙を写真の家族で描く
@@ -179,6 +181,18 @@ export async function POST(request: Request) {
     const episode = series.episodes.find((e) => e.no === Number(body?.episode));
     const page = Number(body?.page);
     const combo = COMBOS.find((c) => c === body?.combo);
+
+    if (body?.kind === "bookChara" && body?.who === "sidekick") {
+      // 相棒は写真に関係なく見本の設定画から描く（自分の写真の本でも同じ絵を使う）
+      const sheet = await load(seriesSheetPath(series.id), "characters.png");
+      if (!sheet) return Response.json({ error: "先に登場人物の設定画（見本の家族）を作ってください" }, { status: 400 });
+      const b64 = await makeSeriesSidekick({ series, sheet, note });
+      const { error } = await db.storage
+        .from(SAMPLE_BUCKET)
+        .upload(seriesSidekickPath(series.id), Buffer.from(b64, "base64"), { contentType: "image/png", upsert: true, cacheControl: "300" });
+      if (error) throw new Error(error.message);
+      return Response.json({ ok: true });
+    }
 
     if (body?.kind === "bookChara") {
       const who = (["child", "mom", "dad"] as const).find((w) => w === body?.who);
@@ -322,7 +336,7 @@ async function renderBook(db: Db, id: Parameters<typeof seriesImagePath>[0], epi
   }
   if (missing.length) return { error: `見開きの絵がまだ無い場面があります（場面${missing.join("・")}）` };
 
-  // 登場人物しょうかい：主人公と、この組み合わせで出るママ・パパ（絵がある人）
+  // 登場人物しょうかい：主人公と、この組み合わせで出るママ・パパ（絵がある人）と相棒
   const honorific = opts.honorific ?? (id === "number" ? "chan" : "kun");
   const called = calledName(childName, honorific);
   const people: ("child" | "mom" | "dad")[] = ["child"];
@@ -333,6 +347,9 @@ async function renderBook(db: Db, id: Parameters<typeof seriesImagePath>[0], epi
     const image = await download(characterPath(id, episode, who));
     if (image) characters.push({ name: who === "child" ? called : who === "mom" ? "ママ" : "パパ", image });
   }
+  const studio = getStudioSeries(id);
+  const { data: sidekickData } = await db.storage.from(SAMPLE_BUCKET).download(seriesSidekickPath(id));
+  if (studio && sidekickData) characters.push({ name: sidekickShortName(studio.sidekickLabel), image: Buffer.from(await sidekickData.arrayBuffer()) });
   const info = getSeriesInfo(id)!;
   const next = openEpisodes(info.episodes).find((e) => e.no === episode + 1);
 
@@ -367,5 +384,5 @@ async function renderBook(db: Db, id: Parameters<typeof seriesImagePath>[0], epi
   const signed = opts.own ? await signedUrls(db, [...viewPaths, pdfPath]) : {};
   const urlOf = (path: string) => (opts.own ? signed[path] : `${samplePublicUrl(path)}?v=${stamp}`) ?? "";
   const pages = view.map((v, i) => ({ label: v.label, url: urlOf(viewPaths[i]) }));
-  return { pages, pdf: urlOf(pdfPath), missingCharacters: people.length - characters.length };
+  return { pages, pdf: urlOf(pdfPath), missingCharacters: people.length + 1 - characters.length };
 }

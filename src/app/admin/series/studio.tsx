@@ -19,7 +19,9 @@ import {
   seriesSampleChildName,
   seriesImagePath,
   seriesSheetPath,
+  seriesSidekickPath,
   seriesSpreadPath,
+  sidekickShortName,
   seriesSpreadTextPath,
   usesShowcasePhoto,
   type SeriesId,
@@ -207,15 +209,19 @@ export function SeriesStudio({ list }: { list: StudioView[] }) {
     const lacking = bookWho.filter((w) => !urls[ownPhotoPath(w)]);
     if (lacking.length) return alert(`先に写真を選んでください（${lacking.map(whoLabel).join("・")}）。いない人は上のチェックを外してください。`);
     const spreads = Array.from({ length: 12 }, (_, i) => i + 1).filter((p) => !urls[ownBookSpreadPath(SERIES_ID, bookEpisode.no, bookCombo, p)]);
-    const charas = bookWho.filter((w) => !urls[ownCharacterPath(SERIES_ID, bookEpisode.no, w)]);
+    const charas: (Who | "sidekick")[] = bookWho.filter((w) => !urls[ownCharacterPath(SERIES_ID, bookEpisode.no, w)]);
     const cover = !urls[ownCoverPath(SERIES_ID, bookEpisode.no)];
     const sheet = !urls[ownSheetPath(SERIES_ID)];
+    // 相棒の絵は見本と共用（見本の設定画から描く）
+    const sidekick = !(await exists(seriesSidekickPath(SERIES_ID)));
+    if (sidekick) charas.push("sidekick");
     if (!spreads.length && !charas.length && !cover) return alert("この組み合わせの絵はすべてそろっています。気になる絵は1枚ずつ作り直してください。");
     const per = quality === "final" ? 30 : 15;
     const yen = spreads.length * (quality === "final" ? 45 : 23) + charas.length * 15 + (cover ? per : 0) + (sheet ? 50 : 0);
     if (!confirm(`まだ無い絵を作ります（${sheet ? "設定画1枚・" : ""}${cover ? "表紙1枚・" : ""}見開き${spreads.length}枚・登場人物${charas.length}人）。AI代は約${yen}円です。よろしいですか？`)) return;
     // 設定画は全部の絵のもとになるので、先に1枚だけ作る
     if (sheet && !(await makeOwnSheet())) return;
+    if (sidekick && !(await exists(seriesSheetPath(SERIES_ID))) && !(await makeSheet())) return;
     const jobs = [...(cover ? [makeOwnCover] : []), ...charas.map((w) => () => makeBookChara(w)), ...spreads.map((p) => () => makeBookSpread(p))];
     const run = async () => {
       for (let job = jobs.shift(); job; job = jobs.shift()) await job();
@@ -227,7 +233,8 @@ export function SeriesStudio({ list }: { list: StudioView[] }) {
     if (!bookEpisode) return;
     if (bookOwn) return makeOwnAll();
     const spreads = (await Promise.all(Array.from({ length: 12 }, async (_, i) => ((await exists(seriesBookSpreadPath(SERIES_ID, bookEpisode.no, bookCombo, i + 1))) ? null : i + 1)))).filter((p): p is number => p !== null);
-    const charas = (await Promise.all(bookWho.map(async (w) => ((await exists(seriesCharacterPath(SERIES_ID, bookEpisode.no, w))) ? null : w)))).filter((w): w is "child" | "mom" | "dad" => w !== null);
+    const charas: (Who | "sidekick")[] = (await Promise.all(bookWho.map(async (w) => ((await exists(seriesCharacterPath(SERIES_ID, bookEpisode.no, w))) ? null : w)))).filter((w): w is Who => w !== null);
+    if (!(await exists(seriesSidekickPath(SERIES_ID)))) charas.push("sidekick");
     if (!spreads.length && !charas.length) return alert("この組み合わせの絵はすべてそろっています。気になる絵は1枚ずつ作り直してください。");
     const yen = spreads.length * (quality === "final" ? 45 : 23) + charas.length * 15;
     if (!confirm(`まだ無い絵を作ります（見開き${spreads.length}枚・登場人物${charas.length}人）。AI代は約${yen}円です。よろしいですか？`)) return;
@@ -510,6 +517,18 @@ export function SeriesStudio({ list }: { list: StudioView[] }) {
                 {...noteProps(charaKey(w))}
               />
             ))}
+            {/* 相棒（シリーズに1枚。見本・自分の写真のどちらの本でも同じ絵） */}
+            <Tile
+              key={`sidekick-${SERIES_ID}`}
+              path={seriesSidekickPath(SERIES_ID)}
+              version={version[charaKey("sidekick")]}
+              busy={busy[charaKey("sidekick")]}
+              error={errors[charaKey("sidekick")]}
+              label={`登場人物：${sidekickShortName(series.sidekickLabel)}`}
+              onMake={() => call(charaKey("sidekick"), { kind: "bookChara", who: "sidekick" })}
+              disabled={anyBusy}
+              {...noteProps(charaKey("sidekick"))}
+            />
           </div>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))", gap: 12 }}>
             {bookEpisode.scenes.map((sc, i) => (
