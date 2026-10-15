@@ -149,9 +149,6 @@ function EpisodeDialog({ series, ready, onClose, onDecide }: { series: SeriesId;
             <h2 id="story-dialog-title" className="display" style={{ margin: 0, fontSize: 19, fontWeight: 900, color: "var(--navy)" }}>{s.name}</h2>
             <p style={{ margin: 0, fontSize: 13, lineHeight: 1.6, color: "var(--sub)" }}>{s.description}</p>
           </div>
-          <button type="button" className="ghost" style={{ height: 36, padding: "0 14px", fontSize: 13, flexShrink: 0 }} onClick={onClose}>
-            閉じる
-          </button>
         </div>
         <div style={{ display: "flex", flexDirection: "column", gap: 8 }} role="radiogroup" aria-label="お話">
           {openEpisodes(s.episodes).map((ep) => {
@@ -203,9 +200,15 @@ function EpisodeDialog({ series, ready, onClose, onDecide }: { series: SeriesId;
             <p style={{ margin: 0, fontSize: 12, lineHeight: 1.6, color: "var(--sub)" }}>お話の筋は同じで、多いほど会話や気持ちの言葉がふえます。</p>
           </div>
         )}
-        <button type="button" className="cta" disabled={!episode} onClick={() => episode && onDecide(seriesKey(series, episode, fixed?.level ?? level))}>
-          決定
-        </button>
+        {/* 閉じる（グレー）と決定を下に横並びで固定。スクロールしなくても決定が見える（2026-10-15 作道さん） */}
+        <div className="dialog-footer">
+          <button type="button" className="ghost gray" style={{ height: 54, padding: "0 16px", flexShrink: 0 }} onClick={onClose}>
+            閉じる
+          </button>
+          <button type="button" className="cta" style={{ height: 54, flex: 1, minWidth: 0 }} disabled={!episode} onClick={() => episode && onDecide(seriesKey(series, episode, fixed?.level ?? level))}>
+            決定
+          </button>
+        </div>
       </div>
     </div>,
     document.body,
