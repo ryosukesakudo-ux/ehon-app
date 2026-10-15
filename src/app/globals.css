@@ -107,6 +107,8 @@ button, input { font-family: inherit; }
   -webkit-tap-highlight-color: transparent;
 }
 .ghost:disabled { opacity: 0.5; cursor: not-allowed; }
+/* グレーの控えめなボタン（ポップアップの「閉じる」など） */
+.ghost.gray { border-color: #c9c4bb; background-color: #efece7; color: var(--sub); box-shadow: 0 4px 0 #d6d1c8; }
 
 /* --- ボタンを押したときの沈み込み（押せる部品で共通） --- */
 @media (hover: hover) {
@@ -116,6 +118,8 @@ button, input { font-family: inherit; }
 }
 .cta:not(:disabled):not([aria-disabled="true"]):active { transform: translateY(4px); box-shadow: 0 1px 0 var(--press-shadow); filter: brightness(0.97); }
 .ghost:not(:disabled):active { transform: translateY(3px); box-shadow: 0 1px 0 rgba(30, 47, 87, 0.16); background-color: #eef3fb; }
+@media (hover: hover) { .ghost.gray:not(:disabled):hover { background-color: #e7e3dc; box-shadow: 0 5px 0 #d6d1c8; } }
+.ghost.gray:not(:disabled):active { background-color: #e2ded6; box-shadow: 0 1px 0 #d6d1c8; }
 .choice:active { transform: translateY(3px); box-shadow: 0 1px 0 var(--card-shadow); }
 .icon-link:active { transform: scale(0.9); }
 :focus-visible { outline: 3px solid var(--blue); outline-offset: 3px; }
