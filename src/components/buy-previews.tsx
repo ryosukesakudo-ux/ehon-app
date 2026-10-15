@@ -16,7 +16,7 @@ export async function startCreditCheckout(returnTo: string, packs = 1) {
 }
 
 /** プレビューの追加枠を買うボタン。Stripe の決済画面へ移り、終わったら returnTo に戻る。 */
-export function BuyPreviewsButton({ returnTo, className = "ghost" }: { returnTo: string; className?: string }) {
+export function BuyPreviewsButton({ returnTo, className = "ghost", disabled = false }: { returnTo: string; className?: string; disabled?: boolean }) {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -33,7 +33,7 @@ export function BuyPreviewsButton({ returnTo, className = "ghost" }: { returnTo:
 
   return (
     <>
-      <button type="button" className={className} disabled={busy} onClick={buy}>
+      <button type="button" className={className} disabled={busy || disabled} onClick={buy}>
         {busy ? "購入画面を開いています…" : `プレビューを${PREVIEW_PACK.credits}枚追加（${yen(PREVIEW_PACK.price)}）`}
       </button>
       {error && <p className="error" role="alert">{error}</p>}

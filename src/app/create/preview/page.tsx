@@ -365,8 +365,20 @@ function Preview() {
   }
 
   const url = scene === undefined ? undefined : state.previews[scene];
-  const busy = Object.values(loading).some(Boolean) || resetting;
   const drawing = Object.values(loading).some(Boolean);
+  const coverDone = !!state.previews[COVER_SCENE];
+  // 表紙の絵を待っている（描いている途中の画面が出ている）間も、ボタンは押せないようにする（2026-10-15 作道さん）
+  const coverWaiting = confirmed && !coverDone && !failed[COVER_SCENE];
+  const busy = drawing || resetting || coverWaiting;
+
+  // 確定後に表紙がまだ無く、描いてもいないときは、この画面で一度だけ描きはじめる（「描いています」のまま止まらないように）
+  const coverKicked = useRef(false);
+  useEffect(() => {
+    if (!ready || !state.draftId || !state.previewScenes.length || !coverWaiting || loading[COVER_SCENE] || coverKicked.current) return;
+    coverKicked.current = true;
+    void generate(COVER_SCENE);
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 表紙を待っているのに描いていないときだけ
+  }, [ready, state.draftId, state.previewScenes.length, coverWaiting, loading]);
 
   // 絵を作っている間に再読み込み・画面を閉じると、同じ絵をもう一度作ってプレビューを2枚使ってしまうので、ブラウザの確認を出す
   useEffect(() => {
@@ -398,7 +410,6 @@ function Preview() {
     // eslint-disable-next-line react-hooks/exhaustive-deps -- 残り枚数が反映されたときに一度だけ作る
   }, [thenPages, boughtCredits, ready, confirmed, account]);
   const charactersDone = characters.length > 0 && characters.every((i) => state.previews[i]);
-  const coverDone = !!state.previews[COVER_SCENE];
   const missingPages = pages.filter((i) => !state.previews[i]);
   // 次の操作に必要なプレビューの枚数（足りないときは追加のボタンを出す）
   const needed = !confirmed ? Math.max(1, characters.length > 1 ? characters.length : 1) : pageCount === 0 ? FIRST_PAGES : pageCount < BOOK_SCENE_COUNT ? BOOK_SCENE_COUNT - FIRST_PAGES : 1;
@@ -662,7 +673,7 @@ function Preview() {
         )}
         {charging && <p className="info-note" role="status">購入画面を開いています…</p>}
         {/* 残りが次の操作に足りないときは、追加のボタンを出す */}
-        {account?.loggedIn && account.remaining < needed && <BuyPreviewsButton returnTo="/create/preview" />}
+        {account?.loggedIn && account.remaining < needed && <BuyPreviewsButton returnTo="/create/preview" disabled={busy} />}
         {error && <p className="error" role="alert">{error}</p>}
         {needLogin && !trial && (
           <Link href={loginHref("/create/preview")} className="ghost">無料会員登録・ログインへ</Link>
