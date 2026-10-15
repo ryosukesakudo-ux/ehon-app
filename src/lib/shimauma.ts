@@ -36,6 +36,8 @@ export type ShimaumaInput = {
   images: Buffer[]; // 場面ごとの絵（12、正方形）
   coverImage: Buffer; // 表紙の絵（横長 3:2）
   volume: number;
+  /** 注文の通し番号（お支払いが済んだ順）。ファイル名の先頭 No0012_ に使う */
+  serial: number;
   /** 特別ページの内容（36ページの本だけ） */
   extras?: ShimaumaExtras;
 };
@@ -78,6 +80,8 @@ export async function buildShimaumaZip(input: ShimaumaInput, product: ShimaumaPr
   const scale = trimMm / 210; // 入稿用PDFと同じく21cm角を基準に文字の大きさをそろえる
   const textSize = 18 * scale;
   const files: { name: string; bytes: Buffer }[] = [];
+  // ファイル名の先頭に注文の通し番号（No0012_）をつけて、別の注文の画像と取り違えないようにする
+  const prefix = `No${String(input.serial).padStart(4, "0")}_`;
   const jpeg = (img: Sharp) => img.jpeg({ quality: 92 }).toBuffer();
   const art = (img: Buffer, px: number, h = px) => sharp(img).flatten({ background: "#ffffff" }).resize(px, h, { fit: "cover" }).toBuffer();
 
@@ -88,7 +92,7 @@ export async function buildShimaumaZip(input: ShimaumaInput, product: ShimaumaPr
     drawCoverText(page, { title: input.title, volume: input.volume, font: bold, size, bleed: 0, artHeight, scale, textWidth: mm(trimMm - SAFE_MM * 2) });
     const artPx = Math.round((COVER_PX * 2) / 3);
     files.push({
-      name: "表紙.jpg",
+      name: `${prefix}表紙.jpg`,
       bytes: await jpeg(
         cream(COVER_PX).composite([
           { input: await art(input.coverImage, COVER_PX, artPx), left: 0, top: COVER_PX - artPx },
@@ -97,14 +101,14 @@ export async function buildShimaumaZip(input: ShimaumaInput, product: ShimaumaPr
       ),
     });
     // しまうまの表紙デザインは写真の枠が横長で、題名はしまうまの文字欄に入れる形なので、文字の無い表紙の絵（3:2）も入れておく
-    files.push({ name: "表紙_絵だけ.jpg", bytes: await jpeg(sharp(await art(input.coverImage, COVER_PX, Math.round((COVER_PX * 2) / 3)))) });
+    files.push({ name: `${prefix}表紙_絵だけ.jpg`, bytes: await jpeg(sharp(await art(input.coverImage, COVER_PX, Math.round((COVER_PX * 2) / 3)))) });
   }
 
   // 本文：ファイル名の順（しまうまの「自動配置」の「ファイル名順」）で並ぶように 01〜 の番号をつける
   // 見開きにする場面の数（残りの場面は1ページに文章と絵をまとめる）
   const spreads = Math.min(input.texts.length, pages - input.texts.length);
   let no = 1;
-  const name = (label: string) => `${String(no++).padStart(2, "0")}_${label}.jpg`;
+  const name = (label: string) => `${prefix}${String(no++).padStart(2, "0")}_${label}.jpg`;
   const ex = extras ? new ExtraPages({ size, trimMm, px: PAGE_PX, body, bold, scale }) : null;
 
   // 特別ページ（お話の前）：献辞、登場人物しょうかい（見開き）
