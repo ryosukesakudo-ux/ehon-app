@@ -34,18 +34,20 @@ export async function POST(request: Request, ctx: RouteContext<"/api/admin/order
   if ("error" in loaded) return Response.json({ error: loaded.error }, { status: 400 });
 
   try {
+    const serial = await orderSerial(db, order);
     const { zip } = await buildShimaumaZip({
       title: bookTitle(order.drafts.story, order.drafts.child_name),
       texts: story.scenes.map((sc) => sceneText(sc, order.drafts.child_name)),
       images: loaded.images,
       coverImage: loaded.coverImage,
       volume: await bookVolume(db, order),
-      extras: "extras" in SHIMAUMA_PRODUCTS[product] ? await loadExtras(db, order) : undefined,
+      serial,
+      extras: "extras" in SHIMAUMA_PRODUCTS[product] ? await loadExtras(db, order, serial) : undefined,
     }, product);
     const path = `${order.draft_id}/print/shimauma-${product}.zip`;
     const { error } = await db.storage.from(BOOK_BUCKET).upload(path, zip, { contentType: "application/zip", upsert: true });
     if (error) throw new Error(error.message);
-    const name = `${order.id.slice(0, 8).toUpperCase()}_しまうま_${SHIMAUMA_PRODUCTS[product].trimMm}mm.zip`;
+    const name = `No${String(serial).padStart(4, "0")}_しまうま_${SHIMAUMA_PRODUCTS[product].trimMm}mm.zip`;
     const { data } = await db.storage.from(BOOK_BUCKET).createSignedUrl(path, 60 * 60, { download: name });
     if (!data) throw new Error("ダウンロード用のURLを作れませんでした");
     return Response.json({ ok: true, url: data.signedUrl });
@@ -58,7 +60,14 @@ export async function POST(request: Request, ctx: RouteContext<"/api/admin/order
 type OrderRow = { id: string; draft_id: string; paid_at: string | null; created_at: string; child_birthday?: string | null; drafts: Draft };
 
 /** 特別ページの内容を集める（呼び方・メッセージ・思い出の写真・登場人物の絵・通し番号・次のお話） */
-async function loadExtras(db: SupabaseClient, order: OrderRow): Promise<ShimaumaExtras> {
+/** 通し番号：お支払いが済んだ順（この注文より前に支払われた注文の数＋1） */
+async function orderSerial(db: SupabaseClient, order: OrderRow) {
+  const paidAt = order.paid_at ?? order.created_at;
+  const { count } = await db.from("orders").select("id", { count: "exact", head: true }).not("paid_at", "is", null).lte("paid_at", paidAt);
+  return Math.max(1, count ?? 1);
+}
+
+async function loadExtras(db: SupabaseClient, order: OrderRow, serial: number): Promise<ShimaumaExtras> {
   const draft = order.drafts;
   const saved = await loadBookExtras(db, order.draft_id, order.id);
   const called = calledName(draft.child_name, saved.honorific);
@@ -80,9 +89,7 @@ async function loadExtras(db: SupabaseClient, order: OrderRow): Promise<Shimauma
     if (image) characters.push({ name: cast[i]?.name ?? `とうじょうじんぶつ${i + 1}`, image });
   }
 
-  // 通し番号：お支払いが済んだ順（この注文より前に支払われた注文の数＋1）
   const paidAt = order.paid_at ?? order.created_at;
-  const { count } = await db.from("orders").select("id", { count: "exact", head: true }).not("paid_at", "is", null).lte("paid_at", paidAt);
 
   // 次のお話：シリーズの次の話（公開中の話だけ）。オリジナルのお話や最後の話は無し
   const k = parseSeriesKey(draft.story);
@@ -97,7 +104,7 @@ async function loadExtras(db: SupabaseClient, order: OrderRow): Promise<Shimauma
     madeAt: new Date(paidAt),
     message: saved.message,
     memoryPhoto: await download(PHOTO_BUCKET, saved.memoryPhotoPath),
-    serial: Math.max(1, count ?? 1),
+    serial,
     characters,
     nextEpisode: next && series ? { lead: `${series.name} 第${next.no}話`, title: next.title } : null,
   };
