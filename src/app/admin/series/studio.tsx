@@ -2,7 +2,21 @@
 
 import { useEffect, useState, useSyncExternalStore } from "react";
 import { samplePublicUrl } from "@/lib/samples";
-import { SERIES_NOTE_MAX, isPhotoFirst, seriesFamilyPhotoPath, seriesSampleChildName, seriesImagePath, seriesSheetPath, seriesSpreadPath, seriesSpreadTextPath, usesShowcasePhoto, type SeriesId, type SpreadTextSpot } from "@/lib/series";
+import {
+  SERIES_NOTE_MAX,
+  isPhotoFirst,
+  seriesBookSpreadPath,
+  seriesCharacterPath,
+  seriesFamilyPhotoPath,
+  seriesSampleChildName,
+  seriesImagePath,
+  seriesSheetPath,
+  seriesSpreadPath,
+  seriesSpreadTextPath,
+  usesShowcasePhoto,
+  type SeriesId,
+  type SpreadTextSpot,
+} from "@/lib/series";
 import { SampleImage } from "@/components/sample-image";
 
 // 台本の絵スタジオ：架空の家族（ふつうは作例と同じ家族。数のお勉強は別の家族で、写真が先）で、台本（シリーズ）の各話の表紙と12場面を水彩で作る。
@@ -36,7 +50,7 @@ export function SeriesStudio({ list }: { list: StudioView[] }) {
   const [notes, setNotes] = useState<Record<string, string>>({});
   const noteProps = (key: string) => ({ note: notes[key] ?? "", onNote: (v: string) => setNotes((n) => ({ ...n, [key]: v })) });
 
-  async function call(key: string, body: object) {
+  async function call(key: string, body: object): Promise<Record<string, unknown> | false> {
     setBusy((b) => ({ ...b, [key]: true }));
     setErrors((e) => ({ ...e, [key]: "" }));
     try {
@@ -48,7 +62,7 @@ export function SeriesStudio({ list }: { list: StudioView[] }) {
       const json = await res.json();
       if (!res.ok) throw new Error(json.error ?? "作成に失敗しました");
       setVersion((v) => ({ ...v, [key]: Date.now() }));
-      return true;
+      return json;
     } catch (e) {
       setErrors((x) => ({ ...x, [key]: e instanceof Error ? e.message : "作成に失敗しました" }));
       return false;
@@ -97,6 +111,40 @@ export function SeriesStudio({ list }: { list: StudioView[] }) {
   }
 
   const anyBusy = Object.values(busy).some(Boolean);
+  // 見開き版の本（表紙から最後のページまで）。主人公は必ず出る。ママ・パパは写真がある前提で選ぶ（台本の出し分けのとおりに場面が変わる）
+  const [bookEp, setBookEp] = useState(series.episodes[0]?.no ?? 1);
+  const [bookMom, setBookMom] = useState(true);
+  const [bookDad, setBookDad] = useState(true);
+  const [bookLevel, setBookLevel] = useState<"s" | "n" | "l">("n");
+  const [book, setBook] = useState<{ key: string; pages: { label: string; url: string }[]; pdf: string; missingCharacters: number } | null>(null);
+  const bookCombo = bookMom && bookDad ? "both" : bookMom ? "mom" : bookDad ? "dad" : "none";
+  const bookWho: ("child" | "mom" | "dad")[] = ["child", ...(bookMom ? (["mom"] as const) : []), ...(bookDad ? (["dad"] as const) : [])];
+  const bookEpisode = series.episodes.find((e) => e.no === bookEp) ?? series.episodes[0];
+  const bookViewKey = `${SERIES_ID}/${bookEpisode?.no}/${bookCombo}/${bookLevel}`;
+  const bookSpreadKey = (page: number) => `book/${bookEpisode?.no}/${bookCombo}/${page}`;
+  const charaKey = (who: string) => `bookChara/${bookEpisode?.no}/${who}`;
+  const makeBookSpread = (page: number) => call(bookSpreadKey(page), { kind: "bookSpread", episode: bookEpisode.no, page, combo: bookCombo, quality });
+  const makeBookChara = (who: string) => call(charaKey(who), { kind: "bookChara", episode: bookEpisode.no, who });
+  async function makeBookAll() {
+    if (!bookEpisode) return;
+    const spreads = (await Promise.all(Array.from({ length: 12 }, async (_, i) => ((await exists(seriesBookSpreadPath(SERIES_ID, bookEpisode.no, bookCombo, i + 1))) ? null : i + 1)))).filter((p): p is number => p !== null);
+    const charas = (await Promise.all(bookWho.map(async (w) => ((await exists(seriesCharacterPath(SERIES_ID, bookEpisode.no, w))) ? null : w)))).filter((w): w is "child" | "mom" | "dad" => w !== null);
+    if (!spreads.length && !charas.length) return alert("この組み合わせの絵はすべてそろっています。気になる絵は1枚ずつ作り直してください。");
+    const yen = spreads.length * (quality === "final" ? 45 : 23) + charas.length * 15;
+    if (!confirm(`まだ無い絵を作ります（見開き${spreads.length}枚・登場人物${charas.length}人）。AI代は約${yen}円です。よろしいですか？`)) return;
+    if (photoFirst && !(await exists(seriesFamilyPhotoPath(SERIES_ID)))) return alert("先に家族写真を作ってください");
+    if (!(await exists(seriesSheetPath(SERIES_ID))) && !(await makeSheet())) return;
+    const jobs = [...charas.map((w) => () => makeBookChara(w)), ...spreads.map((p) => () => makeBookSpread(p))];
+    const run = async () => {
+      for (let job = jobs.shift(); job; job = jobs.shift()) await job();
+    };
+    await Promise.all(Array.from({ length: PARALLEL }, run));
+  }
+  async function renderBook() {
+    const json = await call("bookRender", { kind: "bookRender", episode: bookEpisode.no, combo: bookCombo, level: bookLevel });
+    if (json) setBook({ key: bookViewKey, pages: json.pages as { label: string; url: string }[], pdf: json.pdf as string, missingCharacters: Number(json.missingCharacters ?? 0) });
+  }
+
 
   const sheetSection = (
     <section className="card" style={{ gap: 12 }}>
@@ -232,6 +280,88 @@ export function SeriesStudio({ list }: { list: StudioView[] }) {
             文の置き場所だけ探し直す（絵はそのまま・約1円）
           </button>
           {errors[spreadKey] && <span className="error">{errors[spreadKey]}</span>}
+        </section>
+      )}
+
+      {bookEpisode && (
+        <section className="card" style={{ gap: 12 }}>
+          <h2 className="display" style={{ margin: 0, fontSize: 18, color: "var(--navy)" }}>見開き版の本（表紙から最後のページまで）</h2>
+          <p style={{ margin: 0, fontSize: 13, lineHeight: 1.7 }}>
+            お話の12場面を左右2ページにまたがる絵で描き、表紙・献辞・登場人物しょうかいから最後のメッセージまで、しまうま A5スクエア36ページと同じ並びで本の形にして確かめます。
+            ママ・パパは「写真がある人」を選ぶと、台本の出し分けのとおりに場面が変わります（いない人の場面は別の場面に置きかわります）。絵は組み合わせごとに保存され、お客様の本やサンプル集は変わりません。
+            見開きの絵は1枚 約{quality === "final" ? 45 : 23}円、登場人物の絵は1人 約15円です。表紙は下の「第◯話」の表紙の絵を使います。
+          </p>
+          <div style={{ display: "flex", gap: 14, flexWrap: "wrap", alignItems: "center" }}>
+            <label>
+              話：
+              <select value={bookEpisode.no} disabled={anyBusy} onChange={(e) => setBookEp(Number(e.target.value))}>
+                {series.episodes.map((ep) => <option key={ep.no} value={ep.no}>第{ep.no}話</option>)}
+              </select>
+            </label>
+            <label><input type="checkbox" checked disabled /> 主人公（{childName}）</label>
+            <label><input type="checkbox" checked={bookMom} disabled={anyBusy} onChange={(e) => setBookMom(e.target.checked)} /> ママ</label>
+            <label><input type="checkbox" checked={bookDad} disabled={anyBusy} onChange={(e) => setBookDad(e.target.checked)} /> パパ</label>
+            <label>
+              文の量：
+              <select value={bookLevel} onChange={(e) => setBookLevel(e.target.value as "s" | "n" | "l")}>
+                <option value="s">少ない</option>
+                <option value="n">普通</option>
+                <option value="l">多い</option>
+              </select>
+            </label>
+          </div>
+          <button type="button" className="cta" style={{ width: "auto", alignSelf: "flex-start", height: 44, padding: "0 20px", fontSize: 15 }} disabled={anyBusy} onClick={makeBookAll}>
+            まだ無い絵をまとめて作る（見開き12枚＋登場人物）
+          </button>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(140px, 1fr))", gap: 12 }}>
+            {bookWho.map((w) => (
+              <Tile
+                key={`${bookEpisode.no}-${w}`}
+                path={seriesCharacterPath(SERIES_ID, bookEpisode.no, w)}
+                version={version[charaKey(w)]}
+                busy={busy[charaKey(w)]}
+                error={errors[charaKey(w)]}
+                label={`登場人物：${w === "child" ? childName : w === "mom" ? "ママ" : "パパ"}`}
+                onMake={() => makeBookChara(w)}
+                disabled={anyBusy}
+                {...noteProps(charaKey(w))}
+              />
+            ))}
+          </div>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))", gap: 12 }}>
+            {bookEpisode.scenes.map((sc, i) => (
+              <Tile
+                key={`${bookEpisode.no}-${bookCombo}-${i}`}
+                path={seriesBookSpreadPath(SERIES_ID, bookEpisode.no, bookCombo, i + 1)}
+                version={version[bookSpreadKey(i + 1)]}
+                busy={busy[bookSpreadKey(i + 1)]}
+                error={errors[bookSpreadKey(i + 1)]}
+                label={`場面${i + 1}（文は${(i + 1) % 2 === 1 ? "右" : "左"}ページ寄り）：${sc.label}`}
+                aspect="3 / 2"
+                onMake={() => makeBookSpread(i + 1)}
+                disabled={anyBusy}
+                {...noteProps(bookSpreadKey(i + 1))}
+              />
+            ))}
+          </div>
+          <button type="button" className="cta" style={{ width: "auto", alignSelf: "flex-start", height: 44, padding: "0 20px", fontSize: 15 }} disabled={anyBusy} onClick={renderBook}>
+            本の形にして全ページを見る（文字入り・PDFも作る）
+          </button>
+          {busy.bookRender && <div className="spinner" />}
+          {errors.bookRender && <span className="error">{errors.bookRender}</span>}
+          {book && book.key === bookViewKey && !busy.bookRender && (
+            <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+              <a href={book.pdf} target="_blank" rel="noreferrer" style={{ fontSize: 15, fontWeight: 700 }}>PDFを開く・保存する（全ページ）</a>
+              {book.missingCharacters > 0 && <span className="error">登場人物の絵がまだ無い人がいます（{book.missingCharacters}人）。登場人物しょうかいのページに出ません。</span>}
+              {book.pages.map((p) => (
+                <figure key={p.url} style={{ margin: 0, display: "flex", flexDirection: "column", gap: 4 }}>
+                  {/* eslint-disable-next-line @next/next/no-img-element -- 作るたびに変わる確認用の画像なので、画像の最適化を通さない */}
+                  <img src={p.url} alt={p.label} style={{ width: "100%", maxWidth: p.label === "表紙" ? 450 : 900, border: "1px solid #ddd", borderRadius: 6 }} />
+                  <figcaption style={{ fontSize: 12, color: "var(--sub)" }}>{p.label}</figcaption>
+                </figure>
+              ))}
+            </div>
+          )}
         </section>
       )}
 
