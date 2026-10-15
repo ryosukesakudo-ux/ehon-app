@@ -6,6 +6,7 @@ import { loadFinalImages } from "@/lib/print-assets";
 import { buildBookPdfs } from "@/lib/print-pdf";
 import { BOOK_BUCKET, getSupabase } from "@/lib/services";
 import { bookVolume } from "@/lib/volume";
+import { renderSpreadPages } from "@/lib/spread-book";
 
 export const maxDuration = 300;
 
@@ -33,16 +34,21 @@ export async function POST(request: Request, ctx: RouteContext<"/api/admin/order
 
   const loaded = await loadFinalImages(db, order.draft_id, story.scenes.length);
   if ("error" in loaded) return Response.json({ error: loaded.error }, { status: 400 });
-  const { coverImage, images } = loaded;
+  const { coverImage, images, spots } = loaded;
 
   const volume = await bookVolume(db, order);
 
   try {
+    const texts = story.scenes.map((sc) => sceneText(sc, order.drafts.child_name));
+    // 見開きの絵の場面は、塗り足し（四方3mm）込みの大きさで文を重ねて左右のページに分ける（約300dpi）
+    const bleedMm = size.trimMm + 6;
+    const spreadPages = await renderSpreadPages({ images, texts, spots, trimMm: bleedMm, pagePx: Math.round((bleedMm / 25.4) * 300) });
     const pdfs = await buildBookPdfs({
       title,
       childName: order.drafts.child_name,
-      texts: story.scenes.map((sc) => sceneText(sc, order.drafts.child_name)),
+      texts,
       images,
+      spreadPages,
       coverImage,
       trimMm: size.trimMm,
       volume,

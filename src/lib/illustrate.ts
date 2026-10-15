@@ -7,6 +7,7 @@ import { upscalePng } from "./upscale";
 import { SERIES_NOTE_MAX, type SeriesScene } from "./series";
 import type { StudioSeries } from "./series-studio";
 import type { Continuity } from "./series-data";
+import { sceneTextSide } from "./spread-scene";
 
 export type { Person };
 
@@ -292,7 +293,11 @@ function guestsPrompt(cast: { kind: "person" | "animal"; look: string }[] | unde
     .join(" ");
 }
 
-export function buildPrompt(taste: TasteId, story: string, sceneIndex: number, refs: { who: Who; kind?: RefKind }[], childAge?: number | null, redo?: Redo | null) {
+/** 見開きの絵（横長 3:2）を印刷用に拡大するときの大きさ */
+const SPREAD_FINAL = { width: Math.round(FINAL_PX * 1.5), height: FINAL_PX };
+
+/** spread：本文の場面を見開き（横長）で描く（2026-10-15 作道さん：お客様の本も見開き版に切り替え） */
+export function buildPrompt(taste: TasteId, story: string, sceneIndex: number, refs: { who: Who; kind?: RefKind }[], childAge?: number | null, redo?: Redo | null, spread = false) {
   const t = getTaste(taste)!;
   const isCover = sceneIndex === COVER_SCENE;
   const book = getBook(story)!;
@@ -337,7 +342,9 @@ export function buildPrompt(taste: TasteId, story: string, sceneIndex: number, r
     cameraPrompt(scene.camera),
     isCover
       ? "This is the front cover of the picture book: a wide landscape composition with the child large and clearly visible near the center, the scene filling the whole frame. Do not draw any letters, words, title or text in the image."
-      : framing(scene.camera),
+      : spread
+        ? spreadFraming(sceneTextSide(sceneIndex))
+        : framing(scene.camera),
   ]
     .filter(Boolean)
     .join(" ");
@@ -359,6 +366,8 @@ export async function illustrate(opts: {
   size?: "1024x1024" | "2048x2048";
   /** 写真の顔の飾り（シール・メガネなど）を描かない */
   plainFace?: boolean;
+  /** 本文の場面を見開き（横長 1536x1024）で描く。表紙・キャラクターの絵には効かない */
+  spread?: boolean;
 }): Promise<string> {
   const ai = getOpenAI();
   if (!ai) throw new Error("OPENAI_API_KEY が未設定です");
@@ -368,25 +377,32 @@ export async function illustrate(opts: {
   const guest = guestOf(opts.sceneIndex);
   const character: Who | null = characterOf(opts.sceneIndex) ?? guest;
   const upscaleTo = !opts.size && !isCover && character === null && opts.quality === "final" ? FINAL_PX : null;
+  const spread = !!opts.spread && !opts.size && !isCover && character === null;
   const result = await ai.images.edit({
     model: process.env.OPENAI_IMAGE_MODEL ?? "gpt-image-2",
     image: opts.images.map((i) => i.file),
     prompt: [
       character !== null
         ? buildCharacterPrompt(opts.taste, character, opts.images, opts.childAge, opts.redo, opts.story)
-        : buildPrompt(opts.taste, opts.story, opts.sceneIndex, opts.images, opts.childAge, opts.redo),
+        : buildPrompt(opts.taste, opts.story, opts.sceneIndex, opts.images, opts.childAge, opts.redo, spread),
       opts.plainFace ? PLAIN_FACE : "",
     ]
       .filter(Boolean)
       .join(" "),
     // 表紙は横長（タイトルは絵の上の帯に置くので、絵に文字の場所はいらない）
-    size: opts.size ?? (isCover ? COVER_SIZE : "1024x1024"),
+    size: opts.size ?? (isCover ? COVER_SIZE : spread ? "1536x1024" : "1024x1024"),
     quality: opts.detail ?? (opts.quality === "final" ? "high" : "medium"),
     output_format: "png",
   });
   const b64 = result.data?.[0]?.b64_json;
   if (!b64) throw new Error("画像が生成されませんでした");
+  if (upscaleTo && spread) return upscalePng(b64, SPREAD_FINAL.width, SPREAD_FINAL.height);
   return upscaleTo ? upscalePng(b64, upscaleTo) : b64;
+}
+
+/** 印刷用の大きさに拡大する（プレビューの絵をそのまま本にするとき）。見開きの絵（横長）は横長のまま */
+export async function upscaleForPrint(b64: string, wide: boolean) {
+  return wide ? upscalePng(b64, SPREAD_FINAL.width, SPREAD_FINAL.height) : upscalePng(b64, FINAL_PX);
 }
 
 // --- 作例（トップページなどに載せる見本の絵）---

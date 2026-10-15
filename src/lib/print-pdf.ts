@@ -43,6 +43,8 @@ export type BookPdfInput = {
   childName: string;
   texts: string[]; // 場面ごとの文章（12）。漢字《かな》 はふりがなとして漢字の上に小さく入れる
   images: Buffer[]; // 場面ごとの絵（12、正方形）
+  /** 見開きの絵の場面の、文を重ねた左右のページの画像（塗り足し込み）。null の場面（正方形の絵）は「左に文・右に絵」 */
+  spreadPages?: ([Buffer, Buffer] | null)[];
   coverImage: Buffer; // 表紙の絵（横長 3:2）
   trimMm: number; // 仕上がりの1辺
   volume: number; // 巻数（同じ主人公の何冊目か）。表紙の右下に小さく入れる
@@ -90,8 +92,16 @@ export async function buildBookPdfs(input: BookPdfInput) {
     drawCentered(page, size, "えほん Only Yours", body, 10 * scale, CORAL, mm(BLEED_MM + SAFE_MM));
   }
 
-  // 2〜25 見開き（左：文章 / 右：絵）
+  // 2〜25 見開き（左：文章 / 右：絵）。見開きの絵の場面は、文を重ねた絵を左右2ページに
   for (let i = 0; i < input.texts.length; i++) {
+    const both = input.spreadPages?.[i];
+    if (both) {
+      for (const half of both) {
+        const page = doc.addPage([size, size]);
+        page.drawImage(await doc.embedJpg(half), { x: 0, y: 0, width: size, height: size });
+      }
+      continue;
+    }
     const textPage = blank();
     drawParagraph(textPage, input.texts[i], body, 18 * scale, size, mm(input.trimMm * 0.68), mm(input.trimMm * 0.72));
     const pageNo = 2 + i * 2;

@@ -34,6 +34,11 @@ export type ShimaumaInput = {
   title: { lead: string; main: string };
   texts: string[]; // 場面ごとの文章（12）
   images: Buffer[]; // 場面ごとの絵（12、正方形）
+  /**
+   * 見開きの絵（2026-10-15 からのお客様の本）の場面の、文を重ねた左右のページの画像（spread-book.ts の renderSpreadPages）。
+   * null の場面（正方形の絵）は今までどおり「左に文・右に絵」
+   */
+  spreadPages?: ([Buffer, Buffer] | null)[];
   coverImage: Buffer; // 表紙の絵（横長 3:2）
   volume: number;
   /** 注文の通し番号（お支払いが済んだ順）。ファイル名の先頭 No0012_ に使う */
@@ -105,6 +110,12 @@ export async function buildShimaumaZip(input: ShimaumaInput, product: ShimaumaPr
     files.push({ name: name("登場人物_2"), bytes: right });
   }
   for (let i = 0; i < spreads; i++) {
+    const both = input.spreadPages?.[i];
+    if (both) {
+      files.push({ name: name(`場面${i + 1}_左`), bytes: both[0] });
+      files.push({ name: name(`場面${i + 1}_右`), bytes: both[1] });
+      continue;
+    }
     const page = new SvgPage(size, CREAM);
     drawParagraph(page, input.texts[i], body, textSize, size, mm(trimMm * 0.68), mm(trimMm * 0.72));
     files.push({ name: name(`場面${i + 1}_文`), bytes: await jpeg(sharp(page.toSvg(PAGE_PX))) });

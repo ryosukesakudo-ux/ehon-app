@@ -1,11 +1,12 @@
 import "server-only";
 import { toFile } from "openai";
 import { BOOK_BUCKET, PHOTO_BUCKET, getOpenAI, getSupabase } from "./services";
-import { FINAL_PX, hasRedoRequest, illustrate, type Detail, type Quality, type Redo, type RefImage } from "./illustrate";
+import { hasRedoRequest, illustrate, upscaleForPrint, type Detail, type Quality, type Redo, type RefImage } from "./illustrate";
 import { BOOK_SCENE_COUNT, CHARACTER_SCENES, COVER_SCENE, MAX_GUESTS, PERSON_LABEL, characterOf, getTaste, guestOf, isPageScene, previewScenes, type Person, type TasteId } from "./catalog";
 import { getBook } from "./book";
 import { customPhotos, parseCustomKey } from "./custom-story";
-import { upscalePng } from "./upscale";
+import { findSpreadTextSpot } from "./spread-text";
+import { isWideImage, sceneSpotPath, sceneTextSide } from "./spread-scene";
 import { copyBookImage, isViewPath, uploadBookImage, viewUrl, viewUrls, withViews } from "./book-images";
 import { currentUser, type Member } from "./auth";
 import { getAnonId } from "./anon";
@@ -225,7 +226,9 @@ export async function generateScene(draft: Draft, sceneIndex: number, quality: Q
     if (character) images.push({ who: g, kind: guest !== null && photo ? "previous" : "character", file: character });
   }
 
-  const b64 = await illustrate({ taste: draft.taste, story: draft.story, sceneIndex, images, quality, detail, childAge: draft.child_age, redo, plainFace: !!draft.plain_face });
+  // 本文の場面は見開き（横長）で描く（2026-10-15 作道さん：お客様の本も見開き版に）
+  const spread = isPageScene(sceneIndex);
+  const b64 = await illustrate({ taste: draft.taste, story: draft.story, sceneIndex, images, quality, detail, childAge: draft.child_age, redo, plainFace: !!draft.plain_face, spread });
   const png = Buffer.from(b64, "base64");
 
   // 会員の写真は「最後に使った日」を更新する（1年使わなければ自動削除）
@@ -243,7 +246,16 @@ export async function generateScene(draft: Draft, sceneIndex: number, quality: Q
   const path = pagePath(draft.id, quality, sceneIndex);
   const { error } = await uploadBookImage(path, png);
   if (error) throw new Error(`画像の保存に失敗しました: ${error.message}`);
+  if (spread) await saveSceneSpot(path, png, sceneTextSide(sceneIndex));
   return viewUrl(path);
+}
+
+/** 見開きの絵を見て、文を置く場所（人物・動物のいない所）をAIに選んでもらい、絵の隣に JSON で保存する（約1円） */
+async function saveSceneSpot(path: string, png: Buffer, side: "left" | "right") {
+  const db = getSupabase()!;
+  const spot = await findSpreadTextSpot(png, side);
+  const { error } = await db.storage.from(BOOK_BUCKET).upload(sceneSpotPath(path), JSON.stringify({ spot }), { contentType: "application/json", upsert: true });
+  if (error) console.error("scene text spot save failed", path, error);
 }
 
 /** キャラクターの絵を保存し、下書きに結びつける（会員はマイページの「保存しているキャラクター」にも入る）。 */
@@ -307,11 +319,20 @@ export async function finalFromPreview(draft: Draft, sceneIndex: number): Promis
   if (!db || isDemoId(draft.id) || (sceneIndex !== COVER_SCENE && !isPageScene(sceneIndex))) return null;
   const { data } = await db.storage.from(BOOK_BUCKET).download(pagePath(draft.id, "preview", sceneIndex));
   if (!data) return null;
-  const b64 = Buffer.from(await data.arrayBuffer()).toString("base64");
-  const png = Buffer.from(sceneIndex === COVER_SCENE ? b64 : await upscalePng(b64, FINAL_PX), "base64");
+  const original = Buffer.from(await data.arrayBuffer());
+  const b64 = original.toString("base64");
+  const wide = sceneIndex !== COVER_SCENE && (await isWideImage(original));
+  const png = Buffer.from(sceneIndex === COVER_SCENE ? b64 : await upscaleForPrint(b64, wide), "base64");
   const path = pagePath(draft.id, "final", sceneIndex);
   const { error } = await uploadBookImage(path, png);
   if (error) throw new Error(`画像の保存に失敗しました: ${error.message}`);
+  // 見開きの絵は、プレビューで選んだ文の置き場所もそのまま使う（無ければ選び直す）
+  if (wide) {
+    // コピーは上書きできないので、前の注文の絵づくりで置いた分を先に消す
+    await db.storage.from(BOOK_BUCKET).remove([sceneSpotPath(path)]);
+    const { error: copyError } = await db.storage.from(BOOK_BUCKET).copy(sceneSpotPath(pagePath(draft.id, "preview", sceneIndex)), sceneSpotPath(path));
+    if (copyError) await saveSceneSpot(path, original, sceneTextSide(sceneIndex));
+  }
   return viewUrl(path);
 }
 
@@ -320,7 +341,8 @@ export async function deletePreviewBook(draftId: string) {
   const db = getSupabase();
   if (!db || isDemoId(draftId)) return;
   const scenes = [COVER_SCENE, ...Array.from({ length: BOOK_SCENE_COUNT }, (_, i) => i)];
-  const { error } = await db.storage.from(BOOK_BUCKET).remove(withViews(scenes.map((i) => pagePath(draftId, "preview", i))));
+  const paths = scenes.map((i) => pagePath(draftId, "preview", i));
+  const { error } = await db.storage.from(BOOK_BUCKET).remove([...withViews(paths), ...paths.map(sceneSpotPath)]);
   if (error) throw new Error(`絵の削除に失敗しました: ${error.message}`);
 }
 
