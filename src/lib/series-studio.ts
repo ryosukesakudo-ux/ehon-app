@@ -2,7 +2,7 @@ import "server-only";
 import type { StoryId } from "./catalog";
 import { SERIES_DATA, type Continuity } from "./series-data";
 import { SERIES_PAGES, isPhotoFirst, seriesImagePath, type SeriesScene } from "./series";
-import { SERIES_LIST, isOpenSeries, openEpisodes, type SeriesId } from "./story-key";
+import { SERIES_LIST, isOpenSeries, openEpisodes, type Combo, type SeriesId } from "./story-key";
 import { SAMPLE_BUCKET, getSupabase } from "./services";
 
 // 絵スタジオで描く見本の場面。見本の家族はママもパパもいるので、両方の写真がある形（alt.both）があればそちらを使う。
@@ -70,4 +70,14 @@ export async function readyEpisodes(): Promise<Record<SeriesId, number[]>> {
   );
   for (const id of Object.keys(out) as SeriesId[]) out[id].sort((a, b) => a - b);
   return out;
+}
+
+/** 写真の組み合わせに合わせた、その話の12場面（見開き版の本の試作用）。違う組み合わせの文と絵は台本の alt にある */
+export function studioScenesFor(id: SeriesId, episode: number, combo: Combo): SeriesScene[] | null {
+  const ep = SERIES_DATA[id]?.episodes.find((e) => e.no === episode);
+  if (!ep) return null;
+  return ep.scenes.map((s) => {
+    const v = s.alt?.[combo] ?? s;
+    return { label: v.label, art: v.art, withMom: v.withMom, withDad: v.withDad, withSidekick: v.withSidekick, camera: v.camera ?? s.camera };
+  });
 }

@@ -86,3 +86,29 @@ export function seriesSpreadTextPath(id: SeriesId, episode: number, page: number
 /** 見開きの文の置き場所：左右どちらのページの、上・真ん中・下か */
 export const SPREAD_TEXT_SPOTS = ["left-top", "left-middle", "left-bottom", "right-top", "right-middle", "right-bottom"] as const;
 export type SpreadTextSpot = (typeof SPREAD_TEXT_SPOTS)[number];
+
+/**
+ * 見開き版の本の試作（2026-10-15 作道さん）：写真の組み合わせ（ママとパパ / ママだけ / パパだけ / 子どもだけ）ごとに、
+ * 12場面を見開きの絵で描いて、表紙から最後のページまで本の形で確かめる。お客様の本には使わない
+ */
+export function seriesBookSpreadPath(id: SeriesId, episode: number, combo: string, page: number) {
+  return `series/${id}/ep${episode}/book-${combo}/spread-${String(page).padStart(2, "0")}.png`;
+}
+
+export function seriesBookSpreadTextPath(id: SeriesId, episode: number, combo: string, page: number) {
+  return seriesBookSpreadPath(id, episode, combo, page).replace(/\.png$/, "-text.json");
+}
+
+/** 見開き版の本の、ひとり分のキャラクターの絵（登場人物しょうかいのページ用。その話の服で描く） */
+export function seriesCharacterPath(id: SeriesId, episode: number, who: "child" | "mom" | "dad") {
+  return `series/${id}/ep${episode}/chara-${who}.png`;
+}
+
+/** 見開き版の本を並べた画像（見開きごと）とPDF。level は文の量（s / n / l） */
+export function seriesBookViewPath(id: SeriesId, episode: number, combo: string, level: string, index: number) {
+  return `series/${id}/ep${episode}/book-${combo}/view-${level}-${String(index).padStart(2, "0")}.jpg`;
+}
+
+export function seriesBookPdfPath(id: SeriesId, episode: number, combo: string, level: string) {
+  return `series/${id}/ep${episode}/book-${combo}/book-${level}.pdf`;
+}

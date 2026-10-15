@@ -797,6 +797,42 @@ export async function illustrateSeries(opts: { series: StudioSeries; scene: Seri
   return b64;
 }
 
+/**
+ * 見開き版の本の試作（登場人物しょうかいのページ）用に、シリーズの家族のひとりだけを全身で描く。
+ * お客様の本のキャラクターの絵と同じく、その話の服で、無地の明るい背景に1人だけ
+ */
+export async function makeSeriesCharacter(opts: { series: StudioSeries; who: Person; outfits?: string; sheet: Uploadable; photo?: Uploadable | null; note?: string }) {
+  const t = getTaste("watercolor")!;
+  const ai = getOpenAI();
+  if (!ai) throw new Error("OPENAI_API_KEY が未設定です");
+  const result = await ai.images.edit({
+    model: process.env.OPENAI_IMAGE_MODEL ?? "gpt-image-2",
+    image: opts.photo ? [opts.sheet, opts.photo] : [opts.sheet],
+    prompt: [
+      `${t.prompt}.`,
+      "The reference image is the character sheet for this picture book series.",
+      opts.photo
+        ? "The second reference image is a photo of the real family these characters were drawn from (the mother on the left, the child in the middle, the father on the right). Keep the face, hairstyle and hair color as close to that photo as possible, translated into the picture-book style."
+        : "",
+      STYLE_ONLY_FROM_TEXT,
+      opts.photo ? (opts.outfits ? "" : sampleOutfits(opts.series.id, [opts.who])) : sampleCast(opts.series.id, [opts.who], !opts.outfits),
+      `Character design of ${LABEL[opts.who]} only, for a children's picture book: the same person as on the character sheet, standing alone, full body from head to toes, front view, relaxed natural pose, friendly expression.`,
+      opts.outfits ? `Clothes: ${opts.outfits} Draw exactly this person's clothes and colors from this list instead of the clothes in the reference images.` : "",
+      "Plain soft light background with no scenery and no other people or animals. Leave a little space above the head and below the feet.",
+      "Do not draw any letters, words or text in the image.",
+      seriesNote(opts.note),
+    ]
+      .filter(Boolean)
+      .join(" "),
+    size: "1024x1024",
+    quality: "medium",
+    output_format: "png",
+  });
+  const b64 = result.data?.[0]?.b64_json;
+  if (!b64) throw new Error("画像が生成されませんでした");
+  return b64;
+}
+
 // --- デフォルメ調の試作（2026-10-13 作道さん「これくらいデフォルメされた絵柄も作ってみたい」）---
 // まだお客様には出さない。管理画面の「デフォルメ試作」で、作例の家族写真から3人の登場人物を1枚に描いて見るだけ。
 // 参考：幼児向けボードブックのような、大きな丸顔・太い輪郭・点や丸の目・赤いほっぺ・はっきりした塗り。

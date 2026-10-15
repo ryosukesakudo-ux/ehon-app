@@ -1,10 +1,34 @@
 import { toFile } from "openai";
-import { illustrateSeries, makeSeriesFamilyPhoto, makeSeriesFamilyPhotoFromText, makeSeriesSheet } from "@/lib/illustrate";
-import { characterSheetPath } from "@/lib/samples";
-import { seriesFamilyPhotoPath, seriesImagePath, seriesSheetPath, seriesSpreadPath, seriesSpreadTextPath, usesShowcasePhoto } from "@/lib/series";
+import { calledName, sceneText } from "@/lib/catalog";
+import { getBook } from "@/lib/book";
+import { illustrateSeries, makeSeriesCharacter, makeSeriesFamilyPhoto, makeSeriesFamilyPhotoFromText, makeSeriesSheet } from "@/lib/illustrate";
+import { characterSheetPath, samplePublicUrl } from "@/lib/samples";
+import {
+  SPREAD_TEXT_SPOTS,
+  seriesBookPdfPath,
+  seriesBookSpreadPath,
+  seriesBookSpreadTextPath,
+  seriesBookViewPath,
+  seriesCharacterPath,
+  seriesFamilyPhotoPath,
+  seriesImagePath,
+  seriesSampleChildName,
+  seriesSheetPath,
+  seriesSpreadPath,
+  seriesSpreadTextPath,
+  usesShowcasePhoto,
+  type SpreadTextSpot,
+} from "@/lib/series";
+import { buildSpreadBook } from "@/lib/spread-book";
 import { findSpreadTextSpot, isSpotDark } from "@/lib/spread-text";
-import { getStudioSeries } from "@/lib/series-studio";
+import { getStudioSeries, studioScenesFor } from "@/lib/series-studio";
 import { SAMPLE_BUCKET, getSupabase } from "@/lib/services";
+import { bookTitle, getSeriesInfo, openEpisodes, seriesKey, type Combo, type LevelId } from "@/lib/story-key";
+
+const COMBOS: Combo[] = ["both", "mom", "dad", "none"];
+const LEVEL_IDS: LevelId[] = ["s", "n", "l"];
+/** 見開き版の本で、文を置くページ（絵を描くときに空けておくページ）。場面ごとに右・左を交互にして、絵の構図に変化をつける */
+const bookTextSide = (page: number) => (page % 2 === 1 ? "right" : "left");
 
 export const maxDuration = 300;
 
@@ -15,6 +39,9 @@ export const maxDuration = 300;
 // spread=true：場面を見開き（横長）で描く試作。今の場面の絵とは別の場所に保存する。textSide のページを空けて描き、
 // できた絵をAIが見て文の置き場所（人物・動物のいない所）を決めて、隣にJSONで保存する
 // kind=spreadText：今ある見開きの絵で、文の置き場所だけ選び直す
+// 見開き版の本の試作（combo＝写真の組み合わせ both / mom / dad / none）：
+// kind=bookChara：登場人物しょうかい用に、ひとり分（who）のキャラクターの絵を作る / kind=bookSpread：その組み合わせの場面（page 1〜12）を見開きで描く
+// kind=bookRender：表紙から最後のページまでを見開きごとの画像とPDFにする（level＝文の量 s / n / l）。できた画像とPDFのURLを返す
 export async function POST(request: Request) {
   const body = await request.json().catch(() => null);
   const series = getStudioSeries(String(body?.series ?? ""));
@@ -83,6 +110,44 @@ export async function POST(request: Request) {
 
     const episode = series.episodes.find((e) => e.no === Number(body?.episode));
     const page = Number(body?.page);
+    const combo = COMBOS.find((c) => c === body?.combo);
+
+    if (body?.kind === "bookChara") {
+      const who = (["child", "mom", "dad"] as const).find((w) => w === body?.who);
+      if (!episode || !who) return Response.json({ error: "指定が正しくありません" }, { status: 400 });
+      const sheet = await load(seriesSheetPath(series.id), "characters.png");
+      if (!sheet) return Response.json({ error: "先に登場人物の設定画を作ってください" }, { status: 400 });
+      const photo = series.photoFirst ? await load(seriesFamilyPhotoPath(series.id), "family-photo.png") : null;
+      await save(seriesCharacterPath(series.id, episode.no, who), await makeSeriesCharacter({ series, who, outfits: episode.outfits, sheet, photo, note }));
+      return Response.json({ ok: true });
+    }
+
+    if (body?.kind === "bookSpread") {
+      const scene = episode && combo && Number.isInteger(page) ? studioScenesFor(series.id, episode.no, combo)?.[page - 1] : null;
+      if (!episode || !combo || !scene) return Response.json({ error: "指定が正しくありません" }, { status: 400 });
+      const sheet = await load(seriesSheetPath(series.id), "characters.png");
+      if (!sheet) return Response.json({ error: "先に登場人物の設定画を作ってください" }, { status: 400 });
+      const photo = series.photoFirst ? await load(seriesFamilyPhotoPath(series.id), "family-photo.png") : null;
+      if (series.photoFirst && !photo) return Response.json({ error: noPhoto }, { status: 400 });
+      const side = bookTextSide(page);
+      const quality = body?.quality === "preview" ? "preview" : "final";
+      const b64 = await illustrateSeries({ series, scene, page, outfits: episode.outfits, continuity: episode.continuity, note, quality, sheet, photo, spread: true, textSide: side });
+      await save(seriesBookSpreadPath(series.id, episode.no, combo, page), b64);
+      const spot = await findSpreadTextSpot(Buffer.from(b64, "base64"), side);
+      const { error } = await db.storage
+        .from(SAMPLE_BUCKET)
+        .upload(seriesBookSpreadTextPath(series.id, episode.no, combo, page), JSON.stringify({ spot }), { contentType: "application/json", upsert: true, cacheControl: "300" });
+      if (error) throw new Error(error.message);
+      return Response.json({ ok: true });
+    }
+
+    if (body?.kind === "bookRender") {
+      const level = LEVEL_IDS.find((l) => l === body?.level) ?? "n";
+      if (!episode || !combo) return Response.json({ error: "指定が正しくありません" }, { status: 400 });
+      const result = await renderBook(db, series.id, episode.no, combo, level);
+      if ("error" in result) return Response.json({ error: result.error }, { status: 400 });
+      return Response.json({ ok: true, ...result });
+    }
 
     if (body?.kind === "spreadText") {
       if (!episode || !Number.isInteger(page) || page < 1) return Response.json({ error: "指定が正しくありません" }, { status: 400 });
@@ -109,4 +174,84 @@ export async function POST(request: Request) {
     console.error("series generation failed", e);
     return Response.json({ error: e instanceof Error ? e.message : "作成に失敗しました" }, { status: 500 });
   }
+}
+
+type Db = NonNullable<ReturnType<typeof getSupabase>>;
+
+/** 見開き版の本を、見本の家族（主人公の名前・仮のメッセージ）で組み立てて保存し、見開きごとの画像とPDFのURLを返す */
+async function renderBook(db: Db, id: Parameters<typeof seriesImagePath>[0], episode: number, combo: Combo, level: LevelId) {
+  const download = async (path: string) => {
+    const { data } = await db.storage.from(SAMPLE_BUCKET).download(path);
+    return data ? Buffer.from(await data.arrayBuffer()) : null;
+  };
+  const book = getBook(seriesKey(id, episode, level, combo));
+  if (!book) return { error: "台本を読み込めません" };
+  const coverImage = await download(seriesImagePath(id, episode, 0));
+  if (!coverImage) return { error: "先にこの話の表紙の絵を作ってください（下の「まとめて作る」の表紙）" };
+
+  const childName = seriesSampleChildName(id);
+  const scenes = [];
+  const missing: number[] = [];
+  for (let i = 0; i < book.scenes.length; i++) {
+    const image = await download(seriesBookSpreadPath(id, episode, combo, i + 1));
+    if (!image) {
+      missing.push(i + 1);
+      continue;
+    }
+    const json = await download(seriesBookSpreadTextPath(id, episode, combo, i + 1));
+    const saved = json ? (JSON.parse(json.toString()) as { spot?: string }).spot : null;
+    // 置き場所が無い・被らない場所が無い（none）ときは、文を置くよう頼んだページの下に置く
+    const spot = (SPREAD_TEXT_SPOTS as readonly string[]).includes(saved ?? "") ? (saved as SpreadTextSpot) : (`${bookTextSide(i + 1)}-bottom` as const);
+    scenes.push({ image, text: sceneText(book.scenes[i], childName), spot });
+  }
+  if (missing.length) return { error: `見開きの絵がまだ無い場面があります（場面${missing.join("・")}）` };
+
+  // 登場人物しょうかい：主人公と、この組み合わせで出るママ・パパ（絵がある人）
+  const honorific = id === "number" ? "chan" : "kun";
+  const called = calledName(childName, honorific);
+  const people: ("child" | "mom" | "dad")[] = ["child"];
+  if (combo === "both" || combo === "mom") people.push("mom");
+  if (combo === "both" || combo === "dad") people.push("dad");
+  const characters = [];
+  for (const who of people) {
+    const image = await download(seriesCharacterPath(id, episode, who));
+    if (image) characters.push({ name: who === "child" ? called : who === "mom" ? "ママ" : "パパ", image });
+  }
+  const info = getSeriesInfo(id)!;
+  const next = openEpisodes(info.episodes).find((e) => e.no === episode + 1);
+
+  const { pdf, view } = await buildSpreadBook({
+    title: bookTitle(seriesKey(id, episode, level), childName),
+    volume: 1,
+    coverImage,
+    scenes,
+    extras: {
+      called,
+      childName,
+      childAge: id === "number" ? 3 : 5,
+      birthday: null,
+      madeAt: new Date(),
+      message: `${called}、うまれてきてくれて ありがとう。いつも えがおを ありがとう。これからも たくさん いっしょに あそぼうね。`,
+      memoryPhoto: await download(seriesFamilyPhotoPath(id)),
+      serial: 1,
+      characters,
+      nextEpisode: next ? { lead: `${info.name} 第${next.no}話`, title: next.title } : null,
+    },
+  });
+
+  const upload = async (path: string, bytes: Buffer, contentType: string) => {
+    const { error } = await db.storage.from(SAMPLE_BUCKET).upload(path, bytes, { contentType, upsert: true, cacheControl: "60" });
+    if (error) throw new Error(error.message);
+  };
+  const stamp = Date.now();
+  const pages = await Promise.all(
+    view.map(async (v, i) => {
+      const path = seriesBookViewPath(id, episode, combo, level, i);
+      await upload(path, v.image, "image/jpeg");
+      return { label: v.label, url: `${samplePublicUrl(path)}?v=${stamp}` };
+    }),
+  );
+  const pdfPath = seriesBookPdfPath(id, episode, combo, level);
+  await upload(pdfPath, pdf, "application/pdf");
+  return { pages, pdf: `${samplePublicUrl(pdfPath)}?v=${stamp}`, missingCharacters: people.length - characters.length };
 }
