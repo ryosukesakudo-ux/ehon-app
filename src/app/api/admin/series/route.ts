@@ -1,10 +1,18 @@
 import { toFile } from "openai";
-import { calledName, sceneText } from "@/lib/catalog";
+import { calledName, isHonorificId, sceneText, type HonorificId } from "@/lib/catalog";
 import { getBook } from "@/lib/book";
-import { illustrateSeries, makeSeriesCharacter, makeSeriesFamilyPhoto, makeSeriesFamilyPhotoFromText, makeSeriesSheet } from "@/lib/illustrate";
+import { illustrateSeries, makeOwnSeriesSheet, makeSeriesCharacter, makeSeriesFamilyPhoto, makeSeriesFamilyPhotoFromText, makeSeriesSheet } from "@/lib/illustrate";
 import { characterSheetPath, samplePublicUrl } from "@/lib/samples";
 import {
   SPREAD_TEXT_SPOTS,
+  ownBookPdfPath,
+  ownBookSpreadPath,
+  ownBookSpreadTextPath,
+  ownBookViewPath,
+  ownCharacterPath,
+  ownCoverPath,
+  ownPhotoPath,
+  ownSheetPath,
   seriesBookPdfPath,
   seriesBookSpreadPath,
   seriesBookSpreadTextPath,
@@ -22,10 +30,14 @@ import {
 import { buildSpreadBook } from "@/lib/spread-book";
 import { findSpreadTextSpot, isSpotDark } from "@/lib/spread-text";
 import { getStudioSeries, studioScenesFor } from "@/lib/series-studio";
-import { SAMPLE_BUCKET, getSupabase } from "@/lib/services";
-import { bookTitle, getSeriesInfo, openEpisodes, seriesKey, type Combo, type LevelId } from "@/lib/story-key";
+import { BOOK_BUCKET, SAMPLE_BUCKET, getSupabase } from "@/lib/services";
+import { SHOWN_SERIES_LIST, bookTitle, getSeriesInfo, openEpisodes, seriesKey, type Combo, type LevelId } from "@/lib/story-key";
 
 const COMBOS: Combo[] = ["both", "mom", "dad", "none"];
+const PEOPLE = ["child", "mom", "dad"] as const;
+type Who = (typeof PEOPLE)[number];
+/** 主人公の名前の最大文字数（絵スタジオで入力する見本の名前） */
+const NAME_MAX = 12;
 const LEVEL_IDS: LevelId[] = ["s", "n", "l"];
 /** 見開き版の本で、文を置くページ（絵を描くときに空けておくページ）。場面ごとに右・左を交互にして、絵の構図に変化をつける */
 const bookTextSide = (page: number) => (page % 2 === 1 ? "right" : "left");
@@ -42,20 +54,27 @@ export const maxDuration = 300;
 // 見開き版の本の試作（combo＝写真の組み合わせ both / mom / dad / none）：
 // kind=bookChara：登場人物しょうかい用に、ひとり分（who）のキャラクターの絵を作る / kind=bookSpread：その組み合わせの場面（page 1〜12）を見開きで描く
 // kind=bookRender：表紙から最後のページまでを見開きごとの画像とPDFにする（level＝文の量 s / n / l）。できた画像とPDFのURLを返す
+// own=true：「自分の写真で試す」。写真（kind=ownPhoto、フォームで送る）と、その写真から描いた絵を非公開の books に保存する。
+// kind=ownList：今ある写真と絵の、期限付きのURLを返す / kind=ownCover：その話の表紙を写真の家族で描く
+// bookRender は name（主人公の名前）と honorific（呼び方）で本の文を組む
 export async function POST(request: Request) {
+  if (request.headers.get("content-type")?.includes("multipart/form-data")) return saveOwnPhoto(request);
   const body = await request.json().catch(() => null);
   const series = getStudioSeries(String(body?.series ?? ""));
   if (!series) return Response.json({ error: "指定が正しくありません" }, { status: 400 });
   const db = getSupabase();
   if (!db) return Response.json({ error: "Supabase が未設定のため、絵を保存できません" }, { status: 503 });
 
-  const load = async (path: string, name: string) => {
-    const { data, error } = await db.storage.from(SAMPLE_BUCKET).download(path);
+  const own = body?.own === true;
+  // 自分の写真の絵は非公開の books、見本の家族の絵は公開の samples
+  const bucket = own ? BOOK_BUCKET : SAMPLE_BUCKET;
+  const load = async (path: string, name: string, from = SAMPLE_BUCKET) => {
+    const { data, error } = await db.storage.from(from).download(path);
     return error || !data ? null : toFile(data, name, { type: "image/png" });
   };
   const save = async (path: string, b64: string) => {
     const { error } = await db.storage
-      .from(SAMPLE_BUCKET)
+      .from(bucket)
       .upload(path, Buffer.from(b64, "base64"), { contentType: "image/png", upsert: true, cacheControl: "300" });
     if (error) throw new Error(error.message);
   };
@@ -74,7 +93,56 @@ export async function POST(request: Request) {
   const note = typeof body?.note === "string" ? body.note.trim() : "";
   const noPhoto = usesShowcasePhoto(series.id) ? "先に作例スタジオで「この写真から → この絵本に」の①（家族の写真）を作ってください" : "先に家族写真を作ってください";
 
+  // 自分の写真（いる人だけ）と、その写真から描く設定画（無ければ先に作る）
+  const ownPhotos = async (people: readonly Who[]) =>
+    (await Promise.all(people.map(async (who) => ({ who, file: await load(ownPhotoPath(who), `${who}.jpg`, BOOK_BUCKET) })))).filter(
+      (p): p is { who: Who; file: NonNullable<typeof p.file> } => !!p.file,
+    );
+  const ownSheet = async () => {
+    const existing = await load(ownSheetPath(series.id), "characters.png", BOOK_BUCKET);
+    if (existing) return existing;
+    const photos = await ownPhotos(PEOPLE);
+    if (!photos.some((p) => p.who === "child")) throw new Error("先に主人公の写真を選んでください");
+    const b64 = await makeOwnSeriesSheet(series, photos);
+    await save(ownSheetPath(series.id), b64);
+    return toFile(Buffer.from(b64, "base64"), "characters.png", { type: "image/png" });
+  };
+
   try {
+    if (body?.kind === "ownList") {
+      const episode = series.episodes.find((e) => e.no === Number(body?.episode));
+      const combo = COMBOS.find((c) => c === body?.combo);
+      if (!episode || !combo) return Response.json({ error: "指定が正しくありません" }, { status: 400 });
+      const paths = [
+        ...PEOPLE.map(ownPhotoPath),
+        ownSheetPath(series.id),
+        ownCoverPath(series.id, episode.no),
+        ...PEOPLE.map((w) => ownCharacterPath(series.id, episode.no, w)),
+        ...episode.scenes.map((_, i) => ownBookSpreadPath(series.id, episode.no, combo, i + 1)),
+      ];
+      return Response.json({ ok: true, urls: await signedUrls(db, paths) });
+    }
+
+    if (own && body?.kind === "ownSheet") {
+      // 写真から設定画を描き直す（写真を変えたときは自動で消えるので、ふつうは「まとめて作る」が先に作る）
+      const photos = await ownPhotos(PEOPLE);
+      if (!photos.some((p) => p.who === "child")) return Response.json({ error: "先に主人公の写真を選んでください" }, { status: 400 });
+      await save(ownSheetPath(series.id), await makeOwnSeriesSheet(series, photos, note));
+      return Response.json({ ok: true });
+    }
+
+    if (own && body?.kind === "ownCover") {
+      if (!(await ownPhotos(["child"])).length) return Response.json({ error: "先に主人公の写真を選んでください" }, { status: 400 });
+      const episode = series.episodes.find((e) => e.no === Number(body?.episode));
+      if (!episode) return Response.json({ error: "指定が正しくありません" }, { status: 400 });
+      const scene = episode.cover;
+      const people: Who[] = ["child", ...(scene.withMom ? (["mom"] as const) : []), ...(scene.withDad ? (["dad"] as const) : [])];
+      const quality = body?.quality === "preview" ? "preview" : "final";
+      const b64 = await illustrateSeries({ series, scene, page: 0, outfits: episode.outfits, continuity: episode.continuity, note, quality, sheet: await ownSheet(), ownPhotos: await ownPhotos(people) });
+      await save(ownCoverPath(series.id, episode.no), b64);
+      return Response.json({ ok: true });
+    }
+
     if (body?.kind === "photo" && usesShowcasePhoto(series.id)) {
       // トップの写真と共用（作例スタジオで作る）。ここで作るとトップの写真まで変わってしまう
       return Response.json({ error: "このシリーズの家族写真は、作例スタジオの「この写真から → この絵本に」①を使います。作り直すときは作例スタジオで作ってください" }, { status: 400 });
@@ -115,6 +183,13 @@ export async function POST(request: Request) {
     if (body?.kind === "bookChara") {
       const who = (["child", "mom", "dad"] as const).find((w) => w === body?.who);
       if (!episode || !who) return Response.json({ error: "指定が正しくありません" }, { status: 400 });
+      if (own) {
+        const [photo] = await ownPhotos([who]);
+        if (!photo) return Response.json({ error: "先にこの人の写真を選んでください" }, { status: 400 });
+        const b64 = await makeSeriesCharacter({ series, who, outfits: episode.outfits, sheet: await ownSheet(), ownPhoto: photo.file, note });
+        await save(ownCharacterPath(series.id, episode.no, who), b64);
+        return Response.json({ ok: true });
+      }
       const sheet = await load(seriesSheetPath(series.id), "characters.png");
       if (!sheet) return Response.json({ error: "先に登場人物の設定画を作ってください" }, { status: 400 });
       const photo = series.photoFirst ? await load(seriesFamilyPhotoPath(series.id), "family-photo.png") : null;
@@ -125,18 +200,27 @@ export async function POST(request: Request) {
     if (body?.kind === "bookSpread") {
       const scene = episode && combo && Number.isInteger(page) ? studioScenesFor(series.id, episode.no, combo)?.[page - 1] : null;
       if (!episode || !combo || !scene) return Response.json({ error: "指定が正しくありません" }, { status: 400 });
-      const sheet = await load(seriesSheetPath(series.id), "characters.png");
-      if (!sheet) return Response.json({ error: "先に登場人物の設定画を作ってください" }, { status: 400 });
-      const photo = series.photoFirst ? await load(seriesFamilyPhotoPath(series.id), "family-photo.png") : null;
-      if (series.photoFirst && !photo) return Response.json({ error: noPhoto }, { status: 400 });
       const side = bookTextSide(page);
       const quality = body?.quality === "preview" ? "preview" : "final";
-      const b64 = await illustrateSeries({ series, scene, page, outfits: episode.outfits, continuity: episode.continuity, note, quality, sheet, photo, spread: true, textSide: side });
-      await save(seriesBookSpreadPath(series.id, episode.no, combo, page), b64);
+      let b64: string;
+      if (own) {
+        const people: Who[] = ["child", ...(scene.withMom ? (["mom"] as const) : []), ...(scene.withDad ? (["dad"] as const) : [])];
+        const photos = await ownPhotos(people);
+        const lacking = people.filter((w) => !photos.some((p) => p.who === w));
+        if (lacking.length) return Response.json({ error: `この場面に出る人の写真がありません（${lacking.map((w) => WHO_LABEL[w]).join("・")}）` }, { status: 400 });
+        b64 = await illustrateSeries({ series, scene, page, outfits: episode.outfits, continuity: episode.continuity, note, quality, sheet: await ownSheet(), ownPhotos: photos, spread: true, textSide: side });
+      } else {
+        const sheet = await load(seriesSheetPath(series.id), "characters.png");
+        if (!sheet) return Response.json({ error: "先に登場人物の設定画を作ってください" }, { status: 400 });
+        const photo = series.photoFirst ? await load(seriesFamilyPhotoPath(series.id), "family-photo.png") : null;
+        if (series.photoFirst && !photo) return Response.json({ error: noPhoto }, { status: 400 });
+        b64 = await illustrateSeries({ series, scene, page, outfits: episode.outfits, continuity: episode.continuity, note, quality, sheet, photo, spread: true, textSide: side });
+      }
+      await save((own ? ownBookSpreadPath : seriesBookSpreadPath)(series.id, episode.no, combo, page), b64);
       const spot = await findSpreadTextSpot(Buffer.from(b64, "base64"), side);
       const { error } = await db.storage
-        .from(SAMPLE_BUCKET)
-        .upload(seriesBookSpreadTextPath(series.id, episode.no, combo, page), JSON.stringify({ spot }), { contentType: "application/json", upsert: true, cacheControl: "300" });
+        .from(bucket)
+        .upload((own ? ownBookSpreadTextPath : seriesBookSpreadTextPath)(series.id, episode.no, combo, page), JSON.stringify({ spot }), { contentType: "application/json", upsert: true, cacheControl: "300" });
       if (error) throw new Error(error.message);
       return Response.json({ ok: true });
     }
@@ -144,7 +228,9 @@ export async function POST(request: Request) {
     if (body?.kind === "bookRender") {
       const level = LEVEL_IDS.find((l) => l === body?.level) ?? "n";
       if (!episode || !combo) return Response.json({ error: "指定が正しくありません" }, { status: 400 });
-      const result = await renderBook(db, series.id, episode.no, combo, level);
+      const name = typeof body?.name === "string" ? body.name.trim().slice(0, NAME_MAX) : "";
+      const honorific = isHonorificId(body?.honorific) ? body.honorific : null;
+      const result = await renderBook(db, series.id, episode.no, combo, level, { own, name, honorific });
       if ("error" in result) return Response.json({ error: result.error }, { status: 400 });
       return Response.json({ ok: true, ...result });
     }
@@ -178,27 +264,57 @@ export async function POST(request: Request) {
 
 type Db = NonNullable<ReturnType<typeof getSupabase>>;
 
-/** 見開き版の本を、見本の家族（主人公の名前・仮のメッセージ）で組み立てて保存し、見開きごとの画像とPDFのURLを返す */
-async function renderBook(db: Db, id: Parameters<typeof seriesImagePath>[0], episode: number, combo: Combo, level: LevelId) {
+const WHO_LABEL: Record<Who, string> = { child: "主人公", mom: "ママ", dad: "パパ" };
+
+/** 非公開の books に置いた絵・写真の、期限付きのURL（無いものは入れない） */
+async function signedUrls(db: Db, paths: string[]) {
+  const { data } = await db.storage.from(BOOK_BUCKET).createSignedUrls(paths, 60 * 60);
+  return Object.fromEntries((data ?? []).filter((d) => d.signedUrl && !d.error && d.path).map((d) => [d.path!, d.signedUrl]));
+}
+
+/** 「自分の写真で試す」の写真を保存する（フォームで who と photo）。写真が変わったら、その写真から描いた設定画は作り直す */
+async function saveOwnPhoto(request: Request) {
+  const db = getSupabase();
+  if (!db) return Response.json({ error: "Supabase が未設定のため、写真を保存できません" }, { status: 503 });
+  const form = await request.formData().catch(() => null);
+  const who = PEOPLE.find((w) => w === form?.get("who"));
+  const photo = form?.get("photo");
+  if (!who || !(photo instanceof File) || !photo.size) return Response.json({ error: "写真を読み込めませんでした" }, { status: 400 });
+  const { error } = await db.storage.from(BOOK_BUCKET).upload(ownPhotoPath(who), Buffer.from(await photo.arrayBuffer()), { contentType: photo.type || "image/jpeg", upsert: true });
+  if (error) return Response.json({ error: error.message }, { status: 500 });
+  await db.storage.from(BOOK_BUCKET).remove(SHOWN_SERIES_LIST.map((s) => ownSheetPath(s.id)));
+  return Response.json({ ok: true });
+}
+
+/**
+ * 見開き版の本を組み立てて保存し、見開きごとの画像とPDFのURLを返す。
+ * own=false は見本の家族の絵（公開の samples）、own=true は自分の写真の絵（非公開の books、期限付きのURL）。
+ * name・honorific は画面で入れた主人公の名前と呼び方（空なら見本の名前）。メッセージは仮の文
+ */
+async function renderBook(db: Db, id: Parameters<typeof seriesImagePath>[0], episode: number, combo: Combo, level: LevelId, opts: { own: boolean; name: string; honorific: HonorificId | null }) {
+  const bucket = opts.own ? BOOK_BUCKET : SAMPLE_BUCKET;
   const download = async (path: string) => {
-    const { data } = await db.storage.from(SAMPLE_BUCKET).download(path);
+    const { data } = await db.storage.from(bucket).download(path);
     return data ? Buffer.from(await data.arrayBuffer()) : null;
   };
   const book = getBook(seriesKey(id, episode, level, combo));
   if (!book) return { error: "台本を読み込めません" };
-  const coverImage = await download(seriesImagePath(id, episode, 0));
-  if (!coverImage) return { error: "先にこの話の表紙の絵を作ってください（下の「まとめて作る」の表紙）" };
+  const coverImage = await download(opts.own ? ownCoverPath(id, episode) : seriesImagePath(id, episode, 0));
+  if (!coverImage) return { error: opts.own ? "先にこの話の表紙の絵を作ってください（「まだ無い絵をまとめて作る」で作れます）" : "先にこの話の表紙の絵を作ってください（下の「まとめて作る」の表紙）" };
+  const spreadPath = opts.own ? ownBookSpreadPath : seriesBookSpreadPath;
+  const spreadTextPath = opts.own ? ownBookSpreadTextPath : seriesBookSpreadTextPath;
+  const characterPath = opts.own ? ownCharacterPath : seriesCharacterPath;
 
-  const childName = seriesSampleChildName(id);
+  const childName = opts.name || seriesSampleChildName(id);
   const scenes = [];
   const missing: number[] = [];
   for (let i = 0; i < book.scenes.length; i++) {
-    const image = await download(seriesBookSpreadPath(id, episode, combo, i + 1));
+    const image = await download(spreadPath(id, episode, combo, i + 1));
     if (!image) {
       missing.push(i + 1);
       continue;
     }
-    const json = await download(seriesBookSpreadTextPath(id, episode, combo, i + 1));
+    const json = await download(spreadTextPath(id, episode, combo, i + 1));
     const saved = json ? (JSON.parse(json.toString()) as { spot?: string }).spot : null;
     // 置き場所が無い・被らない場所が無い（none）ときは、文を置くよう頼んだページの下に置く
     const spot = (SPREAD_TEXT_SPOTS as readonly string[]).includes(saved ?? "") ? (saved as SpreadTextSpot) : (`${bookTextSide(i + 1)}-bottom` as const);
@@ -207,14 +323,14 @@ async function renderBook(db: Db, id: Parameters<typeof seriesImagePath>[0], epi
   if (missing.length) return { error: `見開きの絵がまだ無い場面があります（場面${missing.join("・")}）` };
 
   // 登場人物しょうかい：主人公と、この組み合わせで出るママ・パパ（絵がある人）
-  const honorific = id === "number" ? "chan" : "kun";
+  const honorific = opts.honorific ?? (id === "number" ? "chan" : "kun");
   const called = calledName(childName, honorific);
   const people: ("child" | "mom" | "dad")[] = ["child"];
   if (combo === "both" || combo === "mom") people.push("mom");
   if (combo === "both" || combo === "dad") people.push("dad");
   const characters = [];
   for (const who of people) {
-    const image = await download(seriesCharacterPath(id, episode, who));
+    const image = await download(characterPath(id, episode, who));
     if (image) characters.push({ name: who === "child" ? called : who === "mom" ? "ママ" : "パパ", image });
   }
   const info = getSeriesInfo(id)!;
@@ -232,7 +348,8 @@ async function renderBook(db: Db, id: Parameters<typeof seriesImagePath>[0], epi
       birthday: null,
       madeAt: new Date(),
       message: `${called}、うまれてきてくれて ありがとう。いつも えがおを ありがとう。これからも たくさん いっしょに あそぼうね。`,
-      memoryPhoto: await download(seriesFamilyPhotoPath(id)),
+      // 自分の写真のときは思い出の写真を入れない（無ければおえかきページになる）
+      memoryPhoto: opts.own ? null : await download(seriesFamilyPhotoPath(id)),
       serial: 1,
       characters,
       nextEpisode: next ? { lead: `${info.name} 第${next.no}話`, title: next.title } : null,
@@ -240,18 +357,15 @@ async function renderBook(db: Db, id: Parameters<typeof seriesImagePath>[0], epi
   });
 
   const upload = async (path: string, bytes: Buffer, contentType: string) => {
-    const { error } = await db.storage.from(SAMPLE_BUCKET).upload(path, bytes, { contentType, upsert: true, cacheControl: "60" });
+    const { error } = await db.storage.from(bucket).upload(path, bytes, { contentType, upsert: true, cacheControl: "60" });
     if (error) throw new Error(error.message);
   };
   const stamp = Date.now();
-  const pages = await Promise.all(
-    view.map(async (v, i) => {
-      const path = seriesBookViewPath(id, episode, combo, level, i);
-      await upload(path, v.image, "image/jpeg");
-      return { label: v.label, url: `${samplePublicUrl(path)}?v=${stamp}` };
-    }),
-  );
-  const pdfPath = seriesBookPdfPath(id, episode, combo, level);
-  await upload(pdfPath, pdf, "application/pdf");
-  return { pages, pdf: `${samplePublicUrl(pdfPath)}?v=${stamp}`, missingCharacters: people.length - characters.length };
+  const viewPaths = view.map((_, i) => (opts.own ? ownBookViewPath : seriesBookViewPath)(id, episode, combo, level, i));
+  const pdfPath = (opts.own ? ownBookPdfPath : seriesBookPdfPath)(id, episode, combo, level);
+  await Promise.all([...view.map((v, i) => upload(viewPaths[i], v.image, "image/jpeg")), upload(pdfPath, pdf, "application/pdf")]);
+  const signed = opts.own ? await signedUrls(db, [...viewPaths, pdfPath]) : {};
+  const urlOf = (path: string) => (opts.own ? signed[path] : `${samplePublicUrl(path)}?v=${stamp}`) ?? "";
+  const pages = view.map((v, i) => ({ label: v.label, url: urlOf(viewPaths[i]) }));
+  return { pages, pdf: urlOf(pdfPath), missingCharacters: people.length - characters.length };
 }

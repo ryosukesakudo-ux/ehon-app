@@ -676,6 +676,46 @@ export async function makeSeriesSheet(series: StudioSeries, familySheet: Uploada
   return b64;
 }
 
+/** 自分の写真で試すとき、写真の人（ひとり1枚）の並び。例：image 1 is a photo of the child (the main character) */
+function ownPhotosPrompt(people: Person[], first: number) {
+  return people.map((p, i) => `Reference image ${first + i} is a real photo of ${LABEL[p]}.`).join(" ");
+}
+
+/**
+ * 絵スタジオ「自分の写真で試す」：写真の人（主人公と、写真があればママ・パパ）を写真そっくりに絵にして、相棒を加えた設定画を作る。
+ * 服はそのシリーズの見本と同じ。いない人は描かない
+ */
+export async function makeOwnSeriesSheet(series: StudioSeries, photos: { who: Person; file: Uploadable }[], note?: string) {
+  const ai = getOpenAI();
+  if (!ai) throw new Error("OPENAI_API_KEY が未設定です");
+  const people = photos.map((p) => p.who);
+  const result = await ai.images.edit({
+    model: process.env.OPENAI_IMAGE_MODEL ?? "gpt-image-2",
+    image: photos.map((p) => p.file),
+    prompt: [
+      "Character reference sheet for a children's picture book series.",
+      ownPhotosPrompt(people, 1),
+      `Draw ${people.length === 1 ? "this person" : `these ${people.length} people`} as picture-book characters.`,
+      PHOTO_LIKENESS,
+      "Take only faces, hairstyles, hair colors and body proportions from the photos, not their clothes, backgrounds or poses.",
+      sampleOutfits(series.id, people),
+      `Add the series sidekick standing next to the child: ${series.sidekick}.`,
+      "Show all characters side by side, full body, front view, on a plain white background, at heights that fit them.",
+      "Simple, warm picture-book character design with clear shapes and flat colors so the faces, hairstyles, outfits and the sidekick are easy to copy.",
+      "Do not draw anyone who is not in the photos. Do not draw any letters, words or text.",
+      seriesNote(note),
+    ]
+      .filter(Boolean)
+      .join(" "),
+    size: "1536x1024",
+    quality: "high",
+    output_format: "png",
+  });
+  const b64 = result.data?.[0]?.b64_json;
+  if (!b64) throw new Error("画像が生成されませんでした");
+  return b64;
+}
+
 /**
  * 写真が先のシリーズで、最初に作る架空の家族写真（文章の家族から）。設定画と場面はこの写真に寄せて描く。
  * サンプル集では左からママ・主人公・パパの順に名前を付けて表示する。
@@ -740,7 +780,7 @@ function seriesNote(note?: string) {
   return n ? `Additional instructions from the art director (may be written in Japanese); follow them carefully, they take priority over the instructions above: ${n}` : "";
 }
 
-export function buildSeriesPrompt(series: StudioSeries, scene: SeriesScene, opts: { cover: boolean; page: number; outfits?: string; continuity?: Continuity[]; note?: string; withPhoto?: boolean; spread?: boolean; textSide?: "left" | "right" }) {
+export function buildSeriesPrompt(series: StudioSeries, scene: SeriesScene, opts: { cover: boolean; page: number; outfits?: string; continuity?: Continuity[]; note?: string; withPhoto?: boolean; spread?: boolean; textSide?: "left" | "right"; ownPhotos?: Person[] }) {
   const t = getTaste("watercolor")!;
   const people: Person[] = ["child", ...(scene.withMom ? (["mom"] as const) : []), ...(scene.withDad ? (["dad"] as const) : [])];
   return [
@@ -752,9 +792,12 @@ export function buildSeriesPrompt(series: StudioSeries, scene: SeriesScene, opts
     opts.withPhoto
       ? "The second reference image is a photo of the real family these characters were drawn from (the mother on the left, the child in the middle, the father on the right). Keep each person's face, hairstyle and hair color as close to that photo as possible, translated into the picture-book style; take only faces and hair from the photo, not its clothes, background or pose."
       : "",
+    opts.ownPhotos?.length
+      ? `${ownPhotosPrompt(opts.ownPhotos, 2)} Keep each person's face, hairstyle and hair color as close to their photo as possible, translated into the picture-book style; take only faces and hair from the photos, not their clothes, backgrounds or poses.`
+      : "",
     STYLE_ONLY_FROM_TEXT,
     // 写真があるときは顔・髪は写真に任せ、文章では服だけ伝える（文章の見た目と写真が食い違わないように）
-    opts.withPhoto ? (opts.outfits ? "" : sampleOutfits(series.id, people)) : sampleCast(series.id, people, !opts.outfits),
+    opts.withPhoto || opts.ownPhotos ? (opts.outfits ? "" : sampleOutfits(series.id, people)) : sampleCast(series.id, people, !opts.outfits),
     BOOK_CONSISTENCY,
     opts.outfits ? outfitsPrompt(opts.outfits) : "",
     continuityPrompt(opts.continuity, opts.page),
@@ -780,14 +823,14 @@ export function buildSeriesPrompt(series: StudioSeries, scene: SeriesScene, opts
 }
 
 /** シリーズの1ページ（表紙または場面）を水彩で描き、PNG の base64 を返す。spread：見開きの試作（横長 1536x1024） */
-export async function illustrateSeries(opts: { series: StudioSeries; scene: SeriesScene; page: number; outfits?: string; continuity?: Continuity[]; note?: string; quality: Quality; sheet: Uploadable; photo?: Uploadable | null; spread?: boolean; textSide?: "left" | "right" }) {
+export async function illustrateSeries(opts: { series: StudioSeries; scene: SeriesScene; page: number; outfits?: string; continuity?: Continuity[]; note?: string; quality: Quality; sheet: Uploadable; photo?: Uploadable | null; spread?: boolean; textSide?: "left" | "right"; ownPhotos?: { who: Person; file: Uploadable }[] }) {
   const cover = opts.page === 0;
   const ai = getOpenAI();
   if (!ai) throw new Error("OPENAI_API_KEY が未設定です");
   const result = await ai.images.edit({
     model: process.env.OPENAI_IMAGE_MODEL ?? "gpt-image-2",
-    image: opts.photo ? [opts.sheet, opts.photo] : [opts.sheet],
-    prompt: buildSeriesPrompt(opts.series, opts.scene, { cover, page: opts.page, outfits: opts.outfits, continuity: opts.continuity, note: opts.note, withPhoto: !!opts.photo, spread: opts.spread && !cover, textSide: opts.textSide }),
+    image: [opts.sheet, ...(opts.photo ? [opts.photo] : []), ...(opts.ownPhotos ?? []).map((p) => p.file)],
+    prompt: buildSeriesPrompt(opts.series, opts.scene, { cover, page: opts.page, outfits: opts.outfits, continuity: opts.continuity, note: opts.note, withPhoto: !!opts.photo, spread: opts.spread && !cover, textSide: opts.textSide, ownPhotos: opts.ownPhotos?.map((p) => p.who) }),
     size: cover ? COVER_SIZE : opts.spread ? "1536x1024" : "1024x1024",
     quality: opts.quality === "final" ? "high" : "medium",
     output_format: "png",
@@ -801,21 +844,24 @@ export async function illustrateSeries(opts: { series: StudioSeries; scene: Seri
  * 見開き版の本の試作（登場人物しょうかいのページ）用に、シリーズの家族のひとりだけを全身で描く。
  * お客様の本のキャラクターの絵と同じく、その話の服で、無地の明るい背景に1人だけ
  */
-export async function makeSeriesCharacter(opts: { series: StudioSeries; who: Person; outfits?: string; sheet: Uploadable; photo?: Uploadable | null; note?: string }) {
+export async function makeSeriesCharacter(opts: { series: StudioSeries; who: Person; outfits?: string; sheet: Uploadable; photo?: Uploadable | null; note?: string; ownPhoto?: Uploadable | null }) {
   const t = getTaste("watercolor")!;
   const ai = getOpenAI();
   if (!ai) throw new Error("OPENAI_API_KEY が未設定です");
   const result = await ai.images.edit({
     model: process.env.OPENAI_IMAGE_MODEL ?? "gpt-image-2",
-    image: opts.photo ? [opts.sheet, opts.photo] : [opts.sheet],
+    image: [opts.sheet, ...(opts.photo ? [opts.photo] : []), ...(opts.ownPhoto ? [opts.ownPhoto] : [])],
     prompt: [
       `${t.prompt}.`,
       "The reference image is the character sheet for this picture book series.",
+      opts.ownPhoto
+        ? `${ownPhotosPrompt([opts.who], 2)} Keep the face, hairstyle and hair color as close to that photo as possible, translated into the picture-book style.`
+        : "",
       opts.photo
         ? "The second reference image is a photo of the real family these characters were drawn from (the mother on the left, the child in the middle, the father on the right). Keep the face, hairstyle and hair color as close to that photo as possible, translated into the picture-book style."
         : "",
       STYLE_ONLY_FROM_TEXT,
-      opts.photo ? (opts.outfits ? "" : sampleOutfits(opts.series.id, [opts.who])) : sampleCast(opts.series.id, [opts.who], !opts.outfits),
+      opts.photo || opts.ownPhoto ? (opts.outfits ? "" : sampleOutfits(opts.series.id, [opts.who])) : sampleCast(opts.series.id, [opts.who], !opts.outfits),
       `Character design of ${LABEL[opts.who]} only, for a children's picture book: the same person as on the character sheet, standing alone, full body from head to toes, front view, relaxed natural pose, friendly expression.`,
       opts.outfits ? `Clothes: ${opts.outfits} Draw exactly this person's clothes and colors from this list instead of the clothes in the reference images.` : "",
       "Plain soft light background with no scenery and no other people or animals. Leave a little space above the head and below the feet.",
