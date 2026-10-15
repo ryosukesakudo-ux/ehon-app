@@ -1,10 +1,18 @@
 "use client";
 
-import { useEffect, useState, useSyncExternalStore } from "react";
+import { useCallback, useEffect, useRef, useState, useSyncExternalStore, type ReactNode } from "react";
+import { HONORIFICS, type HonorificId } from "@/lib/catalog";
+import { toViewablePhoto } from "@/lib/heic-photo";
 import { samplePublicUrl } from "@/lib/samples";
+import { shrinkPhoto } from "@/lib/shrink-photo";
 import {
   SERIES_NOTE_MAX,
   isPhotoFirst,
+  ownBookSpreadPath,
+  ownCharacterPath,
+  ownCoverPath,
+  ownPhotoPath,
+  ownSheetPath,
   seriesBookSpreadPath,
   seriesCharacterPath,
   seriesFamilyPhotoPath,
@@ -24,6 +32,8 @@ import { SampleImage } from "@/components/sample-image";
 
 const PARALLEL = 3;
 type Key = `${number}/${number}`;
+type Who = "child" | "mom" | "dad";
+const PHOTO_ACCEPT = "image/jpeg,image/png,image/webp,image/heic,image/heif,.heic,.heif";
 
 /** 画面に出す分だけの台本（場面の説明） */
 export type StudioView = {
@@ -117,16 +127,105 @@ export function SeriesStudio({ list }: { list: StudioView[] }) {
   const [bookDad, setBookDad] = useState(true);
   const [bookLevel, setBookLevel] = useState<"s" | "n" | "l">("n");
   const [book, setBook] = useState<{ key: string; pages: { label: string; url: string }[]; pdf: string; missingCharacters: number } | null>(null);
+  // 自分の写真で試す（2026-10-15 作道さん）：写真と絵は非公開の場所に保存し、期限付きのURLで見る
+  const [bookOwn, setBookOwn] = useState(false);
+  // 主人公の名前と呼び方（本の文・登場人物しょうかい・献辞に入る）。空なら見本の名前
+  const [bookName, setBookName] = useState("");
+  const [bookHonorific, setBookHonorific] = useState<HonorificId>(seriesId === "number" ? "chan" : "kun");
+  const shownName = bookName.trim() || childName;
   const bookCombo = bookMom && bookDad ? "both" : bookMom ? "mom" : bookDad ? "dad" : "none";
-  const bookWho: ("child" | "mom" | "dad")[] = ["child", ...(bookMom ? (["mom"] as const) : []), ...(bookDad ? (["dad"] as const) : [])];
+  const bookWho: Who[] = ["child", ...(bookMom ? (["mom"] as const) : []), ...(bookDad ? (["dad"] as const) : [])];
   const bookEpisode = series.episodes.find((e) => e.no === bookEp) ?? series.episodes[0];
-  const bookViewKey = `${SERIES_ID}/${bookEpisode?.no}/${bookCombo}/${bookLevel}`;
-  const bookSpreadKey = (page: number) => `book/${bookEpisode?.no}/${bookCombo}/${page}`;
-  const charaKey = (who: string) => `bookChara/${bookEpisode?.no}/${who}`;
-  const makeBookSpread = (page: number) => call(bookSpreadKey(page), { kind: "bookSpread", episode: bookEpisode.no, page, combo: bookCombo, quality });
-  const makeBookChara = (who: string) => call(charaKey(who), { kind: "bookChara", episode: bookEpisode.no, who });
+  const bookViewKey = `${SERIES_ID}/${bookEpisode?.no}/${bookCombo}/${bookLevel}/${bookOwn ? "own" : "sample"}/${shownName}/${bookHonorific}`;
+  const bookSpreadKey = (page: number) => `book/${bookOwn ? "own/" : ""}${bookEpisode?.no}/${bookCombo}/${page}`;
+  const charaKey = (who: string) => `bookChara/${bookOwn ? "own/" : ""}${bookEpisode?.no}/${who}`;
+  const ownCoverKey = `ownCover/${bookEpisode?.no}`;
+  const whoLabel = (w: Who) => (w === "child" ? shownName : w === "mom" ? "ママ" : "パパ");
+
+  // 自分の写真と、その写真から描いた絵の期限付きURL（パス → URL）
+  const [ownUrls, setOwnUrls] = useState<Record<string, string>>({});
+  const refreshOwn = useCallback(async () => {
+    if (!bookEpisode) return {};
+    const res = await fetch("/api/admin/series", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ series: SERIES_ID, kind: "ownList", episode: bookEpisode.no, combo: bookCombo }),
+    }).catch(() => null);
+    const json = res?.ok ? await res.json() : null;
+    const urls = (json?.urls ?? {}) as Record<string, string>;
+    setOwnUrls(urls);
+    return urls;
+  }, [SERIES_ID, bookEpisode, bookCombo]);
+  useEffect(() => {
+    if (bookOwn) void refreshOwn();
+  }, [bookOwn, refreshOwn]);
+
+  // 写真を選ぶ：「未作成」や「写真を選ぶ」を押すと、その人の写真を選ぶ画面を開く
+  const fileInput = useRef<HTMLInputElement>(null);
+  const pickingFor = useRef<Who>("child");
+  const pickPhoto = (who: Who) => {
+    pickingFor.current = who;
+    fileInput.current?.click();
+  };
+  async function onPhotoChosen(file: File | undefined) {
+    if (!file) return;
+    const who = pickingFor.current;
+    const key = `ownPhoto/${who}`;
+    setBusy((b) => ({ ...b, [key]: true }));
+    setErrors((e) => ({ ...e, [key]: "" }));
+    try {
+      const form = new FormData();
+      form.set("who", who);
+      form.set("photo", await shrinkPhoto(await toViewablePhoto(file), 1600));
+      const res = await fetch("/api/admin/series", { method: "POST", body: form });
+      const json = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(json.error ?? "写真を保存できませんでした");
+      await refreshOwn();
+    } catch (e) {
+      setErrors((x) => ({ ...x, [key]: e instanceof Error ? e.message : "写真を保存できませんでした" }));
+    } finally {
+      setBusy((b) => ({ ...b, [key]: false }));
+    }
+  }
+
+  const ownCall = async (key: string, body: object) => {
+    const ok = await call(key, { ...body, own: true });
+    if (ok) await refreshOwn();
+    return ok;
+  };
+  const makeBookSpread = (page: number) =>
+    bookOwn
+      ? ownCall(bookSpreadKey(page), { kind: "bookSpread", episode: bookEpisode.no, page, combo: bookCombo, quality })
+      : call(bookSpreadKey(page), { kind: "bookSpread", episode: bookEpisode.no, page, combo: bookCombo, quality });
+  const makeBookChara = (who: string) =>
+    bookOwn ? ownCall(charaKey(who), { kind: "bookChara", episode: bookEpisode.no, who }) : call(charaKey(who), { kind: "bookChara", episode: bookEpisode.no, who });
+  const makeOwnCover = () => ownCall(ownCoverKey, { kind: "ownCover", episode: bookEpisode.no, quality });
+  const makeOwnSheet = () => ownCall("ownSheet", { kind: "ownSheet" });
+
+  async function makeOwnAll() {
+    const urls = await refreshOwn();
+    const lacking = bookWho.filter((w) => !urls[ownPhotoPath(w)]);
+    if (lacking.length) return alert(`先に写真を選んでください（${lacking.map(whoLabel).join("・")}）。いない人は上のチェックを外してください。`);
+    const spreads = Array.from({ length: 12 }, (_, i) => i + 1).filter((p) => !urls[ownBookSpreadPath(SERIES_ID, bookEpisode.no, bookCombo, p)]);
+    const charas = bookWho.filter((w) => !urls[ownCharacterPath(SERIES_ID, bookEpisode.no, w)]);
+    const cover = !urls[ownCoverPath(SERIES_ID, bookEpisode.no)];
+    const sheet = !urls[ownSheetPath(SERIES_ID)];
+    if (!spreads.length && !charas.length && !cover) return alert("この組み合わせの絵はすべてそろっています。気になる絵は1枚ずつ作り直してください。");
+    const per = quality === "final" ? 30 : 15;
+    const yen = spreads.length * (quality === "final" ? 45 : 23) + charas.length * 15 + (cover ? per : 0) + (sheet ? 50 : 0);
+    if (!confirm(`まだ無い絵を作ります（${sheet ? "設定画1枚・" : ""}${cover ? "表紙1枚・" : ""}見開き${spreads.length}枚・登場人物${charas.length}人）。AI代は約${yen}円です。よろしいですか？`)) return;
+    // 設定画は全部の絵のもとになるので、先に1枚だけ作る
+    if (sheet && !(await makeOwnSheet())) return;
+    const jobs = [...(cover ? [makeOwnCover] : []), ...charas.map((w) => () => makeBookChara(w)), ...spreads.map((p) => () => makeBookSpread(p))];
+    const run = async () => {
+      for (let job = jobs.shift(); job; job = jobs.shift()) await job();
+    };
+    await Promise.all(Array.from({ length: PARALLEL }, run));
+  }
+
   async function makeBookAll() {
     if (!bookEpisode) return;
+    if (bookOwn) return makeOwnAll();
     const spreads = (await Promise.all(Array.from({ length: 12 }, async (_, i) => ((await exists(seriesBookSpreadPath(SERIES_ID, bookEpisode.no, bookCombo, i + 1))) ? null : i + 1)))).filter((p): p is number => p !== null);
     const charas = (await Promise.all(bookWho.map(async (w) => ((await exists(seriesCharacterPath(SERIES_ID, bookEpisode.no, w))) ? null : w)))).filter((w): w is "child" | "mom" | "dad" => w !== null);
     if (!spreads.length && !charas.length) return alert("この組み合わせの絵はすべてそろっています。気になる絵は1枚ずつ作り直してください。");
@@ -141,7 +240,7 @@ export function SeriesStudio({ list }: { list: StudioView[] }) {
     await Promise.all(Array.from({ length: PARALLEL }, run));
   }
   async function renderBook() {
-    const json = await call("bookRender", { kind: "bookRender", episode: bookEpisode.no, combo: bookCombo, level: bookLevel });
+    const json = await call("bookRender", { kind: "bookRender", episode: bookEpisode.no, combo: bookCombo, level: bookLevel, own: bookOwn, name: bookName.trim(), honorific: bookHonorific });
     if (json) setBook({ key: bookViewKey, pages: json.pages as { label: string; url: string }[], pdf: json.pdf as string, missingCharacters: Number(json.missingCharacters ?? 0) });
   }
 
@@ -289,8 +388,32 @@ export function SeriesStudio({ list }: { list: StudioView[] }) {
           <p style={{ margin: 0, fontSize: 13, lineHeight: 1.7 }}>
             お話の12場面を左右2ページにまたがる絵で描き、表紙・献辞・登場人物しょうかいから最後のメッセージまで、しまうま A5スクエア36ページと同じ並びで本の形にして確かめます。
             ママ・パパは「写真がある人」を選ぶと、台本の出し分けのとおりに場面が変わります（いない人の場面は別の場面に置きかわります）。絵は組み合わせごとに保存され、お客様の本やサンプル集は変わりません。
-            見開きの絵は1枚 約{quality === "final" ? 45 : 23}円、登場人物の絵は1人 約15円です。表紙は下の「第◯話」の表紙の絵を使います。
+            見開きの絵は1枚 約{quality === "final" ? 45 : 23}円、登場人物の絵は1人 約15円です。
+            {bookOwn
+              ? "「自分の写真」では、選んだ写真の顔で設定画（約50円）・表紙・登場人物・見開きを描きます。写真と絵は非公開の場所に保存し、サイトには出ません。写真を変えたら、絵も作り直してください。"
+              : "表紙は下の「第◯話」の表紙の絵を使います。"}
           </p>
+          <div style={{ display: "flex", gap: 14, flexWrap: "wrap", alignItems: "center" }}>
+            <label><input type="radio" name="bookFamily" checked={!bookOwn} disabled={anyBusy} onChange={() => setBookOwn(false)} /> 見本の家族</label>
+            <label><input type="radio" name="bookFamily" checked={bookOwn} disabled={anyBusy} onChange={() => setBookOwn(true)} /> 自分の写真</label>
+            <label>
+              主人公の名前：
+              <input
+                type="text"
+                value={bookName}
+                maxLength={12}
+                placeholder={childName}
+                onChange={(e) => setBookName(e.target.value)}
+                style={{ width: 120, fontSize: 16, padding: "4px 8px", borderRadius: 8, border: "1px solid #ccc" }}
+              />
+            </label>
+            <label>
+              呼び方：
+              <select value={bookHonorific} onChange={(e) => setBookHonorific(e.target.value as HonorificId)}>
+                {HONORIFICS.map((h) => <option key={h.id} value={h.id}>{h.label}</option>)}
+              </select>
+            </label>
+          </div>
           <div style={{ display: "flex", gap: 14, flexWrap: "wrap", alignItems: "center" }}>
             <label>
               話：
@@ -298,7 +421,7 @@ export function SeriesStudio({ list }: { list: StudioView[] }) {
                 {series.episodes.map((ep) => <option key={ep.no} value={ep.no}>第{ep.no}話</option>)}
               </select>
             </label>
-            <label><input type="checkbox" checked disabled /> 主人公（{childName}）</label>
+            <label><input type="checkbox" checked disabled /> 主人公（{shownName}）</label>
             <label><input type="checkbox" checked={bookMom} disabled={anyBusy} onChange={(e) => setBookMom(e.target.checked)} /> ママ</label>
             <label><input type="checkbox" checked={bookDad} disabled={anyBusy} onChange={(e) => setBookDad(e.target.checked)} /> パパ</label>
             <label>
@@ -313,16 +436,76 @@ export function SeriesStudio({ list }: { list: StudioView[] }) {
           <button type="button" className="cta" style={{ width: "auto", alignSelf: "flex-start", height: 44, padding: "0 20px", fontSize: 15 }} disabled={anyBusy} onClick={makeBookAll}>
             まだ無い絵をまとめて作る（見開き12枚＋登場人物）
           </button>
+          {bookOwn && (
+            <>
+              <input ref={fileInput} type="file" accept={PHOTO_ACCEPT} hidden onChange={(e) => { void onPhotoChosen(e.target.files?.[0]); e.target.value = ""; }} />
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(140px, 1fr))", gap: 12 }}>
+                {bookWho.map((w) => {
+                  const url = ownUrls[ownPhotoPath(w)];
+                  return (
+                    <div key={w} style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+                      <button
+                        type="button"
+                        onClick={() => pickPhoto(w)}
+                        disabled={anyBusy}
+                        aria-label={`${whoLabel(w)}の写真を選ぶ`}
+                        style={{ aspectRatio: "1 / 1", borderRadius: 10, overflow: "hidden", background: "#eee", border: "2px dashed #bbb", padding: 0, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer" }}
+                      >
+                        {busy[`ownPhoto/${w}`] ? (
+                          <div className="spinner" />
+                        ) : url ? (
+                          // eslint-disable-next-line @next/next/no-img-element -- 期限付きURLの写真なので、画像の最適化を通さない
+                          <img src={url} alt={`${whoLabel(w)}の写真`} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                        ) : (
+                          <span style={{ color: "var(--navy)", fontWeight: 700 }}>写真を選ぶ</span>
+                        )}
+                      </button>
+                      <span style={{ fontSize: 12, color: "var(--sub)" }}>写真：{whoLabel(w)}{url ? "（押すと変えられます）" : ""}</span>
+                      {errors[`ownPhoto/${w}`] && <span className="error">{errors[`ownPhoto/${w}`]}</span>}
+                    </div>
+                  );
+                })}
+              </div>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))", gap: 12 }}>
+                <Tile
+                  path={ownSheetPath(SERIES_ID)}
+                  src={ownUrls[ownSheetPath(SERIES_ID)] ?? null}
+                  busy={busy.ownSheet}
+                  error={errors.ownSheet}
+                  label="写真から描いた設定画（家族＋相棒）"
+                  aspect="3 / 2"
+                  onMake={makeOwnSheet}
+                  disabled={anyBusy}
+                  {...noteProps("ownSheet")}
+                />
+                <Tile
+                  path={ownCoverPath(SERIES_ID, bookEpisode.no)}
+                  src={ownUrls[ownCoverPath(SERIES_ID, bookEpisode.no)] ?? null}
+                  busy={busy[ownCoverKey]}
+                  error={errors[ownCoverKey]}
+                  label={`表紙：${bookEpisode.cover.label}`}
+                  aspect="3 / 2"
+                  onMake={makeOwnCover}
+                  disabled={anyBusy}
+                  {...noteProps(ownCoverKey)}
+                />
+              </div>
+            </>
+          )}
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(140px, 1fr))", gap: 12 }}>
             {bookWho.map((w) => (
               <Tile
-                key={`${bookEpisode.no}-${w}`}
-                path={seriesCharacterPath(SERIES_ID, bookEpisode.no, w)}
+                key={`${bookEpisode.no}-${w}-${bookOwn}`}
+                path={bookOwn ? ownCharacterPath(SERIES_ID, bookEpisode.no, w) : seriesCharacterPath(SERIES_ID, bookEpisode.no, w)}
+                src={bookOwn ? (ownUrls[ownCharacterPath(SERIES_ID, bookEpisode.no, w)] ?? null) : undefined}
                 version={version[charaKey(w)]}
                 busy={busy[charaKey(w)]}
                 error={errors[charaKey(w)]}
-                label={`登場人物：${w === "child" ? childName : w === "mom" ? "ママ" : "パパ"}`}
+                label={`登場人物：${whoLabel(w)}`}
                 onMake={() => makeBookChara(w)}
+                // 自分の写真で、まだ写真が無い人は「未作成」を押すと写真を選ぶ
+                onEmpty={bookOwn && !ownUrls[ownPhotoPath(w)] ? () => pickPhoto(w) : undefined}
+                emptyLabel={bookOwn && !ownUrls[ownPhotoPath(w)] ? "写真を選ぶ" : undefined}
                 disabled={anyBusy}
                 {...noteProps(charaKey(w))}
               />
@@ -331,8 +514,9 @@ export function SeriesStudio({ list }: { list: StudioView[] }) {
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))", gap: 12 }}>
             {bookEpisode.scenes.map((sc, i) => (
               <Tile
-                key={`${bookEpisode.no}-${bookCombo}-${i}`}
-                path={seriesBookSpreadPath(SERIES_ID, bookEpisode.no, bookCombo, i + 1)}
+                key={`${bookEpisode.no}-${bookCombo}-${i}-${bookOwn}`}
+                path={(bookOwn ? ownBookSpreadPath : seriesBookSpreadPath)(SERIES_ID, bookEpisode.no, bookCombo, i + 1)}
+                src={bookOwn ? (ownUrls[ownBookSpreadPath(SERIES_ID, bookEpisode.no, bookCombo, i + 1)] ?? null) : undefined}
                 version={version[bookSpreadKey(i + 1)]}
                 busy={busy[bookSpreadKey(i + 1)]}
                 error={errors[bookSpreadKey(i + 1)]}
@@ -483,6 +667,11 @@ function SpreadPreview(props: { path: string; textPath: string; version?: number
 
 function Tile(props: {
   path: string;
+  /** 絵のURLを直接渡すとき（自分の写真の絵は期限付きURL）。null は「まだ無い」 */
+  src?: string | null;
+  /** 絵が無いときに「未作成」を押したときの動き（無ければ何もしない） */
+  onEmpty?: () => void;
+  emptyLabel?: ReactNode;
   version?: number;
   busy?: boolean;
   error?: string;
@@ -496,9 +685,23 @@ function Tile(props: {
   note: string;
   onNote: (v: string) => void;
 }) {
-  const url = samplePublicUrl(props.path);
+  const direct = props.src !== undefined;
+  const url = direct ? props.src : samplePublicUrl(props.path);
   const openedAt = usePageOpenedAt();
   const v = props.version ?? openedAt;
+  // 絵が無いときの表示。以前は絵へのリンクの中にあり、押すと開けないURLに飛ぶだけだった（2026-10-15 作道さん）
+  const empty = (
+    <span
+      role={props.onEmpty ? "button" : undefined}
+      onClick={(e) => {
+        e.preventDefault();
+        props.onEmpty?.();
+      }}
+      style={{ color: props.onEmpty ? "var(--navy)" : "#888", fontWeight: props.onEmpty ? 700 : undefined, cursor: props.onEmpty ? "pointer" : "default", width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center" }}
+    >
+      {props.emptyLabel ?? "未作成"}
+    </span>
+  );
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 6, maxWidth: props.width }}>
       <div
@@ -517,11 +720,11 @@ function Tile(props: {
         ) : (
           <a href={url ?? undefined} target="_blank" rel="noreferrer" style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center" }}>
             <SampleImage
-              key={v}
-              src={url && `${url}?v=${v}`}
+              key={direct ? url : v}
+              src={url ? (direct ? url : `${url}?v=${v}`) : null}
               unoptimized
               alt={props.label}
-              fallback={<span style={{ color: "#888" }}>未作成</span>}
+              fallback={empty}
             />
           </a>
         )}

@@ -112,3 +112,41 @@ export function seriesBookViewPath(id: SeriesId, episode: number, combo: string,
 export function seriesBookPdfPath(id: SeriesId, episode: number, combo: string, level: string) {
   return `series/${id}/ep${episode}/book-${combo}/book-${level}.pdf`;
 }
+
+// --- 絵スタジオ「自分の写真で試す」（2026-10-15 作道さん：見開き版の本を自分の家族の写真で作って確かめる）---
+// 本物の家族の写真なので、公開の samples ではなく非公開の books に置き、画面には期限付きのURLで出す。
+// 写真はシリーズ共通（同じ家族）。絵はシリーズ・話・組み合わせごと。
+const OWN_ROOT = "studio-own";
+
+export function ownPhotoPath(who: "child" | "mom" | "dad") {
+  return `${OWN_ROOT}/photo-${who}.jpg`;
+}
+
+/** 写真の3人（いる人）から描いた、そのシリーズの設定画（家族＋相棒） */
+export function ownSheetPath(id: SeriesId) {
+  return `${OWN_ROOT}/${id}/characters.png`;
+}
+
+export function ownCoverPath(id: SeriesId, episode: number) {
+  return `${OWN_ROOT}/${id}/ep${episode}/cover.png`;
+}
+
+export function ownCharacterPath(id: SeriesId, episode: number, who: "child" | "mom" | "dad") {
+  return `${OWN_ROOT}/${id}/ep${episode}/chara-${who}.png`;
+}
+
+export function ownBookSpreadPath(id: SeriesId, episode: number, combo: string, page: number) {
+  return `${OWN_ROOT}/${id}/ep${episode}/book-${combo}/spread-${String(page).padStart(2, "0")}.png`;
+}
+
+export function ownBookSpreadTextPath(id: SeriesId, episode: number, combo: string, page: number) {
+  return ownBookSpreadPath(id, episode, combo, page).replace(/\.png$/, "-text.json");
+}
+
+export function ownBookViewPath(id: SeriesId, episode: number, combo: string, level: string, index: number) {
+  return `${OWN_ROOT}/${id}/ep${episode}/book-${combo}/view-${level}-${String(index).padStart(2, "0")}.jpg`;
+}
+
+export function ownBookPdfPath(id: SeriesId, episode: number, combo: string, level: string) {
+  return `${OWN_ROOT}/${id}/ep${episode}/book-${combo}/book-${level}.pdf`;
+}
