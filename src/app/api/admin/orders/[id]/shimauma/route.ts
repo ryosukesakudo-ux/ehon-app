@@ -7,7 +7,9 @@ import { getBook } from "@/lib/book";
 import { bookTitle, getSeriesInfo, openEpisodes, parseSeriesKey } from "@/lib/story-key";
 import { loadFinalImages } from "@/lib/print-assets";
 import { SHIMAUMA_PRODUCTS, buildShimaumaZip, type ShimaumaExtras, type ShimaumaProduct } from "@/lib/shimauma";
-import { BOOK_BUCKET, PHOTO_BUCKET, getSupabase } from "@/lib/services";
+import { SERIES_DATA } from "@/lib/series-data";
+import { seriesSidekickPath, sidekickShortName } from "@/lib/series";
+import { BOOK_BUCKET, PHOTO_BUCKET, SAMPLE_BUCKET, getSupabase } from "@/lib/services";
 import { bookVolume } from "@/lib/volume";
 
 export const maxDuration = 300;
@@ -77,7 +79,7 @@ async function loadExtras(db: SupabaseClient, order: OrderRow, serial: number): 
     return data ? Buffer.from(await data.arrayBuffer()) : null;
   };
 
-  // 登場人物：主人公・ママ・パパ（キャラクターの絵がある人）、オリジナルのお話のほかの登場人物
+  // 登場人物：主人公・ママ・パパ（キャラクターの絵がある人）、オリジナルのお話のほかの登場人物、台本のお話の相棒
   const characters: ShimaumaExtras["characters"] = [];
   for (const who of draftPeople(draft)) {
     const image = await download(BOOK_BUCKET, draft[`${who}_character_path`]);
@@ -89,10 +91,17 @@ async function loadExtras(db: SupabaseClient, order: OrderRow, serial: number): 
     if (image) characters.push({ name: cast[i]?.name ?? `とうじょうじんぶつ${i + 1}`, image });
   }
 
+  // 相棒（森ならりすのポッケ）は絵スタジオで作ったシリーズ共通の絵（公開の samples）。無ければ載せない
+  const k = parseSeriesKey(draft.story);
+  const data = k ? SERIES_DATA[k.series] : null;
+  if (k && data) {
+    const image = await download(SAMPLE_BUCKET, seriesSidekickPath(k.series));
+    if (image) characters.push({ name: sidekickShortName(data.sidekickLabel), image });
+  }
+
   const paidAt = order.paid_at ?? order.created_at;
 
   // 次のお話：シリーズの次の話（公開中の話だけ）。オリジナルのお話や最後の話は無し
-  const k = parseSeriesKey(draft.story);
   const series = k ? getSeriesInfo(k.series) : null;
   const next = k && series ? openEpisodes(series.episodes).find((e) => e.no === k.episode + 1) : null;
 
