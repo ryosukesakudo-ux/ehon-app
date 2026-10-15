@@ -16,6 +16,8 @@ export type StepDetails = {
   stories: { name: string; open: boolean }[];
   showcasePhoto: string | null;
   showcaseBook: string | null;
+  /** 3の見本：表紙と冒頭の2ページ（トップの見本の絵本と同じ） */
+  preview: { cover: string | null; pages: (string | null)[] };
   sizes: { name: string; cover: string; price: string }[];
   deliveryDays: number;
   extraCopy: string;
@@ -126,10 +128,23 @@ function Photo({ d }: { d: StepDetails }) {
   return (
     <>
       <p style={lead}>お子さまの写真1枚から作れます。ママやパパの写真も入れると、一緒に絵本に登場します。</p>
+      {/* 左にアップする写真、右にできあがるイラスト（2026-10-15 作道さん） */}
+      <div className={s.stepConvert}>
+        <figure className={s.stepConvertItem}>
+          <div className={s.stepConvertArt}>
+            <SampleImage src={d.showcasePhoto} alt="アップする写真の例（見本）" fallback="[写真]" sizes="40vw" />
+          </div>
+          <figcaption>アップする写真</figcaption>
+        </figure>
+        <div className={s.stepConvertArrow} aria-hidden="true"><Arrow size={18} /></div>
+        <figure className={s.stepConvertItem}>
+          <div className={s.stepConvertArt}>
+            <SampleImage src={d.showcaseBook} alt="写真から描いたイラスト（見本）" fallback="[イラスト]" sizes="40vw" />
+          </div>
+          <figcaption>できあがるイラスト</figcaption>
+        </figure>
+      </div>
       <div className={s.stepPhotoRow}>
-        <div className={s.stepPhotoArt}>
-          <SampleImage src={d.showcasePhoto} alt="写真の例（見本）" fallback="[写真]" sizes="40vw" />
-        </div>
         <ul className={s.stepList} style={{ flex: 1 }}>
           <li><b className={s.good}>○</b> 正面を向いている</li>
           <li><b className={s.good}>○</b> 明るく、顔がはっきり写っている</li>
@@ -146,8 +161,17 @@ function Finish({ d }: { d: StepDetails }) {
   return (
     <>
       <p style={lead}>先に見本のページを作って確かめてから注文できます。気になる絵は作り直せます。</p>
-      <div className={s.stepBookArt}>
-        <SampleImage src={d.showcaseBook} alt="見本のページの例" fallback="[見本のページ]" sizes="(max-width: 640px) 90vw, 480px" />
+      {/* 表紙と冒頭の2ページを重ねて、注文の前に見本を確かめられる感じを出す（2026-10-15 作道さん） */}
+      <div className={s.stepStack} aria-label="見本のページの例">
+        {d.preview.pages.slice(0, 2).map((url, i) => (
+          <div key={i} className={`${s.stepStackPage} ${i === 0 ? s.stepStackPage1 : s.stepStackPage2}`}>
+            <SampleImage src={url} alt={`見本の${i + 1}ページ目`} fallback="[見本]" sizes="40vw" />
+          </div>
+        ))}
+        <div className={s.stepStackCover}>
+          <SampleImage src={d.preview.cover} alt="見本の表紙" fallback="[表紙]" sizes="60vw" />
+        </div>
+        <span className={s.stepStackBadge}>見本でチェック</span>
       </div>
       <p style={sub}>お値段（送料込み）</p>
       <ul className={s.stepList}>

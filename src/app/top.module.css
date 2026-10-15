@@ -67,9 +67,19 @@
 .stepTasteArt { position: relative; aspect-ratio: 1; border-radius: 14px; overflow: hidden; background: #EEF3F8; display: flex; align-items: center; justify-content: center; font-size: 11px; color: var(--sub); }
 .stepList { margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 4px; font-size: 14px; line-height: 1.6; color: var(--ink, #34507a); }
 .stepPhotoRow { display: flex; gap: 12px; align-items: center; }
-.stepPhotoArt { position: relative; width: 38%; aspect-ratio: 1; flex-shrink: 0; border-radius: 14px; overflow: hidden; background: #EEF3F8; display: flex; align-items: center; justify-content: center; font-size: 11px; color: var(--sub); }
 .stepPhotoRow .stepList { list-style: none; padding-left: 0; font-size: 13px; }
-.stepBookArt { position: relative; aspect-ratio: 1; border-radius: 14px; overflow: hidden; background: #EEF3F8; display: flex; align-items: center; justify-content: center; font-size: 12px; color: var(--sub); width: min(100%, 34vh); margin: 0 auto; }
+.stepConvert { display: flex; align-items: center; gap: 6px; }
+.stepConvertItem { flex: 1; margin: 0; display: flex; flex-direction: column; gap: 4px; align-items: center; font-size: 11px; font-weight: 700; color: var(--sub); }
+.stepConvertArt { position: relative; width: 100%; aspect-ratio: 1; border-radius: 14px; overflow: hidden; background: #EEF3F8; border: 3px solid #fff; box-shadow: 0 3px 10px rgba(30, 47, 87, 0.15); display: flex; align-items: center; justify-content: center; font-size: 11px; color: var(--sub); }
+.stepConvertArrow { flex-shrink: 0; width: 30px; height: 30px; border-radius: 50%; background: var(--coral); color: #fff; display: flex; align-items: center; justify-content: center; margin-bottom: 18px; }
+/* 表紙の後ろに、冒頭の2ページを扇のように重ねる */
+.stepStack { position: relative; width: 100%; max-width: 360px; aspect-ratio: 4 / 3; margin: 6px auto 4px; }
+.stepStackPage, .stepStackCover { position: absolute; overflow: hidden; border-radius: 10px; border: 3px solid #fff; background: #EEF3F8; box-shadow: 0 6px 16px rgba(30, 47, 87, 0.2); display: flex; align-items: center; justify-content: center; font-size: 11px; color: var(--sub); }
+.stepStackPage { width: 46%; aspect-ratio: 1; }
+.stepStackPage1 { right: 16%; top: 2%; rotate: 4deg; }
+.stepStackPage2 { right: 4%; top: 14%; rotate: 9deg; }
+.stepStackCover { left: 0; bottom: 4%; width: 68%; aspect-ratio: 3 / 2; rotate: -4deg; }
+.stepStackBadge { position: absolute; left: 4%; top: 4%; padding: 3px 10px; border-radius: 12px; background: #F6A93B; color: #fff; font-size: 12px; font-weight: 800; box-shadow: 0 2px 0 #E08F22; rotate: -6deg; }
 .good { color: #3FA57A; margin-right: 4px; }
 .bad { color: #E0645A; margin-right: 4px; }
 .stepNum { flex-shrink: 0; width: 54px; height: 54px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: 900; color: #fff; }

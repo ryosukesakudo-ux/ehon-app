@@ -296,6 +296,10 @@ export default function Home() {
             stories: SHOWN_SERIES_LIST.map((st) => ({ name: st.name, open: isOpenSeries(st.id) })),
             showcasePhoto: versioned(samplePublicUrl(SHOWCASE_PHOTO)),
             showcaseBook: versioned(samplePublicUrl(SHOWCASE_BOOK)),
+            preview: (() => {
+              const b = topBook();
+              return { cover: b.cover, pages: b.pages.slice(0, 2).map((p) => p.url) };
+            })(),
             sizes: SIZES.map((z) => ({ name: z.name, cover: z.cover, price: yen(z.price) })),
             deliveryDays: DELIVERY_MIN_DAYS,
             extraCopy: yen(EXTRA_COPY_DISCOUNT),
