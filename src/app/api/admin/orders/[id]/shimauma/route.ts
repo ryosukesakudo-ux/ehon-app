@@ -11,6 +11,7 @@ import { SERIES_DATA } from "@/lib/series-data";
 import { seriesSidekickPath, sidekickShortName } from "@/lib/series";
 import { BOOK_BUCKET, PHOTO_BUCKET, SAMPLE_BUCKET, getSupabase } from "@/lib/services";
 import { bookVolume } from "@/lib/volume";
+import { renderSpreadPages } from "@/lib/spread-book";
 
 export const maxDuration = 300;
 
@@ -37,10 +38,14 @@ export async function POST(request: Request, ctx: RouteContext<"/api/admin/order
 
   try {
     const serial = await orderSerial(db, order);
+    const texts = story.scenes.map((sc) => sceneText(sc, order.drafts.child_name));
+    const { trimMm, pagePx } = SHIMAUMA_PRODUCTS[product];
     const { zip } = await buildShimaumaZip({
       title: bookTitle(order.drafts.story, order.drafts.child_name),
-      texts: story.scenes.map((sc) => sceneText(sc, order.drafts.child_name)),
+      texts,
       images: loaded.images,
+      // 見開きの絵の場面は、文を重ねて左右のページに分ける
+      spreadPages: await renderSpreadPages({ images: loaded.images, texts, spots: loaded.spots, trimMm, pagePx }),
       coverImage: loaded.coverImage,
       volume: await bookVolume(db, order),
       serial,

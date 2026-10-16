@@ -120,22 +120,23 @@ export default async function AdminPage() {
                 ページ一覧（{pages.filter((p) => p.url).length}/{pages.length} 枚作成済み
                 {pages.some((p) => !p.url && p.previewUrl) && `・プレビューを使う ${pages.filter((p) => !p.url && p.previewUrl).length} 枚`}）
               </summary>
+              {/* 本文の絵は見開き（横長）と、切り替える前の正方形があるので、どちらも全体が見えるように横長の枠に収める */}
               <ol style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(160px, 1fr))", gap: 12, padding: 0, listStyle: "none" }}>
                 {pages.map((p, i) => (
                   <li key={i} style={{ fontSize: 12, lineHeight: 1.6 }}>
                     {p.url ? (
                       <a href={p.url} target="_blank" rel="noreferrer">
                         {/* eslint-disable-next-line @next/next/no-img-element -- 署名付きURLの一時画像 */}
-                        <img src={p.url} alt={p.text} style={{ width: "100%", aspectRatio: p.index === COVER_SCENE ? "3 / 2" : "1 / 1", objectFit: "cover", borderRadius: 8 }} />
+                        <img src={p.url} alt={p.text} style={{ width: "100%", aspectRatio: "3 / 2", objectFit: p.index === COVER_SCENE ? "cover" : "contain", background: "#f3f3f3", borderRadius: 8 }} />
                       </a>
                     ) : p.previewUrl ? (
                       <a href={p.previewUrl} target="_blank" rel="noreferrer" style={{ position: "relative", display: "block" }}>
                         {/* eslint-disable-next-line @next/next/no-img-element -- 署名付きURLの一時画像 */}
-                        <img src={p.previewUrl} alt={p.text} style={{ width: "100%", aspectRatio: p.index === COVER_SCENE ? "3 / 2" : "1 / 1", objectFit: "cover", borderRadius: 8, opacity: 0.85 }} />
+                        <img src={p.previewUrl} alt={p.text} style={{ width: "100%", aspectRatio: "3 / 2", objectFit: p.index === COVER_SCENE ? "cover" : "contain", background: "#f3f3f3", borderRadius: 8, opacity: 0.85 }} />
                         <span className="tag" style={{ position: "absolute", top: 6, left: 6, fontSize: 11 }}>プレビューを使用</span>
                       </a>
                     ) : (
-                      <div style={{ aspectRatio: "1 / 1", borderRadius: 8, background: "#eee", display: "flex", alignItems: "center", justifyContent: "center" }}>未作成</div>
+                      <div style={{ aspectRatio: "3 / 2", borderRadius: 8, background: "#eee", display: "flex", alignItems: "center", justifyContent: "center" }}>未作成</div>
                     )}
                     {p.index === COVER_SCENE ? "" : `${i}. `}{p.text}
                     {p.url && (o.status === "paid" || o.status === "generated") && (

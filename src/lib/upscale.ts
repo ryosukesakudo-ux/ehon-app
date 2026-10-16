@@ -2,12 +2,12 @@ import "server-only";
 import sharp from "sharp";
 
 /**
- * 1024px で作った絵を、印刷用の大きさに拡大する（画質くらべの「A方式」）。
+ * 1024px で作った絵を、印刷用の大きさに拡大する（画質くらべの「A方式」）。height を渡すと横長（見開きの絵）にも使える。
  * 外部サービスを使わず、なめらかに拡大してから輪郭を少しだけくっきりさせる。
  */
-export async function upscalePng(b64: string, size = 2048): Promise<string> {
+export async function upscalePng(b64: string, size = 2048, height = size): Promise<string> {
   const out = await sharp(Buffer.from(b64, "base64"))
-    .resize(size, size, { kernel: "lanczos3" })
+    .resize(size, height, { kernel: "lanczos3" })
     .sharpen({ sigma: 0.8, m1: 0.6, m2: 1.2 })
     .png()
     .toBuffer();

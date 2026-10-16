@@ -4,7 +4,8 @@ import { getBook } from "@/lib/book";
 import { draftPreviewScenes, generateScene, isDemoId, loadOwnedDraft } from "@/lib/drafts";
 import { getSupabase } from "@/lib/services";
 
-export const maxDuration = 120;
+// 本文は見開き（横長）で描き、文の置き場所もAIが選ぶので、時間に余裕を持たせる
+export const maxDuration = 300;
 
 // プレビュー用の絵（登場人物のキャラクター・表紙・本文のページ）を1枚作る（作り直しも同じ）。どれも1枚でプレビュー1枚分。
 // 会員は月の無料枠＋追加枠まで。登録前のお試しはキャラクターと表紙を1回ずつ（作り直しと本文のページは会員だけ）。

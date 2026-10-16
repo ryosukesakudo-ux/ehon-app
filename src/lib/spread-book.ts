@@ -43,7 +43,7 @@ export async function buildSpreadBook(input: SpreadBookInput) {
   const [c1, c2] = await ex.characters(e);
   await pair("2〜3ページ：登場人物しょうかい", c1, c2);
   for (let i = 0; i < input.scenes.length; i++) {
-    spreads.push({ label: `${4 + i * 2}〜${5 + i * 2}ページ：場面${i + 1}`, image: await sceneSpread(input.scenes[i], body, size, scale) });
+    spreads.push({ label: `${4 + i * 2}〜${5 + i * 2}ページ：場面${i + 1}`, image: await sceneSpread(input.scenes[i], body, TRIM_MM, PAGE_PX) });
   }
   const next = e.nextEpisode ? await ex.nextEpisode(e.nextEpisode) : await ex.drawing("すきな ばめんを かいてね");
   await pair("28〜29ページ：次回予告・プロフィール", next, await ex.profile(e));
@@ -70,10 +70,34 @@ export async function buildSpreadBook(input: SpreadBookInput) {
 }
 
 /**
- * お話の1場面の見開き。横長の絵を 2:1 に切って左右2ページに広げ、文を spot の位置に、白い四角（不透明度40%）を敷いて黒い字で重ねる。
- * 文の枠は絵スタジオの見開きの試作と同じ（見開きの横幅の約44%＝ほぼ1ページ、高さは最大60%）
+ * お客様の本の印刷用（しまうま用ZIP・入稿PDF）に、見開きの絵の場面を左右のページの画像にする。
+ * spots が null の場面（見開きに切り替える前の正方形の絵）は null のまま返し、今までどおり「左に文・右に絵」で組んでもらう
  */
-async function sceneSpread(scene: SpreadBookScene, body: Awaited<ReturnType<typeof loadPathFonts>>["body"], size: number, scale: number) {
+export async function renderSpreadPages(o: { images: Buffer[]; texts: string[]; spots: (SpreadTextSpot | null)[]; trimMm: number; pagePx: number }) {
+  if (!o.spots.some(Boolean)) return o.spots.map(() => null);
+  const { body } = await loadPathFonts();
+  const out: ([Buffer, Buffer] | null)[] = [];
+  for (let i = 0; i < o.images.length; i++) {
+    const spot = o.spots[i];
+    out.push(spot ? await splitSpread(await sceneSpread({ image: o.images[i], text: o.texts[i], spot }, body, o.trimMm, o.pagePx), o.pagePx) : null);
+  }
+  return out;
+}
+
+/** 見開き1枚（左右2ページ分の画像）を、左のページと右のページの画像に分ける（しまうまは1ページずつ入れるため） */
+export async function splitSpread(spread: Buffer, pagePx: number): Promise<[Buffer, Buffer]> {
+  return Promise.all([0, pagePx].map((left) => jpegOf(sharp(spread).extract({ left, top: 0, width: pagePx, height: pagePx })))) as Promise<[Buffer, Buffer]>;
+}
+
+/**
+ * お話の1場面の見開き。横長の絵を 2:1 に切って左右2ページに広げ、文を spot の位置に、白い四角（不透明度40%）を敷いて黒い字で重ねる。
+ * 文の枠は絵スタジオの見開きの試作と同じ（見開きの横幅の約44%＝ほぼ1ページ、高さは最大60%）。
+ * trimMm は1ページの仕上がりの1辺、pagePx は1ページの画素数（お客様の本のしまうま用ZIP・入稿PDFでも使う）
+ */
+export async function sceneSpread(scene: SpreadBookScene, body: Awaited<ReturnType<typeof loadPathFonts>>["body"], trimMm: number, pagePx: number) {
+  const PAGE_PX = pagePx;
+  const size = mm(trimMm);
+  const scale = trimMm / 210;
   const W = PAGE_PX * 2;
   const H = PAGE_PX;
   const art = await sharp(scene.image).flatten({ background: "#ffffff" }).resize(W, H, { fit: "cover" }).toBuffer();

@@ -25,6 +25,7 @@ import { faceToField } from "@/lib/face";
 import { shrinkPhoto } from "@/lib/shrink-photo";
 import { parseCustomKey } from "@/lib/custom-story";
 import { BookCover } from "@/components/book-cover";
+import { OpenBook } from "@/components/open-book";
 import { RubyText } from "@/components/ruby-text";
 import { Chevron } from "@/components/icons";
 import { DrawingWait } from "../drawing-wait";
@@ -59,6 +60,8 @@ function Preview() {
   const { state, setPreview, update, ready } = useFlow();
   const [pos, setPos] = useState(0);
   const [loading, setLoading] = useState<Record<number, boolean>>({});
+  // 本文の絵は見開き（横長）で描く。見開きに切り替える前に作った正方形の絵は、読み込んだときに分かるので今までどおり正方形で出す
+  const [squareArt, setSquareArt] = useState<Record<string, boolean>>({});
   const [error, setError] = useState<string | null>(null);
   const [needLogin, setNeedLogin] = useState(false);
   // 描けなかった絵とその理由（使い切り・会員登録が必要・その他の失敗）
@@ -436,7 +439,17 @@ function Preview() {
     ) : url && !loading[scene!] ? (
       // 描き上がった絵は、ぱっと出てきらりと光る（key で絵が変わるたびに動かす）
       // eslint-disable-next-line @next/next/no-img-element -- 署名付きURLの一時画像
-      <img key={url} className="reveal-pop" src={url} alt={isCover ? "表紙の絵" : isChar ? `${nameOf(scene!)}のキャラクター` : `${scene! + 1}ページの絵`} style={{ width: "100%", height: "100%", objectFit: isChar ? "contain" : "cover" }} />
+      <img
+        key={url}
+        className="reveal-pop"
+        src={url}
+        alt={isCover ? "表紙の絵" : isChar ? `${nameOf(scene!)}のキャラクター` : `${scene! + 1}ページの絵`}
+        style={{ width: "100%", height: "100%", objectFit: isChar ? "contain" : "cover" }}
+        onLoad={(e) => {
+          const img = e.currentTarget;
+          if (img.naturalWidth <= img.naturalHeight * 1.2) setSquareArt((v) => (v[url] ? v : { ...v, [url]: true }));
+        }}
+      />
     ) : scene !== undefined && !loading[scene] && !isChar && !isCover ? (
       // まだ作っていない本文のページ（作る途中で止まったときなど）
       <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 10, padding: 24, textAlign: "center", color: "var(--sub)", fontSize: 13 }}>
@@ -476,6 +489,13 @@ function Preview() {
         <div style={{ display: "flex", flexDirection: "column", borderRadius: 18, overflow: "hidden", background: "#fff", border: "1px solid var(--line)" }}>
           {isCover ? (
             <BookCover lead={title.lead} title={title.main} art={picture} />
+          ) : !isChar && !failure && url && !loading[scene!] && !squareArt[url] ? (
+            // 本文の絵：開いた本の形（真ん中の折れ目と、ページの厚み）で見せる。描いている途中・失敗の表示は今までの枠
+            <div style={{ background: "#E6EEF9", padding: "14px 12px 10px" }}>
+              <OpenBook>
+                <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>{picture}</div>
+              </OpenBook>
+            </div>
           ) : (
             <div style={{ aspectRatio: "1 / 1", background: isChar ? "#fff" : "#E6EEF9", display: "flex", alignItems: "center", justifyContent: "center" }}>{picture}</div>
           )}
