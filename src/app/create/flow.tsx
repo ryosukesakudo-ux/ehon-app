@@ -17,7 +17,7 @@ export type FlowState = {
   childAge: number | null;
   /** 主人公のお誕生日（YYYY-MM-DD・任意）。誕生日の1か月前に続編のご案内メールを送る */
   childBirthday: string;
-  /** 主人公の呼び方（kun / chan / none。catalog.ts の HONORIFICS）。献辞などの特別ページで使う。空は未選択 */
+  /** 主人公の呼び方（kun / chan / none。catalog.ts の HONORIFICS）。登場人物しょうかいなどの特別ページで使う。空は未選択 */
   childHonorific: string;
   /** 本人への似せ方（写真の画面で選ぶ。プレビューの最初の作成から使う） */
   likeness: LikenessId;
@@ -44,8 +44,11 @@ export type FlowState = {
   extraFor: string;
   /** 絵本の最後のページに入れる、おうちの方からのメッセージ（任意） */
   bookMessage: string;
-  /** 思い出の写真（任意・注文の確認画面でアップロード）の保存先。空は無し（そのページはおえかきページになる） */
-  memoryPhotoPath: string;
+  /**
+   * 思い出の写真（任意・注文の確認画面でアップロード、20枚まで）の保存先。アップした順に、お話のあとの6ページに分けて並べる。
+   * 空は無し（そのページはおえかきページになる）
+   */
+  memoryPhotoPaths: string[];
   /** お届け希望日（YYYY-MM-DD）。空は最短 */
   deliveryDate: string;
   /** お届け時間帯（以前の保存データとの互換用。いまは選べない） */
@@ -79,7 +82,7 @@ const initial: FlowState = {
   extraDrafts: {},
   extraFor: "",
   bookMessage: "",
-  memoryPhotoPath: "",
+  memoryPhotoPaths: [],
   deliveryDate: "",
   deliveryTime: "",
   path: "/create/taste",
@@ -142,6 +145,13 @@ export function FlowProvider({ children }: { children: ReactNode }) {
       restored.extraEpisodes = Array.isArray(restored.extraEpisodes) ? restored.extraEpisodes.filter((n) => Number.isInteger(n)) : [];
       restored.extraDrafts = restored.extraDrafts && typeof restored.extraDrafts === "object" ? restored.extraDrafts : {};
       restored.extraFor = typeof restored.extraFor === "string" ? restored.extraFor : "";
+      // 2026-10-16 より前の保存は写真1枚（memoryPhotoPath）
+      const oldPhoto = (saved as { memoryPhotoPath?: unknown }).memoryPhotoPath;
+      restored.memoryPhotoPaths = Array.isArray(restored.memoryPhotoPaths)
+        ? restored.memoryPhotoPaths.filter((p) => typeof p === "string")
+        : typeof oldPhoto === "string" && oldPhoto
+          ? [oldPhoto]
+          : [];
       if (!isLikenessId(restored.likeness)) restored.likeness = initial.likeness;
       restored.plainFace = restored.plainFace === true;
       restored.confirmed = restored.confirmed === true;

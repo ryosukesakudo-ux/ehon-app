@@ -150,7 +150,7 @@ export function SeriesStudio({ list }: { list: StudioView[] }) {
   const [book, setBook] = useState<{ key: string; pages: { label: string; url: string }[]; pdf: string; missingCharacters: number } | null>(null);
   // 自分の写真で試す（2026-10-15 作道さん）：写真と絵は非公開の場所に保存し、期限付きのURLで見る
   const [bookOwn, setBookOwn] = useState(false);
-  // 主人公の名前と呼び方（本の文・登場人物しょうかい・献辞に入る）。空なら見本の名前
+  // 主人公の名前と呼び方（本の文・登場人物しょうかいに入る）。空なら見本の名前
   const [bookName, setBookName] = useState("");
   const [bookHonorific, setBookHonorific] = useState<HonorificId>(seriesId === "number" ? "chan" : "kun");
   const shownName = bookName.trim() || childName;
@@ -412,7 +412,7 @@ export function SeriesStudio({ list }: { list: StudioView[] }) {
         <section className="card" style={{ gap: 12 }}>
           <h2 className="display" style={{ margin: 0, fontSize: 18, color: "var(--navy)" }}>見開き版の本（表紙から最後のページまで）</h2>
           <p style={{ margin: 0, fontSize: 13, lineHeight: 1.7 }}>
-            お話の12場面を左右2ページにまたがる絵で描き、表紙・献辞・登場人物しょうかいから最後のメッセージまで、しまうま A5スクエア36ページと同じ並びで本の形にして確かめます。
+            お話の12場面を左右2ページにまたがる絵で描き、表紙・登場人物しょうかいから思い出の写真・最後のメッセージまで、しまうま A5スクエア36ページと同じ並びで本の形にして確かめます。
             ママ・パパは「写真がある人」を選ぶと、台本の出し分けのとおりに場面が変わります（いない人の場面は別の場面に置きかわります）。絵は組み合わせごとに保存され、お客様の本やサンプル集は変わりません。
             見開きの絵は1枚 約{quality === "final" ? 45 : 23}円、登場人物の絵は1人 約15円です。
             {bookOwn

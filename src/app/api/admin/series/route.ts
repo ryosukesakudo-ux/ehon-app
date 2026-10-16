@@ -36,7 +36,7 @@ import { findSpreadTextSpot, isSpotDark } from "@/lib/spread-text";
 import { episodeArtComplete, getStudioSeries, studioScenesFor } from "@/lib/series-studio";
 import { setPublished } from "@/lib/published-episodes";
 import { BOOK_BUCKET, SAMPLE_BUCKET, getSupabase } from "@/lib/services";
-import { SHOWN_SERIES_LIST, bookTitle, getSeriesInfo, openEpisodes, seriesKey, type Combo, type LevelId } from "@/lib/story-key";
+import { SHOWN_SERIES_LIST, bookTitle, seriesKey, type Combo, type LevelId } from "@/lib/story-key";
 
 const COMBOS: Combo[] = ["both", "mom", "dad", "none"];
 const PEOPLE = ["child", "mom", "dad"] as const;
@@ -377,9 +377,7 @@ async function renderBook(db: Db, id: Parameters<typeof seriesImagePath>[0], epi
   const studio = getStudioSeries(id);
   const { data: sidekickData } = await db.storage.from(SAMPLE_BUCKET).download(seriesSidekickPath(id));
   if (studio && sidekickData) characters.push({ name: sidekickShortName(studio.sidekickLabel), image: Buffer.from(await sidekickData.arrayBuffer()) });
-  const info = getSeriesInfo(id)!;
-  const next = openEpisodes(info.episodes).find((e) => e.no === episode + 1);
-
+  const familyPhoto = opts.own ? null : await download(seriesFamilyPhotoPath(id));
   const { pdf, view } = await buildSpreadBook({
     title: bookTitle(seriesKey(id, episode, level), childName),
     volume: 1,
@@ -387,16 +385,11 @@ async function renderBook(db: Db, id: Parameters<typeof seriesImagePath>[0], epi
     scenes,
     extras: {
       called,
-      childName,
-      childAge: id === "number" ? 3 : 5,
-      birthday: null,
-      madeAt: new Date(),
       message: `${called}、うまれてきてくれて ありがとう。いつも えがおを ありがとう。これからも たくさん いっしょに あそぼうね。`,
-      // 自分の写真のときは思い出の写真を入れない（無ければおえかきページになる）
-      memoryPhoto: opts.own ? null : await download(seriesFamilyPhotoPath(id)),
+      // 見本の家族写真を思い出の写真に入れる（自分の写真のときは入れず、写真のページはおえかきページになる）
+      memoryPhotos: familyPhoto ? [familyPhoto] : [],
       serial: 1,
       characters,
-      nextEpisode: next ? { lead: `${info.name} 第${next.no}話`, title: next.title } : null,
     },
   });
 

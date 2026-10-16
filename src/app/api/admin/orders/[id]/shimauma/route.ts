@@ -4,20 +4,20 @@ import { loadBookExtras } from "@/lib/book-extras";
 import { parseCustomKey } from "@/lib/custom-story";
 import { draftGuestCount, draftPeople, guestCharacterPath, type Draft } from "@/lib/drafts";
 import { getBook } from "@/lib/book";
-import { bookTitle, getSeriesInfo, openEpisodes, parseSeriesKey } from "@/lib/story-key";
+import { bookTitle, parseSeriesKey } from "@/lib/story-key";
 import { loadFinalImages } from "@/lib/print-assets";
 import { SHIMAUMA_PRODUCTS, buildShimaumaZip, type ShimaumaExtras, type ShimaumaProduct } from "@/lib/shimauma";
 import { SERIES_DATA } from "@/lib/series-data";
 import { seriesSidekickPath, sidekickShortName } from "@/lib/series";
 import { BOOK_BUCKET, PHOTO_BUCKET, SAMPLE_BUCKET, getSupabase } from "@/lib/services";
 import { bookVolume } from "@/lib/volume";
-import { renderSpreadPages } from "@/lib/spread-book";
+import { SHIMAUMA_SEAM_OVERLAP, renderSpreadPages } from "@/lib/spread-book";
 
 export const maxDuration = 300;
 
 // しまうまプリントのフォトブック用の画像（表紙＋本文）をZIPにまとめて保存し、ダウンロード用の一時URL（1時間有効）を返す。全場面の本番の絵ができている注文だけ作れる。
 // product: "a5square36"（通常フォトブック 148mm角 36ページ・本文34枚。いま売っている本）、"a5square"（同 24ページ・本文22枚）、
-// "pictures"（PICTURES 182mm角・本文23枚）。省くと a5square36。36ページは特別ページ（献辞・登場人物しょうかいなど）も入る。
+// "pictures"（PICTURES 182mm角・本文23枚）。省くと a5square36。36ページは特別ページ（登場人物しょうかい・思い出の写真など）も入る。
 export async function POST(request: Request, ctx: RouteContext<"/api/admin/orders/[id]/shimauma">) {
   const { id } = await ctx.params;
   const db = getSupabase();
@@ -45,7 +45,7 @@ export async function POST(request: Request, ctx: RouteContext<"/api/admin/order
       texts,
       images: loaded.images,
       // 見開きの絵の場面は、文を重ねて左右のページに分ける
-      spreadPages: await renderSpreadPages({ images: loaded.images, texts, spots: loaded.spots, trimMm, pagePx }),
+      spreadPages: await renderSpreadPages({ images: loaded.images, texts, spots: loaded.spots, trimMm, pagePx, seamOverlap: Math.round(pagePx * SHIMAUMA_SEAM_OVERLAP) }),
       coverImage: loaded.coverImage,
       volume: await bookVolume(db, order),
       serial,
@@ -66,7 +66,6 @@ export async function POST(request: Request, ctx: RouteContext<"/api/admin/order
 
 type OrderRow = { id: string; draft_id: string; paid_at: string | null; created_at: string; child_birthday?: string | null; drafts: Draft };
 
-/** 特別ページの内容を集める（呼び方・メッセージ・思い出の写真・登場人物の絵・通し番号・次のお話） */
 /** 通し番号：お支払いが済んだ順（この注文より前に支払われた注文の数＋1） */
 async function orderSerial(db: SupabaseClient, order: OrderRow) {
   const paidAt = order.paid_at ?? order.created_at;
@@ -74,6 +73,7 @@ async function orderSerial(db: SupabaseClient, order: OrderRow) {
   return Math.max(1, count ?? 1);
 }
 
+/** 特別ページの内容を集める（呼び方・メッセージ・思い出の写真・登場人物の絵・通し番号） */
 async function loadExtras(db: SupabaseClient, order: OrderRow, serial: number): Promise<ShimaumaExtras> {
   const draft = order.drafts;
   const saved = await loadBookExtras(db, order.draft_id, order.id);
@@ -104,22 +104,18 @@ async function loadExtras(db: SupabaseClient, order: OrderRow, serial: number): 
     if (image) characters.push({ name: sidekickShortName(data.sidekickLabel), image });
   }
 
-  const paidAt = order.paid_at ?? order.created_at;
-
-  // 次のお話：シリーズの次の話（公開中の話だけ）。オリジナルのお話や最後の話は無し
-  const series = k ? getSeriesInfo(k.series) : null;
-  const next = k && series ? openEpisodes(series.episodes).find((e) => e.no === k.episode + 1) : null;
+  // 思い出の写真（アップした順）。読めなかった写真は飛ばす
+  const memoryPhotos: Buffer[] = [];
+  for (const path of saved.memoryPhotoPaths) {
+    const image = await download(PHOTO_BUCKET, path);
+    if (image) memoryPhotos.push(image);
+  }
 
   return {
     called,
-    childName: draft.child_name,
-    childAge: draft.child_age,
-    birthday: order.child_birthday ?? null,
-    madeAt: new Date(paidAt),
     message: saved.message,
-    memoryPhoto: await download(PHOTO_BUCKET, saved.memoryPhotoPath),
+    memoryPhotos,
     serial,
     characters,
-    nextEpisode: next && series ? { lead: `${series.name} 第${next.no}話`, title: next.title } : null,
   };
 }
