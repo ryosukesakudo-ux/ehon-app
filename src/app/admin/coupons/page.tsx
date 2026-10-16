@@ -25,7 +25,7 @@ export default async function CouponsPage() {
       <a href="/admin">← 注文管理へ</a>
       <h1 className="display" style={{ margin: 0, color: "var(--navy)" }}>クーポン管理</h1>
       <p style={{ margin: 0, fontSize: 14, lineHeight: 1.8 }}>
-        クーポンは1冊目の値段を変えます（0円なら無料）。2冊目以降は通常の値段です。おひとり様1回まで、人数の上限はありません。
+        クーポンは1冊目の値段を変える（0円なら無料）か、1冊目から値引きします。2冊目以降は通常の値段です。ふつうはおひとり様1回まで（「何回でも」にすると同じ人が何回でも使えます）、人数の上限はありません。
       </p>
       <p style={{ margin: 0, fontSize: 14, lineHeight: 1.8 }}>
         決まったコード：チラシ割引 <b>{FLYER_COUPON.code}</b>（{yen(FLYER_COUPON.discount)}引き・おひとり様1回）使われた回数 {count(FLYER_COUPON.code)}回 ／ リピート割引 <b>{REPEAT_COUPON.code}</b>（{yen(REPEAT_COUPON.discount)}引き）使われた回数 {count(REPEAT_COUPON.code)}回
@@ -36,7 +36,8 @@ export default async function CouponsPage() {
           <tr style={{ textAlign: "left", borderBottom: "1px solid var(--line)" }}>
             <th style={{ padding: 8 }}>コード</th>
             <th style={{ padding: 8 }}>名前</th>
-            <th style={{ padding: 8 }}>1冊目の値段</th>
+            <th style={{ padding: 8 }}>内容</th>
+            <th style={{ padding: 8 }}>回数</th>
             <th style={{ padding: 8 }}>使われた回数</th>
             <th style={{ padding: 8 }}>状態</th>
           </tr>
@@ -46,7 +47,8 @@ export default async function CouponsPage() {
             <tr key={c.code} style={{ borderBottom: "1px solid var(--line)" }}>
               <td style={{ padding: 8, fontFamily: "monospace", fontSize: 15 }}>{c.code}</td>
               <td style={{ padding: 8 }}>{c.label}</td>
-              <td style={{ padding: 8 }}>{c.book_price === 0 ? "無料" : yen(c.book_price)}</td>
+              <td style={{ padding: 8 }}>{c.discount ? `${yen(c.discount)}引き` : c.book_price === 0 ? "1冊目 無料" : `1冊目 ${yen(c.book_price)}`}</td>
+              <td style={{ padding: 8 }}>{c.multi_use ? "何回でも" : "1人1回"}</td>
               <td style={{ padding: 8 }}>{count(c.code)}回</td>
               <td style={{ padding: 8 }}><CouponToggle code={c.code} active={c.active} /></td>
             </tr>
