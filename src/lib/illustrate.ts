@@ -47,9 +47,11 @@ function cameraPrompt(camera?: string) {
 const spreadFraming = (textSide: "left" | "right") => {
   const other = textSide === "left" ? "right" : "left";
   return (
-    "This picture will be printed across a two-page spread of a square picture book: the final shape is twice as wide as it is tall, so about the top sixth and the bottom sixth of this image will be trimmed off. " +
-    "Make a wide, panoramic composition of this scene's setting that fills the whole frame edge to edge. Keep every face, hand and important object inside the middle two-thirds of the image height. " +
-    "The vertical center line of the image is the binding fold of the book: never place a face, a hand or an important object on or near the center line. " +
+    "This picture will be printed across a two-page spread of a square picture book: the final shape is twice as wide as it is tall, and the printer also hides a margin on every edge, so about the top fifth and the bottom fifth of this image will be cut off. " +
+    "Make a wide, panoramic composition of this scene's setting that fills the whole frame edge to edge. Keep every face, hand and important object inside the middle three-fifths of the image height, " +
+    "and leave clear background space above the top of the highest head (including a child riding on someone's shoulders or being held up): never let any head, hair or ear touch or go past the top edge. " +
+    "Show the characters a little smaller in the frame if needed so their whole heads fit with room to spare. " +
+    "The vertical center line of the image is the binding fold of the book, and a strip about one twentieth of the image width on each side of it is hidden in the fold: never place a face, a hand, an animal or an important object on or near the center line. " +
     `Put all the characters, animals and important objects clearly on the ${other} half of the image. ` +
     "Both halves show one single continuous place at the same moment: the same location, the same light and the same time of day, flowing seamlessly across the fold. " +
     "The other half is never a different place: if the scene is inside a tunnel, a cave, a room or a forest, the whole width is inside that same tunnel, cave, room or forest; do not open it up into a meadow, sky or landscape that the scene does not have. " +

@@ -12,6 +12,7 @@ import {
   getSize,
   getTaste,
   jstDate,
+  MEMORY_PHOTO_MAX,
   orderTotal,
   yen,
 } from "@/lib/catalog";
@@ -41,29 +42,34 @@ export default function CheckoutPage() {
   const extras = chosenExtras(state);
   const books = state.copies * (1 + extras.length);
   const storyKey = parseSeriesKey(state.story);
-  const [extrasOpen, setExtrasOpen] = useState(!!(state.bookMessage || state.memoryPhotoPath));
+  const [extrasOpen, setExtrasOpen] = useState(!!(state.bookMessage || state.memoryPhotoPaths.length));
   const [photoBusy, setPhotoBusy] = useState(false);
   const [photoError, setPhotoError] = useState<string | null>(null);
-  const [photoView, setPhotoView] = useState<string | null>(null);
+  // 選んだ写真のその場の表示（保存先 → 画面の中だけのURL）。読み直したあとは枚数だけ出す
+  const [photoViews, setPhotoViews] = useState<Record<string, string>>({});
+  const photoCount = state.memoryPhotoPaths.length;
 
-  // 思い出の写真は選んだらすぐ送って、保存先を覚えておく（印刷するので長い辺 2400px に縮める）
-  async function pickMemoryPhoto(file: File | undefined) {
-    if (!file || !state.draftId) return;
+  // 思い出の写真は選んだらすぐ1枚ずつ送って、保存先を選んだ順に覚えておく（印刷するので長い辺 2400px に縮める）
+  async function pickMemoryPhotos(files: File[]) {
+    if (!files.length || !state.draftId) return;
+    const room = MEMORY_PHOTO_MAX - photoCount;
     setPhotoBusy(true);
-    setPhotoError(null);
+    setPhotoError(files.length > room ? `写真は${MEMORY_PHOTO_MAX}枚までです。はじめの${Math.max(room, 0)}枚を入れます` : null);
     try {
-      const small = await shrinkPhoto(await toViewablePhoto(file), 2400);
-      const form = new FormData();
-      form.set("photo", small);
-      const res = await fetch(`/api/drafts/${encodeURIComponent(state.draftId)}/memory-photo`, { method: "POST", body: form });
-      const json = await res.json();
-      if (json.needLogin) {
-        router.push(`/login?next=${encodeURIComponent("/create/checkout")}`);
-        return;
+      for (const file of files.slice(0, Math.max(room, 0))) {
+        const small = await shrinkPhoto(await toViewablePhoto(file), 2400);
+        const form = new FormData();
+        form.set("photo", small);
+        const res = await fetch(`/api/drafts/${encodeURIComponent(state.draftId)}/memory-photo`, { method: "POST", body: form });
+        const json = await res.json();
+        if (json.needLogin) {
+          router.push(`/login?next=${encodeURIComponent("/create/checkout")}`);
+          return;
+        }
+        if (!res.ok || !json.path) throw new Error(json.error ?? "写真を送れませんでした");
+        update((prev) => ({ memoryPhotoPaths: [...prev.memoryPhotoPaths, json.path].slice(0, MEMORY_PHOTO_MAX) }));
+        setPhotoViews((v) => ({ ...v, [json.path]: URL.createObjectURL(small) }));
       }
-      if (!res.ok || !json.path) throw new Error(json.error ?? "写真を送れませんでした");
-      update({ memoryPhotoPath: json.path });
-      setPhotoView(URL.createObjectURL(small));
     } catch (e) {
       setPhotoError(e instanceof Error ? e.message : "写真を送れませんでした");
     } finally {
@@ -103,7 +109,7 @@ export default function CheckoutPage() {
           childBirthday: state.childBirthday,
           childHonorific: state.childHonorific,
           bookMessage: state.bookMessage,
-          memoryPhotoPath: state.memoryPhotoPath,
+          memoryPhotoPaths: state.memoryPhotoPaths,
           deliveryDate: state.deliveryDate,
         }),
       });
@@ -195,7 +201,7 @@ export default function CheckoutPage() {
             <span aria-hidden="true" style={{ fontSize: 13, fontWeight: 700, color: "var(--coral)", flexShrink: 0 }}>{extrasOpen ? "閉じる ▲" : "開く ▼"}</span>
           </button>
           <p style={{ margin: 0, fontSize: 12, lineHeight: 1.6, color: "var(--sub)" }}>
-            おうちの方からのメッセージと、思い出の写真を1枚、絵本の最後の方のページに入れられます。入れないときは、そのページはおえかきページになります。
+            おうちの方からのメッセージと、思い出の写真を{MEMORY_PHOTO_MAX}枚まで、絵本の最後の方のページに入れられます。写真はお話のあとの6ページに分けて並べます。足りないページはおえかきページになります。
           </p>
           {extrasOpen && (
             <>
@@ -216,36 +222,45 @@ export default function CheckoutPage() {
                 </p>
               </div>
               <div className="field">
-                <div style={{ fontSize: 14, fontWeight: 800, color: "var(--navy)" }}>思い出の写真（1枚）</div>
-                {state.memoryPhotoPath ? (
-                  <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                    {photoView && (
-                      // eslint-disable-next-line @next/next/no-img-element -- 選んだ写真のその場の表示
-                      <img src={photoView} alt="選んだ思い出の写真" style={{ width: 72, height: 72, objectFit: "cover", borderRadius: 10 }} />
-                    )}
-                    <span style={{ fontSize: 14 }}>写真を入れます</span>
-                    <button
-                      type="button"
-                      className="ghost"
-                      style={{ height: 36, padding: "0 14px", fontSize: 13, marginLeft: "auto" }}
-                      onClick={() => {
-                        update({ memoryPhotoPath: "" });
-                        setPhotoView(null);
-                      }}
-                    >
-                      取り消す
-                    </button>
-                  </div>
-                ) : (
+                <div style={{ fontSize: 14, fontWeight: 800, color: "var(--navy)" }}>
+                  思い出の写真（{MEMORY_PHOTO_MAX}枚まで・いま{photoCount}枚）
+                </div>
+                {photoCount > 0 && (
+                  <ol style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(64px, 1fr))", gap: 8, margin: 0, padding: 0, listStyle: "none" }}>
+                    {state.memoryPhotoPaths.map((p, i) => (
+                      <li key={p} style={{ position: "relative", aspectRatio: "1", borderRadius: 10, overflow: "hidden", background: "var(--cream)", border: "1px solid #eee" }}>
+                        {photoViews[p] ? (
+                          // eslint-disable-next-line @next/next/no-img-element -- 選んだ写真のその場の表示
+                          <img src={photoViews[p]} alt={`思い出の写真 ${i + 1}枚目`} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                        ) : (
+                          <span style={{ display: "grid", placeItems: "center", height: "100%", fontSize: 12, color: "var(--sub)" }}>写真</span>
+                        )}
+                        <span style={{ position: "absolute", left: 4, top: 4, minWidth: 20, height: 20, borderRadius: 10, background: "rgba(30,47,87,.8)", color: "#fff", fontSize: 11, display: "grid", placeItems: "center" }}>
+                          {i + 1}
+                        </span>
+                        <button
+                          type="button"
+                          aria-label={`${i + 1}枚目を取り消す`}
+                          onClick={() => update((prev) => ({ memoryPhotoPaths: prev.memoryPhotoPaths.filter((x) => x !== p) }))}
+                          style={{ position: "absolute", right: 4, top: 4, width: 22, height: 22, borderRadius: 11, border: 0, background: "rgba(255,255,255,.9)", color: "var(--navy)", fontSize: 13, lineHeight: 1, cursor: "pointer" }}
+                        >
+                          ×
+                        </button>
+                      </li>
+                    ))}
+                  </ol>
+                )}
+                {photoCount < MEMORY_PHOTO_MAX && (
                   <label className="ghost" style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", height: 44, padding: "0 18px", alignSelf: "flex-start", cursor: "pointer" }}>
-                    {photoBusy ? "写真を送っています…" : "写真を選ぶ"}
+                    {photoBusy ? "写真を送っています…" : photoCount ? "写真を足す" : "写真を選ぶ（まとめて選べます）"}
                     <input
                       type="file"
                       accept="image/*,.heic,.heif"
+                      multiple
                       hidden
                       disabled={photoBusy}
                       onChange={(e) => {
-                        pickMemoryPhoto(e.target.files?.[0]);
+                        pickMemoryPhotos(Array.from(e.target.files ?? []));
                         e.target.value = "";
                       }}
                     />
@@ -253,7 +268,7 @@ export default function CheckoutPage() {
                 )}
                 {photoError && <p className="error" role="alert">{photoError}</p>}
                 <p style={{ margin: 0, fontSize: 12, lineHeight: 1.6, color: "var(--sub)" }}>
-                  写真は1ページにそのまま印刷します（絵にはしません）。印刷のためだけに使い、お支払いから100日で削除します。
+                  選んだ順（番号の順）に並べます。写真はそのまま印刷します（絵にはしません）。印刷のためだけに使い、お支払いから100日で削除します。
                 </p>
               </div>
             </>

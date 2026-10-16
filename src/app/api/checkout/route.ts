@@ -150,13 +150,13 @@ export async function POST(request: Request) {
     }
     extraOrderIds.push(id);
     try {
-      let memoryPhotoPath: string | null = null;
-      if (bookExtras.memoryPhotoPath) {
-        const to = `${memoryPhotoDir(d.id)}/${bookExtras.memoryPhotoPath.split("/").pop()}`;
-        const { error: copyError } = await db.storage.from(PHOTO_BUCKET).copy(bookExtras.memoryPhotoPath, to);
-        if (!copyError || /exists/i.test(copyError.message)) memoryPhotoPath = to;
+      const memoryPhotoPaths: string[] = [];
+      for (const from of bookExtras.memoryPhotoPaths) {
+        const to = `${memoryPhotoDir(d.id)}/${from.split("/").pop()}`;
+        const { error: copyError } = await db.storage.from(PHOTO_BUCKET).copy(from, to);
+        if (!copyError || /exists/i.test(copyError.message)) memoryPhotoPaths.push(to);
       }
-      await saveBookExtras(db, d.id, id, { ...bookExtras, memoryPhotoPath });
+      await saveBookExtras(db, d.id, id, { ...bookExtras, memoryPhotoPaths });
     } catch (e) {
       console.error("book extras save failed", e);
       return Response.json({ error: "注文の作成に失敗しました。もう一度お試しください" }, { status: 500 });

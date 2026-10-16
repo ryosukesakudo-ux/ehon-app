@@ -14,14 +14,16 @@ import { buildZip } from "@/lib/zip";
 // - 画素数はしまうまの推奨に合わせる（https://support.n-pri.jp/hc/ja/articles/360015588492）。
 //   塗り足しは無し（しまうまの編集画面が断裁の分を見込む）。
 // - 文字の大きさ・折り返しは入稿用PDFと同じ（print-pdf.ts の関数をそのまま使う）。
-// - 36ページ（a5square36）は、お話のほかに特別ページを入れる（2026-10-14 作道さん）。並び順は buildShimaumaZip のとおり。
+// - 36ページ（a5square36）は、お話のほかに特別ページを入れる（2026-10-14・10-16 作道さん）。並び順は buildShimaumaZip のとおり。
+//   しまうまは1ページ目（右）に中表紙が自動で入って編集できないので、写真のページは2ページ目（左）から。
+//   見開きの左右がずれないよう、2ページ組のもの（登場人物しょうかい・お話の場面）は偶数ページから始める。
 
 export const SHIMAUMA_PRODUCTS = {
   // PICTURES B5スクエア 24ページ：中表紙を除く23ページ（https://www.n-pri.jp/photobook/pictures/）
   pictures: { label: "PICTURES 182mm角", trimMm: 182, pagePx: 2267, coverPx: 2385, pages: 23 },
   // 通常フォトブック A5スクエア 24ページ：表紙1枚＋22ページ（https://support.n-pri.jp/hc/ja/articles/42943785422361）
   a5square: { label: "フォトブック 148mm角", trimMm: 148, pagePx: 1866, coverPx: 1984, pages: 22 },
-  // 通常フォトブック A5スクエア 36ページ：表紙1枚＋34ページ。いま売っている本（catalog.ts の SIZES）。お話24ページ＋特別ページ10ページ
+  // 通常フォトブック A5スクエア 36ページ：表紙1枚＋34ページ（2〜35ページ）。いま売っている本（catalog.ts の SIZES）。お話24ページ＋特別ページ10ページ
   a5square36: { label: "フォトブック 148mm角・36ページ", trimMm: 148, pagePx: 1866, coverPx: 1984, pages: 34, extras: true },
 } as const satisfies Record<string, { label: string; trimMm: number; pagePx: number; coverPx: number; pages: number; extras?: boolean }>;
 export type ShimaumaProduct = keyof typeof SHIMAUMA_PRODUCTS;
@@ -47,30 +49,24 @@ export type ShimaumaInput = {
   extras?: ShimaumaExtras;
 };
 
-/** 特別ページ（献辞・登場人物しょうかい・次回予告・プロフィール・思い出の写真・おえかき・よんだ日・メッセージ）に入れる内容 */
+/** 特別ページ（登場人物しょうかい・思い出の写真・よんだ日・メッセージ）に入れる内容 */
 export type ShimaumaExtras = {
   /** 呼び方をつけた名前（例：はるとくん） */
   called: string;
-  childName: string;
-  childAge: number | null;
-  /** お誕生日（YYYY-MM-DD）。入力が無ければ null */
-  birthday: string | null;
-  /** この本を作った日（お支払いの日） */
-  madeAt: Date;
   /** おうちの方からのメッセージ。空なら通し番号だけのページ */
   message: string;
-  /** 思い出の写真。無ければおえかきページ */
-  memoryPhoto: Buffer | null;
+  /** 思い出の写真（アップした順、20枚まで）。6ページに分けて並べ、足りないページはおえかきページ */
+  memoryPhotos: Buffer[];
   /** 通し番号（No.0001） */
   serial: number;
   /** 登場人物（キャラクターの絵と名前）。主人公が先頭 */
   characters: { name: string; image: Buffer }[];
-  /** 次のお話（シリーズの次の話）。無ければおえかきページ */
-  nextEpisode: { lead: string; title: string } | null;
 };
 
-/** 特別ページの数（お話の前に3ページ、後ろに7ページ） */
-const EXTRA_PAGES = 10;
+/** 思い出の写真を並べるページの数 */
+export const PHOTO_PAGES = 6;
+/** 特別ページの数（お話の前に登場人物しょうかい2ページ、後ろに写真6ページ・よんだ日・メッセージ） */
+const EXTRA_PAGES = 2 + PHOTO_PAGES + 2;
 
 export async function buildShimaumaZip(input: ShimaumaInput, product: ShimaumaProduct) {
   const spec: { trimMm: number; pagePx: number; coverPx: number; pages: number; extras?: boolean } = SHIMAUMA_PRODUCTS[product];
@@ -102,9 +98,8 @@ export async function buildShimaumaZip(input: ShimaumaInput, product: ShimaumaPr
   const name = (label: string) => `${prefix}${String(no++).padStart(2, "0")}_${label}.jpg`;
   const ex = extras ? new ExtraPages({ size, trimMm, px: PAGE_PX, body, bold, scale }) : null;
 
-  // 特別ページ（お話の前）：献辞、登場人物しょうかい（見開き）
+  // 特別ページ（お話の前）：登場人物しょうかい（2〜3ページの見開き）
   if (extras && ex) {
-    files.push({ name: name("献辞"), bytes: await ex.dedication(extras) });
     const [left, right] = await ex.characters(extras);
     files.push({ name: name("登場人物_1"), bytes: left });
     files.push({ name: name("登場人物_2"), bytes: right });
@@ -142,22 +137,9 @@ export async function buildShimaumaZip(input: ShimaumaInput, product: ShimaumaPr
     });
   }
 
-  // 特別ページ（お話の後ろ）：次回予告、プロフィール、思い出の写真、おえかき2ページ、よんだ日、メッセージと通し番号
-  // 次のお話・写真が無いときは、そのページもおえかきページにする
+  // 特別ページ（お話の後ろ）：思い出の写真6ページ（28〜33ページ）、よんだ日、メッセージと通し番号
   if (extras && ex) {
-    files.push(
-      extras.nextEpisode
-        ? { name: name("次回予告"), bytes: await ex.nextEpisode(extras.nextEpisode) }
-        : { name: name("おえかき"), bytes: await ex.drawing("すきな ばめんを かいてね") },
-    );
-    files.push({ name: name("プロフィール"), bytes: await ex.profile(extras) });
-    files.push(
-      extras.memoryPhoto
-        ? { name: name("思い出の写真"), bytes: await ex.memoryPhoto(extras.memoryPhoto) }
-        : { name: name("おえかき"), bytes: await ex.drawing(`${extras.called}の かおを かいてね`) },
-    );
-    files.push({ name: name("おえかき"), bytes: await ex.drawing("この おはなしの つづきを かいてね") });
-    files.push({ name: name("おえかき"), bytes: await ex.drawing("つぎは どこへ いきたい？") });
+    for (const [i, page] of (await ex.photoPages(extras)).entries()) files.push({ name: name(`思い出の写真_${i + 1}`), bytes: page });
     files.push({ name: name("よんだ日"), bytes: await ex.readDates() });
     files.push({ name: name("メッセージ"), bytes: await ex.message(extras) });
   }
@@ -191,12 +173,6 @@ export async function renderCover(o: { title: { lead: string; main: string }; vo
     ]),
   );
 }
-
-const jaDate = (d: Date) => {
-  // 日本時間の日付
-  const j = new Date(d.getTime() + 9 * 60 * 60 * 1000);
-  return `${j.getUTCFullYear()}年${j.getUTCMonth() + 1}月${j.getUTCDate()}日`;
-};
 
 /** 特別ページを1枚ずつ画像にする（どれも塗り足し無しの正方形、クリーム色の地） */
 export class ExtraPages {
@@ -233,43 +209,40 @@ export class ExtraPages {
     return sharp(img).flatten({ background: hex(CREAM) }).resize(px, px, { fit, background: hex(CREAM) }).toBuffer();
   }
 
-  /** 1 献辞 */
-  async dedication(e: ShimaumaExtras) {
-    const { size, body, scale } = this.o;
-    const page = this.page();
-    this.title(page, `${e.called}へ`, size * 0.64, 26);
-    drawParagraph(page, `この えほんは、${e.called}の ために つくられた、せかいに 1さつだけの えほんです。`, body, 17 * scale, size, size * 0.7, size * 0.3, size * 0.45);
-    this.line(page, jaDate(e.madeAt), size * 0.22, 12);
-    return this.render(page);
-  }
-
-  /** 2〜3 登場人物しょうかい（見開き）。人数で並べ方を変える。1人だけのときは右のページを「じぶんの かお」のおえかきにする */
+  /**
+   * 2〜3 登場人物しょうかい（見開き）。左のページに主人公を大きく1人、右のページにほかの人を小さく並べる（2026-10-16 作道さん）。
+   * 主人公だけのときは、右のページを「かぞくの かお」のおえかきにする
+   */
   async characters(e: ShimaumaExtras): Promise<[Buffer, Buffer]> {
-    const list = e.characters;
-    if (list.length <= 1) return [await this.characterPage(list, true), await this.drawing(`${e.called}の かおを かいてね`)];
-    const half = Math.ceil(list.length / 2);
-    return [await this.characterPage(list.slice(0, half), true), await this.characterPage(list.slice(half), false)];
+    const [hero, ...others] = e.characters;
+    const left = await this.characterPage(hero ? [hero] : [], { title: true, cols: 1, maxArt: 0.62 });
+    if (!others.length) return [left, await this.drawing("かぞくの かおを かいてね")];
+    // ほかの人は1ページに 2列（5人からは3列）。人数が少なくても大きくしすぎない
+    const cols = others.length <= 4 ? 2 : 3;
+    return [left, await this.characterPage(others, { title: false, cols, maxArt: 0.3 })];
   }
 
-  private async characterPage(list: ShimaumaExtras["characters"], first: boolean) {
-    const { size, px } = this.o;
+  private async characterPage(list: ShimaumaExtras["characters"], o: { title: boolean; cols: number; maxArt: number }) {
+    const { size, px, scale } = this.o;
     const page = this.page();
     const top = size - mm(SAFE_MM);
-    if (first) this.title(page, "とうじょう じんぶつ", top - 20 * this.o.scale);
-    // 1人：大きく1人 / 2人：左右に2人 / 3〜4人：2×2
-    const cols = list.length <= 1 ? 1 : 2;
-    const rows = list.length <= 2 ? 1 : 2;
-    const areaTop = top - (first ? 40 : 10) * this.o.scale;
+    if (o.title) this.title(page, "とうじょう じんぶつ", top - 20 * scale);
+    const cols = Math.min(o.cols, Math.max(list.length, 1));
+    const rows = Math.max(1, Math.ceil(list.length / cols));
+    // 見出しの分（左のページ）は上を空ける。右のページも同じ高さから並べて、左右で絵の上がそろうようにする
+    const areaTop = top - 40 * scale;
     const areaBottom = mm(SAFE_MM);
     const cellW = this.width / cols;
     const cellH = (areaTop - areaBottom) / rows;
-    const label = 16 * this.o.scale;
-    const art = Math.min(cellW * 0.9, cellH - label * 2.4);
+    const label = (o.title ? 18 : 13) * scale;
+    const art = Math.min(cellW * 0.9, cellH - label * 2.4, size * o.maxArt);
     const images: { input: Buffer; left: number; top: number }[] = [];
     for (let i = 0; i < list.length; i++) {
       const c = i % cols;
       const r = Math.floor(i / cols);
-      const cx = mm(SAFE_MM) + cellW * (c + 0.5);
+      // 最後の段は人数が少なければ真ん中に寄せる
+      const inRow = r === rows - 1 ? list.length - cols * r : cols;
+      const cx = mm(SAFE_MM) + (this.width - cellW * inRow) / 2 + cellW * (c + 0.5);
       const cellTop = areaTop - cellH * r;
       const artTop = cellTop - (cellH - art - label * 2.4) / 2;
       const artPx = this.toPx(art);
@@ -282,57 +255,56 @@ export class ExtraPages {
     return this.render(page, images);
   }
 
-  /** 次回予告 */
-  async nextEpisode(next: { lead: string; title: string }) {
-    const { size } = this.o;
-    const page = this.page();
-    this.line(page, "つぎの おはなし", size * 0.7, 16, CORAL);
-    this.line(page, next.lead, size * 0.56, 13);
-    this.title(page, `「${next.title}」`, size * 0.45, 22);
-    this.line(page, "おたのしみに！", size * 0.28, 15, NAVY);
-    this.brand(page);
-    return this.render(page);
-  }
-
-  /** プロフィール */
-  async profile(e: ShimaumaExtras) {
-    const { size, body, scale } = this.o;
-    const page = this.page();
-    this.title(page, `${e.called}の プロフィール`, size - mm(SAFE_MM) - 24 * scale);
-    const rows = [
-      ["なまえ", e.childName],
-      ["この ほんを つくった ひ", jaDate(e.madeAt)],
-      ...(e.childAge ? [["そのときの とし", `${e.childAge}さい`]] : []),
-      ...(e.birthday ? [["おたんじょうび", jaDate(new Date(`${e.birthday}T00:00:00+09:00`))]] : []),
-    ];
-    const x = mm(SAFE_MM + 4);
-    const fs = 13 * scale;
-    let y = size * 0.68;
-    for (const [k, v] of rows) {
-      page.drawText(k, { x, y, size: fs * 0.85, font: body, color: CORAL });
-      page.drawText(v, { x, y: y - fs * 1.6, size: fitSize(v, body, fs * 1.2, this.width - mm(8)), font: body, color: INK });
-      page.drawRectangle({ x, y: y - fs * 2.2, width: this.width - mm(8), height: 0.6, color: CORAL, opacity: 0.5 });
-      y -= fs * 4.2;
+  /**
+   * 28〜33 思い出の写真（6ページ）。アップした順に、1ページの枚数がほぼ同じになるよう前のページから多めに分ける（20枚なら 4・4・3・3・3・3）。
+   * 6枚より少ないときは1ページに1枚ずつ入れ、残りのページはおえかきページにする（2026-10-16 作道さん）
+   */
+  async photoPages(e: ShimaumaExtras) {
+    const photos = e.memoryPhotos;
+    const counts = Array.from({ length: PHOTO_PAGES }, (_, i) => Math.floor(photos.length / PHOTO_PAGES) + (i < photos.length % PHOTO_PAGES ? 1 : 0));
+    const drawings = ["すきな ばめんを かいてね", "この おはなしの つづきを かいてね", "つぎは どこへ いきたい？", `${e.called}の かおを かいてね`, "すきな ものを かいてね", "かぞくの えを かいてね"];
+    const pages: Buffer[] = [];
+    let next = 0;
+    for (const n of counts) {
+      if (n) pages.push(await this.photoPage(photos.slice(next, (next += n))));
+      else pages.push(await this.drawing(drawings[pages.length % drawings.length]));
     }
-    this.brand(page);
-    return this.render(page);
+    return pages;
   }
 
-  /** 思い出の写真（白い縁をつけて真ん中に） */
-  async memoryPhoto(photo: Buffer) {
+  /** 写真1〜4枚を1ページに。1枚：大きく1枚 / 2枚：上下 / 3枚：上に横長1枚・下に2枚 / 4枚：2×2。白い縁をつける */
+  private async photoPage(photos: Buffer[]) {
     const { size, px } = this.o;
+    const gap = mm(4);
+    const left = mm(SAFE_MM);
+    const bottom = mm(SAFE_MM);
+    const w = this.width;
+    const h = size - mm(SAFE_MM) * 2;
+    // 写真の枠（左下が原点のポイント）
+    const half = (h - gap) / 2;
+    const halfW = (w - gap) / 2;
+    const cells: { x: number; y: number; w: number; h: number }[] =
+      photos.length === 1
+        ? [{ x: left, y: bottom, w, h }]
+        : photos.length === 2
+          ? [{ x: left, y: bottom + half + gap, w, h: half }, { x: left, y: bottom, w, h: half }]
+          : photos.length === 3
+            ? [{ x: left, y: bottom + half + gap, w, h: half }, { x: left, y: bottom, w: halfW, h: half }, { x: left + halfW + gap, y: bottom, w: halfW, h: half }]
+            : [0, 1, 2, 3].map((i) => ({ x: left + (i % 2) * (halfW + gap), y: bottom + (i < 2 ? half + gap : 0), w: halfW, h: half }));
+    const border = mm(1.6);
     const page = this.page();
-    this.line(page, "おもいでの しゃしん", size - mm(SAFE_MM) - 14 * this.o.scale, 15, NAVY);
-    const frame = size * 0.74;
-    const border = mm(3);
-    const left = (size - frame) / 2;
-    const bottom = mm(SAFE_MM) + size * 0.02;
-    page.drawFrame({ x: left, y: bottom, width: frame, height: frame, color: CREAM, lineWidth: 0, radius: 0 });
-    const inner = frame - border * 2;
-    const img = await sharp(photo).rotate().resize(this.toPx(inner), this.toPx(inner), { fit: "cover" }).flatten({ background: "#ffffff" }).toBuffer();
-    // 白い縁（枠）の上に写真を重ねる
+    for (const c of cells) page.drawFrame({ x: c.x, y: c.y, width: c.w, height: c.h, color: CREAM, lineWidth: 0, radius: 0 });
     const base = await this.render(page);
-    return jpegOf(sharp(base).composite([{ input: img, left: this.toPx(left + border), top: px - this.toPx(bottom + border + inner) }]));
+    const layers = await Promise.all(
+      cells.map(async (c, i) => {
+        const wPx = this.toPx(c.w - border * 2);
+        const hPx = this.toPx(c.h - border * 2);
+        // 顔などの目立つところが残るように切る（sharp の attention）
+        const input = await sharp(photos[i]).rotate().resize(wPx, hPx, { fit: "cover", position: sharp.strategy.attention }).flatten({ background: "#ffffff" }).toBuffer();
+        return { input, left: this.toPx(c.x + border), top: px - this.toPx(c.y + c.h - border) };
+      }),
+    );
+    return jpegOf(sharp(base).composite(layers));
   }
 
   /** おえかきページ（上に一言、下に大きな枠） */
