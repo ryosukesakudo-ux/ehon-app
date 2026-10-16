@@ -412,6 +412,9 @@ export const REPEAT_COUPON = { code: "MATANE", discount: 500, label: "リピー�
 /** チラシ割引：ポスティング・保育園などに置くチラシに載せるコード。1冊目が500円引き（おひとり様1回まで） */
 export const FLYER_COUPON = { code: "EHON500", discount: 500, label: "チラシ割引" };
 
+/** レビューのお礼クーポン：レビュー1件ごとに、その人だけが使えるコード（REVIEW-xxxxxx）を発行。1冊目が1,000円引き（1回だけ） */
+export const REVIEW_COUPON = { prefix: "REVIEW-", discount: 1000, label: "レビューのお礼" };
+
 /** 誕生日の案内メール（続編のお誘い）を送るのは、誕生日の何日前か */
 export const BIRTHDAY_NOTICE_DAYS = 30;
 

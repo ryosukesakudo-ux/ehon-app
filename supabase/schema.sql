@@ -166,6 +166,25 @@ create table if not exists mail_optouts (
   created_at timestamptz not null default now()
 );
 
+-- レビュー（2026-10-16）。注文して届いた会員が1注文につき1件書ける。投稿するとすぐ公開（管理画面で非表示にできる）。
+-- 写真は任意で、一般公開に同意した人だけ。公開ストレージ samples の reviews/ に置く。
+-- 投稿のお礼に、その人だけが使える1,000円引きクーポン（coupon_code、1回だけ）を発行する。
+create table if not exists reviews (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid not null references auth.users(id) on delete cascade,
+  order_id uuid not null unique references orders(id) on delete cascade,
+  nickname text not null,
+  rating int not null check (rating between 1 and 5),
+  body text not null,
+  photo_path text,
+  photo_consent_at timestamptz,
+  hidden boolean not null default false,
+  coupon_code text not null unique,
+  created_at timestamptz not null default now()
+);
+
+create index if not exists reviews_public_idx on reviews (created_at desc) where not hidden;
+
 create index if not exists orders_status_idx on orders (status, created_at desc);
 create index if not exists orders_user_idx on orders (user_id, created_at desc);
 
@@ -189,6 +208,7 @@ alter table coupons enable row level security;
 alter table birthday_notices enable row level security;
 alter table mail_optouts enable row level security;
 alter table admin_login_guard enable row level security;
+alter table reviews enable row level security;
 
 -- 下書きごとのプレビュー回数の確認と加算を一度に行う（登録前のお試し用）
 create or replace function claim_generation(p_id uuid, p_max int) returns boolean

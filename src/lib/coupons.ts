@@ -1,5 +1,5 @@
 import "server-only";
-import { FLYER_COUPON, REPEAT_COUPON } from "./catalog";
+import { FLYER_COUPON, REPEAT_COUPON, REVIEW_COUPON } from "./catalog";
 import { getSupabase } from "./services";
 
 /** bookPrice：1冊目の値段を決めるクーポン。discount：1冊目から値引きするクーポン（リピート割引） */
@@ -20,6 +20,7 @@ export async function findCoupon(rawCode: unknown, userId: string): Promise<{ co
   if (!code) return { error: "クーポンコードを入力してください" };
   if (!db) return { error: "デモモードではクーポンは使えません" };
   if (code === REPEAT_COUPON.code) return findRepeatCoupon(userId);
+  if (code.startsWith(REVIEW_COUPON.prefix)) return findReviewCoupon(code, userId);
   if (code === FLYER_COUPON.code) {
     if (await usedCoupon(code, userId)) return { error: "このクーポンはご利用済みです（おひとり様1回まで）" };
     return { coupon: { code: FLYER_COUPON.code, label: `${FLYER_COUPON.label} ${FLYER_COUPON.discount}円引き`, discount: FLYER_COUPON.discount } };
@@ -50,4 +51,12 @@ async function findRepeatCoupon(userId: string): Promise<{ coupon: Coupon } | { 
     .not("paid_at", "is", null);
   if (!count) return { error: "このクーポンは、2回目以降のご注文で使えます" };
   return { coupon: { code: REPEAT_COUPON.code, label: `${REPEAT_COUPON.label} ${REPEAT_COUPON.discount}円引き`, discount: REPEAT_COUPON.discount } };
+}
+
+/** レビューのお礼クーポン：レビューを書いた本人だけが、1回だけ使える */
+async function findReviewCoupon(code: string, userId: string): Promise<{ coupon: Coupon } | { error: string }> {
+  const { data: review } = await getSupabase()!.from("reviews").select("user_id").eq("coupon_code", code).maybeSingle();
+  if (!review || review.user_id !== userId) return { error: "このクーポンコードは使えません（レビューを書いたアカウントでお使いください）" };
+  if (await usedCoupon(code, userId)) return { error: "このクーポンはご利用済みです（1回まで）" };
+  return { coupon: { code, label: `${REVIEW_COUPON.label} ${REVIEW_COUPON.discount}円引き`, discount: REVIEW_COUPON.discount } };
 }
