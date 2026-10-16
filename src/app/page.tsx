@@ -243,9 +243,9 @@ export default function Home() {
           </span>
         </p>
         <div className={s.bookStage} aria-hidden="true">
-          {/* 完成した絵本の表紙（作道さんが用意した画像、2026-10-10 差し替え）。影も画像に含まれているので加工はしない */}
+          {/* 完成した絵本の表紙（作道さんが用意した画像、2026-10-16 こうちゃん森1話に差し替え）。ページの重なりと背の陰を少しだけ画像に描き込み済み */}
           <div className={s.sun} />
-          <Image src="/hero-book-yui-v2.webp" alt="" width={800} height={793} priority sizes="250px" className={s.heroBook} />
+          <Image src="/hero-book-kou.webp" alt="" width={860} height={860} priority sizes="250px" className={s.heroBook} />
           <Lottie name="sparkles" style={{ position: "absolute", inset: 0 }} />
           <Sparkle size={26} className={s.deco} style={{ left: 8, top: 30 }} />
           <Sparkle size={22} className={s.deco} style={{ left: 262, top: 210 }} />
