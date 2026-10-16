@@ -47,8 +47,10 @@ export async function POST(request: Request) {
     if (!consent) return bad("写真を載せるには、一般公開への同意が必要です");
   }
 
-  const { data: order } = await db.from("orders").select("id, user_id, status").eq("id", orderId).maybeSingle();
+  const { data: order } = await db.from("orders").select("*").eq("id", orderId).maybeSingle();
   if (!order || order.user_id !== user.id) return bad("ご注文が見つかりません", 404);
+  // まとめ買いの2話目以降は、1話目の注文でまとめて1件（クーポンも1枚）
+  if (order.bundle_of) return bad("まとめ買いのレビューは、1話目のご注文から1件だけ書けます");
   if (order.status !== "shipped") return bad("レビューは絵本がお手元に届いてから書けます");
   const { data: existing } = await db.from("reviews").select("id").eq("order_id", order.id).maybeSingle();
   if (existing) return bad("このご注文のレビューはもう投稿済みです", 409);
