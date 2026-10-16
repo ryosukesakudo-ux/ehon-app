@@ -148,6 +148,7 @@ export default function CheckoutPage() {
           {coupon && <div className="sum-row" style={{ color: "var(--coral)" }}><span>クーポン（{coupon.label}）</span><span>−{yen(size.price - firstPrice)}</span></div>}
           {books > 1 && <div className="sum-row"><span>追加の{books - 1}冊{extras.length > 0 ? `（${1 + extras.length}話×${state.copies}冊）` : ""}</span><span>{yen(extraCopyPrice(state.size) * (books - 1))}</span></div>}
           <div className="sum-row"><span>送料</span><span>0円</span></div>
+          <div className="sum-row"><span>ギフトバッグ</span><span>0円（全冊に付きます）</span></div>
           <div className="sum-total">
             <span className="display" style={{ fontSize: 15, fontWeight: 800 }}>合計（税込）</span>
             <span className="display" style={{ fontSize: 26, fontWeight: 900, color: "var(--coral)" }}>{yen(orderTotal(state.size, state.copies, firstPrice, 1 + extras.length))}</span>
