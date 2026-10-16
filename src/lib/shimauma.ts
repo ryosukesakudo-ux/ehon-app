@@ -217,9 +217,8 @@ export class ExtraPages {
     const [hero, ...others] = e.characters;
     const left = await this.characterPage(hero ? [hero] : [], { title: true, cols: 1, maxArt: 0.62 });
     if (!others.length) return [left, await this.drawing("かぞくの かおを かいてね")];
-    // ほかの人は1ページに 2列（5人からは3列）。人数が少なくても大きくしすぎない
-    const cols = others.length <= 4 ? 2 : 3;
-    return [left, await this.characterPage(others, { title: false, cols, maxArt: 0.3 })];
+    // ほかの人は横1列に、みんな同じ大きさで並べる（人数が少なくても大きくしすぎない）
+    return [left, await this.characterPage(others, { title: false, cols: others.length, maxArt: 0.3 })];
   }
 
   private async characterPage(list: ShimaumaExtras["characters"], o: { title: boolean; cols: number; maxArt: number }) {
@@ -257,7 +256,7 @@ export class ExtraPages {
 
   /**
    * 28〜33 思い出の写真（6ページ）。アップした順に、1ページの枚数がほぼ同じになるよう前のページから多めに分ける（20枚なら 4・4・3・3・3・3）。
-   * 6枚より少ないときは1ページに1枚ずつ入れ、残りのページはおえかきページにする（2026-10-16 作道さん）
+   * 6枚より少ないときは1ページに1枚ずつ入れ、残りのページはおえかきページにする。写真は切らずに枠の中に収める（2026-10-16 作道さん）
    */
   async photoPages(e: ShimaumaExtras) {
     const photos = e.memoryPhotos;
@@ -272,7 +271,10 @@ export class ExtraPages {
     return pages;
   }
 
-  /** 写真1〜4枚を1ページに。1枚：大きく1枚 / 2枚：上下 / 3枚：上に横長1枚・下に2枚 / 4枚：2×2。白い縁をつける */
+  /**
+   * 写真1〜4枚を1ページに。1枚：大きく1枚 / 2枚：上下 / 3枚：上に1枚・下に2枚 / 4枚：2×2。
+   * 顔が見切れないよう写真は切らず、区画の中に縦横比のまま収めて白い縁をつける
+   */
   private async photoPage(photos: Buffer[]) {
     const { size, px } = this.o;
     const gap = mm(4);
@@ -280,7 +282,7 @@ export class ExtraPages {
     const bottom = mm(SAFE_MM);
     const w = this.width;
     const h = size - mm(SAFE_MM) * 2;
-    // 写真の枠（左下が原点のポイント）
+    // 写真を置く区画（左下が原点のポイント）
     const half = (h - gap) / 2;
     const halfW = (w - gap) / 2;
     const cells: { x: number; y: number; w: number; h: number }[] =
@@ -292,17 +294,26 @@ export class ExtraPages {
             ? [{ x: left, y: bottom + half + gap, w, h: half }, { x: left, y: bottom, w: halfW, h: half }, { x: left + halfW + gap, y: bottom, w: halfW, h: half }]
             : [0, 1, 2, 3].map((i) => ({ x: left + (i % 2) * (halfW + gap), y: bottom + (i < 2 ? half + gap : 0), w: halfW, h: half }));
     const border = mm(1.6);
+    const placed = await Promise.all(
+      cells.map(async (c, i) => {
+        // 向きを直した写真の縦横比で、区画の中に収まる大きさにする
+        const img = await sharp(photos[i]).rotate().flatten({ background: "#ffffff" }).toBuffer();
+        const meta = await sharp(img).metadata();
+        const ratio = (meta.width ?? 1) / (meta.height ?? 1);
+        const fw = Math.min(c.w, (c.h - border * 2) * ratio + border * 2);
+        const fh = Math.min(c.h, (fw - border * 2) / ratio + border * 2);
+        return { img, x: c.x + (c.w - fw) / 2, y: c.y + (c.h - fh) / 2, w: fw, h: fh };
+      }),
+    );
     const page = this.page();
-    for (const c of cells) page.drawFrame({ x: c.x, y: c.y, width: c.w, height: c.h, color: CREAM, lineWidth: 0, radius: 0 });
+    for (const f of placed) page.drawFrame({ x: f.x, y: f.y, width: f.w, height: f.h, color: CREAM, lineWidth: 0, radius: 0 });
     const base = await this.render(page);
     const layers = await Promise.all(
-      cells.map(async (c, i) => {
-        const wPx = this.toPx(c.w - border * 2);
-        const hPx = this.toPx(c.h - border * 2);
-        // 顔などの目立つところが残るように切る（sharp の attention）
-        const input = await sharp(photos[i]).rotate().resize(wPx, hPx, { fit: "cover", position: sharp.strategy.attention }).flatten({ background: "#ffffff" }).toBuffer();
-        return { input, left: this.toPx(c.x + border), top: px - this.toPx(c.y + c.h - border) };
-      }),
+      placed.map(async (f) => ({
+        input: await sharp(f.img).resize(this.toPx(f.w - border * 2), this.toPx(f.h - border * 2), { fit: "fill" }).toBuffer(),
+        left: this.toPx(f.x + border),
+        top: px - this.toPx(f.y + f.h - border),
+      })),
     );
     return jpegOf(sharp(base).composite(layers));
   }
