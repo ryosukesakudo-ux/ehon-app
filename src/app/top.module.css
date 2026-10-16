@@ -43,7 +43,7 @@
 .hinge { position: absolute; left: 0; top: 0; bottom: 0; width: 16px; background: linear-gradient(90deg, rgba(20, 30, 55, 0.55), rgba(20, 30, 55, 0.15) 45%, rgba(255, 255, 255, 0.35) 60%, rgba(20, 30, 55, 0.12) 75%, rgba(20, 30, 55, 0) 100%); }
 .gloss { position: absolute; inset: 0; pointer-events: none; background: linear-gradient(115deg, rgba(255, 255, 255, 0) 30%, rgba(255, 255, 255, 0.18) 42%, rgba(255, 255, 255, 0) 55%), linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(0, 0, 0, 0.1)); }
 /* トップの絵本の表紙画像（影ごと画像になっているので、置くだけ） */
-.heroBook { position: absolute; left: 26px; top: 26px; width: 248px; height: auto; border-radius: 6px; box-shadow: 0 6px 16px rgba(30, 47, 87, 0.22); }
+.heroBook { position: absolute; left: 16px; top: 16px; width: 268px; height: auto; }
 .sticker { position: absolute; right: -14px; top: 206px; width: 92px; height: 92px; border-radius: 50%; background: var(--coral); color: #fff; display: flex; flex-direction: column; align-items: center; justify-content: center; transform: rotate(12deg); box-shadow: 0 4px 0 var(--coral-shadow); font-weight: 900; text-align: center; line-height: 1.25; }
 
 .wave { display: block; width: 100%; height: 40px; }
