@@ -91,14 +91,19 @@ create table if not exists credit_purchases (
   paid_at timestamptz
 );
 
--- クーポン：book_price は1冊目の値段（0 なら無料）。2冊目以降は通常の値段。1人1回まで
+-- クーポン：book_price は1冊目の値段（0 なら無料）、discount は1冊目からの値引き額（どちらか一方）。
+-- 2冊目以降は通常の値段。multi_use が false なら1人1回まで、true なら同じ人が何回でも使える
 create table if not exists coupons (
   code text primary key,
   label text not null,
-  book_price int not null check (book_price >= 0),
+  book_price int check (book_price >= 0),
   active boolean not null default true,
   created_at timestamptz not null default now()
 );
+
+alter table coupons alter column book_price drop not null;
+alter table coupons add column if not exists discount int check (discount > 0);
+alter table coupons add column if not exists multi_use boolean not null default false;
 
 -- 登録前のお試し（ブラウザごと・IPアドレスごとに1回）。IPはハッシュにして保存する。
 create table if not exists anon_trials (

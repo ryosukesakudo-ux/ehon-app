@@ -11,7 +11,7 @@ export function normalizeCouponCode(code: unknown) {
 }
 
 /**
- * クーポンを確認する。使えるのは有効なコードで、その人がまだ使っていないもの（1人1回まで）。
+ * クーポンを確認する。使えるのは有効なコードで、その人がまだ使っていないもの（1人1回まで。multi_use なら何回でも）。
  * 決済画面で止めた注文（お支払い前に戻った注文）は「使った」に数えない。
  */
 export async function findCoupon(rawCode: unknown, userId: string): Promise<{ coupon: Coupon } | { error: string }> {
@@ -24,10 +24,12 @@ export async function findCoupon(rawCode: unknown, userId: string): Promise<{ co
     if (await usedCoupon(code, userId)) return { error: "このクーポンはご利用済みです（おひとり様1回まで）" };
     return { coupon: { code: FLYER_COUPON.code, label: `${FLYER_COUPON.label} ${FLYER_COUPON.discount}円引き`, discount: FLYER_COUPON.discount } };
   }
-  const { data: row } = await db.from("coupons").select("code, label, book_price, active").eq("code", code).maybeSingle();
+  // schema.sql の再実行前（discount・multi_use の列がない）でも読めるように * で取る
+  const { data: row } = await db.from("coupons").select("*").eq("code", code).maybeSingle();
   if (!row || !row.active) return { error: "このクーポンコードは使えません" };
-  if (await usedCoupon(code, userId)) return { error: "このクーポンはご利用済みです（おひとり様1回まで）" };
-  return { coupon: { code: row.code, label: row.label, bookPrice: row.book_price } };
+  if (!row.multi_use && (await usedCoupon(code, userId))) return { error: "このクーポンはご利用済みです（おひとり様1回まで）" };
+  if (row.discount) return { coupon: { code: row.code, label: row.label, discount: row.discount } };
+  return { coupon: { code: row.code, label: row.label, bookPrice: row.book_price ?? undefined } };
 }
 
 /** その人がこのコードをもう使ったか（決済画面で止めた注文は数えない） */
