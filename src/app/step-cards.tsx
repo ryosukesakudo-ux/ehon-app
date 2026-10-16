@@ -182,6 +182,7 @@ function Finish({ d }: { d: StepDetails }) {
           </li>
         ))}
         <li>2冊目からは1冊{d.extraCopy}引き</li>
+        <li>ギフトバッグに入れてお届け（無料）</li>
       </ul>
       <p style={lead}>ご注文から{d.deliveryDays}日ほどでお届けします。</p>
     </>

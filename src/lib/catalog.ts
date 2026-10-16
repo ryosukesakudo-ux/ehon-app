@@ -351,6 +351,9 @@ export function getSize(id: string) {
 // 製本直送は日時指定ができないため、希望日は「この日までに届くように発送」の意味で、時間帯は選べない。
 // https://www.seichoku.com/user_data/faq.php / https://www.seichoku.com/user_data/moneyPlan.php
 export const DELIVERY_MIN_DAYS = 14;
+
+/** すべての絵本を1冊ずつギフトバッグに入れてお届け（しまうまのオプション +270円/冊はこちら負担。2026-10-16 作道さん決定） */
+export const GIFT_BAG_IMAGE = "/gift-bag.webp";
 export const DELIVERY_MAX_DAYS = 60;
 /** 以前の注文で選ばれていた時間帯（表示用。いまは選べない） */
 export const DELIVERY_TIMES = [

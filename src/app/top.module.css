@@ -105,6 +105,9 @@
 .priceSpec { flex-grow: 1; font-size: 13px; line-height: 1.6; color: var(--sub); }
 .priceName { font-size: 17px; font-weight: 800; color: var(--navy); }
 .priceYen { flex-shrink: 0; font-size: 21px; font-weight: 900; white-space: nowrap; }
+.giftBag { display: flex; gap: 12px; align-items: center; padding: 12px; border-radius: 16px; background: #fff; border: 2px solid var(--line); font-size: 13px; line-height: 1.7; color: var(--sub); }
+.giftBagImg { flex-shrink: 0; width: 120px; height: auto; border-radius: 12px; }
+.giftBagTitle { font-size: 15px; font-weight: 800; color: var(--navy); }
 .extra { display: flex; gap: 10px; align-items: center; padding: 14px; border-radius: 16px; background: #fff1c9; font-size: 13px; line-height: 1.7; }
 
 .qa { display: flex; flex-direction: column; gap: 8px; padding: 16px; border-radius: 18px; background: #fff; border: 2px solid #ece6da; }
