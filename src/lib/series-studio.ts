@@ -51,6 +51,16 @@ export function getStudioSeries(id: string): StudioSeries | null {
   };
 }
 
+/** その話の見本の絵（表紙＋12場面）がそろっているか */
+export async function episodeArtComplete(id: SeriesId, no: number) {
+  const db = getSupabase();
+  if (!db) return true;
+  const dir = seriesImagePath(id, no, 0).replace(/\/[^/]+$/, "");
+  const { data } = await db.storage.from(SAMPLE_BUCKET).list(dir, { limit: 100 });
+  const names = new Set((data ?? []).map((f) => f.name));
+  return Array.from({ length: SERIES_PAGES }, (_, p) => seriesImagePath(id, no, p).split("/").pop()!).every((n) => names.has(n));
+}
+
 /** 見本の絵（表紙＋12場面）がそろっている話。お客様が選べるのはこの話だけ（公開中のシリーズに限る） */
 export async function readyEpisodes(): Promise<Record<SeriesId, number[]>> {
   const out = Object.fromEntries(SERIES_LIST.map((s) => [s.id, [] as number[]])) as Record<SeriesId, number[]>;
@@ -60,11 +70,7 @@ export async function readyEpisodes(): Promise<Record<SeriesId, number[]>> {
   await Promise.all(
     SERIES_LIST.filter((s) => isOpenSeries(s.id)).flatMap((s) =>
       openEpisodes(s.episodes).map(async (ep) => {
-        const dir = seriesImagePath(s.id, ep.no, 0).replace(/\/[^/]+$/, "");
-        const { data } = await db.storage.from(SAMPLE_BUCKET).list(dir, { limit: 100 });
-        const names = new Set((data ?? []).map((f) => f.name));
-        const ok = Array.from({ length: SERIES_PAGES }, (_, p) => seriesImagePath(s.id, ep.no, p).split("/").pop()!).every((n) => names.has(n));
-        if (ok) out[s.id].push(ep.no);
+        if (await episodeArtComplete(s.id, ep.no)) out[s.id].push(ep.no);
       }),
     ),
   );

@@ -34,7 +34,8 @@ export function TopBook({ lead, title, cover, pages }: { lead: string; title: st
         {pages.map((p, i) => (
           <div key={i} className={s.flipPage}>
             <div className={s.flipArt}>
-              <SampleImage src={p.url} alt={`見本の絵本 ${i + 1}ページ目の絵`} sizes="(max-width: 480px) 100vw, 440px" fallback={<span className={s.galleryFallback}>[見本の絵]</span>} />
+              {/* 見本の場面は横長（見開き）と、前に作った正方形がある。高さは絵の形に合わせる */}
+              <SampleImage src={p.url} alt={`見本の絵本 ${i + 1}ページ目の絵`} sizes="(max-width: 480px) 100vw, 440px" style={{ height: "auto" }} fallback={<span className={s.galleryFallback}>[見本の絵]</span>} />
             </div>
             <p className={s.flipText}>{p.text}</p>
           </div>

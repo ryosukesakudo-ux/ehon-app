@@ -18,6 +18,7 @@ import {
   seriesFamilyPhotoPath,
   seriesSampleChildName,
   seriesImagePath,
+  seriesSceneTextSide,
   seriesSheetPath,
   seriesSidekickPath,
   seriesSpreadPath,
@@ -42,6 +43,10 @@ export type StudioView = {
   id: SeriesId;
   name: string;
   sidekickLabel: string;
+  /** お話選びに出ているシリーズか（出ていないシリーズは、話を本番に出してもまだ「準備中」） */
+  open: boolean;
+  /** 本番に出している（お客様が注文できる）話 */
+  published: number[];
   episodes: { no: number; title: string; cover: { label: string }; scenes: { label: string; texts: string[] }[] }[];
 };
 
@@ -55,6 +60,11 @@ export function SeriesStudio({ list }: { list: StudioView[] }) {
   // 森：家族写真はトップの写真（作例スタジオの①）と共用。ここでは作らない
   const sharedPhoto = usesShowcasePhoto(seriesId);
   const [quality, setQuality] = useState<"preview" | "final">("preview");
+  // 各話の見本の場面を横長（見開き）で描く（2026-10-16 作道さん。お客様の本が見開きになったため）。外すと今までの正方形
+  const [wide, setWide] = useState(true);
+  // 本番に出している話（ボタンで変えたらすぐ反映）
+  const [published, setPublishedState] = useState<Record<string, number[]>>(() => Object.fromEntries(list.map((s) => [s.id, s.published])));
+  const publishedHere = published[seriesId] ?? [];
   const [busy, setBusy] = useState<Record<string, boolean>>({});
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [version, setVersion] = useState<Record<string, number>>({});
@@ -89,7 +99,16 @@ export function SeriesStudio({ list }: { list: StudioView[] }) {
     if (photoFirst && (await exists(seriesFamilyPhotoPath(SERIES_ID))) && !confirm("今の家族写真を、新しく作った写真に置き換えます。設定画と場面もすべて作り直しが必要になります。よろしいですか？")) return false;
     return call("photo", { kind: "photo" });
   }
-  const makePage = (episode: number, page: number) => call(`${episode}/${page}` satisfies Key, { episode, page, quality });
+  const makePage = (episode: number, page: number) => call(`${episode}/${page}` satisfies Key, { episode, page, quality, wide: wide && page > 0 });
+  async function togglePublish(no: number) {
+    const on = !publishedHere.includes(no);
+    const msg = on
+      ? `第${no}話を本番に出します。お客様がお話選びでこの話を選んで注文できるようになり、トップ・サンプル集の見本にもこの絵が使われます。よろしいですか？`
+      : `第${no}話を本番から取り下げます。お話選びでは「Coming soon」になり、新しく注文できなくなります（注文済みの本はそのまま作れます）。よろしいですか？`;
+    if (!confirm(msg)) return;
+    const json = await call(`publish/${no}`, { kind: "publish", episode: no, published: on });
+    if (json && Array.isArray(json.published)) setPublishedState((p) => ({ ...p, [seriesId]: json.published as number[] }));
+  }
   // 見開きの試作（今の場面の絵とは別に保存）
   const [spreadEp, setSpreadEp] = useState(series.episodes[0]?.no ?? 1);
   const [spreadPage, setSpreadPage] = useState(5);
@@ -112,7 +131,7 @@ export function SeriesStudio({ list }: { list: StudioView[] }) {
 
   async function makeEpisode(no: number) {
     const per = quality === "final" ? 30 : 15;
-    if (!confirm(`第${no}話の表紙と12場面（13枚）をまとめて作ります。AI代は約${13 * per}円です。よろしいですか？`)) return;
+    if (!confirm(`第${no}話の表紙と12場面（13枚）を${wide ? "横長（見開き）で" : "正方形で"}まとめて作ります。AI代は約${13 * per}円です。よろしいですか？${publishedHere.includes(no) ? "\n\nこの話は本番に出ているので、作り直した絵はすぐトップ・サンプル集の見本に出ます。" : ""}`)) return;
     if (photoFirst && !(await exists(seriesFamilyPhotoPath(SERIES_ID))) && !(await makePhoto())) return;
     if (!(await exists(seriesSheetPath(SERIES_ID))) && !(await makeSheet())) return;
     const jobs = Array.from({ length: 13 }, (_, page) => () => makePage(no, page));
@@ -568,16 +587,39 @@ export function SeriesStudio({ list }: { list: StudioView[] }) {
         </section>
       )}
 
+      <section className="card" style={{ gap: 8 }}>
+        <h2 className="display" style={{ margin: 0, fontSize: 18, color: "var(--navy)" }}>各話の見本（第1〜{series.episodes.length}話）</h2>
+        <p style={{ margin: 0, fontSize: 13, lineHeight: 1.7 }}>
+          話ごとに表紙と12場面を作り、おかしな絵は下の欄に直してほしいことを書いて1枚ずつ作り直します。仕上がりが良ければ「本番に出す」を押すと、お客様がお話選びでその話を選んで注文できるようになります。
+          {!series.open && "（このシリーズはまだお話選びに出ていないので、本番に出しても「準備中」のままです）"}
+        </p>
+        <label style={{ display: "flex", gap: 8, alignItems: "center", fontSize: 14 }}>
+          <input type="checkbox" checked={wide} onChange={(e) => setWide(e.target.checked)} />
+          場面を横長（見開き）で作る（お客様の本と同じ形。外すと今までの正方形）
+        </label>
+      </section>
+
       {series.episodes.map((ep) => (
         <section key={ep.no} className="card" style={{ gap: 14 }}>
           <div style={{ display: "flex", gap: 12, alignItems: "center", flexWrap: "wrap", justifyContent: "space-between" }}>
-            <h2 className="display" style={{ margin: 0, fontSize: 18, color: "var(--navy)" }}>
+            <h2 className="display" style={{ margin: 0, fontSize: 18, color: "var(--navy)", display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
               第{ep.no}話「{ep.title}」
+              {publishedHere.includes(ep.no) ? (
+                <span className="tag" style={{ background: "#CDEEDD" }}>本番に出ています</span>
+              ) : (
+                <span className="tag" style={{ background: "#eee", color: "var(--sub)" }}>まだ本番に出ていません</span>
+              )}
             </h2>
-            <button type="button" className="cta" style={{ width: "auto", height: 44, padding: "0 20px", fontSize: 15 }} disabled={anyBusy} onClick={() => makeEpisode(ep.no)}>
-              まとめて作る（表紙＋12場面）
-            </button>
+            <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+              <button type="button" className="cta" style={{ width: "auto", height: 44, padding: "0 20px", fontSize: 15 }} disabled={anyBusy} onClick={() => makeEpisode(ep.no)}>
+                まとめて作る（表紙＋12場面）
+              </button>
+              <button type="button" className="ghost" style={{ width: "auto", height: 44, padding: "0 16px", fontSize: 14 }} disabled={anyBusy} onClick={() => togglePublish(ep.no)}>
+                {busy[`publish/${ep.no}`] ? "変えています…" : publishedHere.includes(ep.no) ? "本番から取り下げる" : "本番に出す"}
+              </button>
+            </div>
           </div>
+          {errors[`publish/${ep.no}`] && <span className="error">{errors[`publish/${ep.no}`]}</span>}
           <Tile
             path={seriesImagePath(SERIES_ID, ep.no, 0)}
             version={version[`${ep.no}/0`]}
@@ -590,7 +632,7 @@ export function SeriesStudio({ list }: { list: StudioView[] }) {
             disabled={anyBusy}
             {...noteProps(`${ep.no}/0`)}
           />
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))", gap: 12 }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: 12 }}>
             {ep.scenes.map((sc, i) => (
               <Tile
                 key={i}
@@ -598,7 +640,10 @@ export function SeriesStudio({ list }: { list: StudioView[] }) {
                 version={version[`${ep.no}/${i + 1}`]}
                 busy={busy[`${ep.no}/${i + 1}`]}
                 error={errors[`${ep.no}/${i + 1}`]}
-                label={`場面${i + 1}：${sc.label}`}
+                // 横長の絵も、前に作った正方形の絵も全体が見えるように
+                aspect="3 / 2"
+                fit="contain"
+                label={`場面${i + 1}${wide ? `（文は${seriesSceneTextSide(i + 1) === "right" ? "右" : "左"}ページ）` : ""}：${sc.label}`}
                 onMake={() => makePage(ep.no, i + 1)}
                 disabled={anyBusy}
                 {...noteProps(`${ep.no}/${i + 1}`)}
@@ -696,6 +741,8 @@ function Tile(props: {
   error?: string;
   label: string;
   aspect?: string;
+  /** contain：枠の形と違う絵も切らずに全体を見せる */
+  fit?: "contain";
   width?: number;
   disabled: boolean;
   onMake: () => void;
@@ -744,6 +791,7 @@ function Tile(props: {
               unoptimized
               alt={props.label}
               fallback={empty}
+              style={props.fit ? { objectFit: props.fit } : undefined}
             />
           </a>
         )}

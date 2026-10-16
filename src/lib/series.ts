@@ -73,6 +73,19 @@ export function seriesImagePath(id: SeriesId, episode: number, page: number) {
   return `series/${id}/ep${episode}/${page === 0 ? "cover" : String(page).padStart(2, "0")}.png`;
 }
 
+/**
+ * 各話の見本の場面を横長（見開き）で描いたときの、文の置き場所（AIが絵を見て決める）。JSON で絵の隣に保存。
+ * 2026-10-16 作道さん：お客様の本が見開きになったので、見本も横長で作って確かめる
+ */
+export function seriesImageTextPath(id: SeriesId, episode: number, page: number) {
+  return seriesImagePath(id, episode, page).replace(/\.png$/, "-text.json");
+}
+
+/** 見本の場面を見開きで描くとき、文を置くページ（お客様の本・見開き版の本と同じく、場面ごとに右・左を交互に） */
+export function seriesSceneTextSide(page: number): "left" | "right" {
+  return page % 2 === 1 ? "right" : "left";
+}
+
 /** 見開きの試作の絵（場面1〜12。今の場面の絵とは別に保存し、お客様の本には使わない） */
 export function seriesSpreadPath(id: SeriesId, episode: number, page: number) {
   return `series/${id}/ep${episode}/spread-${String(page).padStart(2, "0")}.png`;

@@ -6,20 +6,23 @@ import { Check } from "@/components/icons";
 import { SampleImage } from "@/components/sample-image";
 import { samplePublicUrl, versioned } from "@/lib/samples";
 import { seriesImagePath } from "@/lib/series";
-import { LEVELS, SHOWN_SERIES_LIST, fixedLevelEpisode, isOpenSeries, isProofread, levelForAge, openEpisodes, parseSeriesKey, seriesKey, type LevelId, type SeriesId } from "@/lib/story-key";
+import { LEVELS, SHOWN_SERIES_LIST, fixedLevelEpisode, isOpenSeries, levelForAge, openEpisodes, parseSeriesKey, seriesKey, type LevelId, type SeriesId } from "@/lib/story-key";
 import { customStoryComplete, parseCustomKey } from "@/lib/custom-story";
 import { useFlow } from "../flow";
 import { CustomStoryPanel } from "./custom-story";
 
-/** 見本の絵がそろって選べるようになった話（シリーズごとの話の番号）。null は確認中 */
-export type ReadyEpisodes = Record<SeriesId, number[]> | null;
+/**
+ * art：見本の絵がそろった話 / published：本番に出して注文できる話（絵スタジオの「本番に出す」で変わる）。
+ * どちらもシリーズごとの話の番号。null は確認中
+ */
+export type ReadyEpisodes = { art: Record<SeriesId, number[]>; published: Record<SeriesId, number[]> } | null;
 
 /** 選べるのは見本の絵がそろい、添削も終わった話だけ */
 export function storyChosen(story: string, ready: ReadyEpisodes) {
   const custom = parseCustomKey(story);
   if (custom) return customStoryComplete(custom);
   const k = parseSeriesKey(story);
-  return !!k && !!ready?.[k.series]?.includes(k.episode) && isProofread(k.series, k.episode);
+  return !!k && !!ready?.art[k.series]?.includes(k.episode) && !!ready.published[k.series]?.includes(k.episode);
 }
 
 /**
@@ -34,7 +37,7 @@ export function StorySection({ ready, onDecide }: { ready: ReadyEpisodes; onDeci
   const custom = parseCustomKey(state.story);
   const [modal, setModal] = useState<SeriesId | null>(null);
   const [customOpen, setCustomOpen] = useState(!!custom);
-  const hasArt = (id: SeriesId, no: number) => !!ready?.[id]?.includes(no);
+  const hasArt = (id: SeriesId, no: number) => !!ready?.art[id]?.includes(no);
 
   function openCustom() {
     // シリーズのお話を選んでいたら外す（オリジナルのお話ができるまで先へ進めないように）
@@ -116,8 +119,8 @@ function EpisodeDialog({ series, ready, onClose, onDecide }: { series: SeriesId;
   const { state } = useFlow();
   const s = SHOWN_SERIES_LIST.find((x) => x.id === series)!;
   const current = parseSeriesKey(state.story);
-  const hasArt = (no: number) => !!ready?.[series]?.includes(no);
-  const isReady = (no: number) => hasArt(no) && isProofread(series, no);
+  const hasArt = (no: number) => !!ready?.art[series]?.includes(no);
+  const isReady = (no: number) => hasArt(no) && !!ready?.published[series]?.includes(no);
   // 選んでいる話があればそれを、無ければ選べるいちばん最初の話を選んでおく
   const [episode, setEpisode] = useState<number | null>(() =>
     current?.series === series ? current.episode : openEpisodes(s.episodes).find((ep) => isReady(ep.no))?.no ?? null,

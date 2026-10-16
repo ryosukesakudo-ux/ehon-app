@@ -56,7 +56,8 @@ export function SampleEpisodes({ episodes }: { episodes: SampleEpisode[] }) {
         {ep.pages.map((p, i) => (
           <article key={i} className={s.spread}>
             <div className={s.picture}>
-              <SampleImage src={p.url} alt={`第${ep.no}話 ${i + 1}ページ目の絵`} sizes="(max-width: 480px) 100vw, 440px" fallback={<span className={s.fallback}>準備中</span>} />
+              {/* 見本の場面は横長（見開き）と、前に作った正方形がある。高さは絵の形に合わせる */}
+              <SampleImage src={p.url} alt={`第${ep.no}話 ${i + 1}ページ目の絵`} sizes="(max-width: 480px) 100vw, 440px" style={{ height: "auto" }} fallback={<span className={s.fallback}>準備中</span>} />
             </div>
             <p className={s.text}>{p.text}</p>
             <div className={s.pageNo}>

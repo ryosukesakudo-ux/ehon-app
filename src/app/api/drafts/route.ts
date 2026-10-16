@@ -1,6 +1,7 @@
 import { randomUUID } from "node:crypto";
 import { ANON_TRIAL_IP_DAYS, CHILD_AGES, getTaste, previewScenes, type Person, type TasteId } from "@/lib/catalog";
-import { comboOf, isProofread, isStoryKey, parseSeriesKey, withoutCombo } from "@/lib/story-key";
+import { isPublished } from "@/lib/published-episodes";
+import { comboOf, isStoryKey, parseSeriesKey, withoutCombo } from "@/lib/story-key";
 import { readyEpisodes } from "@/lib/series-studio";
 import { copySavedCharacters, demoDraftId, previewUrls, type Draft } from "@/lib/drafts";
 import { currentUser } from "@/lib/auth";
@@ -51,7 +52,7 @@ export async function POST(request: Request) {
     if (!customStoryComplete(custom)) return bad("題名と全ページの文を入れてください");
     if (await storyTextFlagged(custom).catch(() => false)) return bad("絵本にふさわしくない言葉が含まれているようです。文を直してください");
   } else if (!series) return bad("このお話は今はお選びいただけません。お話を選び直してください");
-  else if (!isProofread(series.series, series.episode) || !(await readyEpisodes())[series.series].includes(series.episode)) return bad("このお話はまだ準備中です。ほかのお話を選んでください");
+  else if (!(await isPublished(series.series, series.episode)) || !(await readyEpisodes())[series.series].includes(series.episode)) return bad("このお話はまだ準備中です。ほかのお話を選んでください");
   if (!childName || childName.length > 12) return bad("名前は12文字以内で入力してください");
   if (!CHILD_AGES.includes(childAge)) return bad("お子さまの年齢を選んでください");
   // オリジナルのお話の、ほかの登場人物の写真（guest0Photo…・会員は保存している写真 guest0PhotoId… も）

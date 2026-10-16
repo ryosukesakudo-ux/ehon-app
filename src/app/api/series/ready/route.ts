@@ -1,6 +1,8 @@
 import { readyEpisodes } from "@/lib/series-studio";
+import { publishedEpisodes } from "@/lib/published-episodes";
 
-// お話選びの画面から呼ぶ。見本の絵（表紙＋12場面）がそろって、選べるようになった話の一覧。
+// お話選びの画面から呼ぶ。art：見本の絵（表紙＋12場面）がそろった話 / published：本番に出して注文できる話（絵スタジオのボタンで変える）
 export async function GET() {
-  return Response.json(await readyEpisodes(), { headers: { "Cache-Control": "public, max-age=60" } });
+  const [art, published] = await Promise.all([readyEpisodes(), publishedEpisodes()]);
+  return Response.json({ art, published }, { headers: { "Cache-Control": "public, max-age=60" } });
 }
