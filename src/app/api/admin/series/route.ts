@@ -20,6 +20,8 @@ import {
   seriesCharacterPath,
   seriesFamilyPhotoPath,
   seriesImagePath,
+  seriesImageTextPath,
+  seriesSceneTextSide,
   seriesSampleChildName,
   seriesSheetPath,
   seriesSidekickPath,
@@ -31,7 +33,8 @@ import {
 } from "@/lib/series";
 import { buildSpreadBook } from "@/lib/spread-book";
 import { findSpreadTextSpot, isSpotDark } from "@/lib/spread-text";
-import { getStudioSeries, studioScenesFor } from "@/lib/series-studio";
+import { episodeArtComplete, getStudioSeries, studioScenesFor } from "@/lib/series-studio";
+import { setPublished } from "@/lib/published-episodes";
 import { BOOK_BUCKET, SAMPLE_BUCKET, getSupabase } from "@/lib/services";
 import { SHOWN_SERIES_LIST, bookTitle, getSeriesInfo, openEpisodes, seriesKey, type Combo, type LevelId } from "@/lib/story-key";
 
@@ -42,7 +45,7 @@ type Who = (typeof PEOPLE)[number];
 const NAME_MAX = 12;
 const LEVEL_IDS: LevelId[] = ["s", "n", "l"];
 /** 見開き版の本で、文を置くページ（絵を描くときに空けておくページ）。場面ごとに右・左を交互にして、絵の構図に変化をつける */
-const bookTextSide = (page: number) => (page % 2 === 1 ? "right" : "left");
+const bookTextSide = seriesSceneTextSide;
 
 export const maxDuration = 300;
 
@@ -53,6 +56,7 @@ export const maxDuration = 300;
 // spread=true：場面を見開き（横長）で描く試作。今の場面の絵とは別の場所に保存する。textSide のページを空けて描き、
 // できた絵をAIが見て文の置き場所（人物・動物のいない所）を決めて、隣にJSONで保存する
 // kind=spreadText：今ある見開きの絵で、文の置き場所だけ選び直す
+// wide=true：各話の見本の場面（表紙以外）を横長の見開きで描く / kind=publish：その話を本番に出す（published=true）・取り下げる
 // 見開き版の本の試作（combo＝写真の組み合わせ both / mom / dad / none）：
 // kind=bookChara：登場人物しょうかい用に、ひとり分（who）のキャラクターの絵を作る。who=sidekick は相棒（シリーズに1枚、見本の設定画から描いて公開の samples に置く） / kind=bookSpread：その組み合わせの場面（page 1〜12）を見開きで描く
 // kind=bookRender：表紙から最後のページまでを見開きごとの画像とPDFにする（level＝文の量 s / n / l）。できた画像とPDFのURLを返す
@@ -249,6 +253,15 @@ export async function POST(request: Request) {
       return Response.json({ ok: true, ...result });
     }
 
+    if (body?.kind === "publish") {
+      // 本番に出す（お客様が注文できるようにする）・取り下げる。出すのは表紙と12場面がそろった話だけ
+      if (!episode) return Response.json({ error: "指定が正しくありません" }, { status: 400 });
+      const on = body?.published === true;
+      if (on && !(await episodeArtComplete(series.id, episode.no))) return Response.json({ error: "表紙と12場面の13枚がそろってから本番に出せます" }, { status: 400 });
+      const published = await setPublished(series.id, episode.no, on);
+      return Response.json({ ok: true, published: published[series.id] });
+    }
+
     if (body?.kind === "spreadText") {
       if (!episode || !Number.isInteger(page) || page < 1) return Response.json({ error: "指定が正しくありません" }, { status: 400 });
       const { data, error } = await db.storage.from(SAMPLE_BUCKET).download(seriesSpreadPath(series.id, episode.no, page));
@@ -266,9 +279,23 @@ export async function POST(request: Request) {
     const quality = body?.quality === "preview" ? "preview" : "final";
     const spread = body?.spread === true;
     if (spread && page === 0) return Response.json({ error: "見開きの試作は場面（1〜12）だけです" }, { status: 400 });
-    const b64 = await illustrateSeries({ series, scene, page, outfits: episode.outfits, continuity: episode.continuity, note, quality, sheet, photo, spread, textSide });
+    // wide=true：各話の見本の場面を横長（見開き）で描く（2026-10-16 作道さん）。お客様の本と同じく文を置くページを右・左交互に空け、
+    // 文の置き場所をAIに選ばせて隣にJSONで保存する。表紙はもともと横長
+    const wide = !spread && body?.wide === true && page > 0;
+    const side = wide ? seriesSceneTextSide(page) : textSide;
+    const b64 = await illustrateSeries({ series, scene, page, outfits: episode.outfits, continuity: episode.continuity, note, quality, sheet, photo, spread: spread || wide, textSide: side });
     await save(spread ? seriesSpreadPath(series.id, episode.no, page) : seriesImagePath(series.id, episode.no, page), b64);
     if (spread) await saveSpot(episode.no, page, Buffer.from(b64, "base64"), textSide);
+    if (wide) {
+      const spot = await findSpreadTextSpot(Buffer.from(b64, "base64"), side);
+      const { error } = await db.storage
+        .from(SAMPLE_BUCKET)
+        .upload(seriesImageTextPath(series.id, episode.no, page), JSON.stringify({ spot }), { contentType: "application/json", upsert: true, cacheControl: "300" });
+      if (error) throw new Error(error.message);
+    } else if (page > 0) {
+      // 正方形で描き直したら、前の横長の絵の置き場所は使わない
+      await db.storage.from(SAMPLE_BUCKET).remove([seriesImageTextPath(series.id, episode.no, page)]);
+    }
     return Response.json({ ok: true });
   } catch (e) {
     console.error("series generation failed", e);

@@ -35,8 +35,8 @@ export function OnePageFlow({ start }: { start: SectionId }) {
     const none = Object.fromEntries(SERIES_LIST.map((x) => [x.id, [] as number[]])) as Record<SeriesId, number[]>;
     fetch("/api/series/ready")
       .then((r) => (r.ok ? r.json() : null))
-      .then((json) => setReady(json ?? none))
-      .catch(() => setReady(none));
+      .then((json) => setReady(json?.art && json?.published ? json : { art: none, published: none }))
+      .catch(() => setReady({ art: none, published: none }));
   }, []);
 
   // どこまで出したか（選ぶ・「次へ」で1つずつ進む）。途中の項目のURLから開いたときは、そこまで出す

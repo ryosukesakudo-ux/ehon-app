@@ -1,11 +1,15 @@
 import { getStudioSeries } from "@/lib/series-studio";
 import { SERIES_DATA } from "@/lib/series-data";
 import { seriesSampleChildName } from "@/lib/series";
-import { SHOWN_SERIES_LIST } from "@/lib/story-key";
+import { OPEN_SERIES, SHOWN_SERIES_LIST } from "@/lib/story-key";
+import { publishedEpisodes } from "@/lib/published-episodes";
 import { SeriesStudio, type StudioView } from "./studio";
 
 // 台本の絵スタジオ。台本（場面の説明）はサーバーで読み、画面に要る分だけ渡す。
-export default function SeriesPage() {
+export const dynamic = "force-dynamic";
+
+export default async function SeriesPage() {
+  const published = await publishedEpisodes();
   const list: StudioView[] = SHOWN_SERIES_LIST.map((info) => {
     const s = getStudioSeries(info.id)!;
     const name = seriesSampleChildName(info.id);
@@ -19,6 +23,8 @@ export default function SeriesPage() {
       id: s.id,
       name: s.name,
       sidekickLabel: s.sidekickLabel,
+      open: OPEN_SERIES.includes(s.id),
+      published: published[s.id],
       episodes: s.episodes.map((ep) => ({ no: ep.no, title: ep.title, cover: { label: ep.cover.label }, scenes: ep.scenes.map((sc, i) => ({ label: sc.label, texts: textsOf(ep.no, i) })) })),
     };
   });

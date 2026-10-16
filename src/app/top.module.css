@@ -165,7 +165,7 @@
 .flipTrack { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; border-radius: 20px; border: 2px solid var(--navy); background: #fff; scrollbar-width: none; }
 .flipTrack::-webkit-scrollbar { display: none; }
 .flipPage { flex: 0 0 100%; scroll-snap-align: start; display: flex; flex-direction: column; }
-.flipArt { aspect-ratio: 1 / 1; overflow: hidden; display: flex; align-items: center; justify-content: center; background: #dcebd3; }
+.flipArt { min-height: 120px; overflow: hidden; display: flex; align-items: center; justify-content: center; background: #dcebd3; }
 .flipText { margin: 0; padding: 14px 16px 18px; font-size: 15px; line-height: 1.9; }
 .flipNav { display: flex; align-items: center; justify-content: center; gap: 18px; }
 .flipBtn { width: 44px; height: 44px; border-radius: 50%; border: 2px solid var(--navy); background: #fff; color: var(--navy); font-size: 26px; line-height: 1; cursor: pointer; }

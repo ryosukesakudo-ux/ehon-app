@@ -126,7 +126,10 @@ export function isOpenSeries(id: SeriesId) {
   return OPEN_SERIES.includes(id);
 }
 
-/** 添削が終わって注文できる話。ほかの話は見本の絵があっても「Coming soon」で選べない（2026-10-12 作道さん） */
+/**
+ * 添削が終わって注文できる話。ほかの話は見本の絵があっても「Coming soon」で選べない（2026-10-12 作道さん）。
+ * 2026-10-16 から、絵スタジオの「本番に出す」ボタンで変えられる（published-episodes.ts）。これはボタンを一度も押していないときの初期値
+ */
 export const PROOFREAD_EPISODES: Partial<Record<SeriesId, number[]>> = { forest: [1] };
 
 export function isProofread(id: SeriesId, no: number) {
