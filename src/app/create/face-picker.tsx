@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState, type PointerEvent as ReactPointerEvent } from "react";
+import { createPortal } from "react-dom";
 import type { Face } from "@/lib/face";
 
 // 写真に何人か写っているとき、登場させたい人の顔を四角で囲んで選ぶ画面。
@@ -36,30 +37,40 @@ export function FacePicker({
   const [busy, setBusy] = useState(false);
   const drag = useRef<{ mode: "move" | "resize"; id: number; startX: number; startY: number; start: Box } | null>(null);
 
-  function onLoad() {
-    const img = imgRef.current!;
+  // 写真が表示できたら枠を出す。表示サイズが変わったら（画面の向き・アドレスバーの出入りなど）、枠も同じ割合で合わせる。
+  // iPhone の Safari では写真の読み込み完了（onLoad）が届かず枠が出ないことがあったので（2026-10-15 作道さん）、
+  // 表示サイズの監視と、出した直後の読み込み済みチェックでも枠を出す。
+  const viewRef = useRef<{ w: number; h: number } | null>(null);
+  function fit() {
+    const img = imgRef.current;
+    if (!img || !img.complete || !img.naturalWidth) return;
     const w = img.clientWidth;
     const h = img.clientHeight;
+    const prev = viewRef.current;
+    if (!w || !h || (prev && w === prev.w && h === prev.h)) return;
+    viewRef.current = { w, h };
     setView({ w, h });
-    const size = Math.round(Math.min(w, h) * 0.4);
-    setBox({ x: Math.round((w - size) / 2), y: Math.round((h - size) / 3), size });
+    if (!prev) {
+      const size = Math.round(Math.min(w, h) * 0.4);
+      setBox({ x: Math.round((w - size) / 2), y: Math.round((h - size) / 3), size });
+    } else {
+      const k = w / prev.w;
+      setBox((b) => (b ? { x: b.x * k, y: b.y * k, size: b.size * k } : b));
+    }
   }
-
-  // 画面の向きを変えた・アドレスバーが出入りしたなどで写真の表示サイズが変わったら、枠も同じ割合で合わせる
   useEffect(() => {
     const img = imgRef.current;
-    if (!img || !view) return;
-    const ro = new ResizeObserver(() => {
-      const w = img.clientWidth;
-      const h = img.clientHeight;
-      if (!w || !h || (w === view.w && h === view.h)) return;
-      const k = w / view.w;
-      setView({ w, h });
-      setBox((b) => (b ? { x: b.x * k, y: b.y * k, size: b.size * k } : b));
-    });
+    if (!img) return;
+    fit();
+    const ro = new ResizeObserver(fit);
     ro.observe(img);
-    return () => ro.disconnect();
-  }, [view]);
+    // 読み込み済みでも幅がまだ決まっていないときのために、少し後にもう一度
+    const t = window.setTimeout(fit, 300);
+    return () => {
+      ro.disconnect();
+      window.clearTimeout(t);
+    };
+  }, [url]);
 
   const minSize = view ? Math.max(40, Math.round(Math.min(view.w, view.h) * 0.1)) : 40;
   const maxSize = view ? Math.min(view.w, view.h) : 40;
@@ -154,7 +165,8 @@ export function FacePicker({
     }
   }
 
-  return (
+  // ページの中の項目は動き（translate）が付いていて、その中だと画面全体に広がらないので、body の直下に出す
+  return createPortal(
     <div role="dialog" aria-modal="true" aria-label={`${title}の顔をえらぶ`} className="face-picker">
       <div className="face-picker-inner">
         <div className="display" style={{ fontSize: 18, fontWeight: 900, color: "var(--navy)" }}>{title}の顔を囲んでください</div>
@@ -169,7 +181,7 @@ export function FacePicker({
           onPointerCancel={up}
         >
           {/* eslint-disable-next-line @next/next/no-img-element -- 選んだ写真のその場プレビュー */}
-          <img ref={imgRef} src={url} alt="選んだ写真" onLoad={onLoad} onError={onError} draggable={false} />
+          <img ref={imgRef} src={url} alt="選んだ写真" onLoad={fit} onError={onError} draggable={false} />
           {box && (
             <div className="face-picker-box" style={{ left: box.x, top: box.y, width: box.size, height: box.size }}>
               <span className="face-picker-handle" aria-hidden="true" />
@@ -202,6 +214,7 @@ export function FacePicker({
           </button>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 }
