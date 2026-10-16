@@ -48,13 +48,35 @@ export async function POST(request: Request) {
     const charge = event.data.object;
     const paymentIntent = typeof charge.payment_intent === "string" ? charge.payment_intent : charge.payment_intent?.id;
     if (paymentIntent) {
-      const { error } = await db
-        .from("orders")
-        .update({ refunded_amount: charge.amount_refunded, refunded_at: new Date(event.created * 1000).toISOString() })
-        .eq("stripe_payment_intent", paymentIntent);
-      if (error) {
-        console.error("refund sync failed", error);
-        return new Response("db error", { status: 500 });
+      const at = new Date(event.created * 1000).toISOString();
+      const { data: orders } = await db.from("orders").select("id, bundle_of, amount").eq("stripe_payment_intent", paymentIntent);
+      if ((orders?.length ?? 0) > 1) {
+        // まとめ買い（1回の支払いで話ごとに注文がある）：返金を注文ごとに分ける。管理画面からの返金は metadata.order_id で、
+        // それ以外（Stripe のダッシュボードからの返金）は1話目の注文に数える
+        const first = orders!.find((o) => !o.bundle_of) ?? orders![0];
+        const refunds = await stripe.refunds.list({ payment_intent: paymentIntent, limit: 100 });
+        const per = new Map<string, number>();
+        for (const r of refunds.data) {
+          if (r.status === "failed" || r.status === "canceled") continue;
+          const id = orders!.some((o) => o.id === r.metadata?.order_id) ? r.metadata!.order_id : first.id;
+          per.set(id, (per.get(id) ?? 0) + r.amount);
+        }
+        for (const o of orders!) {
+          const { error } = await db.from("orders").update({ refunded_amount: per.get(o.id) ?? 0, ...(per.get(o.id) ? { refunded_at: at } : {}) }).eq("id", o.id);
+          if (error) {
+            console.error("refund sync failed", error);
+            return new Response("db error", { status: 500 });
+          }
+        }
+      } else {
+        const { error } = await db
+          .from("orders")
+          .update({ refunded_amount: charge.amount_refunded, refunded_at: at })
+          .eq("stripe_payment_intent", paymentIntent);
+        if (error) {
+          console.error("refund sync failed", error);
+          return new Response("db error", { status: 500 });
+        }
       }
     }
   }

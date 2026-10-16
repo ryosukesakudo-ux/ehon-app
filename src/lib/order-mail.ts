@@ -37,14 +37,19 @@ export async function sendOrderConfirmation(orderId: string, base: string) {
   const a = ship?.address;
   const name = ship?.name ? `${ship.name} 様` : "お客様";
   const discount: number = o.discount ?? 0;
+  // まとめ買い（2話目以降の注文）。1話目の注文に、ほかの話と合計金額をまとめて書く
+  const { data: bundle } = await db.from("orders").select("amount, drafts(story)").eq("bundle_of", o.id);
+  const extras = (bundle ?? []) as unknown as { amount: number; drafts: { story: string } | null }[];
+  const total = o.amount + extras.reduce((n, e) => n + e.amount, 0);
 
   const lines: [string, string][] = [
     ["注文番号", orderNo],
     ["お話", `${storyLabel(o.drafts?.story)}（主人公：${o.drafts?.child_name ?? ""}）`],
+    ...extras.map((e, i) => [i === 0 ? "まとめて注文したお話" : "", storyLabel(e.drafts?.story)] as [string, string]),
     ["テイスト", getTaste(o.drafts?.taste)?.name ?? ""],
-    ["絵本の種類", `${size?.name ?? o.size}（${size?.spec ?? ""}）×${copies}冊`],
+    ["絵本の種類", `${size?.name ?? o.size}（${size?.spec ?? ""}）×${copies}冊${extras.length ? `（お話ごとに。合計${copies * (extras.length + 1)}冊を同じ箱でお届け）` : ""}`],
     ...(discount > 0 ? ([["クーポン", `${o.coupon_code}（${yen(discount)}引き）`]] as [string, string][]) : []),
-    ["お支払い金額", `${yen(o.amount)}（送料・税込）`],
+    ["お支払い金額", `${yen(total)}（送料・税込）`],
     ["お届け先", a ? `〒${a.postal_code ?? ""} ${a.state ?? ""}${a.city ?? ""}${a.line1 ?? ""} ${a.line2 ?? ""}　${ship?.name ?? ""} 様` : ""],
     ["お届け希望", deliveryLabel(o.delivery_date, o.delivery_time)],
   ];
@@ -59,7 +64,7 @@ export async function sendOrderConfirmation(orderId: string, base: string) {
   ].join("\n");
   const outro = `ご注文の状況と絵本の絵は、マイページでご確認いただけます。\n${account}\n\nご不明な点は、このメールにご返信ください。\n\n${SITE_NAME}\n${base}`;
 
-  const text = [intro, "", "■ ご注文内容", ...lines.map(([k, v]) => `${k}：${v}`), "", flow, "", "■ 次の絵本のご案内", next, "", outro].join("\n");
+  const text = [intro, "", "■ ご注文内容", ...lines.map(([k, v]) => (k ? `${k}：${v}` : `　${v}`)), "", flow, "", "■ 次の絵本のご案内", next, "", outro].join("\n");
   const html = `<div style="font-family:sans-serif;font-size:15px;line-height:1.8;color:#1e2f57;max-width:560px">
 <p>${escapeHtml(intro).replaceAll("\n", "<br>")}</p>
 <h2 style="font-size:17px;color:#f08a6c;margin:24px 0 8px">ご注文内容</h2>
@@ -104,10 +109,13 @@ export async function sendKonbiniGuide(orderId: string, base: string) {
   const account = `${base}/account`;
   const subject = `【${SITE_NAME}】コンビニでのお支払いのご案内（注文番号 ${orderNo}）`;
   const intro = `${name}\n\nこのたびは「${SITE_NAME}」でご注文いただき、ありがとうございます。\nコンビニでのお支払いを受け付けました。下のボタンからお支払い番号とお支払いの手順をご確認のうえ、${deadline ? `${deadline} までに` : ""}お支払いください。`;
+  // まとめ買いは2話目以降の注文の金額も足す
+  const { data: bundle } = await db.from("orders").select("amount").eq("bundle_of", o.id);
+  const total = o.amount + (bundle ?? []).reduce((n, e) => n + e.amount, 0);
   const lines: [string, string][] = [
     ["注文番号", orderNo],
-    ["お話", `${storyLabel(o.drafts?.story)}（主人公：${o.drafts?.child_name ?? ""}）`],
-    ["お支払い金額", `${yen(o.amount)}（送料・税込）`],
+    ["お話", `${storyLabel(o.drafts?.story)}（主人公：${o.drafts?.child_name ?? ""}）${bundle?.length ? `ほか${bundle.length}話` : ""}`],
+    ["お支払い金額", `${yen(total)}（送料・税込）`],
     ...(deadline ? ([["お支払い期限", deadline]] as [string, string][]) : []),
   ];
   const after = "お支払いを確認したら「ご注文完了」メールをお送りし、絵本の制作を始めます。\n期限を過ぎるとご注文は取り消しになります。そのときは、マイページの「つづきから」でもう一度ご注文いただけます。";

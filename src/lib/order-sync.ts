@@ -23,23 +23,33 @@ export async function applyCheckoutSession(
   const paid = session.payment_status === "paid" || session.payment_status === "no_payment_required";
   const paymentIntent = typeof session.payment_intent === "string" ? session.payment_intent : (session.payment_intent?.id ?? null);
 
+  // まとめ買い（metadata.bundle）は、話ごとの注文に金額を分けてあるので、決済の合計で上書きしない
+  const bundle = !!session.metadata?.bundle;
+  const fields = {
+    checkout_completed_at: opts.at.toISOString(),
+    email: session.customer_details?.email ?? null,
+    phone: session.customer_details?.phone ?? null,
+    shipping: session.collected_information?.shipping_details ?? null,
+    ...(paymentIntent ? { stripe_payment_intent: paymentIntent } : {}),
+    ...(paid ? { status: "paid", paid_at: new Date().toISOString() } : {}),
+  };
   const { data: updated, error } = await db
     .from("orders")
-    .update({
-      checkout_completed_at: opts.at.toISOString(),
-      email: session.customer_details?.email ?? null,
-      phone: session.customer_details?.phone ?? null,
-      shipping: session.collected_information?.shipping_details ?? null,
-      amount: session.amount_total,
-      ...(paymentIntent ? { stripe_payment_intent: paymentIntent } : {}),
-      ...(paid ? { status: "paid", paid_at: new Date().toISOString() } : {}),
-    })
+    .update(bundle ? fields : { ...fields, amount: session.amount_total })
     .eq("id", orderId)
     .eq("status", "pending")
     .select("id");
   if (error) {
     console.error("order update failed", error);
     return { ok: false };
+  }
+  if (bundle) {
+    // 2話目以降の注文も、同じお届け先・同じ支払いで記録する
+    const { error: bundleError } = await db.from("orders").update(fields).eq("bundle_of", orderId).eq("status", "pending");
+    if (bundleError) {
+      console.error("bundle order update failed", bundleError);
+      return { ok: false };
+    }
   }
   // 支払い済みになったときだけ（同じ注文で二重に送らない）、ご注文完了メールを送る
   if (paid && updated?.length) {
