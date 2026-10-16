@@ -15,6 +15,7 @@ import { Lottie } from "@/components/lottie";
 import { ScrollFx } from "@/components/scroll-fx";
 import { AccountLink } from "@/components/account-link";
 import s from "./top.module.css";
+import { TopReviews } from "./top-reviews";
 
 const NAVY = "#1E2F57";
 const CREAM = "#FFF8EC";
@@ -491,6 +492,15 @@ export default function Home() {
         </div>
       </section>
 
+      <TopReviews className={s.section} style={{ background: CREAM, paddingTop: 8 }}>
+        <div className={`${s.eyebrow} display`} style={{ background: "#F6A93B" }}>みんなのレビュー</div>
+        <h2 className={`${s.h2} display`}>
+          <span className="nowrap">届いたご家族の</span>
+          <br />
+          <span className="nowrap"><Pop color="#F6A93B">声</Pop>です。</span>
+        </h2>
+      </TopReviews>
+
       <section className={s.section} style={{ background: CREAM, paddingTop: 8, paddingBottom: 48 }}>
         <Eyebrow color="#7CC7A8">よくある質問</Eyebrow>
         <h2 className={`${s.h2} display`} data-reveal="up">はじめての方へ</h2>
@@ -528,6 +538,7 @@ export default function Home() {
 
       <footer className={s.footer}>
         <Link href="/samples">サンプル集</Link>
+        <Link href="/reviews">みんなのレビュー</Link>
         <Link href="/legal">特定商取引法に基づく表記</Link>
         <Link href="/privacy">プライバシーポリシー</Link>
         <Link href="/terms">利用規約</Link>
