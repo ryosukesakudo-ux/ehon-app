@@ -29,7 +29,7 @@ const ORDER_STATUS: Record<string, string> = {
   shipped: "発送済み",
 };
 
-type OrderRow = { id: string; status: string; size: string; amount: number; paid_at: string | null; checkout_completed_at: string | null; refunded_amount?: number | null; stripe_payment_intent?: string | null };
+type OrderRow = { id: string; status: string; size: string; amount: number; paid_at: string | null; checkout_completed_at: string | null; refunded_amount?: number | null; stripe_payment_intent?: string | null; bundle_of?: string | null };
 
 function date(d: Date | string) {
   return new Date(d).toLocaleDateString("ja-JP", { timeZone: "Asia/Tokyo", month: "numeric", day: "numeric" });
@@ -176,6 +176,7 @@ export default async function AccountPage({ searchParams }: PageProps<"/account"
                     </>
                   )}
                   {o.status === "shipped" &&
+                    !o.bundle_of &&
                     (reviewByOrder.has(o.id) ? (
                       <div style={{ marginTop: 4 }}>レビュー投稿済み・お礼のクーポン <b style={{ color: "var(--coral)" }}>{reviewByOrder.get(o.id)}</b></div>
                     ) : (

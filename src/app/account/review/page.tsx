@@ -17,13 +17,14 @@ export default async function ReviewPage({ searchParams }: PageProps<"/account/r
   if (!user) redirect(`/login?next=${encodeURIComponent(`/account/review?order=${orderId}`)}`);
   const db = getSupabase();
   const { data: order } = db && orderId
-    ? await db.from("orders").select("id, user_id, status, drafts(story, child_name)").eq("id", orderId).maybeSingle()
+    ? await db.from("orders").select("*, drafts(story, child_name)").eq("id", orderId).maybeSingle()
     : { data: null };
   const { data: review } = db && order ? await db.from("reviews").select("coupon_code").eq("order_id", order.id).maybeSingle() : { data: null };
   const draft = (order?.drafts ?? null) as { story?: string; child_name?: string } | null;
 
   let message: string | null = null;
   if (!order || order.user_id !== user.id) message = "ご注文が見つかりませんでした。";
+  else if (order.bundle_of) message = "まとめ買いのレビューは、1話目のご注文から1件だけ書けます。";
   else if (order.status !== "shipped") message = "レビューは、絵本がお手元に届いてから書けます。";
   else if (review) message = `このご注文のレビューは投稿済みです。お礼のクーポン：${review.coupon_code}`;
 
