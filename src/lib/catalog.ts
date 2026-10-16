@@ -391,12 +391,15 @@ export function plainText(text: string) {
   return text.replace(/《[^》]*》/g, "");
 }
 
-/** 合計金額。クーポンがあれば1冊目をクーポンの値段（bookPrice）にする。2冊目以降は通常の値段 */
-export function orderTotal(sizeId: SizeId, copies: number, bookPrice?: number | null) {
+/**
+ * 合計金額。クーポンがあれば1冊目をクーポンの値段（bookPrice）にする。2冊目以降は1冊ごとに1,000円引き。
+ * episodes：シリーズの話をまとめて買う話数（2026-10-16 作道さん：1話＝1冊。どの話も同じ部数で、2冊目以降の値引きは話をまたいで同じ）
+ */
+export function orderTotal(sizeId: SizeId, copies: number, bookPrice?: number | null, episodes = 1) {
   const size = getSize(sizeId);
   if (!size) throw new Error(`unknown size: ${sizeId}`);
   const first = bookPrice == null ? size.price : Math.min(bookPrice, size.price);
-  return first + (clampCopies(copies) - 1) * extraCopyPrice(sizeId);
+  return first + (clampCopies(copies) * Math.max(1, episodes) - 1) * extraCopyPrice(sizeId);
 }
 
 /** 1冊目の値段。クーポンは「1冊目の値段を決めるもの（bookPrice）」と「値引き額（discount）」の2種類 */

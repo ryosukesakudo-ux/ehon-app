@@ -1,12 +1,16 @@
 "use client";
 
 import { EXTRA_COPY_DISCOUNT, MAX_COPIES, SIZES, extraCopyPrice, getSize, orderTotal, yen } from "@/lib/catalog";
-import { useFlow } from "../flow";
+import { chosenExtras, useFlow } from "../flow";
+import { ExtraEpisodes } from "../extra-episodes";
 import { NextButton, StepHeader, StepTitle } from "../step";
 
 export default function SizePage() {
   const { state, update } = useFlow();
   const size = getSize(state.size)!;
+  // まとめて買うほかの話（1話＝1冊。どの話も同じ部数）
+  const extras = chosenExtras(state);
+  const books = state.copies * (1 + extras.length);
   return (
     <>
       <StepHeader step={5} back="/create/preview" />
@@ -37,17 +41,26 @@ export default function SizePage() {
             </div>
           </div>
           <p style={{ margin: 0, fontSize: 13, lineHeight: 1.7, color: "var(--sub)" }}>
-            おじいちゃん・おばあちゃん用などに。2冊目からは1冊{yen(EXTRA_COPY_DISCOUNT)}引きの{yen(extraCopyPrice(state.size))}で、同じ箱でお届けします（{MAX_COPIES}冊まで）。
+            おじいちゃん・おばあちゃん用などに{extras.length > 0 ? "（どのお話も同じ部数）" : ""}。2冊目からは1冊{yen(EXTRA_COPY_DISCOUNT)}引きの{yen(extraCopyPrice(state.size))}で、同じ箱でお届けします（{MAX_COPIES}冊まで）。
           </p>
         </div>
+        <ExtraEpisodes />
         <div className="card" style={{ padding: 18 }}>
           <div className="sum-row"><span>絵本（{size.name}）</span><span>{yen(size.price)}</span></div>
-          {state.copies > 1 && <div className="sum-row"><span>追加の{state.copies - 1}冊（{yen(extraCopyPrice(state.size))}×{state.copies - 1}）</span><span>{yen(extraCopyPrice(state.size) * (state.copies - 1))}</span></div>}
+          {books > 1 && (
+            <div className="sum-row">
+              <span>
+                追加の{books - 1}冊（{yen(extraCopyPrice(state.size))}×{books - 1}）
+                {extras.length > 0 && `・${1 + extras.length}話×${state.copies}冊`}
+              </span>
+              <span>{yen(extraCopyPrice(state.size) * (books - 1))}</span>
+            </div>
+          )}
           <div className="sum-row"><span>送料</span><span>0円</span></div>
           <div className="divider" />
           <div className="sum-total">
             <span className="display" style={{ fontSize: 15, fontWeight: 800 }}>合計（税込）</span>
-            <span className="display" style={{ fontSize: 28, fontWeight: 900, color: "var(--coral)" }}>{yen(orderTotal(state.size, state.copies))}</span>
+            <span className="display" style={{ fontSize: 28, fontWeight: 900, color: "var(--coral)" }}>{yen(orderTotal(state.size, state.copies, null, 1 + extras.length))}</span>
           </div>
         </div>
       </main>

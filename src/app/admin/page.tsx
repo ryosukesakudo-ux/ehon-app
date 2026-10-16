@@ -78,6 +78,8 @@ export default async function AdminPage() {
     }),
   );
 
+  const bundleChildren = (id: string) => (orders ?? []).filter((x) => x.bundle_of === id);
+
   return (
     <main style={{ maxWidth: 960, margin: "0 auto", padding: "24px 16px 64px", display: "flex", flexDirection: "column", gap: 20 }}>
       <h1 className="display" style={{ margin: 0, color: "var(--navy)" }}>注文管理</h1>
@@ -107,6 +109,19 @@ export default async function AdminPage() {
               {copiesOf(o) > 1 ? `×${copiesOf(o)}冊` : ""}／{yen(o.amount)}
               {o.coupon_code ? `（クーポン ${o.coupon_code}：${yen(o.discount ?? 0)}引き）` : ""}
               <br />
+              {/* まとめ買い（2026-10-16）：話ごとに注文があり、支払いは1回・同じ箱でお届け */}
+              {o.bundle_of && (
+                <>
+                  <strong>まとめ買い：注文 {String(o.bundle_of).slice(0, 8).toUpperCase()} と同じ箱でお届け</strong>（支払いは1回。全ページの絵を作ったら、確認してから印刷してください）
+                  <br />
+                </>
+              )}
+              {bundleChildren(o.id).length > 0 && (
+                <>
+                  <strong>まとめ買い：ほかに{bundleChildren(o.id).length}話（注文 {bundleChildren(o.id).map((c) => c.id.slice(0, 8).toUpperCase()).join("・")}）を同じ箱でお届け</strong>
+                  <br />
+                </>
+              )}
               お届け先：{ship?.name} 〒{a?.postal_code} {a?.state}{a?.city}{a?.line1} {a?.line2}
               <br />
               お届け希望：<strong>{deliveryLabel(o.delivery_date, o.delivery_time)}</strong>

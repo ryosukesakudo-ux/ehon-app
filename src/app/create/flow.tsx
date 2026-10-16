@@ -37,6 +37,11 @@ export type FlowState = {
   size: SizeId;
   /** 部数（1〜10） */
   copies: number;
+  /** まとめて買う同じシリーズのほかの話（2026-10-16）。extraFor の下書きのときだけ使う（別の下書きに変わったら無視する） */
+  extraEpisodes: number[];
+  /** ほかの話のプレビューを作ったときの、その話の下書き（話の番号 → 下書き） */
+  extraDrafts: Record<string, string>;
+  extraFor: string;
   /** 絵本の最後のページに入れる、おうちの方からのメッセージ（任意） */
   bookMessage: string;
   /** 思い出の写真（任意・注文の確認画面でアップロード）の保存先。空は無し（そのページはおえかきページになる） */
@@ -70,6 +75,9 @@ const initial: FlowState = {
   reused: [],
   size: "M",
   copies: 1,
+  extraEpisodes: [],
+  extraDrafts: {},
+  extraFor: "",
   bookMessage: "",
   memoryPhotoPath: "",
   deliveryDate: "",
@@ -131,6 +139,9 @@ export function FlowProvider({ children }: { children: ReactNode }) {
       // 非表示にした1話だけのお話が残っていたら、選び直してもらう
       if (!isStoryKey(restored.story) || !(parseSeriesKey(restored.story) || parseCustomKey(restored.story))) restored.story = initial.story;
       restored.copies = clampCopies(restored.copies);
+      restored.extraEpisodes = Array.isArray(restored.extraEpisodes) ? restored.extraEpisodes.filter((n) => Number.isInteger(n)) : [];
+      restored.extraDrafts = restored.extraDrafts && typeof restored.extraDrafts === "object" ? restored.extraDrafts : {};
+      restored.extraFor = typeof restored.extraFor === "string" ? restored.extraFor : "";
       if (!isLikenessId(restored.likeness)) restored.likeness = initial.likeness;
       restored.plainFace = restored.plainFace === true;
       restored.confirmed = restored.confirmed === true;
@@ -167,4 +178,9 @@ export function useFlow() {
   const ctx = useContext(FlowContext);
   if (!ctx) throw new Error("useFlow must be used inside FlowProvider");
   return ctx;
+}
+
+/** まとめて買うほかの話（今の下書きで選んだものだけ） */
+export function chosenExtras(state: FlowState) {
+  return state.draftId && state.extraFor === state.draftId ? state.extraEpisodes : [];
 }

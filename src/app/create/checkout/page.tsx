@@ -16,11 +16,11 @@ import {
   yen,
 } from "@/lib/catalog";
 import type { Coupon } from "@/lib/coupons";
-import { levelLabel, storyLabel } from "@/lib/story-key";
+import { levelLabel, parseSeriesKey, seriesKey, storyLabel } from "@/lib/story-key";
 import { DatePicker } from "@/components/date-picker";
 import { toViewablePhoto } from "@/lib/heic-photo";
 import { shrinkPhoto } from "@/lib/shrink-photo";
-import { useFlow } from "../flow";
+import { chosenExtras, useFlow } from "../flow";
 import { NextButton, StepHeader, StepTitle } from "../step";
 
 export default function CheckoutPage() {
@@ -37,6 +37,10 @@ export default function CheckoutPage() {
   const [couponError, setCouponError] = useState<string | null>(null);
   const [checking, setChecking] = useState(false);
   const firstPrice = firstBookPrice(size.price, coupon);
+  // まとめて買うほかの話（1話＝1冊。どの話も同じ部数）
+  const extras = chosenExtras(state);
+  const books = state.copies * (1 + extras.length);
+  const storyKey = parseSeriesKey(state.story);
   const [extrasOpen, setExtrasOpen] = useState(!!(state.bookMessage || state.memoryPhotoPath));
   const [photoBusy, setPhotoBusy] = useState(false);
   const [photoError, setPhotoError] = useState<string | null>(null);
@@ -93,6 +97,8 @@ export default function CheckoutPage() {
           draftId: state.draftId,
           size: state.size,
           copies: state.copies,
+          extraEpisodes: extras,
+          extraDrafts: state.extraDrafts,
           coupon: coupon?.code ?? "",
           childBirthday: state.childBirthday,
           childHonorific: state.childHonorific,
@@ -107,7 +113,7 @@ export default function CheckoutPage() {
         return;
       }
       if (!res.ok || !json.url) throw new Error(json.error ?? "決済画面を開けませんでした");
-      window.location.href = json.url;
+      window.location.assign(json.url);
     } catch (e) {
       setError(e instanceof Error ? e.message : "決済画面を開けませんでした");
       setSending(false);
@@ -122,6 +128,10 @@ export default function CheckoutPage() {
         <div className="card" style={{ padding: 18 }}>
           <div className="display" style={{ fontSize: 15, fontWeight: 800, color: "var(--navy)" }}>ご注文内容</div>
           <div className="sum-row"><span>お話</span><span>{storyLabel(state.story)}</span></div>
+          {storyKey &&
+            extras.map((no) => (
+              <div key={no} className="sum-row"><span>まとめて</span><span>{storyLabel(seriesKey(storyKey.series, no, storyKey.level))}</span></div>
+            ))}
           {levelLabel(state.story) && <div className="sum-row"><span>文の量</span><span>{levelLabel(state.story)}</span></div>}
           <div className="sum-row"><span>テイスト</span><span>{getTaste(state.taste)?.name}</span></div>
           <div className="sum-row"><span>主人公</span><span>{state.childName}{state.childAge ? `（${state.childAge}さい）` : ""}</span></div>
@@ -130,11 +140,11 @@ export default function CheckoutPage() {
           <div className="divider" />
           <div className="sum-row"><span>絵本</span><span>{yen(size.price)}</span></div>
           {coupon && <div className="sum-row" style={{ color: "var(--coral)" }}><span>クーポン（{coupon.label}）</span><span>−{yen(size.price - firstPrice)}</span></div>}
-          {state.copies > 1 && <div className="sum-row"><span>追加の{state.copies - 1}冊</span><span>{yen(extraCopyPrice(state.size) * (state.copies - 1))}</span></div>}
+          {books > 1 && <div className="sum-row"><span>追加の{books - 1}冊{extras.length > 0 ? `（${1 + extras.length}話×${state.copies}冊）` : ""}</span><span>{yen(extraCopyPrice(state.size) * (books - 1))}</span></div>}
           <div className="sum-row"><span>送料</span><span>0円</span></div>
           <div className="sum-total">
             <span className="display" style={{ fontSize: 15, fontWeight: 800 }}>合計（税込）</span>
-            <span className="display" style={{ fontSize: 26, fontWeight: 900, color: "var(--coral)" }}>{yen(orderTotal(state.size, state.copies, firstPrice))}</span>
+            <span className="display" style={{ fontSize: 26, fontWeight: 900, color: "var(--coral)" }}>{yen(orderTotal(state.size, state.copies, firstPrice, 1 + extras.length))}</span>
           </div>
         </div>
         <div className="card" style={{ padding: 18, gap: 10 }}>
@@ -170,7 +180,7 @@ export default function CheckoutPage() {
             </form>
           )}
           {couponError && <p className="error" role="alert">{couponError}</p>}
-          {coupon && state.copies > 1 && (
+          {coupon && books > 1 && (
             <p style={{ margin: 0, fontSize: 12, color: "var(--sub)" }}>クーポンは1冊目に使えます。追加の冊数は通常の値段です。</p>
           )}
         </div>

@@ -150,6 +150,9 @@ alter table orders add column if not exists refunded_at timestamptz;
 create index if not exists orders_coupon_idx on orders (coupon_code, user_id);
 -- 主人公のお誕生日（任意、2026-10-10 追加）。誕生日の1か月前に続編のご案内メールを送る
 alter table orders add column if not exists child_birthday date;
+-- シリーズの話のまとめ買い（2026-10-16）。2話目以降の注文に、1話目の注文を入れる（支払いは1回・同じ箱でお届け）
+alter table orders add column if not exists bundle_of uuid references orders(id) on delete cascade;
+create index if not exists orders_bundle_idx on orders (bundle_of) where bundle_of is not null;
 
 -- 誕生日の案内メールを送った記録（同じお子さまに同じ年に二度送らない）
 create table if not exists birthday_notices (
