@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { MEMBER_MONTHLY_PREVIEWS, PERSON_LABEL, RETENTION, getTaste, sizeLabel, yen } from "@/lib/catalog";
+import { MEMBER_MONTHLY_PREVIEWS, PERSON_LABEL, RETENTION, REVIEW_COUPON, getTaste, sizeLabel, yen } from "@/lib/catalog";
 import { currentUser } from "@/lib/auth";
 import { listCharacters, listPhotos, previewQuota } from "@/lib/account";
 import { konbiniVoucher } from "@/lib/konbini";
@@ -43,7 +43,7 @@ export default async function AccountPage({ searchParams }: PageProps<"/account"
   // Stripe からの通知が届かなかった支払いがあれば、ここで Stripe に確かめて「支払い済み」にする
   await syncPendingOrders({ userId: user.id });
 
-  const [save, quota, photos, characters, { data: drafts }] = await Promise.all([
+  const [save, quota, photos, characters, { data: drafts }, { data: reviews }] = await Promise.all([
     getFlowSave(),
     previewQuota(user.id),
     listPhotos(user.id),
@@ -56,7 +56,10 @@ export default async function AccountPage({ searchParams }: PageProps<"/account"
           .order("created_at", { ascending: false })
           .limit(30)
       : Promise.resolve({ data: [] }),
+    // 書いたレビュー（表がまだ無いときは空）
+    db ? db.from("reviews").select("order_id, coupon_code").eq("user_id", user.id) : Promise.resolve({ data: [] }),
   ]);
+  const reviewByOrder = new Map(((reviews ?? []) as { order_id: string; coupon_code: string }[]).map((r) => [r.order_id, r.coupon_code]));
 
   // 作成済みの絵（本番の絵があればそちら、なければプレビュー）
   const books = await Promise.all(
@@ -172,6 +175,14 @@ export default async function AccountPage({ searchParams }: PageProps<"/account"
                       ／<a href={vouchers[o.id]!} target="_blank" rel="noreferrer">コンビニのお支払い番号を見る</a>
                     </>
                   )}
+                  {o.status === "shipped" &&
+                    (reviewByOrder.has(o.id) ? (
+                      <div style={{ marginTop: 4 }}>レビュー投稿済み・お礼のクーポン <b style={{ color: "var(--coral)" }}>{reviewByOrder.get(o.id)}</b></div>
+                    ) : (
+                      <Link href={`/account/review?order=${o.id}`} className="cta" style={{ marginTop: 8, height: 46, fontSize: 15 }}>
+                        レビューを書いて{yen(REVIEW_COUPON.discount)}クーポンをもらう
+                      </Link>
+                    ))}
                 </div>
               ))}
               {!d.images_deleted_at && urls.length > 0 && (

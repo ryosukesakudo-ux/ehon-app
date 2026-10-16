@@ -1,4 +1,4 @@
-import { FLYER_COUPON, REPEAT_COUPON } from "@/lib/catalog";
+import { FLYER_COUPON, REPEAT_COUPON, REVIEW_COUPON } from "@/lib/catalog";
 import { normalizeCouponCode } from "@/lib/coupons";
 import { getSupabase } from "@/lib/services";
 
@@ -13,6 +13,7 @@ export async function POST(request: Request) {
   if (!/^[A-Z0-9-]{4,32}$/.test(code)) return Response.json({ error: "コードは英数字とハイフンで4〜32文字にしてください" }, { status: 400 });
   if (code === REPEAT_COUPON.code) return Response.json({ error: `「${REPEAT_COUPON.code}」はリピート割引で使っているコードです` }, { status: 400 });
   if (code === FLYER_COUPON.code) return Response.json({ error: `「${FLYER_COUPON.code}」はチラシ割引で使っているコードです` }, { status: 400 });
+  if (code.startsWith(REVIEW_COUPON.prefix)) return Response.json({ error: `「${REVIEW_COUPON.prefix}」で始まるコードはレビューのお礼クーポンで使っています` }, { status: 400 });
   if (!label) return Response.json({ error: "名前（例：友人用1500円）を入れてください" }, { status: 400 });
   if (!(bookPrice >= 0)) return Response.json({ error: "1冊目の値段を0円以上で入れてください" }, { status: 400 });
   const { error } = await db.from("coupons").insert({ code, label, book_price: bookPrice });
