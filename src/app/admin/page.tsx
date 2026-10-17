@@ -33,6 +33,7 @@ export default async function AdminPage() {
         <p><a href="/admin/compare">画質くらべ（以前の方式と今のA方式を1枚ずつ）</a></p>
         <p><a href="/admin/deforme">デフォルメ試作（新しい絵柄を1枚ためす）</a></p>
         <p><a href="/admin/characters">キャラスタジオ（オリジナルキャラ6体の設定画・表情）</a></p>
+        <p><a href="/admin/shorts">ショートスタジオ（YouTubeショートのカットの絵を作って動かす）</a></p>
       </main>
     );
   }
@@ -90,6 +91,7 @@ export default async function AdminPage() {
       <a href="/admin/compare">画質くらべ（以前の方式と今のA方式を1枚ずつ作って比べる）</a>
       <a href="/admin/deforme">デフォルメ試作（新しい絵柄で家族3人を1枚ためす）</a>
       <a href="/admin/characters">キャラスタジオ（オリジナルキャラ6体「おちばの したの まち」の設定画・表情）</a>
+      <a href="/admin/shorts">ショートスタジオ（YouTubeショートのカットの絵を作り、Veo で動かす）</a>
       <a href="/admin/coupons">クーポン管理（コードの発行・停止、使われた回数）</a>
       <a href="/admin/reviews">レビュー管理（投稿されたレビューの確認・非表示）</a>
       {rows.length === 0 && <p>まだ注文はありません。</p>}
