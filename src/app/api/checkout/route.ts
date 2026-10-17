@@ -1,13 +1,9 @@
 import { randomUUID } from "node:crypto";
 import {
-  DELIVERY_MAX_DAYS,
-  DELIVERY_MIN_DAYS,
   clampCopies,
   extraCopyPrice,
   firstBookPrice,
-  deliveryLabel,
   getSize,
-  jstDate,
   orderTotal,
   parseBirthday,
   type SizeId,
@@ -30,14 +26,11 @@ export async function POST(request: Request) {
   const draftId = String(body?.draftId ?? "");
   const sizeId = String(body?.size ?? "") as SizeId;
   const copies = clampCopies(body?.copies);
-  const deliveryDate = String(body?.deliveryDate ?? "") || null;
-  // 製本直送は日時指定ができないため、時間帯は受け付けない
+  // お届け日・時間帯は指定できない（2026-10-17 作道さん決定：正確な日に届けられないため受け付けない）
+  const deliveryDate = null;
   const deliveryTime = null;
   // お誕生日は任意。入っていれば、誕生日の1か月前に続編のご案内メールを送る
   const childBirthday = parseBirthday(body?.childBirthday);
-  if (deliveryDate && (!/^\d{4}-\d{2}-\d{2}$/.test(deliveryDate) || deliveryDate < jstDate(DELIVERY_MIN_DAYS) || deliveryDate > jstDate(DELIVERY_MAX_DAYS))) {
-    return Response.json({ error: `お届け日は${DELIVERY_MIN_DAYS}日後から${DELIVERY_MAX_DAYS}日後までの日付を選んでください` }, { status: 400 });
-  }
 
   const size = getSize(sizeId);
   const owned = draftId ? await loadOwnedDraft(draftId) : null;
@@ -205,8 +198,7 @@ export async function POST(request: Request) {
     phone_number_collection: { enabled: true },
     client_reference_id: orderId,
     customer_email: user.email ?? undefined,
-    metadata: { order_id: orderId, delivery: deliveryLabel(deliveryDate, deliveryTime), ...(extraOrderIds.length ? { bundle: String(extraOrderIds.length) } : {}) },
-    custom_text: { submit: { message: `お届け希望：${deliveryLabel(deliveryDate, deliveryTime)}` } },
+    metadata: { order_id: orderId, ...(extraOrderIds.length ? { bundle: String(extraOrderIds.length) } : {}) },
     success_url: `${base}/create/done?order=${orderId}`,
     cancel_url: `${base}/create/size`,
   });

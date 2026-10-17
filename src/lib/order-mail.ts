@@ -1,6 +1,6 @@
 import "server-only";
 import { SITE_NAME } from "@/components/brand";
-import { REPEAT_COUPON, deliveryLabel, getSize, getTaste, yen } from "./catalog";
+import { DELIVERY_NOTE, REPEAT_COUPON, deliveryLabel, getSize, getTaste, yen } from "./catalog";
 import { sendMail } from "./mail";
 import { getSupabase } from "./services";
 import { konbiniVoucher } from "./konbini";
@@ -51,12 +51,13 @@ export async function sendOrderConfirmation(orderId: string, base: string) {
     ...(discount > 0 ? ([["クーポン", `${o.coupon_code}（${yen(discount)}引き）`]] as [string, string][]) : []),
     ["お支払い金額", `${yen(total)}（送料・税込）`],
     ["お届け先", a ? `〒${a.postal_code ?? ""} ${a.state ?? ""}${a.city ?? ""}${a.line1 ?? ""} ${a.line2 ?? ""}　${ship?.name ?? ""} 様` : ""],
-    ["お届け希望", deliveryLabel(o.delivery_date, o.delivery_time)],
+    // お届け希望日は2026-10-17に受付をやめた。以前の注文で選ばれていたときだけ出す
+    ...(o.delivery_date || o.delivery_time ? ([["お届け希望", deliveryLabel(o.delivery_date, o.delivery_time)]] as [string, string][]) : []),
   ];
   const account = `${base}/account`;
   const subject = `【${SITE_NAME}】ご注文ありがとうございます（注文番号 ${orderNo}）`;
   const intro = `${name}\n\nこのたびは「${SITE_NAME}」でご注文いただき、ありがとうございます。\nお支払いを確認しましたので、絵本の制作を始めます。`;
-  const flow = "このあとの流れ\n1. 絵本の全ページの絵を仕上げ、印刷・製本します\n2. ご注文から2週間ほどでお届けします。お届け希望日を選んだ方は、その日までに届くように発送します（発送したらマイページでお知らせします）";
+  const flow = "このあとの流れ\n1. 絵本の全ページの絵を仕上げ、印刷・製本します\n2. " + DELIVERY_NOTE + "（発送したらマイページでお知らせします）";
   // リピート割引のご案内（お誕生日を入れた方には、誕生日の1か月前にもお知らせする）
   const next = [
     `次の絵本をつくるときは、クーポンコード「${REPEAT_COUPON.code}」で1冊目が${REPEAT_COUPON.discount}円引きになります（何度でもお使いいただけます）。`,

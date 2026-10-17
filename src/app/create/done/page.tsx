@@ -3,6 +3,7 @@ import { Check, Star } from "@/components/icons";
 import { ClearFlow } from "./clear";
 import { Lottie } from "@/components/lottie";
 import { currentUser } from "@/lib/auth";
+import { DELIVERY_NOTE } from "@/lib/catalog";
 import { SELLER } from "@/lib/seller";
 import { getStripe, getSupabase } from "@/lib/services";
 import { syncPendingOrders } from "@/lib/order-sync";
@@ -34,7 +35,7 @@ export default async function DonePage({ searchParams }: PageProps<"/create/done
   const steps = [
     "ご注文確認のメールが届きます（コンビニ払いの方は、お支払い後に制作を始めます）",
     "絵本を印刷・製本します",
-    "2週間ほどでお届けします（お届け希望日を選んだ方は、その日までに届くように発送します）",
+    DELIVERY_NOTE,
   ];
   return (
     <main className="step-body" style={{ paddingTop: 40, position: "relative" }}>

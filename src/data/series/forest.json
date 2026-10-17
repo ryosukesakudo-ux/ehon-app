@@ -226,32 +226,32 @@
      "camera": "Grand extreme low wide angle from the ground, the giant tree soaring up across the spread, the tiny child and squirrel in the foreground gazing upward in three-quarter view."
     },
     {
-     "label": "【パパ】森の入口で主人公を肩車するパパ。胸に葉っぱのバッジ（ママだけのときはハグ）",
-     "art": "back at the forest entrance at golden sunset, the father carries the child on his shoulders, both smiling; one small glowing pink leaf badge is pinned on the child's own left chest and is clearly visible",
+     "label": "【パパ】森の入口でパパと手をつないで歩く主人公。胸に葉っぱのバッジ（ママだけのときはハグ）",
+     "art": "back at the forest entrance at golden sunset, the father and the child walk hand in hand, both smiling; one small glowing pink leaf badge is pinned on the child's own left chest and is clearly visible",
      "text": [
       "パパが まって いたよ。",
-      "おじいの きから もらった はっぱの バッジを むねに つけて、もりの いりぐちへ もどると、パパが まって いました。「すごいね！」 パパは {name}を かたぐるま しました。",
-      "「ありがとう、小《ちい》さな勇者《ゆうしゃ》」おじいの木《き》は、光《ひか》る葉《は》っぱのバッジを、{name}のむねにつけてくれました。森《もり》の入《い》り口《ぐち》へもどると、パパが待《ま》っていました。{name}がぼうけんの話《はなし》をすると、パパは「すごいなあ！」と、{name}を高《たか》くかたぐるましました。"
+      "おじいの きから もらった はっぱの バッジを むねに つけて、もりの いりぐちへ もどると、パパが まって いました。「すごいね！」 {name}は パパと てを つないで あるきだしました。",
+      "「ありがとう、小《ちい》さな勇者《ゆうしゃ》」おじいの木《き》は、光《ひか》る葉《は》っぱのバッジを、{name}のむねにつけてくれました。森《もり》の入《い》り口《ぐち》へもどると、パパが待《ま》っていました。{name}がぼうけんの話《はなし》をすると、パパは「すごいなあ！」とにっこり。{name}はパパと手《て》をつないで、歩《ある》きだしました。"
      ],
      "withMom": false,
      "withDad": true,
      "withSidekick": false,
      "alt": {
       "both": {
-       "label": "パパが主人公を肩車、横でママが拍手。胸に葉っぱのバッジ",
-       "art": "back at the forest entrance at golden sunset, the father carries the child high on his shoulders while the mother claps happily beside them; one small glowing pink leaf badge is pinned on the child's own left chest and is clearly visible",
+       "label": "主人公が真ん中でママ・パパと手をつないで歩く。胸に葉っぱのバッジ",
+       "art": "back at the forest entrance at golden sunset, the child walks in the middle holding hands with the mother on one side and the father on the other, all three smiling; one small glowing pink leaf badge is pinned on the child's own left chest and is clearly visible",
        "text": [
         "ママと パパが まって いたよ。",
-        "おじいの きから もらった はっぱの バッジを むねに つけて、もりの いりぐちへ もどると、ママと パパが まって いました。「すごいね！」 パパは {name}を かたぐるま しました。",
-        "「ありがとう、小《ちい》さな勇者《ゆうしゃ》」おじいの木《き》は、光《ひか》る葉《は》っぱのバッジを、{name}のむねにつけてくれました。森《もり》の入《い》り口《ぐち》へもどると、ママとパパが待《ま》っていました。{name}がぼうけんの話《はなし》をすると、パパは「すごいなあ！」と、{name}を高《たか》くかたぐるましました。ママも、にこにこ手《て》をたたいています。"
+        "おじいの きから もらった はっぱの バッジを むねに つけて、もりの いりぐちへ もどると、ママと パパが まって いました。「すごいね！」 {name}は まんなかで ふたりと てを つないで あるきだしました。",
+        "「ありがとう、小《ちい》さな勇者《ゆうしゃ》」おじいの木《き》は、光《ひか》る葉《は》っぱのバッジを、{name}のむねにつけてくれました。森《もり》の入《い》り口《ぐち》へもどると、ママとパパが待《ま》っていました。{name}がぼうけんの話《はなし》をすると、パパは「すごいなあ！」、ママは「がんばったね」とにっこり。{name}はまんなかで、ふたりと手《て》をつないで歩《ある》きだしました。"
        ],
        "withMom": true,
        "withDad": true,
        "withSidekick": false,
-       "camera": "Front three-quarter view at eye level so the front of the child's top and the one pink leaf badge on the child's own left chest are clearly visible, as the father strides along at golden sunset with the child on his shoulders and the mother clapping beside them, all smiling."
+       "camera": "Front three-quarter view at eye level so the front of the child's top and the one pink leaf badge on the child's own left chest are clearly visible, as the three walk toward the viewer at golden sunset, the child in the middle holding the mother's hand and the father's hand, all smiling; all three are fully in the picture from head to toe with plenty of space above their heads."
       },
       "mom": {
-       "label": "森の入口でママが主人公をハグ（肩車はしない）。胸に葉っぱのバッジ",
+       "label": "森の入口でママが主人公をハグ。胸に葉っぱのバッジ",
        "art": "back at the forest entrance at golden sunset, the mother kneels and hugs the child tightly with a proud smile; one small glowing pink leaf badge is pinned on the child's own left chest and is clearly visible",
        "text": [
         "ママが まって いたよ。ぎゅうっ。",
@@ -277,7 +277,7 @@
        "camera": "Front three-quarter view at eye level so the front of the child's top and the one pink leaf badge on the child's own left chest are clearly visible, as the small rabbits and the squirrel hop in a circle around the laughing child with raised arms at golden sunset."
       }
      },
-     "camera": "Front three-quarter view at eye level so the front of the child's top and the one pink leaf badge on the child's own left chest are clearly visible, as the father strides along at golden sunset with the child on his shoulders, both smiling."
+     "camera": "Front three-quarter view at eye level so the front of the child's top and the one pink leaf badge on the child's own left chest are clearly visible, as the father and the child walk toward the viewer hand in hand at golden sunset, both smiling; both are fully in the picture from head to toe with plenty of space above their heads."
     },
     {
      "label": "夜の寝室。窓の外で地図を見せるポッケ。枕元にバッジ",

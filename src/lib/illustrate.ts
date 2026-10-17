@@ -1,9 +1,11 @@
 import "server-only";
 import type { Uploadable } from "openai/uploads";
+import sharp from "sharp";
 import { COVER_SCENE, COVER_SIZE, LIKENESS_LEVELS, REDO_OPTIONS, characterOf, getStory, guestOf, getTaste, type LikenessId, type Person, type RedoOptionId, type StoryId, type TasteId } from "./catalog";
 import { getBook, type BookScene } from "./book";
 import { getOpenAI } from "./services";
 import { upscalePng } from "./upscale";
+import { cropSpreadToBook } from "./spread-crop";
 import { SERIES_NOTE_MAX, type SeriesScene } from "./series";
 import type { StudioSeries } from "./series-studio";
 import type { Continuity } from "./series-data";
@@ -206,7 +208,8 @@ function describeRefs(refs: { who: Who; kind?: RefKind }[]) {
     .join(" ");
 }
 
-function redoPrompt(redo?: Redo | null) {
+/** withNote=false：ひとことは入れない（本文の場面は redoNotePrompt で指示のいちばん最後に置く） */
+function redoPrompt(redo?: Redo | null, withNote = true) {
   if (!redo) return "";
   const opts = redo.options.map((id) => REDO_OPTIONS.find((o) => o.id === id)?.prompt).filter(Boolean);
   const likeness = LIKENESS_LEVELS.find((l) => l.id === redo.likeness)?.prompt ?? "";
@@ -215,10 +218,21 @@ function redoPrompt(redo?: Redo | null) {
     hasRedoRequest(redo) && !redo.initial ? "This is a redo requested by the customer." : "",
     likeness,
     ...opts,
-    note ? `The customer also wrote this request in Japanese; follow it as long as it fits a gentle children's picture book: 「${note}」` : "",
+    withNote && note ? `The customer also wrote this request in Japanese; follow it as long as it fits a gentle children's picture book: 「${note}」` : "",
   ]
     .filter(Boolean)
     .join(" ");
+}
+
+// 本文の場面のひとことは、場面の説明・カメラの指示より優先して最後に置く（2026-10-17 作道さん：「肩車ではなく手をつなぐ場面に」と
+// 書いても肩車のままだった。ひとことが「絵本に合う範囲で」の弱いお願いで指示の途中にあり、後ろのカメラの指示などに負けていた）
+function redoNotePrompt(redo?: Redo | null) {
+  const note = redo?.note.trim();
+  if (!note) return "";
+  return (
+    `Most important, this overrides every instruction above, including the scene description, the poses and the camera direction: the customer asked for this change when redoing this picture (written in Japanese): 「${note}」 ` +
+    "Change the picture exactly as this request says. Where it conflicts with anything above, follow this request instead. Ignore it only if it is not suitable for a gentle children's picture book."
+  );
 }
 
 /** キャラクター（1人の全身・正面の絵）を描く指示。プレビューで見せ、本番の絵の参考にする。 */
@@ -296,8 +310,13 @@ function guestsPrompt(cast: { kind: "person" | "animal"; look: string }[] | unde
     .join(" ");
 }
 
-/** 見開きの絵（横長 3:2）を印刷用に拡大するときの大きさ */
-const SPREAD_FINAL = { width: Math.round(FINAL_PX * 1.5), height: FINAL_PX };
+/** 見開きの絵を印刷用に拡大するときの横幅（高さは絵の縦横の比のまま。2:1 に切った絵も、切る前の 3:2 の絵もある） */
+const SPREAD_FINAL_WIDTH = Math.round(FINAL_PX * 1.5);
+
+async function upscaleSpread(b64: string) {
+  const { width = 3, height = 2 } = await sharp(Buffer.from(b64, "base64")).metadata();
+  return upscalePng(b64, SPREAD_FINAL_WIDTH, Math.round((SPREAD_FINAL_WIDTH * height) / width));
+}
 
 /** spread：本文の場面を見開き（横長）で描く（2026-10-15 作道さん：お客様の本も見開き版に切り替え） */
 export function buildPrompt(taste: TasteId, story: string, sceneIndex: number, refs: { who: Who; kind?: RefKind }[], childAge?: number | null, redo?: Redo | null, spread = false) {
@@ -339,7 +358,7 @@ export function buildPrompt(taste: TasteId, story: string, sceneIndex: number, r
     series ? SERIES_CAST_RULES : "",
     !series && book.cast ? CUSTOM_CAST_RULES : "",
     guestsPrompt(book.cast, scene.guests),
-    redoPrompt(redo),
+    redoPrompt(redo, false),
     generic.length ? `${generic.join(" and ")} appear in this scene; draw them as gentle adults without a specific likeness.` : "",
     absent.length ? `Do not include ${absent.join(" or ")} in this scene.` : "",
     cameraPrompt(scene.camera),
@@ -348,6 +367,7 @@ export function buildPrompt(taste: TasteId, story: string, sceneIndex: number, r
       : spread
         ? spreadFraming(sceneTextSide(sceneIndex))
         : framing(scene.camera),
+    redoNotePrompt(redo),
   ]
     .filter(Boolean)
     .join(" ");
@@ -397,15 +417,17 @@ export async function illustrate(opts: {
     quality: opts.detail ?? (opts.quality === "final" ? "high" : "medium"),
     output_format: "png",
   });
-  const b64 = result.data?.[0]?.b64_json;
-  if (!b64) throw new Error("画像が生成されませんでした");
-  if (upscaleTo && spread) return upscalePng(b64, SPREAD_FINAL.width, SPREAD_FINAL.height);
+  const generated = result.data?.[0]?.b64_json;
+  if (!generated) throw new Error("画像が生成されませんでした");
+  // 見開きの絵は、頭が切れない位置で本と同じ 2:1 に切ってから保存する
+  const b64 = spread ? await cropSpreadToBook(generated) : generated;
+  if (upscaleTo && spread) return upscaleSpread(b64);
   return upscaleTo ? upscalePng(b64, upscaleTo) : b64;
 }
 
 /** 印刷用の大きさに拡大する（プレビューの絵をそのまま本にするとき）。見開きの絵（横長）は横長のまま */
 export async function upscaleForPrint(b64: string, wide: boolean) {
-  return wide ? upscalePng(b64, SPREAD_FINAL.width, SPREAD_FINAL.height) : upscalePng(b64, FINAL_PX);
+  return wide ? upscaleSpread(b64) : upscalePng(b64, FINAL_PX);
 }
 
 // --- 作例（トップページなどに載せる見本の絵）---
