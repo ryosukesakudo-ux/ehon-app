@@ -2,12 +2,15 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { hasAuthCookie } from "@/lib/auth-cookie";
 
 // トップの上のボタン。ログイン中なら「マイページ」、それ以外は「ログイン」（2026-10-12 作道さん）。
 // トップは静的なページなので、ログイン状態は開いたあとに確かめて切り替える。
 export function AccountLink({ className }: { className?: string }) {
   const [loggedIn, setLoggedIn] = useState(false);
   useEffect(() => {
+    // ログインの Cookie が無ければ未ログイン。サーバーに確かめに行かない
+    if (!hasAuthCookie()) return;
     fetch("/api/account")
       .then((r) => r.json())
       .then((j) => setLoggedIn(!!j.loggedIn))

@@ -7,7 +7,7 @@ import { konbiniVoucher } from "@/lib/konbini";
 import { BuyPreviewsButton } from "@/components/buy-previews";
 import { BOOK_BUCKET, getSupabase } from "@/lib/services";
 import { syncPendingOrders } from "@/lib/order-sync";
-import { isViewPath, viewUrls } from "@/lib/book-images";
+import { thumbUrls, viewUrls } from "@/lib/book-images";
 import { PageHeader } from "@/components/page-header";
 import { FLOW_STEPS, getFlowSave } from "@/lib/flow-save";
 import { DeletePhotoButton } from "./delete-photo";
@@ -40,22 +40,18 @@ export default async function AccountPage({ searchParams }: PageProps<"/account"
   const user = await currentUser();
   if (!user) redirect("/login?next=/account");
   const db = getSupabase();
-  // Stripe からの通知が届かなかった支払いがあれば、ここで Stripe に確かめて「支払い済み」にする
-  await syncPendingOrders({ userId: user.id });
-
   const [save, quota, photos, characters, { data: drafts }, { data: reviews }] = await Promise.all([
     getFlowSave(),
     previewQuota(user.id),
     listPhotos(user.id),
     listCharacters(user.id),
-    db
-      ? db
-          .from("drafts")
-          .select("*, orders(*)")
-          .eq("user_id", user.id)
-          .order("created_at", { ascending: false })
-          .limit(30)
-      : Promise.resolve({ data: [] }),
+    // Stripe からの通知が届かなかった支払いがあれば、ここで Stripe に確かめて「支払い済み」にしてから絵本の一覧を読む
+    // （ほかの読み込みは待たずに並べて進める）
+    (async () => {
+      await syncPendingOrders({ userId: user.id });
+      if (!db) return { data: [] };
+      return db.from("drafts").select("*, orders(*)").eq("user_id", user.id).order("created_at", { ascending: false }).limit(30);
+    })(),
     // 書いたレビュー（表がまだ無いときは空）
     db ? db.from("reviews").select("order_id, coupon_code").eq("user_id", user.id) : Promise.resolve({ data: [] }),
   ]);
@@ -66,14 +62,23 @@ export default async function AccountPage({ searchParams }: PageProps<"/account"
     (drafts ?? []).map(async (d) => {
       const orders = ((d.orders ?? []) as OrderRow[]).filter((o) => o.status !== "pending" || o.checkout_completed_at);
       const paid = orders.find((o) => o.paid_at);
-      let urls: string[] = [];
+      // thumb：並べて出す小さい絵、full：押したときに開く絵
+      let urls: { thumb: string; full: string }[] = [];
       if (db && !d.images_deleted_at) {
         for (const quality of paid ? ["final", "preview"] : ["preview"]) {
           const { data: files } = await db.storage.from(BOOK_BUCKET).list(`${d.id}/${quality}`);
-          const paths = (files ?? []).map((f) => `${d.id}/${quality}/${f.name}`).filter((p) => !isViewPath(p));
+          // 絵（PNG）だけを拾う。同じフォルダには文の置き場所の JSON（03-text.json）もあり、
+          // それを絵として出すと「？」になっていた（2026-10-17 作道さん）
+          const paths = (files ?? [])
+            .map((f) => `${d.id}/${quality}/${f.name}`)
+            .filter((p) => p.endsWith(".png"))
+            .sort();
           if (!paths.length) continue;
-          const signed = await viewUrls(paths);
-          urls = paths.map((p) => signed.get(p)).filter((u): u is string => !!u);
+          const [thumbs, fulls] = await Promise.all([thumbUrls(paths), viewUrls(paths)]);
+          urls = paths.flatMap((p) => {
+            const full = fulls.get(p);
+            return full ? [{ thumb: thumbs.get(p) ?? full, full }] : [];
+          });
           break;
         }
       }
@@ -156,9 +161,9 @@ export default async function AccountPage({ searchParams }: PageProps<"/account"
               {urls.length > 0 ? (
                 <div style={{ display: "grid", gridTemplateColumns: "repeat(3, minmax(0, 1fr))", gap: 6 }}>
                   {urls.map((u, i) => (
-                    <a key={u} href={u} target="_blank" rel="noreferrer">
+                    <a key={u.full} href={u.full} target="_blank" rel="noreferrer">
                       {/* eslint-disable-next-line @next/next/no-img-element -- 署名付きURLの一時画像 */}
-                      <img src={u} alt={`${i + 1}枚目の絵`} style={{ width: "100%", aspectRatio: "1 / 1", objectFit: "cover", borderRadius: 10, display: "block" }} />
+                      <img src={u.thumb} alt={`${i + 1}枚目の絵`} loading="lazy" decoding="async" style={{ width: "100%", aspectRatio: "1 / 1", objectFit: "cover", borderRadius: 10, display: "block" }} />
                     </a>
                   ))}
                 </div>
@@ -207,7 +212,7 @@ export default async function AccountPage({ searchParams }: PageProps<"/account"
             {characters.map((c) => (
               <div key={c.id} style={{ display: "flex", flexDirection: "column", gap: 6 }}>
                 {/* eslint-disable-next-line @next/next/no-img-element -- 署名付きURLの一時画像 */}
-                <img src={c.url} alt={`${PERSON_LABEL[c.person]}のキャラクター`} style={{ width: "100%", aspectRatio: "1 / 1", objectFit: "cover", borderRadius: 12, background: "#fff" }} />
+                <img src={c.url} alt={`${PERSON_LABEL[c.person]}のキャラクター`} loading="lazy" decoding="async" style={{ width: "100%", aspectRatio: "1 / 1", objectFit: "cover", borderRadius: 12, background: "#fff" }} />
                 <div style={{ fontSize: 11, color: "var(--sub)", lineHeight: 1.5 }}>
                   {c.person === "child" && c.childName ? c.childName : PERSON_LABEL[c.person]}／{getTaste(c.taste)?.name}
                   <br />
