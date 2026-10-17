@@ -79,6 +79,9 @@ function Preview() {
   // 作り直しの指示（選択肢と一言）
   const [options, setOptions] = useState<RedoOptionId[]>([]);
   const [note, setNote] = useState("");
+  // 作り直しの選択肢「〇〇の写真を変える」（登場人物だけ）。選んだ写真は、選択肢・ひとことと一緒に作り直しに使う
+  // どの絵で選んだかを持ち、ほかの絵に移ったら外れるようにする（選んだ写真はその人のもの）
+  const [swap, setSwap] = useState<{ scene: number; choice: PhotoChoice | null } | null>(null);
   const [resetting, setResetting] = useState(false);
   // 本人への似せ方（写真の画面で選んだもの。作り直しのときに変えられ、変えたら次からもそれを使う）
   const likeness = state.likeness;
@@ -235,7 +238,7 @@ function Preview() {
     }
   }
 
-  // 1人だけ写真を変えて、その人のキャラクターを作り直す（ほかの人はそのまま）。写真を保存できたら true
+  // 1人だけ写真を変える（ほかの人はそのまま）。写真を保存できたら true。絵はこのあと作り直しの指示と一緒に描く
   async function swapPhoto(target: number, choice: PhotoChoice) {
     if (!state.draftId) return false;
     const p = characterOf(target);
@@ -263,7 +266,6 @@ function Preview() {
       previews: Object.fromEntries(Object.entries(prev.previews).filter(([k]) => Number(k) !== target)),
       reused: prev.reused.filter((n) => n !== target),
     }));
-    void generate(target);
     return true;
   }
 
@@ -359,8 +361,13 @@ function Preview() {
   }
 
   // 作り直し：いま見ている絵だけ、または登場人物全員をまとめて。うまくいったら選択肢と一言を空にする
+  // 「写真を変える」を選んでいるときは、先にいま見ている人の写真を差し替え、新しい写真から同じ指示で描く
   async function redoScenes(targets: number[]) {
     const req = { options, note: note.trim(), likeness };
+    if (swap && swap.scene === scene) {
+      if (!swap.choice || !(await swapPhoto(scene, swap.choice))) return;
+      setSwap(null);
+    }
     if (await generateMany(targets, req)) {
       setOptions([]);
       setNote("");
@@ -418,6 +425,9 @@ function Preview() {
   const needed = !confirmed ? Math.max(1, characters.length > 1 ? characters.length : 1) : pageCount === 0 ? FIRST_PAGES : pageCount < BOOK_SCENE_COUNT ? BOOK_SCENE_COUNT - FIRST_PAGES : 1;
   const failure = scene === undefined || url || loading[scene] ? undefined : failed[scene];
   const isChar = scene !== undefined && isCharacterScene(scene);
+  const canSwap = !confirmed && isChar;
+  const swapping = canSwap && swap?.scene === scene;
+  const swapChoice = swapping ? swap.choice : null;
   const picture =
     failure ? (
       <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 8, padding: 24, textAlign: "center", color: "var(--navy)" }}>
@@ -593,7 +603,18 @@ function Preview() {
                     </button>
                   );
                 })}
+                {canSwap && (
+                  <button
+                    type="button"
+                    aria-pressed={swapping}
+                    onClick={() => setSwap(swapping ? null : { scene, choice: null })}
+                    style={{ height: 36, padding: "0 14px", borderRadius: 18, fontSize: 13, cursor: "pointer", border: swapping ? "2px solid var(--coral)" : "1px solid var(--line)", background: swapping ? "#FDECE8" : "#fff", color: "var(--navy)", fontWeight: swapping ? 700 : 500 }}
+                  >
+                    {nameOf(scene)}の写真を変える
+                  </button>
+                )}
               </div>
+              {swapping && <PhotoSwap key={scene} name={nameOf(scene)} saved={savedPhotos} onChange={(choice) => setSwap({ scene, choice })} />}
               <label style={{ display: "flex", flexDirection: "column", gap: 4, fontSize: 12, color: "var(--sub)" }}>
                 ひとこと（任意・{REDO_NOTE_MAX}文字まで）
                 <input
@@ -607,37 +628,24 @@ function Preview() {
                 <span style={{ alignSelf: "flex-end" }}>{[...note].length} / {REDO_NOTE_MAX}</span>
               </label>
               <LikenessPicker value={likeness} onChange={(v) => update({ likeness: v })} />
-              <button type="button" className="ghost" disabled={!!loading[scene] || resetting || charging} onClick={() => orCharge(1, () => redoScenes([scene]))}>
+              <button type="button" className="ghost" disabled={!!loading[scene] || resetting || charging || (swapping && !swapChoice)} onClick={() => orCharge(1, () => redoScenes([scene]))}>
                 {(() => {
-                  const text = options.length || note.trim() || likeness !== "normal" ? "この内容で作り直す" : "そのまま作り直す";
+                  const text = swapping ? "新しい写真で作り直す" : options.length || note.trim() || likeness !== "normal" ? "この内容で作り直す" : "そのまま作り直す";
                   return withCharge(1, text, `${text}（プレビュー1枚）`);
                 })()}
               </button>
               {!confirmed && characters.length > 1 && (
                 <>
-                  <button type="button" className="ghost" disabled={characters.some((i) => loading[i]) || charging} onClick={() => orCharge(characters.length, () => redoScenes(characters))}>
+                  <button type="button" className="ghost" disabled={characters.some((i) => loading[i]) || charging || (swapping && !swapChoice)} onClick={() => orCharge(characters.length, () => redoScenes(characters))}>
                     {withCharge(characters.length, `登場人物${characters.length}人まとめて作り直す`, `登場人物${characters.length}人まとめて作り直す（${characters.length}枚）`)}
                   </button>
                   <div style={{ fontSize: 12, lineHeight: 1.6, color: "var(--sub)" }}>
                     {characters.map(nameOf).join("・")}
                     のキャラクターを、上で選んだ内容でいっしょに作り直します。
+                    {swapping && `${nameOf(scene)}は新しい写真から描きます。`}
                     {remaining < characters.length && "（残りが足りないので、先にチャージの画面に進みます。支払いのあと、この画面に戻ります）"}
                   </div>
                 </>
-              )}
-              {!confirmed && isChar && (
-                <PhotoSwap
-                  key={scene}
-                  name={nameOf(scene)}
-                  saved={savedPhotos}
-                  disabled={!!loading[scene] || resetting || charging}
-                  label={withCharge(1, "この写真で作り直す", "この写真で作り直す（プレビュー1枚）")}
-                  onSubmit={(choice) => {
-                    if (remaining >= 1) return swapPhoto(scene, choice);
-                    void orCharge(1, () => {});
-                    return Promise.resolve(false);
-                  }}
-                />
               )}
             </section>
           )
