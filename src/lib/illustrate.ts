@@ -10,6 +10,7 @@ import { SERIES_NOTE_MAX, type SeriesScene } from "./series";
 import type { StudioSeries } from "./series-studio";
 import type { Continuity } from "./series-data";
 import { sceneTextSide } from "./spread-scene";
+import { CHARACTER_STYLE, CHARACTER_WORLD, NO_TEXT, type OriginalCharacter } from "./characters";
 
 export type { Person };
 
@@ -981,6 +982,91 @@ export async function makeDeformeCharacters(photo: Uploadable, note?: string) {
       "Ignore the photo's realism, lighting and texture and draw everything strictly in the ART STYLE above.",
       "Character lineup for a picture book: the three characters standing side by side in the same order as the photo, full body, front view, smiling, on a plain light cream background, with the child clearly smaller than the parents.",
       "Do not draw any letters, words or text.",
+      seriesNote(note),
+    ]
+      .filter(Boolean)
+      .join(" "),
+    size: "1536x1024",
+    quality: "high",
+    output_format: "png",
+  });
+  const b64 = result.data?.[0]?.b64_json;
+  if (!b64) throw new Error("画像が生成されませんでした");
+  return b64;
+}
+
+// --- オリジナルキャラクター「おちばの したの まち」（2026-10-17）---
+// 森の落としもの＋キモかわいさの6体。管理画面の「キャラスタジオ」(/admin/characters) で作る。
+// 人間や写真は使わず、設定（src/lib/characters.ts）の文章だけから描く。
+
+/** 1体の設定画（正面・横・後ろの三面図）を文章だけから描く */
+export async function makeOriginalCharacterSheet(c: OriginalCharacter, note?: string) {
+  const ai = getOpenAI();
+  if (!ai) throw new Error("OPENAI_API_KEY が未設定です");
+  const result = await ai.images.generate({
+    model: process.env.OPENAI_IMAGE_MODEL ?? "gpt-image-2",
+    prompt: [
+      CHARACTER_STYLE,
+      CHARACTER_WORLD,
+      `Character design sheet of ONE character only: ${c.design}`,
+      "Show the same character three times side by side on a plain off-white background: front view on the left, side view in the middle, back view on the right, all full body, same size, standing on its root legs.",
+      "The character fills about two thirds of the height. No scenery, no other characters, no props.",
+      NO_TEXT,
+      seriesNote(note),
+    ]
+      .filter(Boolean)
+      .join(" "),
+    size: "1536x1024",
+    quality: "high",
+    output_format: "png",
+  });
+  const b64 = result.data?.[0]?.b64_json;
+  if (!b64) throw new Error("画像が生成されませんでした");
+  return b64;
+}
+
+/** 設定画を元に、4つの表情（よろこぶ・おこる・こわがる・ねむい）を1枚に描く */
+export async function makeOriginalCharacterFaces(c: OriginalCharacter, sheet: Uploadable, note?: string) {
+  const ai = getOpenAI();
+  if (!ai) throw new Error("OPENAI_API_KEY が未設定です");
+  const result = await ai.images.edit({
+    model: process.env.OPENAI_IMAGE_MODEL ?? "gpt-image-2",
+    image: [sheet],
+    prompt: [
+      CHARACTER_STYLE,
+      CHARACTER_WORLD,
+      `The reference image is the character design sheet of this character: ${c.design}`,
+      "Draw exactly the same character, same colors and same details as on the sheet, four times in a 2 by 2 grid on a plain off-white background, upper body or full body, each with a different expression: top left happy, top right angry, bottom left scared, bottom right sleepy.",
+      `Its personality: ${c.personality}.`,
+      "No scenery, no other characters.",
+      NO_TEXT,
+      seriesNote(note),
+    ]
+      .filter(Boolean)
+      .join(" "),
+    size: "1024x1024",
+    quality: "medium",
+    output_format: "png",
+  });
+  const b64 = result.data?.[0]?.b64_json;
+  if (!b64) throw new Error("画像が生成されませんでした");
+  return b64;
+}
+
+/** 設定画がそろったキャラを横一列に並べた1枚（大きさの比較と、全体の統一感の確認用） */
+export async function makeOriginalLineup(items: { c: OriginalCharacter; sheet: Uploadable }[], note?: string) {
+  const ai = getOpenAI();
+  if (!ai) throw new Error("OPENAI_API_KEY が未設定です");
+  const result = await ai.images.edit({
+    model: process.env.OPENAI_IMAGE_MODEL ?? "gpt-image-2",
+    image: items.map((i) => i.sheet),
+    prompt: [
+      CHARACTER_STYLE,
+      CHARACTER_WORLD,
+      `The reference images are the character design sheets of ${items.length} characters, in this order: ${items.map((i, n) => `(${n + 1}) ${i.c.design}`).join(" ")}`,
+      "Draw all of them standing together in one row on the forest floor among fallen leaves at night, in the same order as the reference images, each exactly as designed on its sheet, full body, front view, friendly and a little creepy, with sizes that make sense for the real objects (the pine cone and the mossy stone are the biggest, the resin drop is the smallest).",
+      "Plain dark-blue night background with a few fallen leaves on the ground, no people, no other creatures.",
+      NO_TEXT,
       seriesNote(note),
     ]
       .filter(Boolean)
