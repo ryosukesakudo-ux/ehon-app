@@ -91,3 +91,18 @@ export async function putFlowSave(save: FlowSave | null): Promise<boolean> {
   if (error) throw new Error(error.message);
   return true;
 }
+
+/**
+ * 保存している下書きを消す。draftId を渡したときは、その絵本の下書きのときだけ消す。
+ * ユーザー情報の確認は1回だけにして、保存が無ければ書き込まない（マイページの「下書きを消す」を速くするため）。
+ */
+export async function clearFlowSave(draftId?: string): Promise<void> {
+  const client = await createAuthClient();
+  if (!client) return;
+  const { data } = await client.auth.getUser();
+  const saved = data.user?.user_metadata?.[KEY] as FlowSave | null | undefined;
+  if (!data.user || !saved) return;
+  if (draftId && saved.draftId !== draftId) return;
+  const { error } = await client.auth.updateUser({ data: { [KEY]: null } });
+  if (error) throw new Error(error.message);
+}

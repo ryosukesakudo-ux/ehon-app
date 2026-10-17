@@ -1,4 +1,4 @@
-import { getFlowSave, parseFlowSave, putFlowSave } from "@/lib/flow-save";
+import { clearFlowSave, getFlowSave, parseFlowSave, putFlowSave } from "@/lib/flow-save";
 
 // 作成途中の下書き（会員のみ）。作成画面の「保存して中断」と、マイページの「つづきから」で使う。
 export async function GET() {
@@ -20,11 +20,8 @@ export async function POST(request: Request) {
 // ?draft=ID を付けたときは、その下書きを保存しているときだけ消す（注文が終わった絵本の分だけ消すため）
 export async function DELETE(request: Request) {
   const draft = new URL(request.url).searchParams.get("draft");
-  const current = await getFlowSave();
-  if (!current) return Response.json({ ok: true });
-  if (draft && current.draftId !== draft) return Response.json({ ok: true });
   try {
-    await putFlowSave(null);
+    await clearFlowSave(draft ?? undefined);
   } catch (e) {
     console.error("flow save delete failed", e);
     return Response.json({ error: "下書きを消せませんでした" }, { status: 500 });
