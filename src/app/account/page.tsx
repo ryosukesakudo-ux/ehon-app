@@ -13,7 +13,7 @@ import { FLOW_STEPS, getFlowSave } from "@/lib/flow-save";
 import { DeletePhotoButton } from "./delete-photo";
 import { FacePhoto } from "@/components/face-photo";
 import { DeleteDraftButton } from "./delete-draft";
-import { DeleteSaveButton } from "./delete-save";
+import { SavedDraftCard } from "./delete-save";
 import { SyncLocalFlow } from "./local-flow";
 import { SignOutButton } from "./sign-out";
 import { storyLabel } from "@/lib/story-key";
@@ -97,9 +97,10 @@ export default async function AccountPage({ searchParams }: PageProps<"/account"
       <PageHeader title="マイページ" />
       <main className="step-body">
         <SyncLocalFlow savedAt={save?.savedAt ?? null} />
-        {justSaved === "1" && save && <p className="info-note" role="status">下書きを保存しました。「つづきから」で再開できます。</p>}
         {save && (
-          <section className="card" style={{ gap: 10, border: "2px solid var(--coral)" }}>
+          <SavedDraftCard
+            note={justSaved === "1" && <p className="info-note" role="status">下書きを保存しました。「つづきから」で再開できます。</p>}
+          >
             <div style={{ display: "flex", justifyContent: "space-between", gap: 8, alignItems: "flex-start" }}>
               <div>
                 <div className="display" style={{ fontSize: 16, fontWeight: 800, color: "var(--navy)" }}>つくりかけの絵本</div>
@@ -116,8 +117,7 @@ export default async function AccountPage({ searchParams }: PageProps<"/account"
               <p className="step-lead" style={{ fontSize: 12 }}>写真はもう一度えらんでください（保存済みの写真からも選べます）。</p>
             )}
             <Link href="/create/resume?saved=1" className="cta" style={{ height: 50, fontSize: 16 }}>つづきから</Link>
-            <DeleteSaveButton />
-          </section>
+          </SavedDraftCard>
         )}
         {creditsParam === "done" && <p className="info-note" role="status">ご購入ありがとうございます。反映まで少しかかる場合は、画面を再読み込みしてください。</p>}
         <div className="card" style={{ padding: 18, gap: 12 }}>

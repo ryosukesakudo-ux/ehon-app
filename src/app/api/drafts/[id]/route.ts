@@ -1,6 +1,6 @@
 import { deleteDraftImages, demoDraftId, draftOrdered, draftPreviewScenes, isDemoId, loadOwnedDraft, previewUrls, type Draft } from "@/lib/drafts";
 import { fixedLevelEpisode, parseSeriesKey, seriesKey, withoutCombo, type LevelId } from "@/lib/story-key";
-import { getFlowSave, putFlowSave } from "@/lib/flow-save";
+import { clearFlowSave } from "@/lib/flow-save";
 import { getSupabase } from "@/lib/services";
 import { customKey, parseCustomKey } from "@/lib/custom-story";
 import { getBook } from "@/lib/book";
@@ -102,7 +102,7 @@ export async function DELETE(_request: Request, ctx: RouteContext<"/api/drafts/[
     const { error: delError } = await db.from("drafts").delete().eq("id", id);
     // 消せなかったときは、マイページに出ないように持ち主から外す
     if (delError) await db.from("drafts").update({ user_id: null, anon_id: null }).eq("id", id);
-    if ((await getFlowSave())?.draftId === id) await putFlowSave(null);
+    await clearFlowSave(id);
   } catch (e) {
     console.error("draft delete failed", id, e);
     return Response.json({ error: "消せませんでした。時間をおいてもう一度お試しください" }, { status: 500 });
