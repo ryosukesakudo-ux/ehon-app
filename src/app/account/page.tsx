@@ -124,7 +124,7 @@ export default async function AccountPage({ searchParams }: PageProps<"/account"
             <Link href="/create/resume?saved=1" className="cta" style={{ height: 50, fontSize: 16 }}>つづきから</Link>
           </SavedDraftCard>
         )}
-        {creditsParam === "done" && <p className="info-note" role="status">ご購入ありがとうございます。反映まで少しかかる場合は、画面を再読み込みしてください。</p>}
+        {creditsParam === "done" && <p className="info-note" role="status">プレビュー追加のご購入ありがとうございます。反映まで少しかかる場合は、画面を再読み込みしてください。</p>}
         <div className="card" style={{ padding: 18, gap: 12 }}>
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12 }}>
             <div>

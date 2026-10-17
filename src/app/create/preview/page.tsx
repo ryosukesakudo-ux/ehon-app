@@ -687,7 +687,7 @@ function Preview() {
         )}
         {boughtCredits && (
           <p className="info-note" role="status">
-            ご購入ありがとうございます。残り枚数は数十秒ほどで自動的に反映されます。
+            プレビュー追加のご購入ありがとうございます。残り枚数は数十秒ほどで自動的に反映されます。
             {waitingCredits && "反映されたら、本文の絵を自動で作りはじめます。"}
           </p>
         )}
