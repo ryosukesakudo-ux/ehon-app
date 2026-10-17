@@ -4,21 +4,16 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import {
   BOOK_MESSAGE_MAX,
-  DELIVERY_MAX_DAYS,
-  DELIVERY_MIN_DAYS,
-  dateLabel,
   extraCopyPrice,
   firstBookPrice,
   getSize,
   getTaste,
-  jstDate,
   MEMORY_PHOTO_MAX,
   orderTotal,
   yen,
 } from "@/lib/catalog";
 import type { Coupon } from "@/lib/coupons";
 import { levelLabel, parseSeriesKey, seriesKey, storyLabel } from "@/lib/story-key";
-import { DatePicker } from "@/components/date-picker";
 import { toViewablePhoto } from "@/lib/heic-photo";
 import { shrinkPhoto } from "@/lib/shrink-photo";
 import { chosenExtras, useFlow } from "../flow";
@@ -27,9 +22,6 @@ import { NextButton, StepHeader, StepTitle } from "../step";
 export default function CheckoutPage() {
   const router = useRouter();
   const { state, update } = useFlow();
-  const minDate = jstDate(DELIVERY_MIN_DAYS);
-  const maxDate = jstDate(DELIVERY_MAX_DAYS);
-  const dateOk = !state.deliveryDate || (state.deliveryDate >= minDate && state.deliveryDate <= maxDate);
   const [sending, setSending] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const size = getSize(state.size)!;
@@ -110,7 +102,6 @@ export default function CheckoutPage() {
           childHonorific: state.childHonorific,
           bookMessage: state.bookMessage,
           memoryPhotoPaths: state.memoryPhotoPaths,
-          deliveryDate: state.deliveryDate,
         }),
       });
       const json = await res.json();
@@ -275,25 +266,6 @@ export default function CheckoutPage() {
             </>
           )}
         </div>
-        <div className="card" style={{ padding: 18, gap: 12 }}>
-          <div className="display" style={{ fontSize: 15, fontWeight: 800, color: "var(--navy)" }}>お届け日</div>
-          <div className="field">
-            <div style={{ fontSize: 14, fontWeight: 800, color: "var(--navy)" }}>お届け希望日（この日までにお届け）</div>
-            <DatePicker value={state.deliveryDate} min={minDate} max={maxDate} onChange={(d) => update({ deliveryDate: d })} />
-            {state.deliveryDate && (
-              <p style={{ margin: 0, fontSize: 14, fontWeight: 700, color: "var(--navy)" }}>{dateLabel(state.deliveryDate)}までにお届け</p>
-            )}
-            <p style={{ margin: 0, fontSize: 12, lineHeight: 1.6, color: "var(--sub)" }}>
-              ご注文日から{DELIVERY_MIN_DAYS}日後以降（色の付いた日）を選べます。選んだ日までに届くように発送します。日付を選ばないときは、できあがり次第お届けします（{dateLabel(minDate)}ごろまでにお届け予定）。印刷・製本を外部の製本会社に依頼しているため、時間帯は指定できません。
-            </p>
-            {state.deliveryDate && (
-              <button type="button" className="ghost" style={{ alignSelf: "flex-start", height: 36, padding: "0 14px", fontSize: 13 }} onClick={() => update({ deliveryDate: "" })}>
-                日付の指定をやめる
-              </button>
-            )}
-            {!dateOk && <p className="error" role="alert">{DELIVERY_MIN_DAYS}日後から{DELIVERY_MAX_DAYS}日後までの日付を選んでください</p>}
-          </div>
-        </div>
         <div style={{ display: "flex", gap: 8, alignItems: "center", justifyContent: "center", fontSize: 12, color: "var(--sub)" }}>
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
             <rect x="5" y="11" width="14" height="9" rx="2" />
@@ -312,7 +284,7 @@ export default function CheckoutPage() {
         </p>
         {error && <p className="error" role="alert">{error}</p>}
       </main>
-      <NextButton onClick={pay} disabled={sending || photoBusy || !state.draftId || !dateOk}>
+      <NextButton onClick={pay} disabled={sending || photoBusy || !state.draftId}>
         {sending ? "決済画面を開いています…" : "お届け先とお支払いへ"}
       </NextButton>
     </>

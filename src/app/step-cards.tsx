@@ -5,6 +5,7 @@ import { createPortal } from "react-dom";
 import Link from "next/link";
 import { Arrow } from "@/components/icons";
 import { SampleImage } from "@/components/sample-image";
+import { DELIVERY_NOTE } from "@/lib/catalog";
 import s from "./top.module.css";
 
 // トップの「かんたん3ステップ」。カードを押すと、そのステップの説明をポップアップで出す（2026-10-14 作道さん）。
@@ -19,7 +20,6 @@ export type StepDetails = {
   /** 3の見本：表紙と冒頭の2ページ（トップの見本の絵本と同じ） */
   preview: { cover: string | null; pages: (string | null)[] };
   sizes: { name: string; cover: string; price: string }[];
-  deliveryDays: number;
   extraCopy: string;
 };
 
@@ -184,7 +184,7 @@ function Finish({ d }: { d: StepDetails }) {
         <li>2冊目からは1冊{d.extraCopy}引き</li>
         <li>ギフトバッグに入れてお届け（無料）</li>
       </ul>
-      <p style={lead}>ご注文から{d.deliveryDays}日ほどでお届けします。</p>
+      <p style={lead}>{DELIVERY_NOTE}</p>
     </>
   );
 }

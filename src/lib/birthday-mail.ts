@@ -40,7 +40,6 @@ export async function sendBirthdayNotice(opts: { to: string; userId: string; chi
     "",
     `クーポンコード「${REPEAT_COUPON.code}」をご注文内容の確認画面で入れると、1冊目が${REPEAT_COUPON.discount}円引きになります。`,
     "マイページに保存したお写真が残っていれば、そこから選べます。最近のお写真にすると、成長した姿で描けます。",
-    "お誕生日に届くよう、お届け希望日も選べます。",
   ].join("\n");
   const footer = [
     "このメールは、ご注文時にお誕生日をご入力いただいた方にお送りしています。",

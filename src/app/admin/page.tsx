@@ -125,8 +125,13 @@ export default async function AdminPage() {
               )}
               お届け先：{ship?.name} 〒{a?.postal_code} {a?.state}{a?.city}{a?.line1} {a?.line2}
               <br />
-              お届け希望：<strong>{deliveryLabel(o.delivery_date, o.delivery_time)}</strong>
-              <br />
+              {/* お届け希望日は2026-10-17に受付をやめた。以前の注文で選ばれていたときだけ出す */}
+              {(o.delivery_date || o.delivery_time) && (
+                <>
+                  お届け希望：<strong>{deliveryLabel(o.delivery_date, o.delivery_time)}</strong>
+                  <br />
+                </>
+              )}
               連絡先：{o.email} {o.phone}
               <br />
               写真：{o.drafts.photos_deleted_at ? "削除済み" : "保管中"}

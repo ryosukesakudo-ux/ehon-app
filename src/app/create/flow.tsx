@@ -49,7 +49,7 @@ export type FlowState = {
    * 空は無し（そのページはおえかきページになる）
    */
   memoryPhotoPaths: string[];
-  /** お届け希望日（YYYY-MM-DD）。空は最短 */
+  /** お届け希望日（以前の保存データとの互換用。2026-10-17 から選べない） */
   deliveryDate: string;
   /** お届け時間帯（以前の保存データとの互換用。いまは選べない） */
   deliveryTime: string;
