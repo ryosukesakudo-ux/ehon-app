@@ -345,16 +345,13 @@ export function getSize(id: string) {
   return SIZES.find((s) => s.id === id);
 }
 
-// お届け日の指定：ご注文日から14日後〜60日後（日本時間）。指定しなければ最短でお届け。
-// 14日の根拠：絵の仕上げ・入稿に最大2日＋製本直送の普通便（入金の翌営業日から3〜6営業日で発送、
-// 土日祝をはさむと約9日）＋配達1〜2日＝約13日に、1日の余裕。
-// 製本直送は日時指定ができないため、希望日は「この日までに届くように発送」の意味で、時間帯は選べない。
-// https://www.seichoku.com/user_data/faq.php / https://www.seichoku.com/user_data/moneyPlan.php
-export const DELIVERY_MIN_DAYS = 14;
+// お届け日・時間帯は指定できない（2026-10-17 作道さん決定：正確な日に届けられないため、目安だけ出す）。
+// 目安の根拠：入稿2〜3日＋しまうまの発送までソフト最短3日・ハード最短5日＋メール便4〜8日（土日祝除く）＝最長約16日。
+// https://www.n-pri.jp/photobook/delivery/
+export const DELIVERY_NOTE = "ご注文から2〜3週間でお届けします。混雑状況によっては、それ以上かかる場合があります。";
 
 /** すべての絵本を1冊ずつギフトバッグに入れてお届け（しまうまのオプション +270円/冊はこちら負担。2026-10-16 作道さん決定） */
 export const GIFT_BAG_IMAGE = "/gift-bag.webp";
-export const DELIVERY_MAX_DAYS = 60;
 /** 以前の注文で選ばれていた時間帯（表示用。いまは選べない） */
 export const DELIVERY_TIMES = [
   { id: "am", label: "午前中" },
