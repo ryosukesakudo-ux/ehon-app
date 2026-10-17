@@ -11,6 +11,7 @@ import type { StudioSeries } from "./series-studio";
 import type { Continuity } from "./series-data";
 import { sceneTextSide } from "./spread-scene";
 import { CHARACTER_STYLE, CHARACTER_WORLD, NO_TEXT, type OriginalCharacter } from "./characters";
+import type { ShortClip } from "./shorts";
 
 export type { Person };
 
@@ -1072,6 +1073,37 @@ export async function makeOriginalLineup(items: { c: OriginalCharacter; sheet: U
       .filter(Boolean)
       .join(" "),
     size: "1536x1024",
+    quality: "high",
+    output_format: "png",
+  });
+  const b64 = result.data?.[0]?.b64_json;
+  if (!b64) throw new Error("画像が生成されませんでした");
+  return b64;
+}
+
+/**
+ * ショート動画の1クリップの「最初のコマ」を、キャラの設定画を参照して縦長で描く（2026-10-17）。
+ * この絵を Veo に渡して8秒動かす（src/lib/veo.ts）。
+ */
+export async function makeShortFrame(c: OriginalCharacter, clip: ShortClip, sheet: Uploadable, note?: string) {
+  const ai = getOpenAI();
+  if (!ai) throw new Error("OPENAI_API_KEY が未設定です");
+  const result = await ai.images.edit({
+    model: process.env.OPENAI_IMAGE_MODEL ?? "gpt-image-2",
+    image: [sheet],
+    prompt: [
+      CHARACTER_STYLE,
+      CHARACTER_WORLD,
+      `The reference image is the character design sheet of this character: ${c.design}`,
+      "Draw exactly the same character, same colors and details as on the sheet, as the opening frame of a short vertical video for children.",
+      `Scene: ${clip.frame}`,
+      "Keep the composition simple with space for the character to move. No other characters.",
+      NO_TEXT,
+      seriesNote(note),
+    ]
+      .filter(Boolean)
+      .join(" "),
+    size: "1024x1536",
     quality: "high",
     output_format: "png",
   });
