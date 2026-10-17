@@ -156,6 +156,11 @@ export function OrderActions({
       setShimauma((s) => ({ ...s, [product]: json.url }));
     });
 
+  // 全額返金した注文はキャンセル扱い。うっかり絵を作ったり発注したりしないよう、ボタンを出さない
+  if (refunded > 0 && refundable <= 0) {
+    return <p style={{ margin: 0, fontSize: 14, color: "#8f2214" }}>全額返金済みのため、制作・発注のボタンは表示していません。</p>;
+  }
+
   return (
     <div style={{ display: "flex", flexWrap: "wrap", gap: 8, alignItems: "center" }}>
       {(status === "paid" || status === "generated") && <DetailSelect />}

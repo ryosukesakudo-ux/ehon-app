@@ -100,8 +100,9 @@ export default async function AdminPage() {
             <div style={{ display: "flex", flexWrap: "wrap", gap: 8, justifyContent: "space-between" }}>
               <strong>注文 {o.id.slice(0, 8).toUpperCase()}</strong>
               <span style={{ display: "flex", gap: 6 }}>
-                {o.refunded_amount > 0 && <span className="tag" style={{ background: "#fde7e3", color: "#8f2214" }}>{o.refunded_amount >= o.amount ? "全額返金済み" : `${yen(o.refunded_amount)} 返金済み`}</span>}
-                <span className="tag">{STATUS[o.status] ?? o.status}</span>
+                {o.refunded_amount > 0 && <span className="tag" style={{ background: "#fde7e3", color: "#8f2214" }}>{fullyRefunded(o) ? "全額返金済み" : `${yen(o.refunded_amount)} 返金済み`}</span>}
+                {/* 全額返金した注文はキャンセル扱い（制作・発注しない） */}
+                <span className="tag">{fullyRefunded(o) ? "キャンセル" : STATUS[o.status] ?? o.status}</span>
               </span>
             </div>
             <div style={{ fontSize: 14, lineHeight: 1.8 }}>
@@ -155,7 +156,7 @@ export default async function AdminPage() {
                       <div style={{ aspectRatio: "3 / 2", borderRadius: 8, background: "#eee", display: "flex", alignItems: "center", justifyContent: "center" }}>未作成</div>
                     )}
                     {p.index === COVER_SCENE ? "" : `${i}. `}{p.text}
-                    {p.url && (o.status === "paid" || o.status === "generated") && (
+                    {p.url && !fullyRefunded(o) && (o.status === "paid" || o.status === "generated") && (
                       <div>
                         <RedoSceneButton orderId={o.id} scene={p.index} />
                       </div>
@@ -170,6 +171,11 @@ export default async function AdminPage() {
       })}
     </main>
   );
+}
+
+/** 全額返金済み（0円の注文は返金がないのでキャンセル扱いにしない） */
+function fullyRefunded(o: { amount: number; refunded_amount?: number | null }) {
+  return (o.refunded_amount ?? 0) > 0 && (o.refunded_amount ?? 0) >= o.amount;
 }
 
 /** 部数（copies 列がない古い注文は「2冊目あり」から読む） */
