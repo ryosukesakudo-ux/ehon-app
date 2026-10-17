@@ -77,8 +77,8 @@ function StepDialog({ step, title, onClose, children }: { step: number; title: s
       <div className="story-dialog" role="dialog" aria-modal="true" aria-labelledby={`step-dialog-${step}`} onClick={(e) => e.stopPropagation()}>
         <h2 id={`step-dialog-${step}`} className="display" style={{ margin: 0, fontSize: 19, fontWeight: 900, color: "var(--navy)" }}>{title}</h2>
         {children}
-        {/* 閉じる（グレー）と つくってみる を下に横並び（2026-10-15 作道さん） */}
-        <div style={{ display: "flex", gap: 10, marginTop: 4 }}>
+        {/* 閉じる（グレー）と つくってみる を下に横並び（2026-10-15 作道さん）。長い手順でも下に固定（シリーズのポップアップと同じ） */}
+        <div className="dialog-footer">
           <button type="button" className="ghost gray" style={{ height: 54, padding: "0 16px", flexShrink: 0 }} onClick={onClose}>
             閉じる
           </button>
