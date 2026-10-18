@@ -14,6 +14,10 @@ export type OriginalCharacter = {
   gross: string;
   personality: string;
   catchphrase: string;
+  /** 動画での鳴き声（言葉は話さない。2026-10-18 作道さん決定）日本語の説明 */
+  voiceJa: string;
+  /** 鳴き声の英語の指示（動画AI用） */
+  voice: string;
   /** 配色（画面の説明用） */
   colors: string;
   /** 絵を作るときの英語の指示（このキャラだけの特徴） */
@@ -35,6 +39,9 @@ export const ORIGINAL_CHARACTERS: OriginalCharacter[] = [
     gross: "殻のふちがぜんぶ歯。帽子（殻斗）が開くと中にもう1列の歯",
     personality: "せっかちで仲間思い。なんでもかじって確かめる",
     catchphrase: "かじっていい？",
+    voiceJa: "歯をカチカチ鳴らす音＋短く高い「キュッ」「ギギッ」。急かすように連打",
+    voice:
+      "a quick, slightly high, eager small-creature voice made only of short squeaks like 'kyu!' and 'gigi!' and rapid teeth clicking; impatient, repeated in short bursts",
     colors: "茶 #8B5A2B・帽子 #5C3A1E・歯 #F2E8D5",
     design:
       "GAJIRI, an acorn. The acorn nut itself is the body (warm brown #8B5A2B) with a darker rough cap (#5C3A1E). Along the lower rim of the cap runs a tight row of small human-like teeth (#F2E8D5); the cap can lift like a lid and reveal a second row of teeth inside. Two tiny dot eyes just under the cap. Energetic, grinning with teeth bared.",
@@ -47,6 +54,9 @@ export const ORIGINAL_CHARACTERS: OriginalCharacter[] = [
     gross: "かさ1枚1枚のすき間に目。全部で20個くらい",
     personality: "見たことをなんでも覚えている。しゃべるとちょっと遠回し",
     catchphrase: "みてたよ",
+    voiceJa: "低めでゆっくり「ほぅ……ほぅ……」。ふくろうとカメラのシャッターの間",
+    voice:
+      "a low, slow, breathy 'hoo... hoo...' like an owl mixed with soft camera-shutter clicks; calm and a little creepy",
     colors: "焦げ茶 #4A3322・目のふち #C9B458",
     design:
       "BOKKURU, a pine cone (dark brown #4A3322). In the gap under every scale sits a small round black eye with a thin yellowish rim (#C9B458), about twenty eyes in total, all looking at the viewer; when sleepy they close one by one. Slightly hunched forward, calm and knowing.",
@@ -59,6 +69,9 @@ export const ORIGINAL_CHARACTERS: OriginalCharacter[] = [
     gross: "傘の裏のひだから常にしずくが垂れる。首が細長く伸びる",
     personality: "のんびり。くさった葉っぱが大好物",
     catchphrase: "くさってるのが いちばん うまい",
+    voiceJa: "湿った「ぬぷ」「ぷぽ」という泡の音と、くぐもった満足げな「んふぅ」",
+    voice:
+      "wet bubbly sounds like 'nupu' and 'pupo' and a muffled, satisfied 'nfuu'; damp and slimy",
     colors: "傘 #A9C4C9・ひだ #6E8B91・柄 #E8E3D3（赤白水玉は使わない）",
     design:
       "NUMETAKE, a mushroom with a pale bluish-grey cap (#A9C4C9) and darker gills (#6E8B91) underneath, from which a few translucent slimy drops are always dripping. The stem (#E8E3D3) is a long thin neck that stretches and leans in to peer at the viewer. Wet glossy highlights on the cheeks. Slow and dreamy. Never a red cap with white spots.",
@@ -71,6 +84,9 @@ export const ORIGINAL_CHARACTERS: OriginalCharacter[] = [
     gross: "虫食いの穴が顔。クモの糸1本でぶら下がって背後に回る",
     personality: "軽い・早い・かわいいうそつき",
     catchphrase: "うしろ、うしろ",
+    voiceJa: "かすれた「しゃらしゃら」のささやき。枯れ葉がこすれる音に近い",
+    voice:
+      "a dry, rustling whisper like 'shara shara', close to dead leaves rubbing together; thin and sneaky",
     colors: "枯れ葉 #B5702E・葉脈 #6B3D14・糸 #FFFFFF",
     design:
       "SUKARI, a dry brown fallen leaf (#B5702E) with dark veins (#6B3D14), full of insect-bitten holes. Two of the holes are its eyes and one ragged hole is its grinning mouth. It hangs from a single white spider thread from above, body tilted, light and mischievous.",
@@ -83,6 +99,9 @@ export const ORIGINAL_CHARACTERS: OriginalCharacter[] = [
     gross: "半透明の体の中に、飲みこんだ虫や小石が透けて見える。さわるとねばつく",
     personality: "無口。くっつくのが愛情表現",
     catchphrase: "ぺと",
+    voiceJa: "ねばつく「ぺと」「ぴと」の小さな音。ときどき中の虫の「ぶぶ」",
+    voice:
+      "small sticky sounds like 'peto' and 'pito', with an occasional faint buzz from the bug inside; soft and gooey",
     colors: "琥珀 #E09B2D・中身 #3B2A14・ハイライト #FFF3C4",
     design:
       "YANIKO, a small drop-shaped blob of translucent amber tree resin (#E09B2D) with glossy highlights (#FFF3C4). Inside its see-through body float tiny swallowed insects, pebbles and leaf bits (#3B2A14). Its base is sticky and stretches into gooey strings. Two tiny dot eyes, silent baby-like expression.",
@@ -95,6 +114,9 @@ export const ORIGINAL_CHARACTERS: OriginalCharacter[] = [
     gross: "全身の長いコケの毛が顔をおおい、かき分けると大きな目が1つ",
     personality: "動くのが怖い。でも乗るといちばん速い",
     catchphrase: "……うごきたくない",
+    voiceJa: "ごく低い「ごごご……」のうなり。ほとんど無音",
+    voice:
+      "an extremely low, slow rumble like 'gogogo...', almost silent; sleepy and heavy",
     colors: "コケ #4F7A3A・石 #6E6E6E・目 #D8E2B8",
     design:
       "GOKE, a round grey stone (#6E6E6E) covered in long shaggy green moss hair (#4F7A3A) that hangs over its face. Through a gap in the hair one single large pale eye (#D8E2B8) peeks out. Timid and heavy; when scared the moss hair stands on end.",

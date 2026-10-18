@@ -3,13 +3,14 @@ import { characterArtPath, getOriginalCharacter } from "@/lib/characters";
 import { makeShortFrame } from "@/lib/illustrate";
 import { samplePublicUrl } from "@/lib/samples";
 import { SAMPLE_BUCKET, getSupabase } from "@/lib/services";
-import { SHORT_NEGATIVE_PROMPT, SHORT_PROMPT_RULES, getShort, shortFramePath, shortVideoPath, type VeoQuality } from "@/lib/shorts";
+import { SHORT_NEGATIVE_PROMPT, SHORT_PROMPT_RULES, getShort, shortFramePath, shortVideoPath, type ShortFrameKind, type VeoQuality } from "@/lib/shorts";
 import { veoPoll, veoReady, veoStart } from "@/lib/veo";
 
 export const maxDuration = 300;
 
 // ショートスタジオ：
 //  POST { shortId, clipId, kind: "frame", note }            … クリップの最初のコマの絵を作って保存
+//  POST { shortId, clipId, kind: "lastframe", note }        … 最後のコマの絵を作って保存（最初のコマが必要）
 //  POST { shortId, clipId, kind: "video", quality, note }   … 保存した絵から Veo で動画の作成を始める → { operation }
 //  GET  ?operation=…&shortId=…&clipId=…                      … できたか確認。できていれば mp4 を保存して { url }
 export async function POST(request: Request) {
@@ -23,12 +24,26 @@ export async function POST(request: Request) {
   const note = typeof body?.note === "string" ? body.note.trim() : "";
 
   try {
-    if (body?.kind === "frame") {
-      const { data: sheet } = await db.storage.from(SAMPLE_BUCKET).download(characterArtPath(c.id, "sheet"));
+    if (body?.kind === "frame" || body?.kind === "lastframe") {
+      const which: ShortFrameKind = body.kind === "lastframe" ? "last" : "first";
+      const [{ data: sheet }, { data: faces }, { data: first }] = await Promise.all([
+        db.storage.from(SAMPLE_BUCKET).download(characterArtPath(c.id, "sheet")),
+        db.storage.from(SAMPLE_BUCKET).download(characterArtPath(c.id, "faces")),
+        which === "last" ? db.storage.from(SAMPLE_BUCKET).download(shortFramePath(short.id, clip.id, "first")) : Promise.resolve({ data: null }),
+      ]);
       if (!sheet) return Response.json({ error: `先にキャラスタジオで ${c.name} の設定画を作ってください` }, { status: 400 });
+      if (which === "last" && !first) return Response.json({ error: "先に最初のコマの絵を作ってください" }, { status: 400 });
       const started = Date.now();
-      const b64 = await makeShortFrame(c, clip, await toFile(sheet, "sheet.png", { type: "image/png" }), note);
-      const path = shortFramePath(short.id, clip.id);
+      // 表情集があれば一緒に渡し、顔を表情集に揃える。最後のコマは最初のコマにも揃える
+      const b64 = await makeShortFrame(
+        c,
+        clip,
+        await toFile(sheet, "sheet.png", { type: "image/png" }),
+        note,
+        faces ? await toFile(faces, "faces.png", { type: "image/png" }) : undefined,
+        which === "last" ? { firstFrame: first ? await toFile(first, "first.png", { type: "image/png" }) : undefined } : undefined,
+      );
+      const path = shortFramePath(short.id, clip.id, which);
       const { error } = await db.storage
         .from(SAMPLE_BUCKET)
         .upload(path, Buffer.from(b64, "base64"), { contentType: "image/png", upsert: true, cacheControl: "300" });
@@ -39,23 +54,33 @@ export async function POST(request: Request) {
     if (body?.kind === "video") {
       if (!veoReady()) return Response.json({ error: "GEMINI_API_KEY が未設定です（Vercel の環境変数に追加してください）" }, { status: 503 });
       const quality: VeoQuality = body?.quality === "standard" ? "standard" : "fast";
-      const { data: frame } = await db.storage.from(SAMPLE_BUCKET).download(shortFramePath(short.id, clip.id));
-      if (!frame) return Response.json({ error: "先にこのクリップの絵を作ってください" }, { status: 400 });
-      // 設定画と表情集を参考画像にして、動いたときも顔が変わらないようにする
-      const [{ data: sheet }, { data: faces }] = await Promise.all([
+      // 最初のコマ（必須）と最後のコマ（あれば）。両方あると顔が両端で設定画どおりに固定される
+      const [{ data: frame }, { data: last }, { data: sheet }, { data: faces }] = await Promise.all([
+        db.storage.from(SAMPLE_BUCKET).download(shortFramePath(short.id, clip.id, "first")),
+        db.storage.from(SAMPLE_BUCKET).download(shortFramePath(short.id, clip.id, "last")),
+        // 設定画と表情集を参考画像にして、動いたときも顔が変わらないようにする
         db.storage.from(SAMPLE_BUCKET).download(characterArtPath(c.id, "sheet")),
         db.storage.from(SAMPLE_BUCKET).download(characterArtPath(c.id, "faces")),
       ]);
+      if (!frame) return Response.json({ error: "先にこのクリップの最初のコマの絵を作ってください" }, { status: 400 });
       const referenceImages = await Promise.all([sheet, faces].filter((b): b is Blob => Boolean(b)).map(async (b) => Buffer.from(await b.arrayBuffer())));
       // キャラの見た目の説明 → 動き → 共通ルール → 追加の指示（日本語でもよい）
       const prompt = [
         `Character: ${c.design}`,
+        `This character's voice: ${c.voice}. It never speaks words.`,
         clip.motion,
         SHORT_PROMPT_RULES,
         note && `Additional instructions from the director (may be in Japanese), follow them: ${note}`,
       ].filter(Boolean).join(" ");
-      const operation = await veoStart({ prompt, imagePng: Buffer.from(await frame.arrayBuffer()), quality, referenceImages, negativePrompt: SHORT_NEGATIVE_PROMPT });
-      return Response.json({ operation });
+      const { name: operation, usedReferenceImages } = await veoStart({
+        prompt,
+        imagePng: Buffer.from(await frame.arrayBuffer()),
+        lastFramePng: last ? Buffer.from(await last.arrayBuffer()) : undefined,
+        quality,
+        referenceImages,
+        negativePrompt: SHORT_NEGATIVE_PROMPT,
+      });
+      return Response.json({ operation, usedReferenceImages, usedLastFrame: Boolean(last) });
     }
 
     return Response.json({ error: "不明な操作です" }, { status: 400 });
