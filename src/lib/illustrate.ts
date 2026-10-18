@@ -1104,7 +1104,7 @@ export async function makeShortFrame(
       CHARACTER_STYLE,
       CHARACTER_WORLD,
       `The first reference image is the character design sheet of this character: ${c.design}`,
-      faces ? "The second reference image is the same character's expression sheet; take the face (eyes, teeth, cap opening) from it so the expression matches those drawings exactly." : "",
+      faces ? "The second reference image is the same character's expression sheet; take the expression (how far the cap lifts, how the eyes squint) from it. If any panel there contradicts the face anatomy described above, the design sheet and the anatomy description win." : "",
       last
         ? `${last.firstFrame ? "The last reference image is the opening frame of this video clip; keep the same scene, lighting, colors and camera framing. " : ""}Draw exactly the same character, same colors and details as on the sheet, as the final frame of that short vertical video clip for children.`
         : "Draw exactly the same character, same colors and details as on the sheet, as the opening frame of a short vertical video for children.",
