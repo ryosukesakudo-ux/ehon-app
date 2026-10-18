@@ -46,7 +46,47 @@ function ClipCard({ short, clip, index }: { short: Short; clip: ShortClip; index
   const [status, setStatus] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  useEffect(() => () => { if (timer.current) clearTimeout(timer.current); }, []);
+  // Veo の operation 名を localStorage に覚えておき、リロードしても確認を続ける
+  const storeKey = `ehon-short-op:${short.id}:${clip.id}`;
+  useEffect(() => {
+    const saved = readStore(storeKey);
+    if (saved) {
+      // 表示が出てから続きを確認する（effect の中で直接 setState しない）
+      timer.current = setTimeout(() => {
+        setBusy("video");
+        setStatus("Veo で作成中…（リロード前の続きを確認しています）");
+        watch(saved.operation, saved.started);
+      }, 0);
+    }
+    return () => { if (timer.current) clearTimeout(timer.current); };
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 開いたときに1回だけ
+  }, []);
+
+  function watch(operation: string, started: number) {
+    const poll = async () => {
+      try {
+        const q = new URLSearchParams({ operation, shortId: short.id, clipId: clip.id });
+        const res = await fetch(`/api/admin/shorts?${q}`);
+        const json = await res.json().catch(() => ({}));
+        if (!res.ok) throw new Error(json.error ?? `失敗しました (${res.status})`);
+        if (json.done) {
+          writeStore(storeKey, null);
+          setVideo(json.url);
+          setStatus(`動画ができました（${Math.round((Date.now() - started) / 1000)}秒）`);
+          setBusy(null);
+          return;
+        }
+        setStatus(`Veo で作成中…（${Math.round((Date.now() - started) / 1000)}秒経過。この画面を閉じたりリロードしても続きます）`);
+        timer.current = setTimeout(poll, 10000);
+      } catch (e) {
+        writeStore(storeKey, null);
+        setError(e instanceof Error ? e.message : "失敗しました");
+        setStatus(null);
+        setBusy(null);
+      }
+    };
+    timer.current = setTimeout(poll, 10000);
+  }
 
   async function makeFrame() {
     setBusy("frame");
@@ -71,27 +111,8 @@ function ClipCard({ short, clip, index }: { short: Short; clip: ShortClip; index
     try {
       const { operation } = await post({ shortId: short.id, clipId: clip.id, kind: "video", quality, note });
       const started = Date.now();
-      const poll = async () => {
-        try {
-          const q = new URLSearchParams({ operation, shortId: short.id, clipId: clip.id });
-          const res = await fetch(`/api/admin/shorts?${q}`);
-          const json = await res.json().catch(() => ({}));
-          if (!res.ok) throw new Error(json.error ?? `失敗しました (${res.status})`);
-          if (json.done) {
-            setVideo(json.url);
-            setStatus(`動画ができました（${Math.round((Date.now() - started) / 1000)}秒）`);
-            setBusy(null);
-            return;
-          }
-          setStatus(`Veo で作成中…（${Math.round((Date.now() - started) / 1000)}秒経過）`);
-          timer.current = setTimeout(poll, 10000);
-        } catch (e) {
-          setError(e instanceof Error ? e.message : "失敗しました");
-          setStatus(null);
-          setBusy(null);
-        }
-      };
-      timer.current = setTimeout(poll, 10000);
+      writeStore(storeKey, { operation, started });
+      watch(operation, started);
     } catch (e) {
       setError(e instanceof Error ? e.message : "失敗しました");
       setStatus(null);
@@ -120,6 +141,9 @@ function ClipCard({ short, clip, index }: { short: Short; clip: ShortClip; index
         追加の指示（任意・日本語でOK。次に作る1つにだけ効きます）
         <textarea value={note} maxLength={SERIES_NOTE_MAX} rows={2} onChange={(e) => setNote(e.target.value)} placeholder="例：もっと暗く、歯をもっと大きく動かす" />
       </label>
+      {/* 結果はボタンの上に出す（下だと画面の外になって気づけない） */}
+      {status && <p style={{ margin: 0, fontSize: 14, color: "#4f6f9f" }}>{status}</p>}
+      {error && <p style={{ margin: 0, color: "#c0392b", fontWeight: 700 }}>エラー: {error}</p>}
       <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
         <button type="button" className="cta" onClick={makeFrame} disabled={busy !== null}>
           {busy === "frame" ? "作成中…" : "① 絵を作る"}
@@ -131,8 +155,6 @@ function ClipCard({ short, clip, index }: { short: Short; clip: ShortClip; index
           {busy === "video" ? "作成中…" : "② Standard で動かす（約480円）"}
         </button>
       </div>
-      {status && <p style={{ margin: 0, fontSize: 14, color: "#4f6f9f" }}>{status}</p>}
-      {error && <p style={{ margin: 0, color: "#c0392b" }}>{error}</p>}
     </div>
   );
 }
@@ -142,6 +164,23 @@ async function post(body: Record<string, unknown>) {
   const json = await res.json().catch(() => ({}));
   if (!res.ok) throw new Error(json.error ?? `失敗しました (${res.status})`);
   return json;
+}
+
+type StoredOp = { operation: string; started: number };
+function readStore(key: string): StoredOp | null {
+  try {
+    const raw = localStorage.getItem(key);
+    const v = raw && JSON.parse(raw);
+    // 1時間以上前のものは諦める（Veo 側で消えている）
+    if (v && typeof v.operation === "string" && typeof v.started === "number" && Date.now() - v.started < 60 * 60 * 1000) return v;
+  } catch {}
+  return null;
+}
+function writeStore(key: string, v: StoredOp | null) {
+  try {
+    if (v) localStorage.setItem(key, JSON.stringify(v));
+    else localStorage.removeItem(key);
+  } catch {}
 }
 
 function withVersion(url: string | null) {

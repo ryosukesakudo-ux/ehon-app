@@ -36,7 +36,7 @@ export const SHORTS: Short[] = [
         frame:
           "Night on the forest floor among damp fallen leaves, dark blue night background. Close-up of the acorn character lying on the leaves with its eyes closed and its cap shut, teeth just visible along the rim. A small grey pebble lies right in front of it. Vertical composition with the character in the lower two thirds.",
         motion:
-          "The acorn character's eyes snap open. Its cap lifts like a lid revealing two rows of teeth as it says in a quick, slightly high voice in Japanese 'kajitte ii?'. It stands up on its root legs, scuttles toward the camera, then bites the pebble with a loud clack, bounces back dizzy with its cap askew and mutters 'itai'. Sound: soft teeth clicking, a creak when the cap opens, a hard metallic clack on the pebble. Gentle handheld camera, no cuts.",
+          "The acorn character's eyes snap open. Its cap lifts like a lid revealing two rows of teeth as it says in a quick, slightly high voice in Japanese 'kajitte ii?'. It stands up on its root legs, scuttles toward the camera, grabs the pebble with its roots and shoves it into its mouth. Close-up: both rows of teeth clamp down hard on the pebble, the teeth visibly grind and scrape against the stone, grit sprays out, the pebble does not break, and the whole body shudders from the effort. Then it recoils dizzy with its cap askew and mutters 'itai'. Sound: soft teeth clicking, a creak when the cap opens, then a loud hard crunch and grinding of teeth on stone. Gentle handheld camera, no cuts.",
       },
       {
         id: "b",
@@ -50,6 +50,16 @@ export const SHORTS: Short[] = [
     ],
   },
 ];
+
+// 全クリップ共通の指示（2026-10-18 1本目の試作の感想から: 吹き出しが出る・声が機械っぽい・噛んだ感が弱い）
+export const SHORT_PROMPT_RULES = [
+  "Animation style: the character must look exactly like the reference character sheet in every frame, including when its face moves: two small round black dot eyes, a tight row of small human-like teeth along the cap rim, and a second row of teeth inside when the cap lifts. Keep the same colors, textures and proportions throughout.",
+  "Voice: a warm, natural, slightly hoarse small-creature voice, like a child character in a hand-made stop-motion film. Not robotic, not synthetic, no echo. Dialogue is spoken out loud only.",
+  "Do not show speech bubbles, captions, subtitles, letters or any text on screen. No on-screen graphics.",
+].join(" ");
+
+export const SHORT_NEGATIVE_PROMPT =
+  "speech bubble, text, caption, subtitle, letters, watermark, logo, robotic voice, synthesized voice, autotune, extra characters, human face, cartoon outline style change";
 
 export function getShort(id: string) {
   return SHORTS.find((s) => s.id === id) ?? null;
