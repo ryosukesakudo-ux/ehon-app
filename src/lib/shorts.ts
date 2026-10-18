@@ -12,6 +12,8 @@ export type ShortClip = {
   sound: string;
   /** 最初のコマの絵の指示（英語） */
   frame: string;
+  /** 最後のコマの絵の指示（英語）。最初と最後を絵で決め、間を Veo がつなぐ（顔を設定画どおりに保つため） */
+  lastFrame: string;
   /** 動きと音の指示（英語） */
   motion: string;
 };
@@ -36,6 +38,8 @@ export const SHORTS: Short[] = [
         sound: "SE: カチカチ／ギギッ／ガリガリッ　ガジリの鳴き声: キュッ！（かじりたい）→ ギ……（いたい）。言葉は話さない",
         frame:
           "Night on the forest floor among damp fallen leaves, dark blue night background. Close-up of the acorn character sitting on the leaves, wide awake, facing the camera: its two small round black dot eyes are open and fixed on a small grey pebble right in front of it, the cap is slightly lifted so the row of teeth along the cap rim and the second row inside are clearly visible, an eager toothy grin exactly like the happy face on the expression sheet. Vertical composition with the character in the lower two thirds.",
+        lastFrame:
+          "Same night scene and same camera distance as the opening frame, slightly closer. The acorn character has just bitten the pebble and recoiled: it sits tilted back, dizzy, its cap knocked askew to one side, both rows of teeth bared in a pained grimace, its two small round black dot eyes squeezed into tiny tight slits, a few bits of grit in the air around its mouth. The grey pebble lies in front of it with small white teeth scratches on it. Exactly the same character design as the reference sheets.",
         motion:
           "The acorn character stares at the pebble, its teeth clicking faster and faster. Its cap lifts wider like a lid showing both rows of teeth and it lets out one short eager squeak. It stands up on its root legs, scuttles toward the camera, grabs the pebble with its roots and shoves it into its mouth. Close-up: both rows of teeth clamp down hard on the pebble, the teeth visibly grind and scrape against the stone, grit sprays out, the pebble does not break, and the whole body shudders from the effort. Then it recoils dizzy with its cap askew and gives a small pained creak. Sound: soft teeth clicking, a creak when the cap opens, then a loud hard crunch and grinding of teeth on stone. Gentle handheld camera, no cuts.",
       },
@@ -45,6 +49,8 @@ export const SHORTS: Short[] = [
         sound: "SE: 鳥の声／カチ……カチ……　ガジリの鳴き声（小さく）: キュ……？　子どもは声を出さない（息をのむ程度）",
         frame:
           "Morning on the forest floor, soft warm daylight, fallen leaves. The acorn character sits still with its cap closed and its eyes narrowed to tiny slits, pretending to be an ordinary acorn; the row of teeth along the cap rim is still visible. A small child's hand (only the hand and sleeve, no face) is reaching down toward it from the top of the frame. Vertical composition.",
+        lastFrame:
+          "Same morning scene. The child's open palm (only the hand and sleeve, no face) fills the lower half of the frame, holding the acorn character close to the camera. The acorn's cap has opened a crack showing the teeth along the rim and a hint of the second row inside, and its two small round black dot eyes are half open, peeking up guiltily. Exactly the same character design as the reference sheets.",
         motion:
           "The child's hand picks up the acorn and holds it in an open palm filling the lower frame. The acorn stays perfectly still, then its teeth begin to click very quietly, its two small black dot eyes open a crack, and it gives one tiny questioning squeak. The hand flinches slightly. Sound: morning birds, faint teeth clicks, a short surprised intake of breath from the child, no words. Camera slowly pushes in on the acorn, no cuts. The child's face is never shown.",
       },
@@ -68,8 +74,10 @@ export function getShort(id: string) {
 }
 
 // 絵と動画の置き場所（公開ストレージ samples）
-export function shortFramePath(shortId: string, clipId: string) {
-  return `shorts/${shortId}/${clipId}/frame.png`;
+export type ShortFrameKind = "first" | "last";
+
+export function shortFramePath(shortId: string, clipId: string, which: ShortFrameKind = "first") {
+  return `shorts/${shortId}/${clipId}/${which === "last" ? "last" : "frame"}.png`;
 }
 
 export function shortVideoPath(shortId: string, clipId: string) {

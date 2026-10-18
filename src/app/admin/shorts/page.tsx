@@ -16,8 +16,9 @@ export default function ShortsPage() {
       <a href="/admin">← 注文管理へ</a>
       <h1 className="display" style={{ margin: 0, color: "var(--navy)" }}>ショートスタジオ</h1>
       <p className="step-lead">
-        YouTube ショート（縦長・約15秒）を、8秒のクリップ2本で作ります。クリップごとに ①最初のコマの絵を作る（約25円）→ ②Veo で動かす（Fast 約120円／Standard 約480円、1〜6分）。
-        絵と動画は保存され、作り直すと上書きされます。先にキャラスタジオで設定画を作っておいてください。
+        YouTube ショート（縦長・約15秒）を、8秒のクリップ2本で作ります。クリップごとに ①最初のコマの絵（約25円）→ ②最後のコマの絵（約25円）→ ③Veo で動かす（Fast 約120円／Standard 約480円、1〜6分）。
+        最初と最後の絵を両方作っておくと、その2枚の間を Veo がつなぐので顔が設定画どおりに保たれやすくなります。セリフは無し、キャラの鳴き声だけです。
+        絵と動画は保存され、作り直すと上書きされます。先にキャラスタジオで設定画と表情集を作っておいてください。
       </p>
       {SHORTS.map((s) => <ShortCard key={s.id} short={s} />)}
     </main>
@@ -41,10 +42,11 @@ function ShortCard({ short }: { short: Short }) {
 }
 
 function ClipCard({ short, clip, index }: { short: Short; clip: ShortClip; index: number }) {
-  const [frame, setFrame] = useState<string | null>(() => withVersion(samplePublicUrl(shortFramePath(short.id, clip.id))));
+  const [frame, setFrame] = useState<string | null>(() => withVersion(samplePublicUrl(shortFramePath(short.id, clip.id, "first"))));
+  const [last, setLast] = useState<string | null>(() => withVersion(samplePublicUrl(shortFramePath(short.id, clip.id, "last"))));
   const [video, setVideo] = useState<string | null>(() => withVersion(samplePublicUrl(shortVideoPath(short.id, clip.id))));
   const [note, setNote] = useState("");
-  const [busy, setBusy] = useState<"frame" | "video" | null>(null);
+  const [busy, setBusy] = useState<"frame" | "last" | "video" | null>(null);
   const [status, setStatus] = useState<string | null>(null);
   const [refNote, setRefNote] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -91,13 +93,13 @@ function ClipCard({ short, clip, index }: { short: Short; clip: ShortClip; index
     timer.current = setTimeout(poll, 10000);
   }
 
-  async function makeFrame() {
-    setBusy("frame");
+  async function makeFrame(which: "first" | "last") {
+    setBusy(which === "last" ? "last" : "frame");
     setError(null);
-    setStatus("絵を作成中…（1〜2分）");
+    setStatus(`${which === "last" ? "最後" : "最初"}のコマの絵を作成中…（1〜2分）`);
     try {
-      const json = await post({ shortId: short.id, clipId: clip.id, kind: "frame", note });
-      setFrame(json.url);
+      const json = await post({ shortId: short.id, clipId: clip.id, kind: which === "last" ? "lastframe" : "frame", note });
+      (which === "last" ? setLast : setFrame)(json.url);
       setStatus(`絵ができました（${json.seconds}秒）`);
     } catch (e) {
       setError(e instanceof Error ? e.message : "失敗しました");
@@ -112,11 +114,14 @@ function ClipCard({ short, clip, index }: { short: Short; clip: ShortClip; index
     setError(null);
     setStatus(`Veo（${quality === "fast" ? "Fast" : "Standard"}）で動画を作成中…（1〜6分）`);
     try {
-      const { operation, usedReferenceImages } = await post({ shortId: short.id, clipId: clip.id, kind: "video", quality, note });
+      const { operation, usedReferenceImages, usedLastFrame } = await post({ shortId: short.id, clipId: clip.id, kind: "video", quality, note });
       const started = Date.now();
       writeStore(storeKey, { operation, started });
-      // Veo が設定画を参考画像として受け取れたかを出す（断られると顔が変わりやすい）
-      setRefNote(usedReferenceImages ? "設定画と表情集を参考画像として渡しました" : "参考画像は Veo に断られたため、最初のコマと文章だけで作っています");
+      // 何を Veo に渡せたかを出す（参考画像が断られたり最後のコマが無いと顔が変わりやすい）
+      setRefNote([
+        usedLastFrame ? "最初と最後のコマを指定" : "最初のコマだけ（最後のコマは未作成）",
+        usedReferenceImages ? "設定画と表情集を参考画像に" : "参考画像は Veo に断られたので無し",
+      ].join("・"));
       watch(operation, started);
     } catch (e) {
       setError(e instanceof Error ? e.message : "失敗しました");
@@ -130,15 +135,19 @@ function ClipCard({ short, clip, index }: { short: Short; clip: ShortClip; index
       <strong>クリップ {clip.id.toUpperCase()}（{index * 8}〜{index * 8 + 8}秒）</strong>
       <div style={{ fontSize: 14, lineHeight: 1.7 }}>
         <div><span style={{ color: "#666" }}>場面：</span>{clip.scene}</div>
-        <div><span style={{ color: "#666" }}>音・セリフ：</span>{clip.sound}</div>
+        <div><span style={{ color: "#666" }}>音・鳴き声：</span>{clip.sound}</div>
       </div>
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, maxWidth: 560 }}>
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 12, maxWidth: 840 }}>
         <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
           <span style={{ fontSize: 13, color: "#666" }}>① 最初のコマの絵</span>
-          <Frame src={frame} alt={`クリップ${clip.id}の絵`} />
+          <Frame src={frame} alt={`クリップ${clip.id}の最初の絵`} />
         </div>
         <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-          <span style={{ fontSize: 13, color: "#666" }}>② 動画（8秒・音つき）</span>
+          <span style={{ fontSize: 13, color: "#666" }}>② 最後のコマの絵</span>
+          <Frame src={last} alt={`クリップ${clip.id}の最後の絵`} />
+        </div>
+        <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+          <span style={{ fontSize: 13, color: "#666" }}>③ 動画（8秒・音つき）</span>
           <Video src={video} />
         </div>
       </div>
@@ -150,14 +159,17 @@ function ClipCard({ short, clip, index }: { short: Short; clip: ShortClip; index
       {status && <p style={{ margin: 0, fontSize: 14, color: "#4f6f9f" }}>{status}{refNote && <span style={{ color: "#888" }}>（{refNote}）</span>}</p>}
       {error && <p style={{ margin: 0, color: "#c0392b", fontWeight: 700 }}>エラー: {error}</p>}
       <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-        <button type="button" className="cta" onClick={makeFrame} disabled={busy !== null}>
-          {busy === "frame" ? "作成中…" : "① 絵を作る"}
+        <button type="button" className="cta" onClick={() => makeFrame("first")} disabled={busy !== null}>
+          {busy === "frame" ? "作成中…" : "① 最初の絵を作る"}
+        </button>
+        <button type="button" className="cta" onClick={() => makeFrame("last")} disabled={busy !== null}>
+          {busy === "last" ? "作成中…" : "② 最後の絵を作る"}
         </button>
         <button type="button" className="cta yellow" onClick={() => makeVideo("fast")} disabled={busy !== null}>
-          {busy === "video" ? "作成中…" : "② Fast で動かす（約120円）"}
+          {busy === "video" ? "作成中…" : "③ Fast で動かす（約120円）"}
         </button>
         <button type="button" className="cta yellow" onClick={() => makeVideo("standard")} disabled={busy !== null}>
-          {busy === "video" ? "作成中…" : "② Standard で動かす（約480円）"}
+          {busy === "video" ? "作成中…" : "③ Standard で動かす（約480円）"}
         </button>
       </div>
     </div>

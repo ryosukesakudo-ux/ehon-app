@@ -1,7 +1,7 @@
 import "server-only";
 import type { VeoQuality } from "./shorts";
 
-// Google の動画AI Veo 3.1（Gemini API）で、1枚の絵を最初のコマにして8秒の動画を作る。
+// Google の動画AI Veo 3.1（Gemini API）で、1枚の絵を最初のコマ（＋任意で最後のコマ）にして8秒の動画を作る。
 // キーは GEMINI_API_KEY（Google AI Studio で発行）。未設定なら使えない。
 // 作成には11秒〜6分かかるので、「開始」と「できたか確認」を分けている（Vercel の関数の制限時間内に収めるため）。
 // 参照: https://ai.google.dev/gemini-api/docs/veo
@@ -28,6 +28,8 @@ function model(quality: VeoQuality) {
 export async function veoStart(opts: {
   prompt: string;
   imagePng: Buffer;
+  /** 最後のコマ。あると最初と最後が絵で固定され、間を Veo がつなぐ */
+  lastFramePng?: Buffer;
   quality: VeoQuality;
   /** 見た目を揃えるための参考画像（設定画など、最大3枚）。Veo 3.1 の referenceImages（referenceType: asset） */
   referenceImages?: Buffer[];
@@ -45,6 +47,7 @@ export async function veoStart(opts: {
             prompt: opts.prompt,
             // Gemini API の predictLongRunning は inlineData ではなく bytesBase64Encoded（公式SDK imageToMldev と同じ形）
             image: toImage(opts.imagePng),
+            ...(opts.lastFramePng ? { lastFrame: toImage(opts.lastFramePng) } : {}),
             ...(withRefs && refs.length
               ? { referenceImages: refs.map((png) => ({ image: toImage(png), referenceType: "asset" })) }
               : {}),
