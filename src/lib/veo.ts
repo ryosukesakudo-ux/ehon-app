@@ -40,7 +40,8 @@ export async function veoStart(opts: { prompt: string; imagePng: Buffer; quality
       parameters: {
         aspectRatio: "9:16",
         resolution: "720p",
-        durationSeconds: "8",
+        // 数値で渡す（文字列だと "needs to be a number" になる）。絵から動かすときは 8 のみ
+        durationSeconds: 8,
         // 絵から動かすときは allow_adult しか選べない（子どもの顔は出さない前提）
         personGeneration: "allow_adult",
       },
