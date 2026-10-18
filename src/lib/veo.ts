@@ -25,33 +25,59 @@ function model(quality: VeoQuality) {
 }
 
 /** 動画の作成を始める。返る operation 名で veoPoll に進捗を聞く */
-export async function veoStart(opts: { prompt: string; imagePng: Buffer; quality: VeoQuality }) {
-  const res = await fetch(`${BASE}/models/${model(opts.quality)}:predictLongRunning`, {
-    method: "POST",
-    headers: headers(),
-    body: JSON.stringify({
-      instances: [
-        {
-          prompt: opts.prompt,
-          // Gemini API の predictLongRunning は inlineData ではなく bytesBase64Encoded（公式SDK imageToMldev と同じ形）
-          image: { bytesBase64Encoded: opts.imagePng.toString("base64"), mimeType: "image/png" },
+export async function veoStart(opts: {
+  prompt: string;
+  imagePng: Buffer;
+  quality: VeoQuality;
+  /** 見た目を揃えるための参考画像（設定画など、最大3枚）。Veo 3.1 の referenceImages（referenceType: asset） */
+  referenceImages?: Buffer[];
+  /** 出してほしくないもの */
+  negativePrompt?: string;
+}) {
+  const refs = (opts.referenceImages ?? []).slice(0, 3);
+  const request = (withRefs: boolean) =>
+    fetch(`${BASE}/models/${model(opts.quality)}:predictLongRunning`, {
+      method: "POST",
+      headers: headers(),
+      body: JSON.stringify({
+        instances: [
+          {
+            prompt: opts.prompt,
+            // Gemini API の predictLongRunning は inlineData ではなく bytesBase64Encoded（公式SDK imageToMldev と同じ形）
+            image: toImage(opts.imagePng),
+            ...(withRefs && refs.length
+              ? { referenceImages: refs.map((png) => ({ image: toImage(png), referenceType: "asset" })) }
+              : {}),
+          },
+        ],
+        parameters: {
+          aspectRatio: "9:16",
+          resolution: "720p",
+          // 数値で渡す（文字列だと "needs to be a number" になる）。絵から動かすときは 8 のみ
+          durationSeconds: 8,
+          // 絵から動かすときは allow_adult しか選べない（子どもの顔は出さない前提）
+          personGeneration: "allow_adult",
+          ...(opts.negativePrompt ? { negativePrompt: opts.negativePrompt } : {}),
         },
-      ],
-      parameters: {
-        aspectRatio: "9:16",
-        resolution: "720p",
-        // 数値で渡す（文字列だと "needs to be a number" になる）。絵から動かすときは 8 のみ
-        durationSeconds: 8,
-        // 絵から動かすときは allow_adult しか選べない（子どもの顔は出さない前提）
-        personGeneration: "allow_adult",
-      },
-    }),
-  });
-  const json = await res.json().catch(() => ({}));
+      }),
+    });
+
+  let res = await request(true);
+  let json = await res.json().catch(() => ({}));
+  // 最初のコマ＋参考画像の組み合わせが断られたら、参考画像なしでもう一度（公式ドキュメントに組み合わせ可否の記載がないため）
+  if (!res.ok && refs.length && res.status === 400) {
+    console.warn("Veo refused referenceImages with first frame, retrying without:", json?.error?.message);
+    res = await request(false);
+    json = await res.json().catch(() => ({}));
+  }
   if (!res.ok) throw new Error(json?.error?.message ?? `Veo の開始に失敗しました (${res.status})`);
   const name: string | undefined = json?.name;
   if (!name) throw new Error("Veo から operation 名が返りませんでした");
   return name;
+}
+
+function toImage(png: Buffer) {
+  return { bytesBase64Encoded: png.toString("base64"), mimeType: "image/png" };
 }
 
 /** できたか確認する。できていれば動画（mp4）を取ってくる */

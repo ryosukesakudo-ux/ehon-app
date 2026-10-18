@@ -3,7 +3,7 @@ import { characterArtPath, getOriginalCharacter } from "@/lib/characters";
 import { makeShortFrame } from "@/lib/illustrate";
 import { samplePublicUrl } from "@/lib/samples";
 import { SAMPLE_BUCKET, getSupabase } from "@/lib/services";
-import { getShort, shortFramePath, shortVideoPath, type VeoQuality } from "@/lib/shorts";
+import { SHORT_NEGATIVE_PROMPT, SHORT_PROMPT_RULES, getShort, shortFramePath, shortVideoPath, type VeoQuality } from "@/lib/shorts";
 import { veoPoll, veoReady, veoStart } from "@/lib/veo";
 
 export const maxDuration = 300;
@@ -41,9 +41,20 @@ export async function POST(request: Request) {
       const quality: VeoQuality = body?.quality === "standard" ? "standard" : "fast";
       const { data: frame } = await db.storage.from(SAMPLE_BUCKET).download(shortFramePath(short.id, clip.id));
       if (!frame) return Response.json({ error: "先にこのクリップの絵を作ってください" }, { status: 400 });
-      // 追加の指示は動きの指示の最後に足す（日本語でもよい）
-      const prompt = [clip.motion, note && `Additional instructions from the director (may be in Japanese), follow them: ${note}`].filter(Boolean).join(" ");
-      const operation = await veoStart({ prompt, imagePng: Buffer.from(await frame.arrayBuffer()), quality });
+      // 設定画と表情集を参考画像にして、動いたときも顔が変わらないようにする
+      const [{ data: sheet }, { data: faces }] = await Promise.all([
+        db.storage.from(SAMPLE_BUCKET).download(characterArtPath(c.id, "sheet")),
+        db.storage.from(SAMPLE_BUCKET).download(characterArtPath(c.id, "faces")),
+      ]);
+      const referenceImages = await Promise.all([sheet, faces].filter((b): b is Blob => Boolean(b)).map(async (b) => Buffer.from(await b.arrayBuffer())));
+      // キャラの見た目の説明 → 動き → 共通ルール → 追加の指示（日本語でもよい）
+      const prompt = [
+        `Character: ${c.design}`,
+        clip.motion,
+        SHORT_PROMPT_RULES,
+        note && `Additional instructions from the director (may be in Japanese), follow them: ${note}`,
+      ].filter(Boolean).join(" ");
+      const operation = await veoStart({ prompt, imagePng: Buffer.from(await frame.arrayBuffer()), quality, referenceImages, negativePrompt: SHORT_NEGATIVE_PROMPT });
       return Response.json({ operation });
     }
 
