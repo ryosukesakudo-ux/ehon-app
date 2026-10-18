@@ -33,7 +33,8 @@ export async function veoStart(opts: { prompt: string; imagePng: Buffer; quality
       instances: [
         {
           prompt: opts.prompt,
-          image: { inlineData: { mimeType: "image/png", data: opts.imagePng.toString("base64") } },
+          // Gemini API の predictLongRunning は inlineData ではなく bytesBase64Encoded（公式SDK imageToMldev と同じ形）
+          image: { bytesBase64Encoded: opts.imagePng.toString("base64"), mimeType: "image/png" },
         },
       ],
       parameters: {
