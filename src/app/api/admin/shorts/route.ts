@@ -24,10 +24,20 @@ export async function POST(request: Request) {
 
   try {
     if (body?.kind === "frame") {
-      const { data: sheet } = await db.storage.from(SAMPLE_BUCKET).download(characterArtPath(c.id, "sheet"));
+      const [{ data: sheet }, { data: faces }] = await Promise.all([
+        db.storage.from(SAMPLE_BUCKET).download(characterArtPath(c.id, "sheet")),
+        db.storage.from(SAMPLE_BUCKET).download(characterArtPath(c.id, "faces")),
+      ]);
       if (!sheet) return Response.json({ error: `先にキャラスタジオで ${c.name} の設定画を作ってください` }, { status: 400 });
       const started = Date.now();
-      const b64 = await makeShortFrame(c, clip, await toFile(sheet, "sheet.png", { type: "image/png" }), note);
+      // 表情集があれば一緒に渡し、最初のコマの顔を表情集に揃える
+      const b64 = await makeShortFrame(
+        c,
+        clip,
+        await toFile(sheet, "sheet.png", { type: "image/png" }),
+        note,
+        faces ? await toFile(faces, "faces.png", { type: "image/png" }) : undefined,
+      );
       const path = shortFramePath(short.id, clip.id);
       const { error } = await db.storage
         .from(SAMPLE_BUCKET)
@@ -50,12 +60,13 @@ export async function POST(request: Request) {
       // キャラの見た目の説明 → 動き → 共通ルール → 追加の指示（日本語でもよい）
       const prompt = [
         `Character: ${c.design}`,
+        `This character's voice: ${c.voice}. It never speaks words.`,
         clip.motion,
         SHORT_PROMPT_RULES,
         note && `Additional instructions from the director (may be in Japanese), follow them: ${note}`,
       ].filter(Boolean).join(" ");
-      const operation = await veoStart({ prompt, imagePng: Buffer.from(await frame.arrayBuffer()), quality, referenceImages, negativePrompt: SHORT_NEGATIVE_PROMPT });
-      return Response.json({ operation });
+      const { name: operation, usedReferenceImages } = await veoStart({ prompt, imagePng: Buffer.from(await frame.arrayBuffer()), quality, referenceImages, negativePrompt: SHORT_NEGATIVE_PROMPT });
+      return Response.json({ operation, usedReferenceImages });
     }
 
     return Response.json({ error: "不明な操作です" }, { status: 400 });

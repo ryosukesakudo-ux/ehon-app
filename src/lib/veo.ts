@@ -62,18 +62,20 @@ export async function veoStart(opts: {
       }),
     });
 
+  let usedReferenceImages = refs.length > 0;
   let res = await request(true);
   let json = await res.json().catch(() => ({}));
   // 最初のコマ＋参考画像の組み合わせが断られたら、参考画像なしでもう一度（公式ドキュメントに組み合わせ可否の記載がないため）
   if (!res.ok && refs.length && res.status === 400) {
     console.warn("Veo refused referenceImages with first frame, retrying without:", json?.error?.message);
+    usedReferenceImages = false;
     res = await request(false);
     json = await res.json().catch(() => ({}));
   }
   if (!res.ok) throw new Error(json?.error?.message ?? `Veo の開始に失敗しました (${res.status})`);
   const name: string | undefined = json?.name;
   if (!name) throw new Error("Veo から operation 名が返りませんでした");
-  return name;
+  return { name, usedReferenceImages };
 }
 
 function toImage(png: Buffer) {

@@ -32,7 +32,9 @@ function ShortCard({ short }: { short: Short }) {
         <strong style={{ fontSize: 20 }}>「{short.title}」</strong>
         <span className="tag">{c?.name ?? short.character} だけ</span>
         <span className="tag">約15秒</span>
+        <span className="tag">セリフなし</span>
       </div>
+      {c && <p style={{ margin: 0, fontSize: 14, color: "#555" }}>鳴き声：{c.voiceJa}</p>}
       {short.clips.map((clip, i) => <ClipCard key={clip.id} short={short} clip={clip} index={i} />)}
     </section>
   );
@@ -44,6 +46,7 @@ function ClipCard({ short, clip, index }: { short: Short; clip: ShortClip; index
   const [note, setNote] = useState("");
   const [busy, setBusy] = useState<"frame" | "video" | null>(null);
   const [status, setStatus] = useState<string | null>(null);
+  const [refNote, setRefNote] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
   // Veo の operation 名を localStorage に覚えておき、リロードしても確認を続ける
@@ -109,9 +112,11 @@ function ClipCard({ short, clip, index }: { short: Short; clip: ShortClip; index
     setError(null);
     setStatus(`Veo（${quality === "fast" ? "Fast" : "Standard"}）で動画を作成中…（1〜6分）`);
     try {
-      const { operation } = await post({ shortId: short.id, clipId: clip.id, kind: "video", quality, note });
+      const { operation, usedReferenceImages } = await post({ shortId: short.id, clipId: clip.id, kind: "video", quality, note });
       const started = Date.now();
       writeStore(storeKey, { operation, started });
+      // Veo が設定画を参考画像として受け取れたかを出す（断られると顔が変わりやすい）
+      setRefNote(usedReferenceImages ? "設定画と表情集を参考画像として渡しました" : "参考画像は Veo に断られたため、最初のコマと文章だけで作っています");
       watch(operation, started);
     } catch (e) {
       setError(e instanceof Error ? e.message : "失敗しました");
@@ -142,7 +147,7 @@ function ClipCard({ short, clip, index }: { short: Short; clip: ShortClip; index
         <textarea value={note} maxLength={SERIES_NOTE_MAX} rows={2} onChange={(e) => setNote(e.target.value)} placeholder="例：もっと暗く、歯をもっと大きく動かす" />
       </label>
       {/* 結果はボタンの上に出す（下だと画面の外になって気づけない） */}
-      {status && <p style={{ margin: 0, fontSize: 14, color: "#4f6f9f" }}>{status}</p>}
+      {status && <p style={{ margin: 0, fontSize: 14, color: "#4f6f9f" }}>{status}{refNote && <span style={{ color: "#888" }}>（{refNote}）</span>}</p>}
       {error && <p style={{ margin: 0, color: "#c0392b", fontWeight: 700 }}>エラー: {error}</p>}
       <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
         <button type="button" className="cta" onClick={makeFrame} disabled={busy !== null}>
