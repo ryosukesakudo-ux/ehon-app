@@ -141,6 +141,9 @@ function ClipCard({ short, clip, index }: { short: Short; clip: ShortClip; index
         追加の指示（任意・日本語でOK。次に作る1つにだけ効きます）
         <textarea value={note} maxLength={SERIES_NOTE_MAX} rows={2} onChange={(e) => setNote(e.target.value)} placeholder="例：もっと暗く、歯をもっと大きく動かす" />
       </label>
+      {/* 結果はボタンの上に出す（下だと画面の外になって気づけない） */}
+      {status && <p style={{ margin: 0, fontSize: 14, color: "#4f6f9f" }}>{status}</p>}
+      {error && <p style={{ margin: 0, color: "#c0392b", fontWeight: 700 }}>エラー: {error}</p>}
       <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
         <button type="button" className="cta" onClick={makeFrame} disabled={busy !== null}>
           {busy === "frame" ? "作成中…" : "① 絵を作る"}
@@ -152,8 +155,6 @@ function ClipCard({ short, clip, index }: { short: Short; clip: ShortClip; index
           {busy === "video" ? "作成中…" : "② Standard で動かす（約480円）"}
         </button>
       </div>
-      {status && <p style={{ margin: 0, fontSize: 14, color: "#4f6f9f" }}>{status}</p>}
-      {error && <p style={{ margin: 0, color: "#c0392b" }}>{error}</p>}
     </div>
   );
 }
