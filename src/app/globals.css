@@ -529,3 +529,9 @@ button, input { font-family: inherit; }
 @media (prefers-reduced-motion: reduce) {
   .flow-section, .taste-about { animation: none !important; }
 }
+
+/* キャラクターの3パターン（似せ方 そっくり・しっかり・ふつう）から選ぶ */
+.candidate-row { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.candidate { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 4px 4px 8px; border-radius: 14px; border: 1px solid var(--line); background: #fff; cursor: pointer; color: var(--navy); font-size: 14px; font-weight: 800; }
+.candidate img { width: 100%; aspect-ratio: 1 / 1; object-fit: contain; border-radius: 10px; }
+.candidate[aria-checked="true"] { border: 2px solid var(--coral); background: #FDECE8; }
