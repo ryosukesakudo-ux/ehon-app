@@ -77,7 +77,7 @@ export async function buildShimaumaZip(input: ShimaumaInput, product: ShimaumaPr
   const extras = spec.extras ? input.extras : undefined;
   if (spec.extras && !extras) throw new Error("特別ページの内容がありません");
   const pages = spec.pages - (extras ? EXTRA_PAGES : 0);
-  const { body, bold } = await loadPathFonts();
+  const { body, bold, cover } = await loadPathFonts();
   const size = mm(trimMm);
   const scale = trimMm / 210; // 入稿用PDFと同じく21cm角を基準に文字の大きさをそろえる
   const textSize = 18 * scale;
@@ -87,9 +87,10 @@ export async function buildShimaumaZip(input: ShimaumaInput, product: ShimaumaPr
   const jpeg = (img: Sharp) => img.jpeg({ quality: 92 }).toBuffer();
   const art = (img: Buffer, px: number, h = px) => sharp(img).flatten({ background: "#ffffff" }).resize(px, h, { fit: "cover" }).toBuffer();
 
-  // 表紙：入稿用PDFの表紙と同じ（上1/3にタイトルの帯、下2/3に表紙の絵）
+  // 表紙：入稿用PDFの表紙と同じ（上1/3にタイトルの帯、下2/3に表紙の絵）。
+  // 字体だけは、しまうまの表紙の文字（太い丸ゴシックしか選べない）に近い M PLUS Rounded 1c Black にする（2026-10-19 作道さん）
   {
-    files.push({ name: `${prefix}表紙.jpg`, bytes: await renderCover({ title: input.title, volume: input.volume, coverImage: input.coverImage, trimMm, px: COVER_PX, bold }) });
+    files.push({ name: `${prefix}表紙.jpg`, bytes: await renderCover({ title: input.title, volume: input.volume, coverImage: input.coverImage, trimMm, px: COVER_PX, bold: cover }) });
     // しまうまの表紙デザインは写真の枠が横長で、題名はしまうまの文字欄に入れる形なので、文字の無い表紙の絵（3:2）も入れておく
     files.push({ name: `${prefix}表紙_絵だけ.jpg`, bytes: await jpeg(sharp(await art(input.coverImage, COVER_PX, Math.round((COVER_PX * 2) / 3)))) });
   }
@@ -153,12 +154,12 @@ export async function buildShimaumaZip(input: ShimaumaInput, product: ShimaumaPr
 
 export const jpegOf = (img: Sharp) => img.jpeg({ quality: 92 }).toBuffer();
 
-/** 本文（丸ゴシック）と題名（太い丸ゴシック）のフォント */
+/** 本文（丸ゴシック）と題名（太い丸ゴシック）、しまうま用の表紙（いちばん太い丸ゴシック）のフォント */
 export async function loadPathFonts() {
-  const [body, bold] = await Promise.all(
-    ["ZenMaruGothic-Medium.ttf", "MPLUSRounded1c-ExtraBold.ttf"].map(async (f) => new PathFont(await readFile(path.join(FONT_DIR, f)))),
+  const [body, bold, cover] = await Promise.all(
+    ["ZenMaruGothic-Medium.ttf", "MPLUSRounded1c-ExtraBold.ttf", "MPLUSRounded1c-Black.ttf"].map(async (f) => new PathFont(await readFile(path.join(FONT_DIR, f)))),
   );
-  return { body, bold };
+  return { body, bold, cover };
 }
 
 /** 題名入りの正方形の表紙（上1/3にタイトルの帯、下2/3に表紙の絵）。入稿用PDFの表紙と同じ */
