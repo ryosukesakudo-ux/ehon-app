@@ -175,6 +175,8 @@ async function rewriteStory(story: string, siblings: Pick<Sibling, "name" | "age
           { role: "user", content: user },
         ],
         response_format: { type: "json_schema", json_schema: { name: "sibling_rewrite", strict: true, schema: SCHEMA } },
+        // 考える時間を短くして、下書きを作る画面を待たせすぎない（時間切れで「絵本をつくる」が失敗したため、2026-10-19）
+        ...(model.startsWith("gpt-5") && { reasoning_effort: "low" as const }),
       });
       const raw = res.choices[0]?.message?.content;
       if (!raw) throw new Error(`empty response (${res.choices[0]?.finish_reason ?? "no choice"})`);
