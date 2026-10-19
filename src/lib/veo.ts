@@ -88,12 +88,18 @@ export async function veoStart(opts: {
 export async function veoExtend(opts: {
   prompt: string;
   videoMp4: Buffer;
+  /** Veo が A を作ったときの動画 URI（あれば。bytes を断られたときにこちらで再試行） */
+  videoUri?: string;
   quality: VeoQuality;
   /** 延長の終わり（15秒時点）の絵。公式ドキュメントに延長との組み合わせ可否の記載がないため、断られたら無しで再試行する */
   lastFramePng?: Buffer;
   negativePrompt?: string;
 }) {
-  const request = (withLast: boolean) =>
+  // 動画の渡し方: Gemini API は encodedVideo（base64）。encoding（mimeType）を付けると
+  // 「`encoding` isn't supported by this model」で断られる（2026-10-19 実機で確認）ので付けない。
+  // それでも断られたら、Veo が A を作ったときの URI で再試行する
+  const videoOf = (byUri: boolean) => (byUri && opts.videoUri ? { uri: opts.videoUri } : { encodedVideo: opts.videoMp4.toString("base64") });
+  const request = (withLast: boolean, byUri = false) =>
     fetch(`${BASE}/models/${model(opts.quality)}:predictLongRunning`, {
       method: "POST",
       headers: headers(),
@@ -101,8 +107,7 @@ export async function veoExtend(opts: {
         instances: [
           {
             prompt: opts.prompt,
-            // 公式SDK videoToMldev と同じ形（encodedVideo / encoding）
-            video: { encodedVideo: opts.videoMp4.toString("base64"), encoding: "video/mp4" },
+            video: videoOf(byUri),
             ...(withLast && opts.lastFramePng ? { lastFrame: toImage(opts.lastFramePng) } : {}),
           },
         ],
@@ -115,18 +120,32 @@ export async function veoExtend(opts: {
       }),
     });
   let usedLastFrame = Boolean(opts.lastFramePng);
+  let usedUri = false;
   let res = await request(true);
   let json = await res.json().catch(() => ({}));
+  const refused = (j: unknown) => (j as { error?: { message?: string } })?.error?.message ?? "";
   if (!res.ok && opts.lastFramePng && res.status === 400) {
-    console.warn("Veo refused lastFrame with extension, retrying without:", json?.error?.message);
+    console.warn("Veo refused lastFrame with extension, retrying without:", refused(json));
     usedLastFrame = false;
     res = await request(false);
     json = await res.json().catch(() => ({}));
   }
-  if (!res.ok) throw new Error(json?.error?.message ?? `Veo の延長に失敗しました (${res.status})`);
+  if (!res.ok && opts.videoUri && res.status === 400) {
+    console.warn("Veo refused encodedVideo, retrying with uri:", refused(json));
+    usedUri = true;
+    usedLastFrame = Boolean(opts.lastFramePng);
+    res = await request(true, true);
+    json = await res.json().catch(() => ({}));
+    if (!res.ok && opts.lastFramePng && res.status === 400) {
+      usedLastFrame = false;
+      res = await request(false, true);
+      json = await res.json().catch(() => ({}));
+    }
+  }
+  if (!res.ok) throw new Error(refused(json) || `Veo の延長に失敗しました (${res.status})`);
   const name: string | undefined = json?.name;
   if (!name) throw new Error("Veo から operation 名が返りませんでした");
-  return { name, usedLastFrame };
+  return { name, usedLastFrame, usedUri };
 }
 
 function toImage(png: Buffer) {
@@ -134,7 +153,7 @@ function toImage(png: Buffer) {
 }
 
 /** できたか確認する。できていれば動画（mp4）を取ってくる */
-export async function veoPoll(operation: string): Promise<{ done: false } | { done: true; mp4: Buffer }> {
+export async function veoPoll(operation: string): Promise<{ done: false } | { done: true; mp4: Buffer; uri: string }> {
   // operation 名は "models/.../operations/..." の形。英数字と / . - _ 以外は受け付けない
   if (!/^[\w./-]+$/.test(operation)) throw new Error("operation 名が不正です");
   const res = await fetch(`${BASE}/${operation}`, { headers: headers() });
@@ -149,5 +168,5 @@ export async function veoPoll(operation: string): Promise<{ done: false } | { do
   }
   const file = await fetch(uri, { headers: { "x-goog-api-key": headers()["x-goog-api-key"] }, redirect: "follow" });
   if (!file.ok) throw new Error(`動画のダウンロードに失敗しました (${file.status})`);
-  return { done: true, mp4: Buffer.from(await file.arrayBuffer()) };
+  return { done: true, mp4: Buffer.from(await file.arrayBuffer()), uri };
 }

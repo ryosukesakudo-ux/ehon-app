@@ -152,7 +152,7 @@ export default function ShortPage() {
       const started = Date.now();
       writeStore(storeKey(s.id, clip), { operation: r.operation, started, quality });
       if (clip === "a") setStatus((t) => `${t}（${r.usedLastFrame ? "最初と最後のコマを指定" : "最初のコマだけ"}・${r.usedReferenceImages ? "設定画と表情集を参考画像に" : "参考画像は Veo に断られたので無し"}）`);
-      else setStatus((t) => `${t}（${!r.hadLastFrame ? "15秒時点の絵は未作成なので文章だけで延長" : r.usedLastFrame ? "15秒時点の絵を終わりとして指定" : "15秒時点の絵は Veo に断られたので文章だけで延長"}）`);
+      else setStatus((t) => `${t}（${!r.hadLastFrame ? "15秒時点の絵は未作成なので文章だけで延長" : r.usedLastFrame ? "15秒時点の絵を終わりとして指定" : "15秒時点の絵は Veo に断られたので文章だけで延長"}${r.usedUri ? "・Aの動画は Veo 側の控えを使用" : ""}）`);
       watch(s.id, clip, r.operation, started, quality);
     } catch (e) {
       setError(errorText(e));

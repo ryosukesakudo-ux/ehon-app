@@ -48,6 +48,8 @@ export type StudioClip = {
   lastFrame: string;
   /** 動きと音の指示（英語） */
   motion: string;
+  /** Veo がこのクリップの動画を作ったときの URI（Aのみ。延長で bytes を断られたときの予備。数日で切れる） */
+  videoUri?: string;
 };
 
 /** AIからの質問と作道さんの答え（台本を書く前のヒアリング） */
@@ -78,7 +80,7 @@ export function emptyShort(): StudioShort {
   return { id: "", title: "", characterId: null, premise: "", qa: [], clips: [emptyClip("a"), emptyClip("b")] };
 }
 
-export const CLIP_FIELDS: { key: keyof Omit<StudioClip, "id">; label: string; en?: boolean; rows?: number; onlyA?: boolean }[] = [
+export const CLIP_FIELDS: { key: "scene" | "sound" | "frame" | "lastFrame" | "motion"; label: string; en?: boolean; rows?: number; onlyA?: boolean }[] = [
   { key: "scene", label: "場面（日本語）", rows: 2 },
   { key: "sound", label: "音・鳴き声（日本語）", rows: 1 },
   { key: "frame", label: "最初のコマの絵（英語）", en: true, rows: 3, onlyA: true },

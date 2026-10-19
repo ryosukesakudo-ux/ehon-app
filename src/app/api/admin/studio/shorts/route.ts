@@ -42,6 +42,8 @@ export async function GET(request: Request) {
       const q = url.searchParams.get("q") === "standard" ? "standard" : "fast";
       const takeName = `${stamp()}-${clip === "a" ? "a" : "full"}-${q}.mp4`;
       await db.storage.from(SAMPLE_BUCKET).upload(`${studioTakesDir(short.id)}/${takeName}`, result.mp4, { contentType: "video/mp4", upsert: true, cacheControl: "31536000" });
+      // A のときは Veo 側の URI も覚えておく（延長で bytes を断られたときの予備）
+      if (clip === "a") await saveShort({ ...short, clips: [{ ...short.clips[0], videoUri: result.uri }, short.clips[1]] });
       return Response.json({ done: true, url: `${samplePublicUrl(path)}?v=${Date.now()}` });
     }
     if (id) {
@@ -184,14 +186,15 @@ export async function POST(request: Request) {
       const [videoA, lastB] = await Promise.all([download(studioVideoPath(short.id, "a")), download(studioFramePath(short.id, "lastB"))]);
       if (!videoA) return Response.json({ error: "先にクリップAの動画を作ってください" }, { status: 400 });
       const prompt = [character, clip.motion, SHORT_PROMPT_RULES, extra].filter(Boolean).join(" ");
-      const { name: operation, usedLastFrame } = await veoExtend({
+      const { name: operation, usedLastFrame, usedUri } = await veoExtend({
         prompt,
         videoMp4: Buffer.from(await videoA.arrayBuffer()),
+        videoUri: short.clips[0].videoUri,
         lastFramePng: lastB ? Buffer.from(await lastB.arrayBuffer()) : undefined,
         quality,
         negativePrompt: SHORT_NEGATIVE_PROMPT,
       });
-      return Response.json({ operation, usedLastFrame, hadLastFrame: Boolean(lastB) });
+      return Response.json({ operation, usedLastFrame, usedUri, hadLastFrame: Boolean(lastB) });
     }
 
     return Response.json({ error: "不明な操作です" }, { status: 400 });
