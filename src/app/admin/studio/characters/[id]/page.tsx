@@ -161,7 +161,7 @@ export default function CharacterPage() {
             <strong style={{ fontSize: 18 }}>4. {c.name}のショート動画（アーカイブ）</strong>
             <Link className="cta" href={`/admin/studio/shorts/new?character=${c.id}`} style={{ padding: "8px 16px" }}>＋ {c.name}で新しいショートを作る</Link>
           </div>
-          <p style={{ margin: 0, fontSize: 13, color: "#666" }}>このキャラで作ったショートが全部ここに並びます。1本ごとに台本・絵・動画（作り直した分も）が残ります。</p>
+          <p style={{ margin: 0, fontSize: 13, color: "#666" }}>このキャラで作ったショートが全部ここに並びます。1本ごとに台本・絵・今の動画と、「アーカイブに保存」した動画が残ります。</p>
           <ShortList characterId={c.id} />
         </section>
       )}

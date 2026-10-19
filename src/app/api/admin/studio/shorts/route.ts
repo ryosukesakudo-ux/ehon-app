@@ -12,10 +12,11 @@ export const maxDuration = 300;
 
 // スタジオのショート：
 //  GET ?id=…                       … 1本（無ければ一覧）
-//  GET ?operation=…&id=…&clip=a|b&q=fast|standard … Veo の進み具合。できていれば保存（＋アーカイブに1本残す）して { done, url }
+//  GET ?operation=…&id=…&clip=a|b … Veo の進み具合。できていれば保存して { done, url }
 //  POST { action: "save", short }  … 保存 → { short }
 //  POST { action: "delete", id }
 //  POST { action: "duplicate", id } … 同じキャラ・ねらい・台本で新しいショートを作る（絵と動画は付かない）→ { short }
+//  POST { action: "keep", id, kind: "a" | "full", quality } … 今の動画をアーカイブに残す（押したものだけ残す：2026-10-19 作道さん）→ { name }
 //  POST { action: "adopt", id, name } … アーカイブの動画を「今の動画」（A または 完成）にする → { url }
 //  POST { action: "deleteTake", id, name } … アーカイブの動画を1本消す
 //  POST { action: "questions", id } … ヒアリング：AIが足りない情報を質問 → { enough, questions }（保存もする）
@@ -38,10 +39,6 @@ export async function GET(request: Request) {
       const path = studioVideoPath(short.id, clip === "a" ? "a" : "full");
       const { error } = await db.storage.from(SAMPLE_BUCKET).upload(path, result.mp4, { contentType: "video/mp4", upsert: true, cacheControl: "300" });
       if (error) throw new Error(error.message);
-      // アーカイブにも1本残す（作り直しても古い動画が消えないように）
-      const q = url.searchParams.get("q") === "standard" ? "standard" : "fast";
-      const takeName = `${stamp()}-${clip === "a" ? "a" : "full"}-${q}.mp4`;
-      await db.storage.from(SAMPLE_BUCKET).upload(`${studioTakesDir(short.id)}/${takeName}`, result.mp4, { contentType: "video/mp4", upsert: true, cacheControl: "31536000" });
       // A のときは Veo 側の URI も覚えておく（延長で bytes を断られたときの予備）
       if (clip === "a") await saveShort({ ...short, clips: [{ ...short.clips[0], videoUri: result.uri }, short.clips[1]] });
       return Response.json({ done: true, url: `${samplePublicUrl(path)}?v=${Date.now()}` });
@@ -71,6 +68,19 @@ export async function POST(request: Request) {
       if (!src) return Response.json({ error: "ショートが見つかりません" }, { status: 404 });
       const short = await saveShort({ title: `${src.title || "題名なし"}（コピー）`.slice(0, 60), characterId: src.characterId, premise: src.premise, qa: src.qa, clips: src.clips });
       return Response.json({ short });
+    }
+    if (action === "keep") {
+      const db = getSupabase();
+      const short = await getShort(String(body?.id ?? ""));
+      if (!short || !db) return Response.json({ error: "ショートが見つかりません" }, { status: 404 });
+      const kind = body?.kind === "full" ? "full" : "a";
+      const q = body?.quality === "standard" ? "standard" : body?.quality === "fast" ? "fast" : "";
+      const { data, error } = await db.storage.from(SAMPLE_BUCKET).download(studioVideoPath(short.id, kind));
+      if (error || !data) return Response.json({ error: `先に${kind === "a" ? "クリップA" : "完成"}の動画を作ってください` }, { status: 400 });
+      const name = `${stamp()}-${kind}-${q}.mp4`;
+      const up = await db.storage.from(SAMPLE_BUCKET).upload(`${studioTakesDir(short.id)}/${name}`, Buffer.from(await data.arrayBuffer()), { contentType: "video/mp4", upsert: true, cacheControl: "31536000" });
+      if (up.error) throw new Error(up.error.message);
+      return Response.json({ name });
     }
     if (action === "adopt" || action === "deleteTake") {
       const db = getSupabase();
