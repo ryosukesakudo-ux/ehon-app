@@ -16,7 +16,7 @@ import { FacePicker } from "../face-picker";
 import { DrawingWait } from "../drawing-wait";
 import { loginHref, useAccount } from "../account";
 import { NextButton } from "../step";
-import { SiblingFields, SiblingSwitch, siblingComplete } from "../sibling-switch";
+import { SiblingFields, siblingComplete } from "../sibling-fields";
 import { parseSeriesKey } from "@/lib/story-key";
 
 // HEIC（iPhoneの写真）も選べるようにして、選んだあと JPEG に変換する
@@ -263,13 +263,8 @@ export function PhotoSection() {
   const newUpload = !!photos.child || !!photos.mom || !!photos.dad || each((i) => !!photos.guests?.[i]).some(Boolean);
   // 写真が選び直されていなければ、前回作った下書きをそのまま使う
   const reuse = !!state.draftId && !pickedChild && !pickedGuest;
-  // 兄弟姉妹を入れる欄は、呼び方・年齢・続柄がそろってから
-  const familyReady = (["mom", "dad"] as const).every((who) => !state.family[who] || siblingComplete(state.family[who])) && sibs.every(siblingComplete);
-  const canSubmit = familyReady && (reuse || (pickedChild && (!newUpload || consent)));
-  // 下書きに送る兄弟姉妹の入れ替え（そろっている欄だけ）
-  const familyJson = JSON.stringify(
-    Object.fromEntries((["mom", "dad"] as const).flatMap((who) => (state.family[who] && siblingComplete(state.family[who]) ? [[who, state.family[who]]] : []))),
-  );
+  // 兄弟姉妹の欄は、呼び方・年齢・続柄がそろってから
+  const canSubmit = sibs.every(siblingComplete) && (reuse || (pickedChild && (!newUpload || consent)));
 
   // 顔の飾りを消すかどうか。作成済みの下書きがあれば保存し、キャラクターは作り直す（似せ方を変えたときと同じ）
   function changePlainFace(on: boolean) {
@@ -293,22 +288,6 @@ export function PhotoSection() {
   }
 
   async function submit() {
-    if (reuse && familyJson !== state.familySent && !state.demo) {
-      // 写真はそのままで兄弟姉妹の入れ替えだけ変えた：下書きに送り、キャラクターから描き直す
-      setSending(true);
-      setError(null);
-      const res = await fetch(`/api/drafts/${encodeURIComponent(state.draftId!)}`, {
-        method: "PATCH",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({ family: JSON.parse(familyJson) }),
-      }).catch(() => null);
-      if (!res?.ok) {
-        setError((await res?.json().catch(() => null))?.error ?? "保存できませんでした。もう一度お試しください");
-        setSending(false);
-        return;
-      }
-      update({ familySent: familyJson, previews: {}, candidates: {}, picked: {}, confirmed: false, pageCount: 0, reused: [] });
-    }
     if (reuse) return router.push("/create/preview");
     if (!pickedChild) return;
     setSending(true);
@@ -321,7 +300,6 @@ export function PhotoSection() {
     if (state.childAge) form.set("childAge", String(state.childAge));
     form.set("consent", String(consent));
     form.set("plainFace", String(state.plainFace));
-    form.set("family", familyJson);
     if (sibs.length) form.set("siblings", siblingsJson);
     // 送れる大きさには上限（約4.5MB）があるので、写真が多いときは少し小さくして送る
     const photoCount = [photos.child, photos.mom, photos.dad, ...each((i) => photos.guests?.[i] ?? null)].filter(Boolean).length;
@@ -355,7 +333,7 @@ export function PhotoSection() {
         setNeedLogin(!!json.needLogin);
         throw new Error(json.error ?? "送信に失敗しました");
       }
-      update({ draftId: json.draftId, demo: !!json.demo, previews: json.previews ?? {}, previewScenes: json.previewScenes ?? [], confirmed: false, pageCount: 0, reused: Object.keys(json.previews ?? {}).map(Number), candidates: {}, picked: {}, likeness: "normal", familySent: familyJson, siblingsSent: siblingsJson });
+      update({ draftId: json.draftId, demo: !!json.demo, previews: json.previews ?? {}, previewScenes: json.previewScenes ?? [], confirmed: false, pageCount: 0, reused: Object.keys(json.previews ?? {}).map(Number), candidates: {}, picked: {}, likeness: "normal", siblingsSent: siblingsJson });
       setPhotos({ child: null, mom: null, dad: null });
       setSavedIds({ child: null, mom: null, dad: null });
       setGuestSavedIds([]);
@@ -394,11 +372,60 @@ export function PhotoSection() {
         taste={state.taste}
         onPickCharacter={(id) => { setCharacterIds((c) => ({ ...c, child: id })); if (id) { setPhotos({ ...photos, child: null }); setSavedIds((s) => ({ ...s, child: null })); } }}
       />
+      {series && (
+        <section className="card" style={{ gap: 8 }}>
+          <div className="display" style={{ fontSize: 16, fontWeight: 800, color: "var(--navy)" }}>兄弟姉妹もいっしょに</div>
+          <p style={{ margin: 0, fontSize: 12, lineHeight: 1.6, color: "var(--sub)" }}>
+            最大{MAX_SIBLINGS}人まで。12場面すべてで主人公といっしょに冒険するよう、お話の文と絵をAIが書き直します（お話の流れは同じです）。
+          </p>
+          {member ? (
+            sibs.length < MAX_SIBLINGS && (
+              <button type="button" className="ghost" onClick={() => update((prev) => ({ siblings: [...prev.siblings, { name: "", age: null, relation: "" }] }))}>
+                ＋ 兄弟姉妹を足す（あと{MAX_SIBLINGS - sibs.length}人）
+              </button>
+            )
+          ) : (
+            <Link href={loginHref("/create/photo")} className="ghost">兄弟姉妹を足すのは無料会員登録で</Link>
+          )}
+        </section>
+      )}
+      {sibs.map((s, i) => (
+        <PhotoSlot
+          key={`sibling${i}`}
+          id={`guest${i}-photo`}
+          title={`兄弟姉妹${sibs.length > 1 ? i + 1 : ""}${s.name.trim() ? `（${s.name.trim()}）` : ""}`}
+          head={
+            <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+              <SiblingFields value={s} onChange={(v) => update((prev) => ({ siblings: prev.siblings.map((x, j) => (j === i ? v : x)) }))} />
+              <button type="button" className="ghost gray" style={{ alignSelf: "flex-start", height: 36, padding: "0 14px", fontSize: 13 }} onClick={() => removeSibling(i)}>
+                この子を外す
+              </button>
+            </div>
+          }
+          note="この子の顔がはっきり写った写真をえらんでください。写真が無いときは、年齢に合わせて描きます。"
+          required={false}
+          file={photos.guests?.[i] ?? null}
+          face={photos.faces?.[`guest${i}`] ?? null}
+          onChange={(f, face) => {
+            const guests = each((j) => (j === i ? f : (photos.guests?.[j] ?? null)));
+            setPhotos({ ...photos, guests, faces: { ...photos.faces, [`guest${i}`]: face ?? null } });
+            if (f) setGuestSavedIds((v) => each((j) => (j === i ? null : (v[j] ?? null))));
+          }}
+          saved={saved}
+          savedId={guestSavedIds[i] ?? null}
+          onPickSaved={(id) => {
+            setGuestSavedIds((v) => each((j) => (j === i ? id : (v[j] ?? null))));
+            if (id) setPhotos({ ...photos, guests: each((j) => (j === i ? null : (photos.guests?.[j] ?? null))) });
+          }}
+          characters={[]}
+          characterId={null}
+          onPickCharacter={() => {}}
+        />
+      ))}
       <PhotoSlot
         id="mom-photo"
-        title={state.family.mom ? "兄弟姉妹（ママの欄）" : "ママ"}
-        head={<SiblingSwitch parent="ママ" value={state.family.mom ?? null} onChange={(v) => update((prev) => ({ family: { ...prev.family, mom: v ?? undefined } }))} />}
-        note={state.family.mom ? "この子の顔がはっきり写った写真をえらんでください。" : "ママを登場させたい場合にえらんでください。"}
+        title="ママ"
+        note="ママを登場させたい場合にえらんでください。"
         required={false}
         file={photos.mom}
         face={photos.faces?.mom ?? null}
@@ -413,9 +440,8 @@ export function PhotoSection() {
       />
       <PhotoSlot
         id="dad-photo"
-        title={state.family.dad ? "兄弟姉妹（パパの欄）" : "パパ"}
-        head={<SiblingSwitch parent="パパ" value={state.family.dad ?? null} onChange={(v) => update((prev) => ({ family: { ...prev.family, dad: v ?? undefined } }))} />}
-        note={state.family.dad ? "この子の顔がはっきり写った写真をえらんでください。" : "パパを登場させたい場合にえらんでください。"}
+        title="パパ"
+        note="パパを登場させたい場合にえらんでください。"
         required={false}
         file={photos.dad}
         face={photos.faces?.dad ?? null}
@@ -453,56 +479,6 @@ export function PhotoSection() {
           onPickCharacter={() => {}}
         />
       ))}
-      {sibs.map((s, i) => (
-        <PhotoSlot
-          key={`sibling${i}`}
-          id={`guest${i}-photo`}
-          title={`兄弟姉妹${sibs.length > 1 ? i + 1 : ""}${s.name.trim() ? `（${s.name.trim()}）` : ""}`}
-          head={
-            <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-              <SiblingFields value={s} onChange={(v) => update((prev) => ({ siblings: prev.siblings.map((x, j) => (j === i ? v : x)) }))} />
-              <button type="button" className="ghost gray" style={{ alignSelf: "flex-start", height: 36, padding: "0 14px", fontSize: 13 }} onClick={() => removeSibling(i)}>
-                この子を外す
-              </button>
-            </div>
-          }
-          note="この子の顔がはっきり写った写真をえらんでください。写真が無いときは、年齢に合わせて描きます。"
-          required={false}
-          file={photos.guests?.[i] ?? null}
-          face={photos.faces?.[`guest${i}`] ?? null}
-          onChange={(f, face) => {
-            const guests = each((j) => (j === i ? f : (photos.guests?.[j] ?? null)));
-            setPhotos({ ...photos, guests, faces: { ...photos.faces, [`guest${i}`]: face ?? null } });
-            if (f) setGuestSavedIds((v) => each((j) => (j === i ? null : (v[j] ?? null))));
-          }}
-          saved={saved}
-          savedId={guestSavedIds[i] ?? null}
-          onPickSaved={(id) => {
-            setGuestSavedIds((v) => each((j) => (j === i ? id : (v[j] ?? null))));
-            if (id) setPhotos({ ...photos, guests: each((j) => (j === i ? null : (photos.guests?.[j] ?? null))) });
-          }}
-          characters={[]}
-          characterId={null}
-          onPickCharacter={() => {}}
-        />
-      ))}
-      {series && (
-        <section className="card" style={{ gap: 8 }}>
-          <div className="display" style={{ fontSize: 16, fontWeight: 800, color: "var(--navy)" }}>兄弟姉妹もいっしょに</div>
-          <p style={{ margin: 0, fontSize: 12, lineHeight: 1.6, color: "var(--sub)" }}>
-            最大{MAX_SIBLINGS}人まで。12場面すべてで主人公といっしょに冒険するよう、お話の文と絵をAIが書き直します（お話の流れは同じです）。
-          </p>
-          {member ? (
-            sibs.length < MAX_SIBLINGS && (
-              <button type="button" className="ghost" onClick={() => update((prev) => ({ siblings: [...prev.siblings, { name: "", age: null, relation: "" }] }))}>
-                ＋ 兄弟姉妹を足す（あと{MAX_SIBLINGS - sibs.length}人）
-              </button>
-            )
-          ) : (
-            <Link href={loginHref("/create/photo")} className="ghost">兄弟姉妹を足すのは無料会員登録で</Link>
-          )}
-        </section>
-      )}
       {!!state.draftId && pickedGuest && !pickedChild && (
         <p className="info-note">写真を選び直すときは、主人公の写真もえらんでください。</p>
       )}
