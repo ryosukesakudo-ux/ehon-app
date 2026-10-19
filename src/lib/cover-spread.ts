@@ -66,18 +66,7 @@ export async function buildCoverSpread(input: CoverSpreadInput) {
     // 裏表紙：下の方にサービス名
     textPath(font, "えほん Only Yours", pt(10 * scale), backCenter, height - px(BLEED_MM + SAFE_MM), CORAL),
   ];
-  // おもて表紙の右下に巻数（入稿用PDFの表紙と同じ大きさ・位置）
-  const vol = `Vol.${input.volume}`;
-  const volSize = pt(11 * scale);
-  const padX = volSize * 0.7;
-  const labelW = advance(font, vol, volSize) + padX * 2;
-  const labelH = volSize * 1.8;
-  const labelRight = width - px(BLEED_MM + SAFE_MM / 2);
-  const labelBottom = height - px(BLEED_MM + SAFE_MM / 2);
-  texts.push(
-    `<rect x="${labelRight - labelW}" y="${labelBottom - labelH}" width="${labelW}" height="${labelH}" fill="${CREAM}" fill-opacity="0.92"/>`,
-    textPath(font, vol, volSize, labelRight - labelW / 2, labelBottom - (labelH - volSize * 0.72) / 2, NAVY),
-  );
+  // おもて表紙の右下の巻数（Vol.N）は出さない（2026-10-19 作道さん）
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}">${texts.join("")}</svg>`;
 
   const rgbImage = await sharp({ create: { width, height, channels: 3, background: CREAM } })

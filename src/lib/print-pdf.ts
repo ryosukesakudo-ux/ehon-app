@@ -150,7 +150,7 @@ export async function buildBookPdfs(input: BookPdfInput) {
   return { body: bodyPdf, cover: coverPdf };
 }
 
-/** おもて表紙の文字：上1/3の帯にタイトル（絵とは重ねない）と、右下の巻数。size は塗り足しを含むページの1辺、bleed は塗り足しの幅 */
+/** おもて表紙の文字：上1/3の帯にタイトル（絵とは重ねない）。size は塗り足しを含むページの1辺、bleed は塗り足しの幅 */
 export function drawCoverText<F extends TextFont>(
   page: Surface<NoInfer<F>>,
   o: { title: { lead: string; main: string }; volume: number; font: F; size: number; bleed: number; artHeight: number; scale: number; textWidth: number },
@@ -165,16 +165,7 @@ export function drawCoverText<F extends TextFont>(
   const blockTop = (bandTop + bandBottom) / 2 + blockHeight / 2;
   drawCentered(page, size, lead, font, leadSize, CORAL, blockTop - leadSize);
   drawCentered(page, size, main, font, titleSize, NAVY, blockTop - leadSize - titleSize * 1.4);
-  // 右下に巻数（絵の上に、小さなクリーム色の札を置いて書く）
-  const vol = `Vol.${o.volume}`;
-  const volSize = 11 * scale;
-  const padX = volSize * 0.7;
-  const labelW = font.widthOfTextAtSize(vol, volSize) + padX * 2;
-  const labelH = volSize * 1.8;
-  const right = size - o.bleed - mm(SAFE_MM / 2);
-  const bottom = o.bleed + mm(SAFE_MM / 2);
-  page.drawRectangle({ x: right - labelW, y: bottom, width: labelW, height: labelH, color: CREAM, opacity: 0.92 });
-  page.drawText(vol, { x: right - labelW + padX, y: bottom + (labelH - volSize * 0.72) / 2, size: volSize, font, color: NAVY });
+  // 右下の巻数（Vol.N）は出さない（2026-10-19 作道さん）
 }
 
 export function drawCentered<F extends TextFont>(page: Surface<NoInfer<F>>, pageWidth: number, text: string, font: F, size: number, color: Color, y: number) {
