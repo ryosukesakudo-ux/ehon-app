@@ -9,6 +9,7 @@ import {
   type SizeId,
 } from "@/lib/catalog";
 import { parseBookExtras, saveBookExtras } from "@/lib/book-extras";
+import { parseShippingKana } from "@/lib/kana";
 import { findCoupon, normalizeCouponCode, type Coupon } from "@/lib/coupons";
 import { isDemoId, loadOwnedDraft, memoryPhotoDir, type Draft } from "@/lib/drafts";
 import { draftForEpisode, extraEpisodeChoices } from "@/lib/episode-bundle";
@@ -35,9 +36,13 @@ export async function POST(request: Request) {
   // お誕生日は任意。入っていれば、誕生日の1か月前に続編のご案内メールを送る
   const childBirthday = parseBirthday(body?.childBirthday);
 
+  // お届け先のお名前のフリガナ（必須。しまうまの届け先登録に使う）
+  const shippingKana = parseShippingKana(body?.shipKanaSei, body?.shipKanaMei);
+
   const size = getSize(sizeId);
   const owned = draftId ? await loadOwnedDraft(draftId) : null;
   if (!size || !owned) return Response.json({ error: "注文内容を確認できませんでした" }, { status: 400 });
+  if (!shippingKana) return Response.json({ error: "お届け先のお名前のフリガナを、カタカナで入れてください" }, { status: 400 });
   const { draft, user } = owned;
 
   const couponCode = normalizeCouponCode(body?.coupon);
