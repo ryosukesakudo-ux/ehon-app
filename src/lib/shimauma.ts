@@ -4,6 +4,7 @@ import path from "node:path";
 import fontkit from "@pdf-lib/fontkit";
 import sharp, { type Sharp } from "sharp";
 import { CORAL, CREAM, INK, NAVY, SAFE_MM, drawCentered, drawCoverText, drawParagraph, fitSize, mm, type Color, type Surface, type TextFont } from "@/lib/print-pdf";
+import { layoutPhotos } from "@/lib/photo-layout";
 import { buildZip } from "@/lib/zip";
 
 // しまうまプリントのフォトブックに入れる画像を、ZIPにまとめて作る。
@@ -65,6 +66,8 @@ export type ShimaumaExtras = {
 
 /** 思い出の写真を並べるページの数 */
 export const PHOTO_PAGES = 6;
+/** 思い出の写真のページのふちの余白（mm）。しまうまで端が隠れる幅（約3.5%＝約5mm）より内側 */
+const PHOTO_MARGIN_MM = 8;
 /** 特別ページの数（お話の前に登場人物しょうかい2ページ、後ろに写真6ページ・よんだ日・メッセージ） */
 const EXTRA_PAGES = 2 + PHOTO_PAGES + 2;
 
@@ -272,39 +275,27 @@ export class ExtraPages {
   }
 
   /**
-   * 写真1〜4枚を1ページに。1枚：大きく1枚 / 2枚：上下 / 3枚：上に1枚・下に2枚 / 4枚：2×2。
-   * 顔が見切れないよう写真は切らず、区画の中に縦横比のまま収めて白い縁をつける
+   * 写真1〜4枚を1ページに。顔が見切れないよう写真は切らず、縦横比のまま白い縁をつけて並べる。
+   * 並べ方は写真の向きで決める（photo-layout.ts。縦の写真が多ければ横に、横の写真が多ければ縦に並ぶ）。
+   * 写真のページだけふちの余白を PHOTO_MARGIN_MM に詰めて大きくする（2026-10-19 作道さん）
    */
   private async photoPage(photos: Buffer[]) {
     const { size, px } = this.o;
-    const gap = mm(4);
-    const left = mm(SAFE_MM);
-    const bottom = mm(SAFE_MM);
-    const w = this.width;
-    const h = size - mm(SAFE_MM) * 2;
-    // 写真を置く区画（左下が原点のポイント）
-    const half = (h - gap) / 2;
-    const halfW = (w - gap) / 2;
-    const cells: { x: number; y: number; w: number; h: number }[] =
-      photos.length === 1
-        ? [{ x: left, y: bottom, w, h }]
-        : photos.length === 2
-          ? [{ x: left, y: bottom + half + gap, w, h: half }, { x: left, y: bottom, w, h: half }]
-          : photos.length === 3
-            ? [{ x: left, y: bottom + half + gap, w, h: half }, { x: left, y: bottom, w: halfW, h: half }, { x: left + halfW + gap, y: bottom, w: halfW, h: half }]
-            : [0, 1, 2, 3].map((i) => ({ x: left + (i % 2) * (halfW + gap), y: bottom + (i < 2 ? half + gap : 0), w: halfW, h: half }));
     const border = mm(1.6);
-    const placed = await Promise.all(
-      cells.map(async (c, i) => {
-        // 向きを直した写真の縦横比で、区画の中に収まる大きさにする
-        const img = await sharp(photos[i]).rotate().flatten({ background: "#ffffff" }).toBuffer();
+    const gap = mm(4);
+    const margin = mm(PHOTO_MARGIN_MM);
+    const imgs = await Promise.all(
+      photos.map(async (p) => {
+        // 向きを直した写真の縦横比で並べる
+        const img = await sharp(p).rotate().flatten({ background: "#ffffff" }).toBuffer();
         const meta = await sharp(img).metadata();
-        const ratio = (meta.width ?? 1) / (meta.height ?? 1);
-        const fw = Math.min(c.w, (c.h - border * 2) * ratio + border * 2);
-        const fh = Math.min(c.h, (fw - border * 2) / ratio + border * 2);
-        return { img, x: c.x + (c.w - fw) / 2, y: c.y + (c.h - fh) / 2, w: fw, h: fh };
+        return { img, ratio: (meta.width ?? 1) / (meta.height ?? 1) };
       }),
     );
+    // 白い縁の外側どうしが gap だけ空くよう、縁の分を差し引いた範囲に写真そのものを並べる
+    const inner = size - margin * 2 - border * 2;
+    const rects = layoutPhotos(imgs.map((i) => i.ratio), { x: margin + border, y: margin + border, w: inner, h: inner }, gap + border * 2);
+    const placed = rects.map((r, i) => ({ img: imgs[i].img, x: r.x - border, y: r.y - border, w: r.w + border * 2, h: r.h + border * 2 }));
     const page = this.page();
     for (const f of placed) page.drawFrame({ x: f.x, y: f.y, width: f.w, height: f.h, color: CREAM, lineWidth: 0, radius: 0 });
     const base = await this.render(page);
