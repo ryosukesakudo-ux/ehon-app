@@ -333,7 +333,7 @@ export function PhotoSection() {
         setNeedLogin(!!json.needLogin);
         throw new Error(json.error ?? "送信に失敗しました");
       }
-      update({ draftId: json.draftId, demo: !!json.demo, previews: json.previews ?? {}, previewScenes: json.previewScenes ?? [], confirmed: false, pageCount: 0, reused: Object.keys(json.previews ?? {}).map(Number), candidates: {}, picked: {}, likeness: "normal", siblingsSent: siblingsJson });
+      update({ draftId: json.draftId, demo: !!json.demo, previews: json.previews ?? {}, previewScenes: json.previewScenes ?? [], confirmed: false, pageCount: 0, reused: Object.keys(json.previews ?? {}).map(Number), likeness: "exact", siblingsSent: siblingsJson });
       setPhotos({ child: null, mom: null, dad: null });
       setSavedIds({ child: null, mom: null, dad: null });
       setGuestSavedIds([]);
@@ -483,9 +483,6 @@ export function PhotoSection() {
         <p className="info-note">写真を選び直すときは、主人公の写真もえらんでください。</p>
       )}
       <section className="card" style={{ gap: 8 }}>
-        <p style={{ margin: 0, fontSize: 12, lineHeight: 1.6, color: "var(--sub)" }}>
-          登場人物のキャラクターは、似せ方を変えた3パターン（そっくり・しっかり・ふつう）を描くので、気に入ったものを選べます（3枚でプレビュー1枚分）。
-        </p>
         <label style={{ display: "flex", gap: 8, alignItems: "flex-start", fontSize: 14, lineHeight: 1.6, color: "var(--navy)", cursor: "pointer" }}>
           <input type="checkbox" checked={state.plainFace} onChange={(e) => changePlainFace(e.target.checked)} style={{ marginTop: 4 }} />
           <span>

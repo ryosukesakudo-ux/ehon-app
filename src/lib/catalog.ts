@@ -311,8 +311,6 @@ export const LIKENESS_LEVELS = [
   },
 ] as const;
 export type LikenessId = (typeof LIKENESS_LEVELS)[number]["id"];
-/** キャラクターの最初の作成で描く3パターン（並び順もこのまま画面に出す） */
-export const CANDIDATE_LIKENESS: LikenessId[] = ["exact", "strong", "normal"];
 export function isLikenessId(v: unknown): v is LikenessId {
   return LIKENESS_LEVELS.some((l) => l.id === v);
 }

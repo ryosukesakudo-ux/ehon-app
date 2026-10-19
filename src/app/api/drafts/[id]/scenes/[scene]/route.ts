@@ -1,4 +1,4 @@
-import { CANDIDATE_LIKENESS, MEMBER_MONTHLY_PREVIEWS, PREVIEW_PACK, REDO_NOTE_MAX, REDO_OPTIONS, isCharacterScene, isLikenessId, isPageScene, type RedoOptionId } from "@/lib/catalog";
+import { MEMBER_MONTHLY_PREVIEWS, PREVIEW_PACK, REDO_NOTE_MAX, REDO_OPTIONS, isPageScene, type LikenessId, type RedoOptionId } from "@/lib/catalog";
 import { hasRedoRequest, type Redo } from "@/lib/illustrate";
 import { getBook } from "@/lib/book";
 import { draftPreviewScenes, generateScene, isDemoId, loadOwnedDraft } from "@/lib/drafts";
@@ -9,7 +9,7 @@ export const maxDuration = 300;
 
 // プレビュー用の絵（登場人物のキャラクター・表紙・本文のページ）を1枚作る（作り直しも同じ）。どれも1枚でプレビュー1枚分。
 // 会員は月の無料枠＋追加枠まで。登録前のお試しはキャラクターと表紙を1回ずつ（作り直しと本文のページは会員だけ）。
-// 本人への似せ方（likeness）は写真の画面で選び、最初の作成から使う。作り直し（redo: true）では、選択肢（options）と40字までの一言（note）も指示できる。
+// 本人への似せ方は、すべての画風で「そっくり」だけ（2026-10-19 作道さん：AI代を抑えるため3パターンはやめた）。作り直し（redo: true）では、選択肢（options）と40字までの一言（note）も指示できる。
 export async function POST(request: Request, ctx: RouteContext<"/api/drafts/[id]/scenes/[scene]">) {
   const { id, scene } = await ctx.params;
   const sceneIndex = Number(scene);
@@ -21,9 +21,8 @@ export async function POST(request: Request, ctx: RouteContext<"/api/drafts/[id]
   if ([...note].length > REDO_NOTE_MAX) {
     return Response.json({ error: `ひとことは${REDO_NOTE_MAX}文字以内で入力してください` }, { status: 400 });
   }
-  // 似せ方（以前の「もっと本人に似せて」の選択肢は「しっかり」として読む）
-  const likeness = isLikenessId(body?.likeness) ? body.likeness : Array.isArray(body?.options) && body.options.includes("likeness") ? "strong" : "normal";
-  // 最初の作成（写真の画面で選んだ似せ方だけ）か、作り直しか
+  const likeness: LikenessId = "exact";
+  // 最初の作成か、作り直しか
   const initial = body?.redo !== true && !options.length && !note;
   const asked: Redo = { options, note, likeness, initial };
   const redo = hasRedoRequest(asked) ? asked : null;
@@ -77,21 +76,6 @@ export async function POST(request: Request, ctx: RouteContext<"/api/drafts/[id]
       }
       refund = async () => db.rpc("refund_generation", { p_id: id });
     }
-  }
-
-  // 登場人物のキャラクターの最初の作成は、似せ方（ふつう・しっかり・そっくり）を変えた3パターンを描いて、お客様に選んでもらう。
-  // 3枚まとめてプレビュー1枚分（2026-10-19 作道さん）。作り直しは1枚（選んだパターンの似せ方で描く）
-  if (body?.candidates === true && initial && isCharacterScene(sceneIndex)) {
-    const results = await Promise.allSettled(
-      CANDIDATE_LIKENESS.map((l) => generateScene(draft, sceneIndex, "preview", { options: [], note: "", likeness: l, initial: true }, undefined, l)),
-    );
-    const candidates = results.flatMap((r, i) => (r.status === "fulfilled" ? [{ likeness: CANDIDATE_LIKENESS[i], url: r.value }] : []));
-    results.forEach((r) => r.status === "rejected" && console.error("candidate generation failed", r.reason));
-    if (!candidates.length) {
-      await refund?.().catch(() => {});
-      return Response.json({ error: "絵の作成に失敗しました。もう一度お試しください" }, { status: 500 });
-    }
-    return Response.json({ candidates, remaining });
   }
 
   try {

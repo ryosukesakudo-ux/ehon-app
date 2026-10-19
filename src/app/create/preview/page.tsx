@@ -7,7 +7,6 @@ import {
   BOOK_SCENE_COUNT,
   COVER_SCENE,
   FIRST_PAGES,
-  LIKENESS_LEVELS,
   MEMBER_MONTHLY_PREVIEWS,
   PERSON_LABEL,
   PREVIEW_PACK,
@@ -18,7 +17,6 @@ import {
   guestOf,
   isCharacterScene,
   yen,
-  type LikenessId,
   type RedoOptionId,
 } from "@/lib/catalog";
 import { LEVELS, bookTitle, fixedLevelEpisode, parseSeriesKey, type LevelId } from "@/lib/story-key";
@@ -83,11 +81,6 @@ function Preview() {
   // どの絵で選んだかを持ち、ほかの絵に移ったら外れるようにする（選んだ写真はその人のもの）
   const [swap, setSwap] = useState<{ scene: number; choice: PhotoChoice | null } | null>(null);
   const [resetting, setResetting] = useState(false);
-  // 本人への似せ方：キャラクターは選んだパターンの似せ方、表紙と本文は主人公で選んだ似せ方
-  const likenessFor = (i: number): LikenessId => (isCharacterScene(i) ? (state.picked[i] ?? state.likeness) : state.likeness);
-  // 3パターンの候補のうち、いま大きく見ているもの（場面番号 → 似せ方）
-  const [peek, setPeek] = useState<Record<number, LikenessId>>({});
-  const [picking, setPicking] = useState(false);
   // 本文12場面の文（本に載るのと同じ文。絵の下に出して、どの場面の絵か分かるようにする）
   const [texts, setTexts] = useState<string[]>([]);
   // 文の量の切り替え（シリーズのお話で、文の量が決まっていない話だけ。絵はそのままで文だけ変わる）
@@ -131,7 +124,6 @@ function Preview() {
 
   async function generate(index: number, redo?: RedoRequest): Promise<boolean> {
     if (!state.draftId || inFlight.current.has(index)) return false;
-    const firstCharacter = isCharacterScene(index) && !state.previews[index] && !state.picked[index];
     inFlight.current.add(index);
     setLoading((l) => ({ ...l, [index]: true }));
     setFailed((f) => {
@@ -144,9 +136,7 @@ function Preview() {
       const res = await fetch(`/api/drafts/${encodeURIComponent(state.draftId)}/scenes/${index}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        // キャラクターの最初の作成は3パターン（3枚でプレビュー1枚分）。作り直しは選んだパターンの似せ方で1枚
-        // （まだ選んでいないキャラクターは、描けなかったあとの作り直しでも3パターン）
-        body: JSON.stringify(firstCharacter ? { candidates: true } : redo ? { ...redo, likeness: likenessFor(index), redo: true } : { likeness: likenessFor(index) }),
+        body: JSON.stringify(redo ? { ...redo, likeness: state.likeness, redo: true } : { likeness: state.likeness }),
       });
       const json = await res.json();
       if (typeof json.remaining === "number") {
@@ -157,10 +147,6 @@ function Preview() {
         setNeedLogin(!!json.needLogin);
         setFailed((f) => ({ ...f, [index]: json.needCredits || res.status === 429 ? "quota" : json.needLogin ? "login" : "error" }));
         throw new Error(json.error ?? "絵の作成に失敗しました");
-      }
-      if (Array.isArray(json.candidates)) {
-        update((prev) => ({ candidates: { ...prev.candidates, [index]: json.candidates } }));
-        return true;
       }
       setPreview(index, json.url);
       // 作り直したら、保存しているキャラクターをそのまま使った絵ではなくなる
@@ -207,7 +193,7 @@ function Preview() {
       return;
     }
     // 開いたとき：確定前はキャラクター、確定後は表紙のうち、まだ無い絵を作る（本文のページはボタンで作る）
-    const todo = confirmed ? (state.previews[COVER_SCENE] ? [] : [COVER_SCENE]) : characters.filter((i) => !state.previews[i] && !state.candidates[i]?.length);
+    const todo = confirmed ? (state.previews[COVER_SCENE] ? [] : [COVER_SCENE]) : characters.filter((i) => !state.previews[i]);
     // eslint-disable-next-line react-hooks/set-state-in-effect -- 読み込み中の表示もここで切り替わる
     for (const i of todo) generate(i);
     // eslint-disable-next-line react-hooks/exhaustive-deps -- 画面を開いたとき（と場面が分かったとき）に一度だけ作る
@@ -287,33 +273,6 @@ function Preview() {
     return true;
   }
 
-  // 3パターンの候補から選んだものを、その人のキャラクターにする（プレビューの枚数は使わない）
-  async function pick(target: number, chosen: LikenessId) {
-    if (!state.draftId) return;
-    setPicking(true);
-    setError(null);
-    try {
-      const res = await fetch(`/api/drafts/${encodeURIComponent(state.draftId)}/scenes/${target}/pick`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ likeness: chosen }),
-      });
-      const json = await res.json().catch(() => ({}));
-      if (!res.ok) throw new Error(json.error ?? "選んだ絵を保存できませんでした");
-      setPreview(target, json.url);
-      update((prev) => ({
-        candidates: Object.fromEntries(Object.entries(prev.candidates).filter(([k]) => Number(k) !== target)),
-        picked: { ...prev.picked, [target]: chosen },
-        // 主人公で選んだ似せ方を、表紙と本文にも使う
-        ...(characterOf(target) === "child" ? { likeness: chosen } : {}),
-      }));
-    } catch (e) {
-      setError(e instanceof Error ? e.message : "選んだ絵を保存できませんでした");
-    } finally {
-      setPicking(false);
-    }
-  }
-
   // 登場人物を確定して、表紙を描く
   function confirm() {
     update({ confirmed: true });
@@ -336,7 +295,6 @@ function Preview() {
       }
       update((prev) => ({
         confirmed: false,
-        candidates: {},
         pageCount: 0,
         previews: Object.fromEntries(Object.entries(prev.previews).filter(([k]) => isCharacterScene(Number(k)))),
       }));
@@ -425,7 +383,7 @@ function Preview() {
   const coverDone = !!state.previews[COVER_SCENE];
   // 表紙の絵を待っている（描いている途中の画面が出ている）間も、ボタンは押せないようにする（2026-10-15 作道さん）
   const coverWaiting = confirmed && !coverDone && !failed[COVER_SCENE];
-  const busy = drawing || resetting || coverWaiting || picking;
+  const busy = drawing || resetting || coverWaiting;
 
   // 確定後に表紙がまだ無く、描いてもいないときは、この画面で一度だけ描きはじめる（「描いています」のまま止まらないように）
   const coverKicked = useRef(false);
@@ -474,14 +432,8 @@ function Preview() {
   const canSwap = !confirmed && isChar;
   const swapping = canSwap && swap?.scene === scene;
   const swapChoice = swapping ? swap.choice : null;
-  // まだ選んでいない3パターンの候補（いま見ている登場人物）
-  const choices = isChar && !url && !loading[scene!] ? (state.candidates[scene!] ?? []) : [];
-  const peeked = choices.find((c) => c.likeness === peek[scene!]) ?? choices[0];
   const picture =
-    peeked ? (
-      // eslint-disable-next-line @next/next/no-img-element -- 署名付きURLの一時画像
-      <img key={peeked.url} className="reveal-pop" src={peeked.url} alt={`${nameOf(scene!)}のキャラクター（${likenessLabel(peeked.likeness)}）`} style={{ width: "100%", height: "100%", objectFit: "contain" }} />
-    ) : failure ? (
+    failure ? (
       <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 8, padding: 24, textAlign: "center", color: "var(--navy)" }}>
         <div className="display" style={{ fontSize: 17, fontWeight: 900 }}>
           {failure === "quota"
@@ -576,11 +528,7 @@ function Preview() {
                   </>
                 )}
                 <br />
-                {choices.length ? (
-                  <span style={{ fontSize: 13, color: "var(--sub)" }}>似せ方を変えた{choices.length}パターンです。気に入ったものを選んでください。</span>
-                ) : (
-                  <span style={{ fontSize: 13, color: "var(--sub)" }}>この姿をもとに、表紙と本文を描きます。</span>
-                )}
+                <span style={{ fontSize: 13, color: "var(--sub)" }}>この姿をもとに、表紙と本文を描きます。</span>
               </>
             ) : (
               <>
@@ -607,22 +555,6 @@ function Preview() {
             )}
           </p>
         </div>
-        {choices.length > 0 && (
-          <section className="card" style={{ gap: 10 }}>
-            <div className="candidate-row" role="radiogroup" aria-label={`${nameOf(scene!)}のキャラクターのパターン`}>
-              {choices.map((c) => (
-                <button key={c.likeness} type="button" role="radio" aria-checked={peeked?.likeness === c.likeness} className="candidate" onClick={() => setPeek((v) => ({ ...v, [scene!]: c.likeness }))}>
-                  {/* eslint-disable-next-line @next/next/no-img-element -- 署名付きURLの一時画像 */}
-                  <img src={c.url} alt="" />
-                  <span className="display">{likenessLabel(c.likeness)}</span>
-                </button>
-              ))}
-            </div>
-            <button type="button" className="cta" disabled={busy || !peeked} onClick={() => peeked && pick(scene!, peeked.likeness)}>
-              {picking ? "保存しています…" : `「${likenessLabel(peeked?.likeness)}」にする`}
-            </button>
-          </section>
-        )}
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
           <button type="button" className="ghost" aria-label="前の絵" style={{ width: 44, height: 44, padding: 0, borderRadius: 22 }} disabled={pos === 0} onClick={() => setPos(Math.max(0, pos - 1))}>
             <Chevron dir="left" size={20} />
@@ -699,9 +631,6 @@ function Preview() {
                 />
                 <span style={{ alignSelf: "flex-end" }}>{[...note].length} / {REDO_NOTE_MAX}</span>
               </label>
-              {isChar && state.picked[scene] && (
-                <div style={{ fontSize: 12, color: "var(--sub)" }}>似せ方は、選んだ「{likenessLabel(state.picked[scene])}」のまま描きます。</div>
-              )}
               <button type="button" className="ghost" disabled={!!loading[scene] || resetting || charging || (swapping && !swapChoice)} onClick={() => orCharge(1, () => redoScenes([scene]))}>
                 {(() => {
                   const text = swapping ? "新しい写真で作り直す" : options.length || note.trim() ? "この内容で作り直す" : "そのまま作り直す";
@@ -790,11 +719,6 @@ function Preview() {
       )}
     </>
   );
-}
-
-/** 似せ方の名前（そっくり・しっかり・ふつう） */
-function likenessLabel(id: LikenessId | undefined) {
-  return LIKENESS_LEVELS.find((l) => l.id === id)?.label ?? "";
 }
 
 /** ブラウザの確認ダイアログ（関数名の confirm は登場人物の確定に使っているため） */
