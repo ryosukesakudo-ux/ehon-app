@@ -58,7 +58,7 @@ export type ShimaumaExtras = {
   message: string;
   /** 思い出の写真（アップした順、20枚まで）。6ページに分けて並べ、足りないページはおえかきページ */
   memoryPhotos: Buffer[];
-  /** 通し番号（No.0001） */
+  /** 注文の通し番号（管理用）。絵本の印字はいつも No.001 */
   serial: number;
   /** 登場人物（キャラクターの絵と名前）。主人公が先頭 */
   characters: { name: string; image: Buffer }[];
@@ -352,7 +352,8 @@ export class ExtraPages {
       drawParagraph(page, text, body, 14 * scale, size, size * 0.74, size * 0.4, size * 0.5);
     }
     this.title(page, "せかいに 1さつだけの えほん", text ? size * 0.2 : size * 0.55, text ? 12 : 18);
-    this.line(page, `No.${String(e.serial).padStart(4, "0")}`, text ? size * 0.13 : size * 0.45, text ? 12 : 16, NAVY);
+    // 絵本に印字する番号は特別感を出すため全冊「No.001」。注文の通し番号（serial）は管理用にファイル名だけで使う
+    this.line(page, "No.001", text ? size * 0.13 : size * 0.45, text ? 12 : 16, NAVY);
     this.brand(page);
     return this.render(page);
   }
