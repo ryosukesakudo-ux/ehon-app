@@ -214,46 +214,53 @@ export class ExtraPages {
   }
 
   /**
-   * 2〜3 登場人物しょうかい（見開き）。左のページに主人公を大きく1人、右のページにほかの人を小さく並べる（2026-10-16 作道さん）。
+   * 2〜3 登場人物しょうかい（見開き）。左のページに主人公を大きく1人、右のページにほかの人を並べる（2026-10-16 作道さん）。
+   * 右のページは余白が少なくなるよう大きく描く。2人までは横に並べ、3人以上は上下2段（3人なら上1・下2、4人なら2・2）（2026-10-19 作道さん）。
    * 主人公だけのときは、右のページを「かぞくの かお」のおえかきにする
    */
   async characters(e: ShimaumaExtras): Promise<[Buffer, Buffer]> {
     const [hero, ...others] = e.characters;
-    const left = await this.characterPage(hero ? [hero] : [], { title: true, cols: 1, maxArt: 0.62 });
+    const left = await this.characterPage(hero ? [hero] : [], { title: true, maxArt: 0.62 });
     if (!others.length) return [left, await this.drawing("かぞくの かおを かいてね")];
-    // ほかの人は横1列に、みんな同じ大きさで並べる（人数が少なくても大きくしすぎない）
-    return [left, await this.characterPage(others, { title: false, cols: others.length, maxArt: 0.3 })];
+    return [left, await this.characterPage(others, { title: false, maxArt: 0.9 })];
   }
 
-  private async characterPage(list: ShimaumaExtras["characters"], o: { title: boolean; cols: number; maxArt: number }) {
+  private async characterPage(list: ShimaumaExtras["characters"], o: { title: boolean; maxArt: number }) {
     const { size, px, scale } = this.o;
     const page = this.page();
     const top = size - mm(SAFE_MM);
     if (o.title) this.title(page, "とうじょう じんぶつ", top - 20 * scale);
-    const cols = Math.min(o.cols, Math.max(list.length, 1));
-    const rows = Math.max(1, Math.ceil(list.length / cols));
-    // 見出しの分（左のページ）は上を空ける。右のページも同じ高さから並べて、左右で絵の上がそろうようにする
-    const areaTop = top - 40 * scale;
+    // 2人までは1段、3人以上は2段。下の段を多めにする（3人なら上1・下2、5人なら上2・下3）
+    const rows = list.length >= 3 ? 2 : 1;
+    const perRow = rows === 2 ? [Math.floor(list.length / 2), Math.ceil(list.length / 2)] : [list.length];
+    const cols = Math.max(1, ...perRow);
+    // 見出しの分（左のページ）は上を空ける
+    const areaTop = o.title ? top - 40 * scale : top;
     const areaBottom = mm(SAFE_MM);
     const cellW = this.width / cols;
     const cellH = (areaTop - areaBottom) / rows;
-    const label = (o.title ? 18 : 13) * scale;
-    const art = Math.min(cellW * 0.9, cellH - label * 2.4, size * o.maxArt);
+    const label = (o.title ? 18 : 15) * scale;
+    const art = Math.min(cellW * 0.94, cellH - label * 2.4, size * o.maxArt);
+    // 段の高さを絵の大きさに詰めて、全体をページの上下まん中に置く
+    const rowH = art + label * 2.4;
+    const blockTop = (areaTop + areaBottom) / 2 + (rowH * rows) / 2;
     const images: { input: Buffer; left: number; top: number }[] = [];
-    for (let i = 0; i < list.length; i++) {
-      const c = i % cols;
-      const r = Math.floor(i / cols);
-      // 最後の段は人数が少なければ真ん中に寄せる
-      const inRow = r === rows - 1 ? list.length - cols * r : cols;
-      const cx = mm(SAFE_MM) + (this.width - cellW * inRow) / 2 + cellW * (c + 0.5);
-      const cellTop = areaTop - cellH * r;
-      const artTop = cellTop - (cellH - art - label * 2.4) / 2;
-      const artPx = this.toPx(art);
-      images.push({ input: await this.square(list[i].image, artPx, "contain"), left: this.toPx(cx - art / 2), top: px - this.toPx(artTop) });
-      const { bold } = this.o;
-      const name = list[i].name;
-      const s = fitSize(name, bold, label, cellW * 0.95);
-      page.drawText(name, { x: cx - bold.widthOfTextAtSize(name, s) / 2, y: artTop - art - label * 1.5, size: s, font: bold, color: NAVY });
+    let start = 0;
+    for (let r = 0; r < rows; r++) {
+      const inRow = perRow[r];
+      // その段の人数が少なければ真ん中に寄せる
+      for (let c = 0; c < inRow; c++) {
+        const i = start + c;
+        const cx = mm(SAFE_MM) + (this.width - cellW * inRow) / 2 + cellW * (c + 0.5);
+        const artTop = blockTop - rowH * r;
+        const artPx = this.toPx(art);
+        images.push({ input: await this.square(list[i].image, artPx, "contain"), left: this.toPx(cx - art / 2), top: px - this.toPx(artTop) });
+        const { bold } = this.o;
+        const name = list[i].name;
+        const s = fitSize(name, bold, label, cellW * 0.95);
+        page.drawText(name, { x: cx - bold.widthOfTextAtSize(name, s) / 2, y: artTop - art - label * 1.5, size: s, font: bold, color: NAVY });
+      }
+      start += inRow;
     }
     return this.render(page, images);
   }
