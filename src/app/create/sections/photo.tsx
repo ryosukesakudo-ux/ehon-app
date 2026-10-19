@@ -345,6 +345,13 @@ export function PhotoSection() {
     }
   }
 
+  // 兄弟姉妹を足すボタン（1人目を足したあとは、その子の欄のすぐ下に出す）
+  const addSibling = sibs.length < MAX_SIBLINGS && (
+    <button type="button" className="ghost" onClick={() => update((prev) => ({ siblings: [...prev.siblings, { name: "", age: null, relation: "" }] }))}>
+      ＋ 兄弟姉妹を足す（任意・あと{MAX_SIBLINGS - sibs.length}人）
+    </button>
+  );
+
   return (
     <>
       {account?.configured && !account.loggedIn && (
@@ -374,19 +381,15 @@ export function PhotoSection() {
       />
       {series && (
         <section className="card" style={{ gap: 8 }}>
-          <div className="display" style={{ fontSize: 16, fontWeight: 800, color: "var(--navy)" }}>兄弟姉妹もいっしょに</div>
+          <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+            <div className="display" style={{ fontSize: 16, fontWeight: 800, color: "var(--navy)" }}>兄弟姉妹もいっしょに</div>
+            <div style={{ fontSize: 11, padding: "2px 8px", borderRadius: 10, background: "#ECE8E1", color: "var(--sub)" }}>任意</div>
+          </div>
           <p style={{ margin: 0, fontSize: 12, lineHeight: 1.6, color: "var(--sub)" }}>
-            最大{MAX_SIBLINGS}人まで。12場面すべてで主人公といっしょに冒険するよう、お話の文と絵をAIが書き直します（お話の流れは同じです）。
+            入れたいときだけ足してください（最大{MAX_SIBLINGS}人）。12場面すべてで主人公といっしょに冒険するよう、お話の文と絵をAIが書き直します（お話の流れは同じです）。
           </p>
-          {member ? (
-            sibs.length < MAX_SIBLINGS && (
-              <button type="button" className="ghost" onClick={() => update((prev) => ({ siblings: [...prev.siblings, { name: "", age: null, relation: "" }] }))}>
-                ＋ 兄弟姉妹を足す（あと{MAX_SIBLINGS - sibs.length}人）
-              </button>
-            )
-          ) : (
-            <Link href={loginHref("/create/photo")} className="ghost">兄弟姉妹を足すのは無料会員登録で</Link>
-          )}
+          {!member && <Link href={loginHref("/create/photo")} className="ghost">兄弟姉妹を足すのは無料会員登録で</Link>}
+          {member && !sibs.length && addSibling}
         </section>
       )}
       {sibs.map((s, i) => (
@@ -422,6 +425,7 @@ export function PhotoSection() {
           onPickCharacter={() => {}}
         />
       ))}
+      {series && member && sibs.length > 0 && addSibling}
       <PhotoSlot
         id="mom-photo"
         title="ママ"
