@@ -297,7 +297,7 @@ export default function ShortPage() {
           <strong style={{ fontSize: 18 }}>3. 台本（A 8秒 ＋ 続きのB 7秒）</strong>
           <button type="button" className="cta yellow" onClick={script} disabled={disabled || !s.characterId} style={{ padding: "10px 18px" }}>{busy === "script" ? "書いています…" : hasScript ? "AIに台本を書き直させる" : "AIに台本を書かせる"}</button>
         </div>
-        <p style={{ margin: 0, fontSize: 13, color: "#666" }}>Bは「Aの動画の続きを延長」して作るので、Aの最後の状態からそのまま続きます。Aの最後は止まった状態で終わるのがコツ。</p>
+        <p style={{ margin: 0, fontSize: 13, color: "#666" }}>Bは「Aの動画の続きを延長」して作るので、Aの最後の状態からそのまま続きます。コツ：Aの最後＝いちばん見せたい「見せ場」を止めた姿（例：小石を歯でがっちり挟んで力んでいる）。Veo は最初と最後の絵にいちばん従うので、見せ場を「Aの最後の絵」にすると確実に出ます。Bはその結果（欠ける・吐き出す・驚く）。</p>
         {([0, 1] as const).map((i) => {
           const clip = s.clips[i];
           return (

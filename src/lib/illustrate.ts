@@ -1124,7 +1124,7 @@ export async function makeShortFrame(
       `The first reference image is the character design sheet of this character: ${c.design}`,
       faces ? "The second reference image is the same character's expression sheet; take the expression from it. If any panel there contradicts the face anatomy described above, the design sheet and the anatomy description win." : "",
       last
-        ? `${last.firstFrame ? "The last reference image is the opening frame of this video clip; keep exactly the same scene, lighting, colors, brush texture and camera framing. " : ""}Draw exactly the same character, same colors and details as on the sheet, as the final frame of that short vertical video clip for children.`
+        ? `${last.firstFrame ? "The last reference image is the opening frame of this video clip; keep exactly the same scene, lighting, colors, brush texture and camera framing. " : ""}Draw exactly the same character, same colors and details as on the sheet, as the final frame of that short vertical video clip for children. This frame is the key pose of the clip, so make the action unmistakable: if the character grips, bites or holds an object, the object is clearly visible in contact (for example clamped between the upper and lower teeth with half of it sticking out), large enough to read at a glance, and the body shows the effort.`
         : "Draw exactly the same character, same colors and details as on the sheet, as the opening frame of a short vertical video for children.",
       `Scene: ${last ? clip.lastFrame : clip.frame}`,
       "Keep the composition simple with space for the character to move. No other characters.",
