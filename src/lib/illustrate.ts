@@ -12,6 +12,7 @@ import type { Continuity } from "./series-data";
 import { sceneTextSide } from "./spread-scene";
 import { CHARACTER_STYLE, CHARACTER_WORLD, NO_TEXT, type OriginalCharacter } from "./characters";
 import type { ShortClip } from "./shorts";
+import { standInPrompt, type StandIns } from "./stand-ins";
 
 export type { Person };
 
@@ -393,6 +394,8 @@ export async function illustrate(opts: {
   plainFace?: boolean;
   /** 本文の場面を見開き（横長 1536x1024）で描く。表紙・キャラクターの絵には効かない */
   spread?: boolean;
+  /** ママ・パパの代わりに登場する人（注文ごとの特別対応。stand-ins.ts） */
+  standIns?: StandIns | null;
 }): Promise<string> {
   const ai = getOpenAI();
   if (!ai) throw new Error("OPENAI_API_KEY が未設定です");
@@ -406,14 +409,17 @@ export async function illustrate(opts: {
   const result = await ai.images.edit({
     model: process.env.OPENAI_IMAGE_MODEL ?? "gpt-image-2",
     image: opts.images.map((i) => i.file),
-    prompt: [
-      character !== null
-        ? buildCharacterPrompt(opts.taste, character, opts.images, opts.childAge, opts.redo, opts.story)
-        : buildPrompt(opts.taste, opts.story, opts.sceneIndex, opts.images, opts.childAge, opts.redo, spread),
-      opts.plainFace ? PLAIN_FACE : "",
-    ]
-      .filter(Boolean)
-      .join(" "),
+    prompt: standInPrompt(
+      [
+        character !== null
+          ? buildCharacterPrompt(opts.taste, character, opts.images, opts.childAge, opts.redo, opts.story)
+          : buildPrompt(opts.taste, opts.story, opts.sceneIndex, opts.images, opts.childAge, opts.redo, spread),
+        opts.plainFace ? PLAIN_FACE : "",
+      ]
+        .filter(Boolean)
+        .join(" "),
+      opts.standIns,
+    ),
     // 表紙は横長（タイトルは絵の上の帯に置くので、絵に文字の場所はいらない）
     size: opts.size ?? (isCover ? COVER_SIZE : spread ? "1536x1024" : "1024x1024"),
     quality: opts.detail ?? (opts.quality === "final" ? "high" : "medium"),

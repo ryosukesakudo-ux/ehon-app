@@ -4,6 +4,7 @@ import { loadBookExtras } from "@/lib/book-extras";
 import { parseCustomKey } from "@/lib/custom-story";
 import { draftGuestCount, draftPeople, guestCharacterPath, type Draft } from "@/lib/drafts";
 import { getBook } from "@/lib/book";
+import { standInText, standInsForOrder } from "@/lib/stand-ins";
 import { bookTitle, parseSeriesKey } from "@/lib/story-key";
 import { loadFinalImages } from "@/lib/print-assets";
 import { SHIMAUMA_PRODUCTS, buildShimaumaZip, type ShimaumaExtras, type ShimaumaProduct } from "@/lib/shimauma";
@@ -38,7 +39,8 @@ export async function POST(request: Request, ctx: RouteContext<"/api/admin/order
 
   try {
     const serial = await orderSerial(db, order);
-    const texts = story.scenes.map((sc) => sceneText(sc, order.drafts.child_name));
+    // ママ・パパの代わりの人がいる注文（stand-ins.ts）は、本文の「ママ」「パパ」を名前に替える
+    const texts = story.scenes.map((sc) => standInText(sceneText(sc, order.drafts.child_name), standInsForOrder(order.id)));
     const { trimMm, pagePx } = SHIMAUMA_PRODUCTS[product];
     const { zip } = await buildShimaumaZip({
       title: bookTitle(order.drafts.story, order.drafts.child_name),
@@ -88,7 +90,7 @@ async function loadExtras(db: SupabaseClient, order: OrderRow, serial: number): 
   const characters: ShimaumaExtras["characters"] = [];
   for (const who of draftPeople(draft)) {
     const image = await download(BOOK_BUCKET, draft[`${who}_character_path`]);
-    if (image) characters.push({ name: who === "child" ? called : PERSON_LABEL[who], image });
+    if (image) characters.push({ name: who === "child" ? called : (standInsForOrder(order.id)?.[who]?.name ?? PERSON_LABEL[who]), image });
   }
   const cast = parseCustomKey(draft.story)?.cast ?? [];
   for (let i = 0; i < draftGuestCount(draft); i++) {
