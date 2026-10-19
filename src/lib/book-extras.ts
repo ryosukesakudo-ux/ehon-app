@@ -2,6 +2,7 @@ import "server-only";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { BOOK_MESSAGE_MAX, MEMORY_PHOTO_MAX, isHonorificId, type HonorificId } from "@/lib/catalog";
 import { memoryPhotoDir } from "@/lib/drafts";
+import { parseShippingKana } from "@/lib/kana";
 import { BOOK_BUCKET } from "@/lib/services";
 
 // 注文ごとの、絵本の特別ページに入れる内容（呼び方・おうちの方からのメッセージ・思い出の写真）。2026-10-14 作道さん。
@@ -11,6 +12,8 @@ export type BookExtras = {
   message: string;
   /** 思い出の写真の保存先（PHOTO_BUCKET）。アップした順。最大 MEMORY_PHOTO_MAX 枚。無ければ空 */
   memoryPhotoPaths: string[];
+  /** お届け先のお名前のフリガナ（2026-10-19 から必須。しまうまの届け先登録用）。それより前の注文は null */
+  shippingKana: { sei: string; mei: string } | null;
 };
 
 export function bookExtrasPath(draftId: string, orderId: string) {
@@ -23,13 +26,18 @@ export function bookExtrasPath(draftId: string, orderId: string) {
  */
 export function parseBookExtras(
   draftId: string,
-  v: { childHonorific?: unknown; bookMessage?: unknown; memoryPhotoPaths?: unknown; memoryPhotoPath?: unknown },
+  v: { childHonorific?: unknown; bookMessage?: unknown; memoryPhotoPaths?: unknown; memoryPhotoPath?: unknown; shipKanaSei?: unknown; shipKanaMei?: unknown },
 ): BookExtras {
   const message = typeof v.bookMessage === "string" ? v.bookMessage.replace(/\r\n?/g, "\n").trim().slice(0, BOOK_MESSAGE_MAX) : "";
   const pattern = new RegExp(`^${memoryPhotoDir(draftId)}/[0-9a-f-]{36}\\.(jpg|png|webp)$`);
   const list = [...(Array.isArray(v.memoryPhotoPaths) ? v.memoryPhotoPaths : []), v.memoryPhotoPath];
   const photos = [...new Set(list.filter((p): p is string => typeof p === "string" && pattern.test(p)))].slice(0, MEMORY_PHOTO_MAX);
-  return { honorific: isHonorificId(v.childHonorific) ? v.childHonorific : null, message, memoryPhotoPaths: photos };
+  return {
+    honorific: isHonorificId(v.childHonorific) ? v.childHonorific : null,
+    message,
+    memoryPhotoPaths: photos,
+    shippingKana: parseShippingKana(v.shipKanaSei, v.shipKanaMei),
+  };
 }
 
 export async function saveBookExtras(db: SupabaseClient, draftId: string, orderId: string, extras: BookExtras) {
@@ -40,14 +48,14 @@ export async function saveBookExtras(db: SupabaseClient, draftId: string, orderI
 }
 
 /** 保存が無い注文（2026-10-14 より前の注文）は、呼び方なし・メッセージなし・写真なし */
-const empty = (): BookExtras => ({ honorific: null, message: "", memoryPhotoPaths: [] });
+const empty = (): BookExtras => ({ honorific: null, message: "", memoryPhotoPaths: [], shippingKana: null });
 
 export async function loadBookExtras(db: SupabaseClient, draftId: string, orderId: string): Promise<BookExtras> {
   const { data } = await db.storage.from(BOOK_BUCKET).download(bookExtrasPath(draftId, orderId));
   if (!data) return empty();
   try {
     const v = JSON.parse(await data.text());
-    return parseBookExtras(draftId, { childHonorific: v.honorific, bookMessage: v.message, memoryPhotoPaths: v.memoryPhotoPaths, memoryPhotoPath: v.memoryPhotoPath });
+    return parseBookExtras(draftId, { childHonorific: v.honorific, bookMessage: v.message, memoryPhotoPaths: v.memoryPhotoPaths, memoryPhotoPath: v.memoryPhotoPath, shipKanaSei: v.shippingKana?.sei, shipKanaMei: v.shippingKana?.mei });
   } catch {
     return empty();
   }

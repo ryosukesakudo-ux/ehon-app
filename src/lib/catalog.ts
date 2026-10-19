@@ -367,8 +367,6 @@ export function getSize(id: string) {
 // https://www.n-pri.jp/photobook/delivery/
 export const DELIVERY_NOTE = "ご注文から2〜3週間でお届けします。混雑状況によっては、それ以上かかる場合があります。";
 
-/** すべての絵本を1冊ずつギフトバッグに入れてお届け（しまうまのオプション +270円/冊はこちら負担。2026-10-16 作道さん決定） */
-export const GIFT_BAG_IMAGE = "/gift-bag.webp";
 /** 以前の注文で選ばれていた時間帯（表示用。いまは選べない） */
 export const DELIVERY_TIMES = [
   { id: "am", label: "午前中" },

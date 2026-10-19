@@ -60,6 +60,9 @@ export type FlowState = {
   extraFor: string;
   /** 絵本の最後のページに入れる、おうちの方からのメッセージ（任意） */
   bookMessage: string;
+  /** お届け先のお名前のフリガナ（必須・セイとメイ）。しまうまの届け先登録にカナが要る（2026-10-19） */
+  shipKanaSei: string;
+  shipKanaMei: string;
   /**
    * 思い出の写真（任意・注文の確認画面でアップロード、20枚まで）の保存先。アップした順に、お話のあとの6ページに分けて並べる。
    * 空は無し（そのページはおえかきページになる）
@@ -104,6 +107,8 @@ const initial: FlowState = {
   extraDrafts: {},
   extraFor: "",
   bookMessage: "",
+  shipKanaSei: "",
+  shipKanaMei: "",
   memoryPhotoPaths: [],
   deliveryDate: "",
   deliveryTime: "",

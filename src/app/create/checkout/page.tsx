@@ -16,6 +16,7 @@ import type { Coupon } from "@/lib/coupons";
 import { levelLabel, parseSeriesKey, seriesKey, storyLabel } from "@/lib/story-key";
 import { toViewablePhoto } from "@/lib/heic-photo";
 import { shrinkPhoto } from "@/lib/shrink-photo";
+import { KANA_MAX, parseShippingKana, toKatakana } from "@/lib/kana";
 import { chosenExtras, useFlow } from "../flow";
 import { NextButton, StepHeader, StepTitle } from "../step";
 
@@ -40,6 +41,7 @@ export default function CheckoutPage() {
   // 選んだ写真のその場の表示（保存先 → 画面の中だけのURL）。読み直したあとは枚数だけ出す
   const [photoViews, setPhotoViews] = useState<Record<string, string>>({});
   const photoCount = state.memoryPhotoPaths.length;
+  const kanaOk = !!parseShippingKana(state.shipKanaSei, state.shipKanaMei);
 
   // 思い出の写真は選んだらすぐ1枚ずつ送って、保存先を選んだ順に覚えておく（印刷するので長い辺 2400px に縮める）
   async function pickMemoryPhotos(files: File[]) {
@@ -102,6 +104,8 @@ export default function CheckoutPage() {
           childHonorific: state.childHonorific,
           bookMessage: state.bookMessage,
           memoryPhotoPaths: state.memoryPhotoPaths,
+          shipKanaSei: state.shipKanaSei,
+          shipKanaMei: state.shipKanaMei,
         }),
       });
       const json = await res.json();
@@ -139,7 +143,6 @@ export default function CheckoutPage() {
           {coupon && <div className="sum-row" style={{ color: "var(--coral)" }}><span>クーポン（{coupon.label}）</span><span>−{yen(size.price - firstPrice)}</span></div>}
           {books > 1 && <div className="sum-row"><span>追加の{books - 1}冊{extras.length > 0 ? `（${1 + extras.length}話×${state.copies}冊）` : ""}</span><span>{yen(extraCopyPrice(state.size) * (books - 1))}</span></div>}
           <div className="sum-row"><span>送料</span><span>0円</span></div>
-          <div className="sum-row"><span>ギフトバッグ</span><span>0円（全冊に付きます）</span></div>
           <div className="sum-total">
             <span className="display" style={{ fontSize: 15, fontWeight: 800 }}>合計（税込）</span>
             <span className="display" style={{ fontSize: 26, fontWeight: 900, color: "var(--coral)" }}>{yen(orderTotal(state.size, state.copies, firstPrice, 1 + extras.length))}</span>
@@ -266,6 +269,30 @@ export default function CheckoutPage() {
             </>
           )}
         </div>
+        <div className="card" style={{ padding: 18, gap: 10 }}>
+          <div className="display" style={{ fontSize: 15, fontWeight: 800, color: "var(--navy)" }}>お届け先のお名前（フリガナ）<span style={{ color: "var(--coral)", fontSize: 12, marginLeft: 6 }}>必須</span></div>
+          <div style={{ display: "flex", gap: 8 }}>
+            {(["shipKanaSei", "shipKanaMei"] as const).map((key) => (
+              <div key={key} className="field" style={{ flex: 1, minWidth: 0 }}>
+                <label htmlFor={key} style={{ fontSize: 13, fontWeight: 700, color: "var(--navy)" }}>{key === "shipKanaSei" ? "セイ" : "メイ"}</label>
+                <input
+                  id={key}
+                  type="text"
+                  autoComplete={key === "shipKanaSei" ? "family-name" : "given-name"}
+                  maxLength={KANA_MAX}
+                  placeholder={key === "shipKanaSei" ? "ヤマダ" : "ハナコ"}
+                  value={state[key]}
+                  onChange={(e) => update({ [key]: e.target.value })}
+                  onBlur={(e) => update({ [key]: toKatakana(e.target.value) })}
+                />
+              </div>
+            ))}
+          </div>
+          <p style={{ margin: 0, fontSize: 12, lineHeight: 1.6, color: "var(--sub)" }}>
+            次の画面で入れる「お届け先のお名前」の読み方を、カタカナで入れてください（ひらがなで入れても、カタカナに直ります）。
+          </p>
+          {state.shipKanaSei && state.shipKanaMei && !kanaOk && <p className="error" role="alert">セイ・メイの両方を、カタカナで入れてください</p>}
+        </div>
         <div style={{ display: "flex", gap: 8, alignItems: "center", justifyContent: "center", fontSize: 12, color: "var(--sub)" }}>
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
             <rect x="5" y="11" width="14" height="9" rx="2" />
@@ -284,8 +311,8 @@ export default function CheckoutPage() {
         </p>
         {error && <p className="error" role="alert">{error}</p>}
       </main>
-      <NextButton onClick={pay} disabled={sending || photoBusy || !state.draftId}>
-        {sending ? "決済画面を開いています…" : "お届け先とお支払いへ"}
+      <NextButton onClick={pay} disabled={sending || photoBusy || !state.draftId || !kanaOk}>
+        {sending ? "決済画面を開いています…" : kanaOk ? "お届け先とお支払いへ" : "お届け先のフリガナを入れてください"}
       </NextButton>
     </>
   );
