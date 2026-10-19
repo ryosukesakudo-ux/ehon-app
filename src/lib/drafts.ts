@@ -7,6 +7,7 @@ import { getBook } from "./book";
 import { customPhotos, parseCustomKey } from "./custom-story";
 import { findSpreadTextSpot } from "./spread-text";
 import { isWideImage, sceneSpotPath, sceneTextSide } from "./spread-scene";
+import { standInsForDraft } from "./stand-ins";
 import { copyBookImage, isViewPath, uploadBookImage, viewUrl, viewUrls, withViews } from "./book-images";
 import { currentUser, type Member } from "./auth";
 import { getAnonId } from "./anon";
@@ -228,7 +229,9 @@ export async function generateScene(draft: Draft, sceneIndex: number, quality: Q
 
   // 本文の場面は見開き（横長）で描く（2026-10-15 作道さん：お客様の本も見開き版に）
   const spread = isPageScene(sceneIndex);
-  const b64 = await illustrate({ taste: draft.taste, story: draft.story, sceneIndex, images, quality, detail, childAge: draft.child_age, redo, plainFace: !!draft.plain_face, spread });
+  // 注文ごとの特別対応：ママ・パパの代わりにお兄ちゃん・お姉ちゃんなどが出る本
+  const standIns = await standInsForDraft(db, draft.id);
+  const b64 = await illustrate({ taste: draft.taste, story: draft.story, sceneIndex, images, quality, detail, childAge: draft.child_age, redo, plainFace: !!draft.plain_face, spread, standIns });
   const png = Buffer.from(b64, "base64");
 
   // 会員の写真は「最後に使った日」を更新する（1年使わなければ自動削除）
