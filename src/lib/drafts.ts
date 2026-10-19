@@ -2,7 +2,7 @@ import "server-only";
 import { toFile } from "openai";
 import { BOOK_BUCKET, PHOTO_BUCKET, getOpenAI, getSupabase } from "./services";
 import { hasRedoRequest, illustrate, upscaleForPrint, type Detail, type Quality, type Redo, type RefImage } from "./illustrate";
-import { BOOK_SCENE_COUNT, CHARACTER_SCENES, COVER_SCENE, MAX_GUESTS, PERSON_LABEL, characterOf, getTaste, guestOf, isPageScene, previewScenes, type Person, type TasteId } from "./catalog";
+import { BOOK_SCENE_COUNT, CHARACTER_SCENES, COVER_SCENE, MAX_GUESTS, PERSON_LABEL, characterOf, getTaste, guestOf, isPageScene, previewScenes, type LikenessId, type Person, type TasteId } from "./catalog";
 import { getBook } from "./book";
 import { customPhotos, parseCustomKey } from "./custom-story";
 import { findSpreadTextSpot } from "./spread-text";
@@ -192,7 +192,7 @@ function guestsIn(draft: Draft, sceneIndex: number): number[] {
  * 参考にするのは写真と、作ってあるキャラクターの絵。写真が削除されていても、キャラクターがあれば描ける。
  * redo：作り直しの指示（選択肢と一言）。
  */
-export async function generateScene(draft: Draft, sceneIndex: number, quality: Quality, redo?: Redo | null, detail?: Detail): Promise<string> {
+export async function generateScene(draft: Draft, sceneIndex: number, quality: Quality, redo?: Redo | null, detail?: Detail, candidate?: LikenessId): Promise<string> {
   const db = getSupabase();
   const ai = getOpenAI();
   if (!db || !ai || isDemoId(draft.id)) return demoImage(draft, sceneIndex);
@@ -213,7 +213,7 @@ export async function generateScene(draft: Draft, sceneIndex: number, quality: Q
     if (!target) images.push({ who, kind: "character", file: await download(BOOK_BUCKET, character) });
     // キャラクターの作り直し：指示があるとき（写真が無いときも）は、今の絵をもとに直す。
     // 「写真そっくり」は前の絵に引っぱられないよう、写真だけから描き直す
-    else if (!photo || (hasRedoRequest(redo) && redo.likeness !== "exact")) {
+    else if (!photo || (!candidate && hasRedoRequest(redo) && redo.likeness !== "exact")) {
       images.push({ who, kind: photo ? "previous" : "character", file: await download(BOOK_BUCKET, character) });
     }
   }
@@ -221,7 +221,7 @@ export async function generateScene(draft: Draft, sceneIndex: number, quality: Q
   for (const g of guest !== null ? [guest] : guestsIn(draft, sceneIndex)) {
     const photo = await tryDownload(PHOTO_BUCKET, guestPhotos[g] ?? null);
     if (photo) images.push({ who: g, kind: "photo", file: photo });
-    const keepPrevious = !photo || (hasRedoRequest(redo) && redo.likeness !== "exact");
+    const keepPrevious = !photo || (!candidate && hasRedoRequest(redo) && redo.likeness !== "exact");
     if (guest !== null && !keepPrevious) continue;
     const character = await tryDownload(BOOK_BUCKET, guestCharacterPath(draft.id, g));
     if (character) images.push({ who: g, kind: guest !== null && photo ? "previous" : "character", file: character });
@@ -240,6 +240,14 @@ export async function generateScene(draft: Draft, sceneIndex: number, quality: Q
     await db.from("user_photos").update({ last_used_at: new Date().toISOString() }).in("path", used);
   }
 
+  // 3パターンの候補：お客様が選ぶまでは、キャラクターにもプレビューにも使わない
+  if (candidate) {
+    const path = candidatePath(draft.id, sceneIndex, candidate);
+    const { error } = await uploadBookImage(path, png);
+    if (error) throw new Error(`画像の保存に失敗しました: ${error.message}`);
+    return viewUrl(path);
+  }
+
   if (target) await saveCharacter(draft, target, png);
   if (guest !== null) {
     const { error } = await uploadBookImage(guestCharacterPath(draft.id, guest), png);
@@ -250,6 +258,30 @@ export async function generateScene(draft: Draft, sceneIndex: number, quality: Q
   const { error } = await uploadBookImage(path, png);
   if (error) throw new Error(`画像の保存に失敗しました: ${error.message}`);
   if (spread) await saveSceneSpot(path, png, sceneTextSide(sceneIndex));
+  return viewUrl(path);
+}
+
+/** キャラクターの3パターン（似せ方 ふつう・しっかり・そっくり）の候補の保存先 */
+export function candidatePath(draftId: string, sceneIndex: number, likeness: LikenessId) {
+  return `${draftId}/candidates/${sceneIndex}-${likeness}.png`;
+}
+
+/** お客様が選んだ候補を、その人のキャラクター（とプレビューの絵）にする。表示用のURLを返す */
+export async function pickCandidate(draft: Draft, sceneIndex: number, likeness: LikenessId): Promise<string> {
+  const db = getSupabase();
+  if (!db || isDemoId(draft.id)) return demoImage(draft, sceneIndex);
+  const file = await download(BOOK_BUCKET, candidatePath(draft.id, sceneIndex, likeness));
+  const png = Buffer.from(await file.arrayBuffer());
+  const target = characterOf(sceneIndex);
+  const guest = guestOf(sceneIndex);
+  if (target) await saveCharacter(draft, target, png);
+  if (guest !== null) {
+    const { error } = await uploadBookImage(guestCharacterPath(draft.id, guest), png);
+    if (error) throw new Error(`キャラクターの保存に失敗しました: ${error.message}`);
+  }
+  const path = pagePath(draft.id, "preview", sceneIndex);
+  const { error } = await uploadBookImage(path, png);
+  if (error) throw new Error(`画像の保存に失敗しました: ${error.message}`);
   return viewUrl(path);
 }
 
@@ -364,7 +396,7 @@ export async function deleteDraftImages(draftId: string) {
     const { error } = await db.storage.from(PHOTO_BUCKET).remove(memoryPaths);
     if (error) throw new Error(`思い出の写真の削除に失敗しました: ${error.message}`);
   }
-  for (const quality of ["preview", "final"] as const) {
+  for (const quality of ["preview", "final", "candidates"] as const) {
     const { data: files } = await db.storage.from(BOOK_BUCKET).list(`${draftId}/${quality}`);
     const paths = (files ?? []).map((f) => `${draftId}/${quality}/${f.name}`);
     if (paths.length) {

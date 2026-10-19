@@ -19,8 +19,15 @@ export type FlowState = {
   childBirthday: string;
   /** 主人公の呼び方（kun / chan / none。catalog.ts の HONORIFICS）。登場人物しょうかいなどの特別ページで使う。空は未選択 */
   childHonorific: string;
-  /** 本人への似せ方（写真の画面で選ぶ。プレビューの最初の作成から使う） */
+  /**
+   * 本人への似せ方。キャラクターは最初に3パターン（そっくり・しっかり・ふつう）を描いて選んでもらい（2026-10-19）、
+   * 主人公で選んだものを表紙と本文にも使う
+   */
   likeness: LikenessId;
+  /** キャラクターの3パターンの候補（場面番号 → 候補）。選ぶとその人のキャラクターになり、ここから消える */
+  candidates: Record<number, { likeness: LikenessId; url: string }[]>;
+  /** キャラクターごとに選んだ似せ方（場面番号 → 似せ方）。作り直しはこの似せ方で1枚描く */
+  picked: Record<number, LikenessId>;
   /** 写真の顔の飾り（シール・メガネなど）を絵では描かない（写真の画面のチェック） */
   plainFace: boolean;
   draftId: string | null;
@@ -68,6 +75,8 @@ const initial: FlowState = {
   childBirthday: "",
   childHonorific: "",
   likeness: "normal",
+  candidates: {},
+  picked: {},
   plainFace: false,
   draftId: null,
   demo: false,
@@ -153,6 +162,8 @@ export function FlowProvider({ children }: { children: ReactNode }) {
           ? [oldPhoto]
           : [];
       if (!isLikenessId(restored.likeness)) restored.likeness = initial.likeness;
+      restored.candidates = restored.candidates && typeof restored.candidates === "object" ? restored.candidates : {};
+      restored.picked = restored.picked && typeof restored.picked === "object" ? restored.picked : {};
       restored.plainFace = restored.plainFace === true;
       restored.confirmed = restored.confirmed === true;
       restored.reused = Array.isArray(restored.reused) ? restored.reused.filter((n) => typeof n === "number") : [];

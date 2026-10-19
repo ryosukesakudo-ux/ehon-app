@@ -292,13 +292,15 @@ export const LIKENESS_LEVELS = [
   },
   {
     id: "exact",
-    label: "写真そっくり",
+    label: "そっくり",
     hint: "写真の特徴をできるだけ忠実に",
     prompt:
       "Likeness to the photo is the top priority: the customer wants each person to look as close as possible to the person in their reference photo. Faithfully reproduce the face shape and proportions, the shape, size and spacing of the eyes, eyelids, eyebrows, nose, mouth and lips, ears, skin tone, hairline, hairstyle, bangs, hair length and hair color, and distinctive features visible in the photo such as glasses, dimples or moles. Only translate them into the picture-book art style; do not idealize, beautify or make the face generic.",
   },
 ] as const;
 export type LikenessId = (typeof LIKENESS_LEVELS)[number]["id"];
+/** キャラクターの最初の作成で描く3パターン（並び順もこのまま画面に出す） */
+export const CANDIDATE_LIKENESS: LikenessId[] = ["exact", "strong", "normal"];
 export function isLikenessId(v: unknown): v is LikenessId {
   return LIKENESS_LEVELS.some((l) => l.id === v);
 }
