@@ -139,7 +139,7 @@ export default function StudioHome() {
           <strong style={{ fontSize: 18 }}>ショート動画（{shorts?.length ?? "…"}本）</strong>
           <Link className="cta" href="/admin/studio/shorts/new" style={{ padding: "8px 16px" }}>＋ ショートを作る</Link>
         </div>
-        <p style={{ margin: 0, fontSize: 13, color: "#666" }}>キャラごとに何本でも作れます。作った動画は1本ごとに全部残ります（アーカイブ）。キャラのページからも、そのキャラのショートを見たり作ったりできます。</p>
+        <p style={{ margin: 0, fontSize: 13, color: "#666" }}>キャラごとに何本でも作れます。残したい動画は「アーカイブに保存」で1本ずつ残せます。キャラのページからも、そのキャラのショートを見たり作ったりできます。</p>
         {shorts && shorts.length === 0 && <p style={{ margin: 0, fontSize: 14 }}>まだありません。「＋ ショートを作る」からキャラを選んで、ねらいを一言書くところから始めます。</p>}
         {groups.map((g) => (
           <div key={g.key} style={{ display: "flex", flexDirection: "column", gap: 8, paddingTop: 8, borderTop: "1px solid #eee" }}>

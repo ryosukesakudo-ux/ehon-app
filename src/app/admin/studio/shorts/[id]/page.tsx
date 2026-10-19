@@ -15,6 +15,8 @@ export default function ShortPage() {
   // キャラのページから「このキャラで新しいショートを作る」で来たときは、そのキャラを選んだ状態で始める（?character=…）
   const [s, setS] = useState<StudioShort>(() => ({ ...emptyShort(), characterId: (typeof window !== "undefined" && new URLSearchParams(window.location.search).get("character")) || null }));
   const [takes, setTakes] = useState<StudioTake[]>([]);
+  /** 直近に作った動画の画質（アーカイブに保存するときのラベル用） */
+  const [lastQuality, setLastQuality] = useState<{ a?: VeoQuality; b?: VeoQuality }>({});
   const [characters, setCharacters] = useState<StudioCharacter[]>([]);
   const [loaded, setLoaded] = useState(false);
   const [busy, setBusy] = useState<string | null>(null);
@@ -151,6 +153,7 @@ export default function ShortPage() {
       const r = await api("/api/admin/studio/shorts", { action: "video", short: s, clip, quality, note: notes[clip] });
       const started = Date.now();
       writeStore(storeKey(s.id, clip), { operation: r.operation, started, quality });
+      setLastQuality((q) => ({ ...q, [clip]: quality }));
       if (clip === "a") setStatus((t) => `${t}（${r.usedLastFrame ? "最初と最後のコマを指定" : "最初のコマだけ"}・${r.usedReferenceImages ? "設定画と表情集を参考画像に" : "参考画像は Veo に断られたので無し"}）`);
       else setStatus((t) => `${t}（${!r.hadLastFrame ? "15秒時点の絵は未作成なので文章だけで延長" : r.usedLastFrame ? "15秒時点の絵を終わりとして指定" : "15秒時点の絵は Veo に断られたので文章だけで延長"}${r.usedUri ? "・Aの動画は Veo 側の控えを使用" : ""}）`);
       watch(s.id, clip, r.operation, started, quality);
@@ -169,9 +172,8 @@ export default function ShortPage() {
         if (json.done) {
           writeStore(storeKey(id, clip), null);
           (clip === "a" ? setVideoA : setVideoFull)(json.url);
-          setStatus(`${clip === "a" ? "クリップA" : "完成の15秒"}ができました（${Math.round((Date.now() - started) / 1000)}秒）。アーカイブにも残しました`);
+          setStatus(`${clip === "a" ? "クリップA" : "完成の15秒"}ができました（${Math.round((Date.now() - started) / 1000)}秒）。残したいときは動画の下の「アーカイブに保存」を押してください（作り直すと上書きされます）`);
           setBusy(null);
-          void reloadTakes(id);
           return;
         }
         setStatus(`Veo で作成中…（${Math.round((Date.now() - started) / 1000)}秒経過。この画面を閉じたりリロードしても続きます）`);
@@ -190,6 +192,14 @@ export default function ShortPage() {
     await run("duplicate", async () => {
       const r = await api("/api/admin/studio/shorts", { action: "duplicate", id: s.id });
       router.push(`/admin/studio/shorts/${r.short.id}`);
+    });
+  }
+
+  async function keep(kind: "a" | "full") {
+    await run(`keep:${kind}`, async () => {
+      await api("/api/admin/studio/shorts", { action: "keep", id: s.id, kind, quality: lastQuality[kind === "a" ? "a" : "b"] });
+      setStatus(`${kind === "a" ? "クリップA" : "完成の15秒"}をアーカイブに保存しました`);
+      await reloadTakes(s.id);
     });
   }
 
@@ -344,6 +354,7 @@ export default function ShortPage() {
             <textarea value={notes.a} maxLength={STUDIO_NOTE_MAX} rows={2} onChange={(e) => setNotes((n) => ({ ...n, a: e.target.value }))} placeholder="追加の指示（任意）" />
             <button type="button" className="cta yellow" onClick={() => video("a", "fast")} disabled={disabled || !first}>{busy === "video:a" ? "作成中…" : `A を Fast で作る（約${VEO_COST.fast.a}円）`}</button>
             <button type="button" className="cta yellow" onClick={() => video("a", "standard")} disabled={disabled || !first}>{busy === "video:a" ? "作成中…" : `A を Standard で作る（約${VEO_COST.standard.a}円）`}</button>
+            {!isNew && <button type="button" className="cta" onClick={() => keep("a")} disabled={disabled} style={{ padding: "8px 12px", fontSize: 13 }}>{busy === "keep:a" ? "保存中…" : "この A をアーカイブに保存"}</button>}
           </div>
           <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
             <span style={{ fontSize: 13, color: "#666" }}>完成（A＋続き・約15秒）</span>
@@ -351,6 +362,7 @@ export default function ShortPage() {
             <textarea value={notes.b} maxLength={STUDIO_NOTE_MAX} rows={2} onChange={(e) => setNotes((n) => ({ ...n, b: e.target.value }))} placeholder="追加の指示（任意）" />
             <button type="button" className="cta yellow" onClick={() => video("b", "fast")} disabled={disabled || !videoA}>{busy === "video:b" ? "作成中…" : `続きを Fast で延長（約${VEO_COST.fast.b}円）`}</button>
             <button type="button" className="cta yellow" onClick={() => video("b", "standard")} disabled={disabled || !videoA}>{busy === "video:b" ? "作成中…" : `続きを Standard で延長（約${VEO_COST.standard.b}円）`}</button>
+            {!isNew && <button type="button" className="cta" onClick={() => keep("full")} disabled={disabled} style={{ padding: "8px 12px", fontSize: 13 }}>{busy === "keep:full" ? "保存中…" : "この完成をアーカイブに保存"}</button>}
             {videoFull && <a href={videoFull} download={`${s.title || "short"}.mp4`} style={{ fontSize: 14 }}>完成した動画をダウンロード</a>}
           </div>
         </div>
@@ -359,9 +371,9 @@ export default function ShortPage() {
       {/* 6. アーカイブ */}
       {!isNew && (
         <section className="card" style={{ gap: 12 }}>
-          <strong style={{ fontSize: 18 }}>6. アーカイブ（これまでに作った動画 {takes.length}本）</strong>
-          <p style={{ margin: 0, fontSize: 13, color: "#666" }}>作った動画は作り直しても消えず、ここに全部残ります。気に入ったものは「これを採用」で上の「今の動画」に戻せます。別のお話を作るときは「複製して別のショートに」か、スタジオの「＋ ショートを作る」から。</p>
-          {takes.length === 0 && <p style={{ margin: 0, fontSize: 14, color: "#888" }}>まだありません（これから作る動画から残ります）。</p>}
+          <strong style={{ fontSize: 18 }}>6. アーカイブ（保存した動画 {takes.length}本）</strong>
+          <p style={{ margin: 0, fontSize: 13, color: "#666" }}>「アーカイブに保存」を押した動画だけがここに残ります（押さずに作り直すと上書きされて消えます）。気に入ったものは「これを採用」で上の「今の動画」に戻せます。別のお話を作るときは「複製して別のショートに」か、スタジオの「＋ ショートを作る」から。</p>
+          {takes.length === 0 && <p style={{ margin: 0, fontSize: 14, color: "#888" }}>まだありません。残したい動画の下の「アーカイブに保存」を押してください。</p>}
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(180px, 1fr))", gap: 12 }}>
             {takes.map((t) => (
               <div key={t.name} style={{ display: "flex", flexDirection: "column", gap: 6, padding: 8, border: "1px solid #eee", borderRadius: 12 }}>
