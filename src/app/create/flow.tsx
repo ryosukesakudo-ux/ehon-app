@@ -6,7 +6,7 @@ import { isStoryKey, parseSeriesKey, withoutCombo } from "@/lib/story-key";
 import { parseCustomKey } from "@/lib/custom-story";
 import type { Face } from "@/lib/face";
 import { readLocalFlow, readLocalPhotos, writeLocalFlow, writeLocalPhotos } from "./flow-storage";
-import type { SiblingInput } from "./sibling-switch";
+import type { SiblingInput } from "./sibling-fields";
 
 // 注文フローの入力内容。ページをまたいで保持し、ログインや再読み込みに備えてブラウザ（localStorage）にも残す。
 // 選んだ写真は、送るまでこのブラウザの IndexedDB に残す（ログインから戻っても選び直さなくて済むように）。
@@ -29,11 +29,7 @@ export type FlowState = {
   candidates: Record<number, { likeness: LikenessId; url: string }[]>;
   /** キャラクターごとに選んだ似せ方（場面番号 → 似せ方）。作り直しはこの似せ方で1枚描く */
   picked: Record<number, LikenessId>;
-  /** ママ・パパの欄に入れた兄弟姉妹（写真の画面。入れていない欄は無し） */
-  family: Partial<Record<"mom" | "dad", SiblingInput>>;
-  /** 下書きに保存した兄弟姉妹の入れ替え（JSON）。写真の画面で変えたら、下書きに送り直してキャラクターを描き直す */
-  familySent: string;
-  /** ママ・パパとは別に足す兄弟姉妹（台本のお話・会員だけ・最大2人）。写真は photos.guests に入れる */
+  /** 主人公といっしょに冒険する兄弟姉妹（台本のお話・会員だけ・最大2人）。写真は photos.guests に入れる */
   siblings: SiblingInput[];
   /** 下書きに保存した兄弟姉妹（JSON）。変えたら下書きを作り直す */
   siblingsSent: string;
@@ -86,8 +82,6 @@ const initial: FlowState = {
   likeness: "normal",
   candidates: {},
   picked: {},
-  family: {},
-  familySent: "{}",
   siblings: [],
   siblingsSent: "[]",
   plainFace: false,
@@ -177,8 +171,6 @@ export function FlowProvider({ children }: { children: ReactNode }) {
       if (!isLikenessId(restored.likeness)) restored.likeness = initial.likeness;
       restored.candidates = restored.candidates && typeof restored.candidates === "object" ? restored.candidates : {};
       restored.picked = restored.picked && typeof restored.picked === "object" ? restored.picked : {};
-      restored.family = restored.family && typeof restored.family === "object" ? restored.family : {};
-      restored.familySent = typeof restored.familySent === "string" ? restored.familySent : "{}";
       restored.siblings = Array.isArray(restored.siblings) ? restored.siblings.slice(0, 2) : [];
       restored.siblingsSent = typeof restored.siblingsSent === "string" ? restored.siblingsSent : "[]";
       restored.plainFace = restored.plainFace === true;
