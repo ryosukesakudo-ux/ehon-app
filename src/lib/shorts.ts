@@ -65,6 +65,8 @@ export const SHORT_PROMPT_RULES = [
   "The character's face and body must stay exactly as described in the character description (FACE ANATOMY) in every frame: the same number and placement of eyes and teeth, the same single mouth. Never add a second mouth, lips, eyes or a creature coming out of the body. Expressions change only in the ways the description allows (for example a lid opening or closing, eyes squinting) and by body posture.",
   "No spoken words at all, in any language. Nobody talks. The character only makes wordless animal-like cries and body sounds, like a creature in a hand-made stop-motion film; no human speech, no narration, no singing, no robotic or synthetic voice.",
   "Do not show speech bubbles, captions, subtitles, letters or any text on screen. No on-screen graphics.",
+  // 見せ場が一瞬で流れてしまわないように（2026-10-19 作道さん：小石を歯で挟む瞬間が出ない）
+  "Physical actions are slow, deliberate and clearly readable, like stop-motion: at most three actions per clip, and the key action is held on screen for at least two full seconds. When the character grips, bites, clamps or holds an object, the object stays clearly visible in contact the whole time (for example clamped between the upper and lower teeth with half of it sticking out). Objects never vanish, melt, shrink, teleport or get swallowed; they keep their size and shape until the action ends.",
 ].join(" ");
 
 export const SHORT_NEGATIVE_PROMPT =
