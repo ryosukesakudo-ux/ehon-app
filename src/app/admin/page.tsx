@@ -1,5 +1,5 @@
 import { CHARACTER_SCENES, COVER_SCENE, bookScenes, deliveryLabel, sizeLabel, getTaste, plainText, sceneText, SIZES, yen } from "@/lib/catalog";
-import { getBook } from "@/lib/book";
+import { bookForDraft } from "@/lib/siblings";
 import { levelLabel, storyLabel } from "@/lib/story-key";
 import { BOOK_BUCKET, getSupabase } from "@/lib/services";
 import { syncPendingOrders } from "@/lib/order-sync";
@@ -53,7 +53,7 @@ export default async function AdminPage() {
   // 制作済みの絵を表示するための一時URL
   const rows = await Promise.all(
     (orders ?? []).map(async (o) => {
-      const story = getBook(o.drafts.story)!;
+      const story = (await bookForDraft(db, o.drafts))!;
       // 印刷用の絵（final）と、お客様が作ったプレビューの絵（preview）。
       // プレビューは「全ページの絵を作る」で印刷用にそのまま使われるので、印刷用がまだ無いページはプレビューを出す
       const [{ data: files }, { data: previewFiles }] = await Promise.all([

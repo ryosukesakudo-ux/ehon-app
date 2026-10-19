@@ -5,6 +5,7 @@ import { publishedEpisodes } from "./published-episodes";
 import { readyEpisodes } from "./series-studio";
 import { getSupabase } from "./services";
 import { copyFamily } from "./stand-ins";
+import { copySiblings } from "./siblings";
 import { fixedLevelEpisode, openEpisodes, getSeriesInfo, parseSeriesKey, seriesKey } from "./story-key";
 
 // シリーズの話をまとめて買う（2026-10-16 作道さん）。
@@ -29,7 +30,7 @@ export function episodeStoryKey(story: string, episode: number) {
   const k = parseSeriesKey(story);
   if (!k) return null;
   const level = fixedLevelEpisode(k.series, episode)?.level ?? k.level;
-  return seriesKey(k.series, episode, level, k.combo);
+  return seriesKey(k.series, episode, level, k.combo, k.siblings);
 }
 
 /**
@@ -74,5 +75,7 @@ export async function draftForEpisode(base: Draft, episode: number, existingId?:
   }
   // ママ・パパの欄を兄弟姉妹に入れ替えていれば、ほかの話にも同じ入れ替えを写す
   await copyFamily(db, base.id, (data as Draft).id).catch((e) => console.error("episode family copy failed", e));
+  // 足した兄弟姉妹も写し、その話の文を書き直す
+  await copySiblings(db, base.id, (data as Draft).id, story).catch((e) => console.error("episode siblings copy failed", e));
   return data as Draft;
 }

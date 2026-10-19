@@ -3,7 +3,7 @@ import { PERSON_LABEL, calledName, sceneText } from "@/lib/catalog";
 import { loadBookExtras } from "@/lib/book-extras";
 import { parseCustomKey } from "@/lib/custom-story";
 import { draftGuestCount, draftPeople, guestCharacterPath, type Draft } from "@/lib/drafts";
-import { getBook } from "@/lib/book";
+import { bookForDraft } from "@/lib/siblings";
 import { standInText, standInsForDraft } from "@/lib/stand-ins";
 import { bookTitle, parseSeriesKey } from "@/lib/story-key";
 import { loadFinalImages } from "@/lib/print-assets";
@@ -31,7 +31,7 @@ export async function POST(request: Request, ctx: RouteContext<"/api/admin/order
   const product = (body?.product ?? "a5square36") as ShimaumaProduct;
   if (!(product in SHIMAUMA_PRODUCTS)) return Response.json({ error: "商品の種類が正しくありません" }, { status: 400 });
 
-  const story = getBook(order.drafts.story);
+  const story = await bookForDraft(db, order.drafts);
   if (!story) return Response.json({ error: "注文の内容を読み込めません" }, { status: 400 });
 
   const loaded = await loadFinalImages(db, order.draft_id, story.scenes.length);
@@ -94,7 +94,8 @@ async function loadExtras(db: SupabaseClient, order: OrderRow, serial: number): 
     const image = await download(BOOK_BUCKET, draft[`${who}_character_path`]);
     if (image) characters.push({ name: who === "child" ? called : (standIns?.[who]?.name ?? PERSON_LABEL[who]), image });
   }
-  const cast = parseCustomKey(draft.story)?.cast ?? [];
+  // オリジナルのお話のほかの登場人物か、台本のお話に足した兄弟姉妹
+  const cast = parseCustomKey(draft.story)?.cast ?? (await bookForDraft(db, draft))?.cast ?? [];
   for (let i = 0; i < draftGuestCount(draft); i++) {
     const image = await download(BOOK_BUCKET, guestCharacterPath(draft.id, i));
     if (image) characters.push({ name: cast[i]?.name ?? `とうじょうじんぶつ${i + 1}`, image });

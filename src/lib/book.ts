@@ -54,13 +54,22 @@ export type Book = {
   };
 };
 
+/**
+ * ママ・パパとは別に足した兄弟姉妹（siblings.ts）。絵ではオリジナルのお話の「ほかの登場人物」と同じく Companion 1, 2 として全場面に出す。
+ * rewrite はAIで兄弟姉妹も一緒に冒険するように書き直した文と絵の指示（無ければ元の文のまま、絵にだけ一緒に描く）
+ */
+export type SiblingOverlay = {
+  cast: { name: string; kind: "person"; look: string }[];
+  rewrite: { cover: string; scenes: { texts: Record<string, string>; art: string }[] } | null;
+};
+
 /** 写真の組み合わせに合わせて、場面の文と絵を選ぶ。シリーズの表は「その場面の親」が出る形で書いてあり、違う組み合わせは alt にある */
 function pick(scene: SeriesSceneData, combo: Combo, level: number): BookScene {
   const v = scene.alt?.[combo] ?? scene;
   return { text: v.text[level], art: v.art, withMom: v.withMom, withDad: v.withDad, withSidekick: v.withSidekick, camera: v.camera ?? scene.camera };
 }
 
-export function getBook(key: string | null | undefined): Book | null {
+export function getBook(key: string | null | undefined, siblings?: SiblingOverlay | null): Book | null {
   const legacy = STORIES.find((s) => s.id === key);
   if (legacy) return { key: legacy.id, name: legacy.name, cover: legacy.cover, scenes: legacy.scenes };
 
@@ -95,13 +104,22 @@ export function getBook(key: string | null | undefined): Book | null {
   const level = LEVELS.findIndex((l) => l.id === k.level);
   // 写真の組み合わせがまだ決まっていない（下書きを作る前）ときは、ママとパパの両方がいる形で読む
   const combo = k.combo ?? "both";
+  const scenes = ep.scenes.map((s) => pick(s, combo, level));
+  const all = siblings?.cast.map((_, i) => i) ?? [];
+  const together = all.length > 1 ? "the main character's siblings Companion 1 and Companion 2 are" : "the main character's sibling Companion 1 is";
   return {
     key: key!,
     name: info.name,
-    cover: ep.cover.art,
+    cover: siblings?.rewrite?.cover ?? (siblings ? `${ep.cover.art}; ${together} there too, together with the child` : ep.cover.art),
     coverWithSidekick: ep.cover.withSidekick,
     coverCamera: ep.cover.camera,
-    scenes: ep.scenes.map((s) => pick(s, combo, level)),
+    scenes: siblings
+      ? scenes.map((sc, i) => {
+          const r = siblings.rewrite?.scenes[i];
+          return { ...sc, text: r?.texts[k.level] ?? sc.text, art: r?.art ?? `${sc.art}; ${together} there too, joining the child`, guests: all };
+        })
+      : scenes,
+    ...(siblings && { cast: siblings.cast, coverGuests: all }),
     series: {
       id: k.series,
       name: info.name,

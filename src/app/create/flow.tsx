@@ -33,6 +33,10 @@ export type FlowState = {
   family: Partial<Record<"mom" | "dad", SiblingInput>>;
   /** 下書きに保存した兄弟姉妹の入れ替え（JSON）。写真の画面で変えたら、下書きに送り直してキャラクターを描き直す */
   familySent: string;
+  /** ママ・パパとは別に足す兄弟姉妹（台本のお話・会員だけ・最大2人）。写真は photos.guests に入れる */
+  siblings: SiblingInput[];
+  /** 下書きに保存した兄弟姉妹（JSON）。変えたら下書きを作り直す */
+  siblingsSent: string;
   /** 写真の顔の飾り（シール・メガネなど）を絵では描かない（写真の画面のチェック） */
   plainFace: boolean;
   draftId: string | null;
@@ -84,6 +88,8 @@ const initial: FlowState = {
   picked: {},
   family: {},
   familySent: "{}",
+  siblings: [],
+  siblingsSent: "[]",
   plainFace: false,
   draftId: null,
   demo: false,
@@ -173,6 +179,8 @@ export function FlowProvider({ children }: { children: ReactNode }) {
       restored.picked = restored.picked && typeof restored.picked === "object" ? restored.picked : {};
       restored.family = restored.family && typeof restored.family === "object" ? restored.family : {};
       restored.familySent = typeof restored.familySent === "string" ? restored.familySent : "{}";
+      restored.siblings = Array.isArray(restored.siblings) ? restored.siblings.slice(0, 2) : [];
+      restored.siblingsSent = typeof restored.siblingsSent === "string" ? restored.siblingsSent : "[]";
       restored.plainFace = restored.plainFace === true;
       restored.confirmed = restored.confirmed === true;
       restored.reused = Array.isArray(restored.reused) ? restored.reused.filter((n) => typeof n === "number") : [];

@@ -3,7 +3,9 @@ import { toFile } from "openai";
 import { BOOK_BUCKET, PHOTO_BUCKET, getOpenAI, getSupabase } from "./services";
 import { hasRedoRequest, illustrate, upscaleForPrint, type Detail, type Quality, type Redo, type RefImage } from "./illustrate";
 import { BOOK_SCENE_COUNT, CHARACTER_SCENES, COVER_SCENE, MAX_GUESTS, PERSON_LABEL, characterOf, getTaste, guestOf, isPageScene, previewScenes, type LikenessId, type Person, type TasteId } from "./catalog";
-import { getBook } from "./book";
+import { getBook, type Book } from "./book";
+import { bookForDraft, siblingPhotos } from "./siblings";
+import { parseSeriesKey } from "./story-key";
 import { customPhotos, parseCustomKey } from "./custom-story";
 import { findSpreadTextSpot } from "./spread-text";
 import { isWideImage, sceneSpotPath, sceneTextSide } from "./spread-scene";
@@ -110,9 +112,9 @@ export function draftPeople(draft: Draft): Person[] {
   return PEOPLE.filter((p) => photoOf(draft, p) || characterPathOf(draft, p));
 }
 
-/** オリジナルのお話の、ほかの登場人物の人数（ペットやおばあちゃんなど） */
+/** オリジナルのお話の、ほかの登場人物の人数（ペットやおばあちゃんなど）。台本のお話では、足した兄弟姉妹の人数 */
 export function draftGuestCount(draft: Pick<Draft, "story">) {
-  return Math.min(parseCustomKey(draft.story)?.cast.length ?? 0, MAX_GUESTS);
+  return Math.min(parseCustomKey(draft.story)?.cast.length ?? parseSeriesKey(draft.story)?.siblings ?? 0, MAX_GUESTS);
 }
 
 /** この下書きのプレビューで最初に作る絵の番号（登場する人ごとのキャラクターと表紙）。本文のページ（0〜11）は別に選んで作る */
@@ -180,8 +182,7 @@ async function tryDownload(bucket: string, path: string | null) {
 }
 
 /** この絵に出る、ほかの登場人物（キャラクターの絵なら本人だけ、表紙・本文ならその場面に出る人） */
-function guestsIn(draft: Draft, sceneIndex: number): number[] {
-  const book = getBook(draft.story);
+function guestsIn(book: Book | null, sceneIndex: number): number[] {
   if (!book?.cast?.length) return [];
   if (sceneIndex === COVER_SCENE) return book.coverGuests ?? [];
   return isPageScene(sceneIndex) ? (book.scenes[sceneIndex]?.guests ?? []) : [];
@@ -203,7 +204,9 @@ export async function generateScene(draft: Draft, sceneIndex: number, quality: Q
 
   const target = characterOf(sceneIndex);
   const guest = guestOf(sceneIndex);
-  const guestPhotos = customPhotos(draft.story);
+  // 兄弟姉妹を足した台本のお話は、書き直した文と絵の指示で描く（兄弟姉妹は「ほかの登場人物」と同じ仕組み）
+  const book = await bookForDraft(db, draft);
+  const guestPhotos = parseCustomKey(draft.story) ? customPhotos(draft.story) : await siblingPhotos(db, draft.id);
   const images: RefImage[] = [];
   for (const who of target ? [target] : guest !== null ? [] : draftPeople(draft)) {
     const photo = photoOf(draft, who);
@@ -218,7 +221,7 @@ export async function generateScene(draft: Draft, sceneIndex: number, quality: Q
     }
   }
   // ほかの登場人物（オリジナルのお話）：写真と、作ってあるキャラクターの絵。写真を消していても、キャラクターがあれば描ける
-  for (const g of guest !== null ? [guest] : guestsIn(draft, sceneIndex)) {
+  for (const g of guest !== null ? [guest] : guestsIn(book, sceneIndex)) {
     const photo = await tryDownload(PHOTO_BUCKET, guestPhotos[g] ?? null);
     if (photo) images.push({ who: g, kind: "photo", file: photo });
     const keepPrevious = !photo || (!candidate && hasRedoRequest(redo) && redo.likeness !== "exact");
@@ -231,7 +234,7 @@ export async function generateScene(draft: Draft, sceneIndex: number, quality: Q
   const spread = isPageScene(sceneIndex);
   // 注文ごとの特別対応：ママ・パパの代わりにお兄ちゃん・お姉ちゃんなどが出る本
   const standIns = await standInsForDraft(db, draft.id);
-  const b64 = await illustrate({ taste: draft.taste, story: draft.story, sceneIndex, images, quality, detail, childAge: draft.child_age, redo, plainFace: !!draft.plain_face, spread, standIns });
+  const b64 = await illustrate({ taste: draft.taste, story: draft.story, sceneIndex, images, quality, detail, childAge: draft.child_age, redo, plainFace: !!draft.plain_face, spread, standIns, book });
   const png = Buffer.from(b64, "base64");
 
   // 会員の写真は「最後に使った日」を更新する（1年使わなければ自動削除）

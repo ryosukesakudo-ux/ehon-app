@@ -2,7 +2,7 @@ import "server-only";
 import type { Uploadable } from "openai/uploads";
 import sharp from "sharp";
 import { COVER_SCENE, COVER_SIZE, LIKENESS_LEVELS, REDO_OPTIONS, characterOf, getStory, guestOf, getTaste, type LikenessId, type Person, type RedoOptionId, type StoryId, type TasteId } from "./catalog";
-import { getBook, type BookScene } from "./book";
+import { getBook, type Book, type BookScene } from "./book";
 import { getOpenAI } from "./services";
 import { upscalePng } from "./upscale";
 import { cropSpreadToBook } from "./spread-crop";
@@ -87,6 +87,16 @@ const SERIES_CAST_RULES =
   "Do not add people who are not mentioned in this scene; crowds, onlookers and friends are the story's animals and creatures, not humans. " +
   "Each animal or creature character keeps exactly its own species and look on every page; never turn one into a person or into a different animal. " +
   "Everyone stands, sits or kneels on top of the ground; never draw a body sunk into the ground or a hole.";
+
+/** 台本のシリーズの決まり。兄弟姉妹（Companion 1, 2）を足した本では、その子たちも人間の子として描く */
+function seriesCastRules(siblings: number) {
+  if (!siblings) return SERIES_CAST_RULES;
+  const names = siblings > 1 ? "Companion 1 and Companion 2 (the main character's siblings)" : "Companion 1 (the main character's sibling)";
+  return SERIES_CAST_RULES.replace(
+    "The main character is the only human child in this picture book: never draw any other human child,",
+    `The main character and ${names} are the only human children in this picture book: never draw any other human child,`,
+  );
+}
 
 // オリジナルのお話の絵で、本文と食い違わないための指示（2026-10-12 作道さん：おじいちゃんの家なのに子どもが出迎える、
 // 家の中で靴、亡くなった犬がそこにいる、全員が全ページに出る、が見られた）。オリジナルのお話の全ページに付ける。
@@ -239,9 +249,9 @@ function redoNotePrompt(redo?: Redo | null) {
 }
 
 /** キャラクター（1人の全身・正面の絵）を描く指示。プレビューで見せ、本番の絵の参考にする。 */
-export function buildCharacterPrompt(taste: TasteId, who: Who, refs: { who: Who; kind?: RefKind }[], childAge?: number | null, redo?: Redo | null, story?: string) {
+export function buildCharacterPrompt(taste: TasteId, who: Who, refs: { who: Who; kind?: RefKind }[], childAge?: number | null, redo?: Redo | null, story?: string, bookOverride?: Book | null) {
   const t = getTaste(taste)!;
-  const book = getBook(story);
+  const book = bookOverride ?? getBook(story);
   // 台本のシリーズは、キャラクターの絵もその話の服で描く（本文の絵の参考になるので、服がずれないように）
   const outfits = book?.series?.outfits;
   const hasPrevious = refs.some((r) => r.kind === "previous");
@@ -322,10 +332,10 @@ async function upscaleSpread(b64: string) {
 }
 
 /** spread：本文の場面を見開き（横長）で描く（2026-10-15 作道さん：お客様の本も見開き版に切り替え） */
-export function buildPrompt(taste: TasteId, story: string, sceneIndex: number, refs: { who: Who; kind?: RefKind }[], childAge?: number | null, redo?: Redo | null, spread = false) {
+export function buildPrompt(taste: TasteId, story: string, sceneIndex: number, refs: { who: Who; kind?: RefKind }[], childAge?: number | null, redo?: Redo | null, spread = false, bookOverride?: Book | null) {
   const t = getTaste(taste)!;
   const isCover = sceneIndex === COVER_SCENE;
-  const book = getBook(story)!;
+  const book = bookOverride ?? getBook(story)!;
   const scene: BookScene = isCover
     ? { text: "", art: book.cover, withSidekick: book.coverWithSidekick, camera: book.coverCamera, guests: book.coverGuests }
     : book.scenes[sceneIndex];
@@ -358,7 +368,7 @@ export function buildPrompt(taste: TasteId, story: string, sceneIndex: number, r
     scene.setting ? `Setting: ${scene.setting}.` : "",
     `Scene: ${scene.art}.`,
     series ? lookPrompt(series.cast, series.props, scene.art, scene.camera) : "",
-    series ? SERIES_CAST_RULES : "",
+    series ? seriesCastRules(book.cast?.length ?? 0) : "",
     !series && book.cast ? CUSTOM_CAST_RULES : "",
     guestsPrompt(book.cast, scene.guests),
     redoPrompt(redo, false),
@@ -396,6 +406,8 @@ export async function illustrate(opts: {
   spread?: boolean;
   /** ママ・パパの代わりに登場する人（注文ごとの特別対応。stand-ins.ts） */
   standIns?: StandIns | null;
+  /** 兄弟姉妹を足した下書きの絵本（siblings.ts の bookForDraft）。省略時は story から読む */
+  book?: Book | null;
 }): Promise<string> {
   const ai = getOpenAI();
   if (!ai) throw new Error("OPENAI_API_KEY が未設定です");
@@ -412,8 +424,8 @@ export async function illustrate(opts: {
     prompt: standInPrompt(
       [
         character !== null
-          ? buildCharacterPrompt(opts.taste, character, opts.images, opts.childAge, opts.redo, opts.story)
-          : buildPrompt(opts.taste, opts.story, opts.sceneIndex, opts.images, opts.childAge, opts.redo, spread),
+          ? buildCharacterPrompt(opts.taste, character, opts.images, opts.childAge, opts.redo, opts.story, opts.book)
+          : buildPrompt(opts.taste, opts.story, opts.sceneIndex, opts.images, opts.childAge, opts.redo, spread, opts.book),
         opts.plainFace ? PLAIN_FACE : "",
       ]
         .filter(Boolean)
