@@ -1,5 +1,5 @@
 import { bookScenes, characterOf } from "@/lib/catalog";
-import { standInsForOrder } from "@/lib/stand-ins";
+import { standInsForDraft } from "@/lib/stand-ins";
 import { getBook } from "@/lib/book";
 import { finalFromPreview, generateScene, loadDraft } from "@/lib/drafts";
 import { getSupabase } from "@/lib/services";
@@ -24,7 +24,7 @@ export async function POST(request: Request, ctx: RouteContext<"/api/admin/order
   const story = draft && getBook(draft.story);
   // ママ・パパの代わりの人がいる注文（stand-ins.ts）は、その人のキャラクターの絵も作り直せる（大人の絵になっていたため）
   const who = characterOf(sceneIndex);
-  const standIn = who && who !== "child" && standInsForOrder(id)?.[who];
+  const standIn = who && who !== "child" && draft && (await standInsForDraft(db, draft.id))?.[who];
   if (!draft || !story || !(bookScenes().includes(sceneIndex) || standIn)) {
     return Response.json({ error: "場面が見つかりません" }, { status: 400 });
   }

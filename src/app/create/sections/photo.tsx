@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, type ReactNode } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { MEMBER_MONTHLY_PREVIEWS, RETENTION, getTaste, type Person } from "@/lib/catalog";
@@ -15,6 +15,7 @@ import { FacePicker } from "../face-picker";
 import { DrawingWait } from "../drawing-wait";
 import { loginHref, useAccount } from "../account";
 import { NextButton } from "../step";
+import { SiblingSwitch, siblingComplete } from "../sibling-switch";
 
 // HEIC（iPhoneの写真）も選べるようにして、選んだあと JPEG に変換する
 const ACCEPT = "image/jpeg,image/png,image/webp,image/heic,image/heif,.heic,.heif";
@@ -37,9 +38,12 @@ function PhotoSlot({
   characterId,
   onPickCharacter,
   taste,
+  head,
 }: {
   id: string;
   title: string;
+  /** 見出しのすぐ下に出すもの（ママ・パパの欄の「兄弟姉妹を入れる」） */
+  head?: ReactNode;
   note: string;
   required: boolean;
   file: File | null;
@@ -89,6 +93,7 @@ function PhotoSlot({
           {required ? "必須" : "任意"}
         </div>
       </div>
+      {head}
       <label
         htmlFor={id}
         style={{ display: "flex", flexDirection: "column", gap: 8, alignItems: "center", justifyContent: "center", height: url ? 220 : 160, borderRadius: 14, border: "2px dashed #B9C8E2", background: "#F3F6FB", color: "var(--blue)", fontSize: 14, cursor: "pointer", overflow: "hidden", position: "relative" }}
@@ -246,7 +251,13 @@ export function PhotoSection() {
   const newUpload = !!photos.child || !!photos.mom || !!photos.dad || cast.some((_, i) => !!photos.guests?.[i]);
   // 写真が選び直されていなければ、前回作った下書きをそのまま使う
   const reuse = !!state.draftId && !pickedChild && !pickedGuest;
-  const canSubmit = reuse || (pickedChild && (!newUpload || consent));
+  // 兄弟姉妹を入れる欄は、呼び方・年齢・続柄がそろってから
+  const familyReady = (["mom", "dad"] as const).every((who) => !state.family[who] || siblingComplete(state.family[who]));
+  const canSubmit = familyReady && (reuse || (pickedChild && (!newUpload || consent)));
+  // 下書きに送る兄弟姉妹の入れ替え（そろっている欄だけ）
+  const familyJson = JSON.stringify(
+    Object.fromEntries((["mom", "dad"] as const).flatMap((who) => (state.family[who] && siblingComplete(state.family[who]) ? [[who, state.family[who]]] : []))),
+  );
 
   // 顔の飾りを消すかどうか。作成済みの下書きがあれば保存し、キャラクターは作り直す（似せ方を変えたときと同じ）
   function changePlainFace(on: boolean) {
@@ -263,6 +274,22 @@ export function PhotoSection() {
   }
 
   async function submit() {
+    if (reuse && familyJson !== state.familySent && !state.demo) {
+      // 写真はそのままで兄弟姉妹の入れ替えだけ変えた：下書きに送り、キャラクターから描き直す
+      setSending(true);
+      setError(null);
+      const res = await fetch(`/api/drafts/${encodeURIComponent(state.draftId!)}`, {
+        method: "PATCH",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ family: JSON.parse(familyJson) }),
+      }).catch(() => null);
+      if (!res?.ok) {
+        setError((await res?.json().catch(() => null))?.error ?? "保存できませんでした。もう一度お試しください");
+        setSending(false);
+        return;
+      }
+      update({ familySent: familyJson, previews: {}, candidates: {}, picked: {}, confirmed: false, pageCount: 0, reused: [] });
+    }
     if (reuse) return router.push("/create/preview");
     if (!pickedChild) return;
     setSending(true);
@@ -275,6 +302,7 @@ export function PhotoSection() {
     if (state.childAge) form.set("childAge", String(state.childAge));
     form.set("consent", String(consent));
     form.set("plainFace", String(state.plainFace));
+    form.set("family", familyJson);
     try {
       for (const who of ["child", "mom", "dad"] as const) {
         const face = photos.faces?.[who];
@@ -303,7 +331,7 @@ export function PhotoSection() {
         setNeedLogin(!!json.needLogin);
         throw new Error(json.error ?? "送信に失敗しました");
       }
-      update({ draftId: json.draftId, demo: !!json.demo, previews: json.previews ?? {}, previewScenes: json.previewScenes ?? [], confirmed: false, pageCount: 0, reused: Object.keys(json.previews ?? {}).map(Number), candidates: {}, picked: {}, likeness: "normal" });
+      update({ draftId: json.draftId, demo: !!json.demo, previews: json.previews ?? {}, previewScenes: json.previewScenes ?? [], confirmed: false, pageCount: 0, reused: Object.keys(json.previews ?? {}).map(Number), candidates: {}, picked: {}, likeness: "normal", familySent: familyJson });
       setPhotos({ child: null, mom: null, dad: null });
       setSavedIds({ child: null, mom: null, dad: null });
       setGuestSavedIds([]);
@@ -344,8 +372,9 @@ export function PhotoSection() {
       />
       <PhotoSlot
         id="mom-photo"
-        title="ママ"
-        note="ママを登場させたい場合にえらんでください。"
+        title={state.family.mom ? "兄弟姉妹（ママの欄）" : "ママ"}
+        head={<SiblingSwitch parent="ママ" value={state.family.mom ?? null} onChange={(v) => update((prev) => ({ family: { ...prev.family, mom: v ?? undefined } }))} />}
+        note={state.family.mom ? "この子の顔がはっきり写った写真をえらんでください。" : "ママを登場させたい場合にえらんでください。"}
         required={false}
         file={photos.mom}
         face={photos.faces?.mom ?? null}
@@ -360,8 +389,9 @@ export function PhotoSection() {
       />
       <PhotoSlot
         id="dad-photo"
-        title="パパ"
-        note="パパを登場させたい場合にえらんでください。"
+        title={state.family.dad ? "兄弟姉妹（パパの欄）" : "パパ"}
+        head={<SiblingSwitch parent="パパ" value={state.family.dad ?? null} onChange={(v) => update((prev) => ({ family: { ...prev.family, dad: v ?? undefined } }))} />}
+        note={state.family.dad ? "この子の顔がはっきり写った写真をえらんでください。" : "パパを登場させたい場合にえらんでください。"}
         required={false}
         file={photos.dad}
         face={photos.faces?.dad ?? null}

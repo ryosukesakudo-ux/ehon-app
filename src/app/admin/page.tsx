@@ -4,7 +4,7 @@ import { levelLabel, storyLabel } from "@/lib/story-key";
 import { BOOK_BUCKET, getSupabase } from "@/lib/services";
 import { syncPendingOrders } from "@/lib/order-sync";
 import { isViewPath, viewUrls } from "@/lib/book-images";
-import { standInText, standInsForOrder } from "@/lib/stand-ins";
+import { standInText, standInsForDraft } from "@/lib/stand-ins";
 import { OrderActions, OrderDetailProvider, RedoSceneButton } from "./actions";
 
 export const dynamic = "force-dynamic";
@@ -61,7 +61,7 @@ export default async function AdminPage() {
         db.storage.from(BOOK_BUCKET).list(`${o.draft_id}/preview`),
       ]);
       // ママ・パパの代わりの人がいる注文（stand-ins.ts）は、その人のキャラクターの絵も出して作り直せるようにする
-      const standIns = standInsForOrder(o.id);
+      const standIns = await standInsForDraft(db, o.draft_id);
       const standInPeople = standIns ? (["mom", "dad"] as const).flatMap((who) => (standIns[who] ? [{ who, ...standIns[who], path: o.drafts[`${who}_character_path`] as string | null }] : [])) : [];
       const paths = [
         ...(files ?? []).map((f) => `${o.draft_id}/final/${f.name}`),

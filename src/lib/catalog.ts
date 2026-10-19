@@ -228,6 +228,18 @@ export type Person = "child" | "mom" | "dad";
 // 場面の番号と重ならないよう、キャラクターは 101〜103 で表す。
 export const CHARACTER_SCENES: Record<Person, number> = { child: 101, mom: 102, dad: 103 };
 
+/** ママ・パパの欄に入れられる兄弟姉妹の続柄（2026-10-19 作道さん）。role・kind は絵の指示（英語） */
+export const SIBLING_RELATIONS = [
+  { id: "older-sister", label: "お姉ちゃん", role: "older sister", kind: "girl", younger: false },
+  { id: "older-brother", label: "お兄ちゃん", role: "older brother", kind: "boy", younger: false },
+  { id: "younger-sister", label: "妹", role: "younger sister", kind: "girl", younger: true },
+  { id: "younger-brother", label: "弟", role: "younger brother", kind: "boy", younger: true },
+] as const;
+export type SiblingRelation = (typeof SIBLING_RELATIONS)[number]["id"];
+export function isSiblingRelation(v: unknown): v is SiblingRelation {
+  return SIBLING_RELATIONS.some((r) => r.id === v);
+}
+
 export function characterOf(scene: number): Person | null {
   return (Object.keys(CHARACTER_SCENES) as Person[]).find((p) => CHARACTER_SCENES[p] === scene) ?? null;
 }

@@ -10,6 +10,7 @@ import { PHOTO_BUCKET, getSupabase } from "@/lib/services";
 import { faceFromField, faceToPathTag } from "@/lib/face";
 import { customKeyWithPhotos, customStoryComplete, parseCustomKey } from "@/lib/custom-story";
 import { storyTextFlagged, verifyStory } from "@/lib/custom-story-server";
+import { parseFamily, saveFamily } from "@/lib/stand-ins";
 
 const MAX_PHOTO_BYTES = 10 * 1024 * 1024;
 const PHOTO_TYPES: Record<string, string> = { "image/jpeg": "jpg", "image/png": "png", "image/webp": "webp" };
@@ -30,6 +31,14 @@ export async function POST(request: Request) {
   const childAge = Number(form.get("childAge"));
   const consent = form.get("consent") === "true";
   const plainFace = form.get("plainFace") === "true";
+  // ママ・パパの欄に入れた兄弟姉妹（2026-10-19）。その欄の写真があるときだけ使う
+  const family = parseFamily((() => {
+    try {
+      return JSON.parse(String(form.get("family") ?? "{}"));
+    } catch {
+      return {};
+    }
+  })());
   const childPhoto = form.get("childPhoto");
   const momPhoto = form.get("momPhoto");
   const dadPhoto = form.get("dadPhoto");
@@ -192,6 +201,9 @@ export async function POST(request: Request) {
       ({ error } = await db.from("drafts").insert(base));
     }
     if (error) throw new Error(error.message);
+    if (!hasMom) delete family.mom;
+    if (!hasDad) delete family.dad;
+    if (Object.keys(family).length) await saveFamily(db, id, family);
     // 同じテイストで作ったキャラクターは、そのままプレビューに使う（違うテイストは描き直す）
     const sameTaste = (["child", "mom", "dad"] as const).filter((who) => characters[who]?.taste === taste);
     if (sameTaste.length) {

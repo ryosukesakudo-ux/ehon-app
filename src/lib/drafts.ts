@@ -7,7 +7,7 @@ import { getBook } from "./book";
 import { customPhotos, parseCustomKey } from "./custom-story";
 import { findSpreadTextSpot } from "./spread-text";
 import { isWideImage, sceneSpotPath, sceneTextSide } from "./spread-scene";
-import { standInsForDraft } from "./stand-ins";
+import { loadFamily, standInsForDraft } from "./stand-ins";
 import { copyBookImage, isViewPath, uploadBookImage, viewUrl, viewUrls, withViews } from "./book-images";
 import { currentUser, type Member } from "./auth";
 import { getAnonId } from "./anon";
@@ -302,7 +302,9 @@ async function saveCharacter(draft: Draft, who: Person, png: Buffer) {
   draft[`${who}_character_path`] = path;
   const { error: draftError } = await db.from("drafts").update({ [`${who}_character_path`]: path }).eq("id", draft.id);
   if (draftError) console.error("draft character update failed", draftError);
-  if (draft.user_id) await rememberCharacters(draft.user_id, [{ who, path, taste: draft.taste, childName: draft.child_name }]);
+  // ママ・パパの欄を兄弟姉妹に入れ替えた人は、マイページの「ママ」「パパ」のキャラクターとしては残さない
+  const sibling = who !== "child" && !!(await loadFamily(db, draft.id))[who];
+  if (draft.user_id && !sibling) await rememberCharacters(draft.user_id, [{ who, path, taste: draft.taste, childName: draft.child_name }]);
 }
 
 /** 会員のキャラクター一覧に入れる（同じ絵は1件にまとめる） */
