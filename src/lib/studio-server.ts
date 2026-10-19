@@ -299,6 +299,33 @@ export async function writeShortScript(c: StudioCharacter, premise: string, qa: 
   };
 }
 
+/** Bの「最後のコマの絵」が空のとき（PR #171 より前に書いた台本）、今の台本から15秒時点の絵の指示だけを書き足す */
+export async function writeClipBLastFrame(c: StudioCharacter, short: StudioShort): Promise<string> {
+  const ai = getOpenAI();
+  if (!ai) throw new Error("OPENAI_API_KEY が未設定です");
+  const [a, b] = short.clips;
+  const system = [
+    "あなたは子ども向けショートアニメの演出家です。クリップB（7秒・クリップAの続き）の終わり＝15秒時点の『最後のコマの絵』の指示を英語で1つ書きます。",
+    "条件: クリップAの最後のコマと同じ場所・同じカメラ距離・同じ光。Bの motion の最後に起きたことの直後で、キャラは止まった状態。場所・光・キャラの姿勢と表情を具体的に。キャラは画面の下2/3、縦長。",
+    "キャラの見た目は design の FACE ANATOMY どおり。口や目の場所を変えない。文字・吹き出しなし。英語 60〜140 語。",
+  ].join("\n");
+  const user = [
+    `キャラ: ${c.name}（${c.base}）`,
+    `design: ${c.design}`,
+    `クリップA 最後のコマ（8秒時点）: ${a.lastFrame || a.frame}`,
+    `クリップA 動き: ${a.motion}`,
+    `クリップB 場面: ${b.scene}`,
+    `クリップB 動き: ${b.motion}`,
+  ].join("\n");
+  const body = await runJson<{ lastFrame: string }>(ai, system, user, "clip_b_last_frame", {
+    type: "object",
+    additionalProperties: false,
+    properties: { lastFrame: { type: "string" } },
+    required: ["lastFrame"],
+  });
+  return body.lastFrame.trim();
+}
+
 async function runJson<T>(ai: NonNullable<ReturnType<typeof getOpenAI>>, system: string, user: string, name: string, schema: Record<string, unknown>): Promise<T> {
   let lastError: unknown = null;
   for (const model of TEXT_MODELS()) {

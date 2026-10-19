@@ -134,7 +134,11 @@ export default function ShortPage() {
       setStatus(`${FRAME_LABEL[which]}の絵を作成中…（1〜2分）`);
       const r = await api("/api/admin/studio/shorts", { action: "frame", short: s, which, note: notes[which] });
       (which === "first" ? setFirst : which === "last" ? setLast : setLastB)(r.url);
-      setStatus(`絵ができました（${r.seconds}秒）`);
+      if (typeof r.lastFrame === "string") {
+        // Bの最後の絵の指示が空だったので AI が足した。画面の台本にも反映する
+        setS((x) => ({ ...x, clips: x.clips.map((cl, n) => (n === 1 ? { ...cl, lastFrame: r.lastFrame } : cl)) as StudioShort["clips"] }));
+        setStatus(`絵ができました（${r.seconds}秒）。Bの「最後のコマの絵（英語）」が空だったので AI が書き足して保存しました`);
+      } else setStatus(`絵ができました（${r.seconds}秒）`);
     });
   }
 
@@ -322,6 +326,7 @@ export default function ShortPage() {
                 <Art src={src} alt={FRAME_LABEL[w]} ratio="2 / 3" />
                 <textarea value={notes[w]} maxLength={STUDIO_NOTE_MAX} rows={2} onChange={(e) => setNotes((n) => ({ ...n, [w]: e.target.value }))} placeholder="追加の指示（任意・日本語でOK）" />
                 <button type="button" className="cta" onClick={() => frame(w)} disabled={disabled || !hasScript || blocked}>{busy === `frame:${w}` ? "作成中…" : `${FRAME_LABEL[w]}を作る`}</button>
+                {w === "lastB" && hasScript && !b.lastFrame && <span style={{ fontSize: 12, color: "#888" }}>絵の指示が空なので、押すと AI が書き足してから描きます</span>}
               </div>
             );
           })}

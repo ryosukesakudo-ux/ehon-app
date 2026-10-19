@@ -5,7 +5,7 @@ import { samplePublicUrl } from "@/lib/samples";
 import { SAMPLE_BUCKET, getSupabase } from "@/lib/services";
 import { SHORT_NEGATIVE_PROMPT, SHORT_PROMPT_RULES } from "@/lib/shorts";
 import { studioFramePath, studioTakesDir, studioVideoPath, type StudioFrameKind, type StudioShort, type StudioTake, type VeoQuality } from "@/lib/studio";
-import { askShortQuestions, deleteShort, getCharacter, getShort, listShorts, saveShort, writeShortScript } from "@/lib/studio-server";
+import { askShortQuestions, deleteShort, getCharacter, getShort, listShorts, saveShort, writeClipBLastFrame, writeShortScript } from "@/lib/studio-server";
 import { veoExtend, veoPoll, veoReady, veoStart } from "@/lib/veo";
 
 export const maxDuration = 300;
@@ -117,7 +117,15 @@ export async function POST(request: Request) {
     if (action === "frame") {
       const which: StudioFrameKind = body?.which === "last" ? "last" : body?.which === "lastB" ? "lastB" : "first";
       // first/last はクリップA、lastB はクリップB（15秒時点）。B の最後は A の最後の絵を参照して同じ場面・タッチに揃える
-      const clip = which === "lastB" ? short.clips[1] : short.clips[0];
+      let clip = which === "lastB" ? short.clips[1] : short.clips[0];
+      let filled = false;
+      if (which === "lastB" && !clip.lastFrame && short.clips[1].motion) {
+        // 古い台本（Bの最後の絵が無い）は、台本全体を書き直さずに15秒時点の絵の指示だけ AI に足して保存する
+        const lastFrame = await writeClipBLastFrame(c, short);
+        const saved = await saveShort({ ...short, clips: [short.clips[0], { ...short.clips[1], lastFrame }] });
+        clip = saved.clips[1];
+        filled = true;
+      }
       const prompt = which === "first" ? clip.frame : clip.lastFrame;
       if (!prompt) return Response.json({ error: "先に台本（絵の指示）を書いてください" }, { status: 400 });
       const refPath = which === "last" ? studioFramePath(short.id, "first") : which === "lastB" ? studioFramePath(short.id, "last") : null;
@@ -140,7 +148,7 @@ export async function POST(request: Request) {
       const path = studioFramePath(short.id, which);
       const { error } = await db.storage.from(SAMPLE_BUCKET).upload(path, Buffer.from(b64, "base64"), { contentType: "image/png", upsert: true, cacheControl: "300" });
       if (error) throw new Error(error.message);
-      return Response.json({ url: `${samplePublicUrl(path)}?v=${Date.now()}`, seconds: Math.round((Date.now() - started) / 1000) });
+      return Response.json({ url: `${samplePublicUrl(path)}?v=${Date.now()}`, seconds: Math.round((Date.now() - started) / 1000), lastFrame: filled ? clip.lastFrame : undefined });
     }
 
     if (action === "video") {
