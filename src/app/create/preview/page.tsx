@@ -110,9 +110,17 @@ function Preview() {
   const scene: number | undefined = shown[Math.min(pos, shown.length - 1)];
   const isCover = scene === COVER_SCENE;
   const title = bookTitle(state.story, state.childName);
+  // ママ・パパの欄に入れた兄弟姉妹（下書きに保存したもの）
+  const sentFamily = (() => {
+    try {
+      return JSON.parse(state.familySent) as Partial<Record<"mom" | "dad", { name: string }>>;
+    } catch {
+      return {};
+    }
+  })();
   const nameOf = (i: number) => {
     const p = characterOf(i);
-    if (p) return p === "child" ? state.childName || PERSON_LABEL.child : PERSON_LABEL[p];
+    if (p) return p === "child" ? state.childName || PERSON_LABEL.child : (sentFamily[p]?.name ?? PERSON_LABEL[p]);
     const g = guestOf(i);
     return g === null ? "" : (custom?.cast[g]?.name ?? `登場人物${g + 1}`);
   };

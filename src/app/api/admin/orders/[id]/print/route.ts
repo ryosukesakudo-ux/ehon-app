@@ -1,6 +1,6 @@
 import { getSize, sceneText, type SizeId } from "@/lib/catalog";
 import { getBook } from "@/lib/book";
-import { standInText, standInsForOrder } from "@/lib/stand-ins";
+import { standInText, standInsForDraft } from "@/lib/stand-ins";
 import { bookTitle } from "@/lib/story-key";
 import { buildCoverSpread } from "@/lib/cover-spread";
 import { loadFinalImages } from "@/lib/print-assets";
@@ -41,7 +41,8 @@ export async function POST(request: Request, ctx: RouteContext<"/api/admin/order
 
   try {
     // ママ・パパの代わりの人がいる注文（stand-ins.ts）は、本文の「ママ」「パパ」を名前に替える
-    const texts = story.scenes.map((sc) => standInText(sceneText(sc, order.drafts.child_name), standInsForOrder(order.id)));
+    const standIns = await standInsForDraft(db, order.draft_id);
+    const texts = story.scenes.map((sc) => standInText(sceneText(sc, order.drafts.child_name), standIns));
     // 見開きの絵の場面は、塗り足し（四方3mm）込みの大きさで文を重ねて左右のページに分ける（約300dpi）
     const bleedMm = size.trimMm + 6;
     const spreadPages = await renderSpreadPages({ images, texts, spots, trimMm: bleedMm, pagePx: Math.round((bleedMm / 25.4) * 300) });

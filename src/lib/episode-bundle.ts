@@ -4,6 +4,7 @@ import type { Draft } from "./drafts";
 import { publishedEpisodes } from "./published-episodes";
 import { readyEpisodes } from "./series-studio";
 import { getSupabase } from "./services";
+import { copyFamily } from "./stand-ins";
 import { fixedLevelEpisode, openEpisodes, getSeriesInfo, parseSeriesKey, seriesKey } from "./story-key";
 
 // シリーズの話をまとめて買う（2026-10-16 作道さん）。
@@ -71,5 +72,7 @@ export async function draftForEpisode(base: Draft, episode: number, existingId?:
     console.error("episode draft insert failed", error);
     return null;
   }
+  // ママ・パパの欄を兄弟姉妹に入れ替えていれば、ほかの話にも同じ入れ替えを写す
+  await copyFamily(db, base.id, (data as Draft).id).catch((e) => console.error("episode family copy failed", e));
   return data as Draft;
 }
