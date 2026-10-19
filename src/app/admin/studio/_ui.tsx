@@ -63,11 +63,21 @@ export function Field({ label, hint, value, onChange, rows, maxLength, mono }: {
   );
 }
 
+/** 進み具合とエラー。ページ上部に出すのに加えて、スマホで下の方を見ていても気づけるよう画面下にも固定で出す（2026-10-19 作道さん「押しても動かない」） */
 export function Notice({ status, error }: { status: string | null; error: string | null }) {
-  return (
+  if (!status && !error) return null;
+  const body = (
     <>
       {status && <p style={{ margin: 0, fontSize: 14, color: "#4f6f9f" }}>{status}</p>}
       {error && <p style={{ margin: 0, color: "#c0392b", fontWeight: 700 }}>エラー: {error}</p>}
+    </>
+  );
+  return (
+    <>
+      {body}
+      <div style={{ position: "fixed", left: 0, right: 0, bottom: 0, zIndex: 50, padding: "10px 16px calc(10px + env(safe-area-inset-bottom))", background: error ? "#fff1ef" : "#eef3fa", borderTop: `2px solid ${error ? "#c0392b" : "#4f6f9f"}`, boxShadow: "0 -2px 10px rgba(0,0,0,0.08)" }}>
+        <div style={{ maxWidth: 1080, margin: "0 auto" }}>{body}</div>
+      </div>
     </>
   );
 }
