@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import type { CSSProperties, ReactNode } from "react";
 import { Arrow, Sparkle, Star } from "@/components/icons";
-import { BOOK_FORMAT, DELIVERY_NOTE, EXTRA_COPY_DISCOUNT, GIFT_BAG_IMAGE, MEMBER_MONTHLY_PREVIEWS, PREVIEW_PACK, SIZES, STORIES, TASTES, sceneText, yen } from "@/lib/catalog";
+import { BOOK_FORMAT, DELIVERY_NOTE, EXTRA_COPY_DISCOUNT, GIFT_BAG_IMAGE, MEMBER_MONTHLY_PREVIEWS, MEMORY_PHOTO_MAX, PREVIEW_PACK, SIZES, STORIES, TASTES, sceneText, yen } from "@/lib/catalog";
 import { SAMPLE_CHILD_NAME, SHOWCASE, SHOWCASE_BOOK, SHOWCASE_PHOTO, samplePublicUrl, sampleUrl, versioned } from "@/lib/samples";
 import { seriesImagePath, seriesSampleChildName } from "@/lib/series";
 import { SERIES_DATA } from "@/lib/series-data";
@@ -386,6 +386,39 @@ export default function Home() {
             );
           })}
         </div>
+      </section>
+
+      {/* 最後のページは思い出のアルバムに（2026-10-19 友達の声「最後に分かったので、もっと大きく宣伝していい」） */}
+      <section className={s.section} style={{ background: "#fff", paddingTop: 8 }}>
+        <Eyebrow color="#F07FA0">最後のページはアルバムに</Eyebrow>
+        <h2 className={`${s.h2} display`} data-reveal="up">
+          <span className="nowrap">思い出の写真{MEMORY_PHOTO_MAX}枚と、</span>
+          <br />
+          <span className="nowrap"><Pop color="#F07FA0">メッセージ</Pop>も1冊に。</span>
+        </h2>
+        <div className={s.album} data-reveal="up">
+          <div className={s.albumPage}>
+            <div className={s.albumGrid}>
+              {["50% 30%", "20% 40%", "80% 35%", "50% 70%"].map((pos, i) => (
+                <div key={pos} className={s.albumPhoto} style={{ transform: `rotate(${[-2, 1.5, 1, -1.5][i]}deg)` }}>
+                  <SampleImage src={versioned(samplePublicUrl(SHOWCASE_PHOTO))} alt="" fallback={null} sizes="120px" style={{ objectPosition: pos, scale: i ? "1.6" : "1" }} />
+                </div>
+              ))}
+            </div>
+          </div>
+          <div className={`${s.albumPage} ${s.albumMessage}`}>
+            <div className={`${s.albumTo} display`}>{SAMPLE_CHILD_NAME}へ</div>
+            <p>うまれてきてくれて ありがとう。<br />これからも たくさん わらってね。</p>
+            <div className={s.albumFrom}>パパ・ママより</div>
+            <div className={s.albumNo}>No.0001</div>
+          </div>
+        </div>
+        <ul className={s.albumList}>
+          <li>お好きな写真を<strong>{MEMORY_PHOTO_MAX}枚まで</strong>のせられます（写真ページは6ページ）</li>
+          <li>家族からの<strong>メッセージページ</strong>と「この本をよんだ日」の記入ページつき</li>
+          <li>絵本としても、<strong>成長のアルバム</strong>としても残せます</li>
+        </ul>
+        <div className={s.note}>写真とメッセージは、ご注文の確認画面で入れられます（どちらも無くても作れます）</div>
       </section>
 
       <Wave from="#FFFFFF" to="#E6F3FB" />

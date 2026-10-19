@@ -11,6 +11,8 @@ export const TASTES: {
   /** 違いが一目で分かるよう、選択画面とトップに出す特徴（短い言葉を3つ） */
   points: string[];
   swatch: string;
+  /** 迷っている人向けに「オススメ」の印を付ける（2026-10-19 作道さん：水彩） */
+  recommended?: boolean;
   prompt: string;
 }[] = [
   {
@@ -19,6 +21,7 @@ export const TASTES: {
     description: "にじむ色合いの、やさしい手描き風",
     points: ["にじむ色", "紙の質感", "おだやか"],
     swatch: "#CFE3F0",
+    recommended: true,
     // 3つのテイストの違いが一目で分かるよう、画材の特徴と「ほかのテイストに見えないこと」をはっきり書く（2026-10-11 作道さん「見本の変わり映えがしない」）
     prompt:
       "ART STYLE: a loose, traditional transparent watercolor painting on rough cold-press watercolor paper, clearly painted by hand with a wet brush. " +
