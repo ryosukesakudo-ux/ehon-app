@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState, type ReactNode } from "react";
+import { createPortal } from "react-dom";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { MEMBER_MONTHLY_PREVIEWS, RETENTION, getTaste, type Person } from "@/lib/catalog";
@@ -322,22 +323,25 @@ export function PhotoSection() {
     form.set("plainFace", String(state.plainFace));
     form.set("family", familyJson);
     if (sibs.length) form.set("siblings", siblingsJson);
+    // 送れる大きさには上限（約4.5MB）があるので、写真が多いときは少し小さくして送る
+    const photoCount = [photos.child, photos.mom, photos.dad, ...each((i) => photos.guests?.[i] ?? null)].filter(Boolean).length;
+    const shrink = (f: File) => shrinkPhoto(f, photoCount > 3 ? 1280 : 1600);
     try {
       for (const who of ["child", "mom", "dad"] as const) {
         const face = photos.faces?.[who];
         if (photos[who] && face) form.set(`${who}Face`, faceToField(face));
       }
-      if (photos.child) form.set("childPhoto", await shrinkPhoto(photos.child));
+      if (photos.child) form.set("childPhoto", await shrink(photos.child));
       else if (savedIds.child) form.set("childPhotoId", savedIds.child);
-      if (photos.mom) form.set("momPhoto", await shrinkPhoto(photos.mom));
+      if (photos.mom) form.set("momPhoto", await shrink(photos.mom));
       else if (savedIds.mom) form.set("momPhotoId", savedIds.mom);
-      if (photos.dad) form.set("dadPhoto", await shrinkPhoto(photos.dad));
+      if (photos.dad) form.set("dadPhoto", await shrink(photos.dad));
       else if (savedIds.dad) form.set("dadPhotoId", savedIds.dad);
       for (let i = 0; i < slots; i++) {
         const f = photos.guests?.[i];
         const face = photos.faces?.[`guest${i}`];
         if (f && face) form.set(`guest${i}Face`, faceToField(face));
-        if (f) form.set(`guest${i}Photo`, await shrinkPhoto(f));
+        if (f) form.set(`guest${i}Photo`, await shrink(f));
         else if (guestSavedIds[i]) form.set(`guest${i}PhotoId`, guestSavedIds[i]!);
       }
       for (const who of ["child", "mom", "dad"] as const) {
@@ -345,7 +349,8 @@ export function PhotoSection() {
         if (id && !photos[who] && !savedIds[who]) form.set(`${who}CharacterId`, id);
       }
       const res = await fetch("/api/drafts", { method: "POST", body: form });
-      const json = await res.json();
+      // サーバーが時間切れなどで JSON でない返事をしたときも、分かる言葉で知らせる
+      const json = await res.json().catch(() => ({ error: res.status === 413 ? "写真が大きすぎて送れませんでした。写真の数を減らすか、別の写真でお試しください" : "混み合っていて送れませんでした。少し時間をおいて、もう一度お試しください" }));
       if (!res.ok) {
         setNeedLogin(!!json.needLogin);
         throw new Error(json.error ?? "送信に失敗しました");
@@ -530,11 +535,14 @@ export function PhotoSection() {
       {needLogin && (
         <Link href={loginHref("/create/photo")} className="ghost">無料会員登録・ログインへ</Link>
       )}
-      {sending && (
-        <div className="wait-overlay">
-          <DrawingWait title="写真を送っています" messages={["しゃしんを とどけています", "かおの いちを たしかめています", "えのぐを じゅんびしています"]} estimate={10} />
-        </div>
-      )}
+      {/* 待ち画面は body に出す（項目の出てくる動き translate があると、画面ではなく長い写真の項目いっぱいに広がり、絵が画面の外に出てしまうため） */}
+      {sending &&
+        createPortal(
+          <div className="wait-overlay">
+            <DrawingWait title="写真を送っています" messages={["しゃしんを とどけています", "かおの いちを たしかめています", "えのぐを じゅんびしています"]} estimate={10} />
+          </div>,
+          document.body,
+        )}
       {/* 作成ページの下に貼りつく（ページの左右・下の余白の外まで広げる） */}
       <div className="flow-footer">
         <NextButton onClick={submit} disabled={!canSubmit || sending}>

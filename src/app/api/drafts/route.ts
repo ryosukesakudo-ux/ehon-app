@@ -14,7 +14,7 @@ import { parseFamily, saveFamily } from "@/lib/stand-ins";
 import { parseSiblings, saveSiblingsWithRewrite } from "@/lib/siblings";
 
 // 兄弟姉妹を足したときは、台本の文をAIで書き直すので時間に余裕を持たせる
-export const maxDuration = 120;
+export const maxDuration = 300;
 
 const MAX_PHOTO_BYTES = 10 * 1024 * 1024;
 const PHOTO_TYPES: Record<string, string> = { "image/jpeg": "jpg", "image/png": "png", "image/webp": "webp" };
