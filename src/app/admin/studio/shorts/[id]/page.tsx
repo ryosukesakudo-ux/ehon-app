@@ -3,7 +3,7 @@
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { samplePublicUrl } from "@/lib/samples";
-import { CLIP_FIELDS, PREMISE_MAX, QA_ANSWER_MAX, STUDIO_NOTE_MAX, VEO_COST, emptyShort, studioFramePath, studioVideoPath, type StudioCharacter, type StudioShort, type VeoQuality } from "@/lib/studio";
+import { CLIP_FIELDS, PREMISE_MAX, QA_ANSWER_MAX, STUDIO_NOTE_MAX, VEO_COST, emptyShort, studioFramePath, studioVideoPath, type StudioCharacter, type StudioShort, type StudioTake, type VeoQuality } from "@/lib/studio";
 import { Art, Field, Notice, Steps, VideoBox, api, apiGet, errorText, readStore, withVersion, writeStore } from "../../_ui";
 
 // ショートのページ：ねらい → AIのヒアリング → 台本 → 絵（Aの最初・Aの最後(8秒)・Bの最後(15秒)）→ 動画（A 8秒 → 続きを延長して約15秒）（2026-10-19）
@@ -12,7 +12,9 @@ export default function ShortPage() {
   const params = useParams<{ id: string }>();
   const router = useRouter();
   const isNew = params.id === "new";
-  const [s, setS] = useState<StudioShort>(emptyShort);
+  // キャラのページから「このキャラで新しいショートを作る」で来たときは、そのキャラを選んだ状態で始める（?character=…）
+  const [s, setS] = useState<StudioShort>(() => ({ ...emptyShort(), characterId: (typeof window !== "undefined" && new URLSearchParams(window.location.search).get("character")) || null }));
+  const [takes, setTakes] = useState<StudioTake[]>([]);
   const [characters, setCharacters] = useState<StudioCharacter[]>([]);
   const [loaded, setLoaded] = useState(false);
   const [busy, setBusy] = useState<string | null>(null);
@@ -36,6 +38,7 @@ export default function ShortPage() {
           const r = await apiGet(`/api/admin/studio/shorts?id=${params.id}`);
           applyMedia(r.short.id);
           setS(r.short);
+          setTakes(r.takes ?? []);
           // リロード前に動画を作っていたら続きを確認する
           for (const clip of ["a", "b"] as const) {
             const saved = readStore(storeKey(r.short.id, clip));
@@ -43,7 +46,7 @@ export default function ShortPage() {
               timer.current = setTimeout(() => {
                 setBusy(`video:${clip}`);
                 setStatus("Veo で作成中…（リロード前の続きを確認しています）");
-                watch(r.short.id, clip, saved.operation, saved.started);
+                watch(r.short.id, clip, saved.operation, saved.started, saved.quality ?? "fast");
               }, 0);
               break;
             }
@@ -68,6 +71,13 @@ export default function ShortPage() {
   }
 
   const storeKey = (id: string, clip: "a" | "b") => `ehon-studio-op:${id}:${clip}`;
+
+  async function reloadTakes(id: string) {
+    try {
+      const r = await apiGet(`/api/admin/studio/shorts?id=${id}`);
+      setTakes(r.takes ?? []);
+    } catch {}
+  }
 
   async function run<T>(label: string, fn: () => Promise<T>) {
     setBusy(label);
@@ -136,10 +146,10 @@ export default function ShortPage() {
     try {
       const r = await api("/api/admin/studio/shorts", { action: "video", short: s, clip, quality, note: notes[clip] });
       const started = Date.now();
-      writeStore(storeKey(s.id, clip), { operation: r.operation, started });
+      writeStore(storeKey(s.id, clip), { operation: r.operation, started, quality });
       if (clip === "a") setStatus((t) => `${t}（${r.usedLastFrame ? "最初と最後のコマを指定" : "最初のコマだけ"}・${r.usedReferenceImages ? "設定画と表情集を参考画像に" : "参考画像は Veo に断られたので無し"}）`);
       else setStatus((t) => `${t}（${!r.hadLastFrame ? "15秒時点の絵は未作成なので文章だけで延長" : r.usedLastFrame ? "15秒時点の絵を終わりとして指定" : "15秒時点の絵は Veo に断られたので文章だけで延長"}）`);
-      watch(s.id, clip, r.operation, started);
+      watch(s.id, clip, r.operation, started, quality);
     } catch (e) {
       setError(errorText(e));
       setStatus(null);
@@ -147,16 +157,17 @@ export default function ShortPage() {
     }
   }
 
-  function watch(id: string, clip: "a" | "b", operation: string, started: number) {
+  function watch(id: string, clip: "a" | "b", operation: string, started: number, quality: VeoQuality) {
     const poll = async () => {
       try {
-        const q = new URLSearchParams({ operation, id, clip });
+        const q = new URLSearchParams({ operation, id, clip, q: quality });
         const json = await apiGet(`/api/admin/studio/shorts?${q}`);
         if (json.done) {
           writeStore(storeKey(id, clip), null);
           (clip === "a" ? setVideoA : setVideoFull)(json.url);
-          setStatus(`${clip === "a" ? "クリップA" : "完成の15秒"}ができました（${Math.round((Date.now() - started) / 1000)}秒）`);
+          setStatus(`${clip === "a" ? "クリップA" : "完成の15秒"}ができました（${Math.round((Date.now() - started) / 1000)}秒）。アーカイブにも残しました`);
           setBusy(null);
+          void reloadTakes(id);
           return;
         }
         setStatus(`Veo で作成中…（${Math.round((Date.now() - started) / 1000)}秒経過。この画面を閉じたりリロードしても続きます）`);
@@ -169,6 +180,30 @@ export default function ShortPage() {
       }
     };
     timer.current = setTimeout(poll, 10000);
+  }
+
+  async function duplicate() {
+    await run("duplicate", async () => {
+      const r = await api("/api/admin/studio/shorts", { action: "duplicate", id: s.id });
+      router.push(`/admin/studio/shorts/${r.short.id}`);
+    });
+  }
+
+  async function adopt(t: StudioTake) {
+    if (!confirm(`この動画（${takeLabel(t)}）を今の${t.kind === "a" ? "クリップA" : "完成"}にしますか？`)) return;
+    await run(`take:${t.name}`, async () => {
+      const r = await api("/api/admin/studio/shorts", { action: "adopt", id: s.id, name: t.name });
+      (r.kind === "a" ? setVideoA : setVideoFull)(r.url);
+      setStatus(`${takeLabel(t)}を今の${r.kind === "a" ? "クリップA" : "完成"}にしました`);
+    });
+  }
+
+  async function deleteTake(t: StudioTake) {
+    if (!confirm(`アーカイブから「${takeLabel(t)}」を消しますか？（元に戻せません）`)) return;
+    await run(`take:${t.name}`, async () => {
+      await api("/api/admin/studio/shorts", { action: "deleteTake", id: s.id, name: t.name });
+      setTakes((xs) => xs.filter((x) => x.name !== t.name));
+    });
   }
 
   async function remove() {
@@ -316,11 +351,40 @@ export default function ShortPage() {
         </div>
       </section>
 
+      {/* 6. アーカイブ */}
       {!isNew && (
-        <div>
+        <section className="card" style={{ gap: 12 }}>
+          <strong style={{ fontSize: 18 }}>6. アーカイブ（これまでに作った動画 {takes.length}本）</strong>
+          <p style={{ margin: 0, fontSize: 13, color: "#666" }}>作った動画は作り直しても消えず、ここに全部残ります。気に入ったものは「これを採用」で上の「今の動画」に戻せます。別のお話を作るときは「複製して別のショートに」か、スタジオの「＋ ショートを作る」から。</p>
+          {takes.length === 0 && <p style={{ margin: 0, fontSize: 14, color: "#888" }}>まだありません（これから作る動画から残ります）。</p>}
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(180px, 1fr))", gap: 12 }}>
+            {takes.map((t) => (
+              <div key={t.name} style={{ display: "flex", flexDirection: "column", gap: 6, padding: 8, border: "1px solid #eee", borderRadius: 12 }}>
+                <VideoBox src={t.url} />
+                <span style={{ fontSize: 12, color: "#555" }}>{takeLabel(t)}</span>
+                <button type="button" className="cta" onClick={() => adopt(t)} disabled={disabled} style={{ padding: "6px 10px", fontSize: 13 }}>{busy === `take:${t.name}` ? "処理中…" : "これを採用"}</button>
+                <div style={{ display: "flex", gap: 10, fontSize: 12 }}>
+                  <a href={t.url} download={`${s.title || "short"}-${t.name}`}>ダウンロード</a>
+                  <button type="button" onClick={() => deleteTake(t)} disabled={disabled} style={{ background: "none", border: 0, padding: 0, color: "#999", cursor: "pointer", fontSize: 12 }}>消す</button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {!isNew && (
+        <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+          <button type="button" onClick={duplicate} disabled={disabled} style={{ background: "none", border: "1px solid #ccc", borderRadius: 8, padding: "6px 12px", color: "#555", cursor: "pointer" }}>{busy === "duplicate" ? "複製中…" : "複製して別のショートに（同じキャラ・台本で）"}</button>
           <button type="button" onClick={remove} disabled={disabled} style={{ background: "none", border: "1px solid #ccc", borderRadius: 8, padding: "6px 12px", color: "#888", cursor: "pointer" }}>このショートを削除</button>
         </div>
       )}
     </main>
   );
+}
+
+function takeLabel(t: StudioTake) {
+  const d = new Date(t.at);
+  const when = Number.isNaN(d.getTime()) ? t.at : `${d.getMonth() + 1}/${d.getDate()} ${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}`;
+  return `${when}　${t.kind === "a" ? "A 8秒" : "完成15秒"}${t.quality ? `・${t.quality === "fast" ? "Fast" : "Standard"}` : ""}`;
 }
