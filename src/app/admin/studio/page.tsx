@@ -1,10 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { CHARACTER_LINEUP_PATH, CHARACTER_WORLD_JA, characterArtPath } from "@/lib/characters";
 import { samplePublicUrl } from "@/lib/samples";
-import { studioVideoPath, type StudioCharacter, type StudioShort } from "@/lib/studio";
+import type { StudioCharacter, StudioShort } from "@/lib/studio";
+import { Badge, ShortList } from "./_shorts";
 import { Art, Notice, api, apiGet, errorText, exists, withVersion } from "./_ui";
 
 // スタジオのホーム：キャラ一覧とショート一覧、それぞれの進み具合。ここからキャラ登録・ショート作成へ進む（2026-10-19）
@@ -26,10 +27,6 @@ export default function StudioHome() {
       for (const x of c.characters as StudioCharacter[]) {
         checks.push([`sheet:${x.id}`, samplePublicUrl(characterArtPath(x.id, "sheet"))]);
         checks.push([`faces:${x.id}`, samplePublicUrl(characterArtPath(x.id, "faces"))]);
-      }
-      for (const x of s.shorts as StudioShort[]) {
-        checks.push([`a:${x.id}`, samplePublicUrl(studioVideoPath(x.id, "a"))]);
-        checks.push([`full:${x.id}`, samplePublicUrl(studioVideoPath(x.id, "full"))]);
       }
       const results = await Promise.all(checks.map(async ([k, u]) => [k, await exists(u)] as const));
       setArt(Object.fromEntries(results));
@@ -73,7 +70,13 @@ export default function StudioHome() {
   }
   const [lineup, setLineup] = useState<string | null>(() => withVersion(samplePublicUrl(CHARACTER_LINEUP_PATH)));
 
-  const charName = (id: string | null) => characters?.find((c) => c.id === id)?.name ?? "（キャラ未選択）";
+  // ショートはキャラごとにまとめる（キャラ未選択の分は最後）
+  const groups = useMemo(
+    () => (characters && shorts
+      ? [...characters.map((c) => ({ key: c.id, name: c.name, list: shorts.filter((s) => s.characterId === c.id) })), { key: "", name: "キャラ未選択", list: shorts.filter((s) => !s.characterId) }].filter((g) => g.list.length > 0)
+      : []),
+    [characters, shorts],
+  );
 
   return (
     <main style={{ maxWidth: 1080, margin: "0 auto", padding: "24px 16px 64px", display: "flex", flexDirection: "column", gap: 24 }}>
@@ -118,6 +121,7 @@ export default function StudioHome() {
                 <Badge ok={Boolean(c.design)}>設定</Badge>
                 <Badge ok={art[`sheet:${c.id}`]}>設定画</Badge>
                 <Badge ok={art[`faces:${c.id}`]}>表情集</Badge>
+                <Badge ok={(shorts?.filter((s) => s.characterId === c.id).length ?? 0) > 0}>ショート {shorts?.filter((s) => s.characterId === c.id).length ?? 0}本</Badge>
               </div>
             </a>
           ))}
@@ -135,27 +139,18 @@ export default function StudioHome() {
           <strong style={{ fontSize: 18 }}>ショート動画（{shorts?.length ?? "…"}本）</strong>
           <Link className="cta" href="/admin/studio/shorts/new" style={{ padding: "8px 16px" }}>＋ ショートを作る</Link>
         </div>
+        <p style={{ margin: 0, fontSize: 13, color: "#666" }}>キャラごとに何本でも作れます。作った動画は1本ごとに全部残ります（アーカイブ）。キャラのページからも、そのキャラのショートを見たり作ったりできます。</p>
         {shorts && shorts.length === 0 && <p style={{ margin: 0, fontSize: 14 }}>まだありません。「＋ ショートを作る」からキャラを選んで、ねらいを一言書くところから始めます。</p>}
-        <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-          {shorts?.map((s) => (
-            <a key={s.id} href={`/admin/studio/shorts/${s.id}`} style={{ textDecoration: "none", color: "inherit", display: "flex", flexWrap: "wrap", gap: 10, alignItems: "center", padding: "10px 12px", border: "1px solid #eee", borderRadius: 12 }}>
-              <strong style={{ minWidth: 140 }}>{s.title || "（題名なし）"}</strong>
-              <span className="tag">{charName(s.characterId)}</span>
-              <span style={{ display: "flex", gap: 4, flexWrap: "wrap", fontSize: 12 }}>
-                <Badge ok={Boolean(s.premise)}>ねらい</Badge>
-                <Badge ok={Boolean(s.clips[0]?.motion)}>台本</Badge>
-                <Badge ok={art[`a:${s.id}`]}>A 8秒</Badge>
-                <Badge ok={art[`full:${s.id}`]}>完成15秒</Badge>
-              </span>
-              <span style={{ marginLeft: "auto", fontSize: 12, color: "#888" }}>{s.createdAt?.slice(0, 10)}</span>
-            </a>
-          ))}
-        </div>
+        {groups.map((g) => (
+          <div key={g.key} style={{ display: "flex", flexDirection: "column", gap: 8, paddingTop: 8, borderTop: "1px solid #eee" }}>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 8, alignItems: "center", justifyContent: "space-between" }}>
+              <strong>{g.name}（{g.list.length}本）</strong>
+              {g.key && <Link href={`/admin/studio/shorts/new?character=${g.key}`} style={{ fontSize: 13 }}>＋ {g.name}で作る</Link>}
+            </div>
+            <ShortList shorts={g.list} characterId={g.key || undefined} characters={characters ?? undefined} />
+          </div>
+        ))}
       </section>
     </main>
   );
-}
-
-function Badge({ ok, children }: { ok?: boolean; children: React.ReactNode }) {
-  return <span className="tag" style={{ background: ok ? "#dff3df" : "#f1efe9", color: ok ? "#1f6b2a" : "#999" }}>{ok ? "✓ " : "○ "}{children}</span>;
 }

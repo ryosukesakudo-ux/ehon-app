@@ -1,10 +1,12 @@
 "use client";
 
+import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { characterArtPath } from "@/lib/characters";
 import { samplePublicUrl } from "@/lib/samples";
 import { CHARACTER_FIELDS, STUDIO_NOTE_MAX, emptyCharacter, type StudioCharacter } from "@/lib/studio";
+import { ShortList } from "../../_shorts";
 import { Art, Field, Notice, api, apiGet, errorText, withVersion } from "../../_ui";
 
 // キャラ登録ページ：日本語で設定を書く → AIが英語の指示を書く → 保存 → 設定画 → 表情集（2026-10-19）
@@ -152,6 +154,17 @@ export default function CharacterPage() {
           </div>
         </div>
       </section>
+
+      {!isNew && (
+        <section className="card" style={{ gap: 12 }}>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 8, alignItems: "center", justifyContent: "space-between" }}>
+            <strong style={{ fontSize: 18 }}>4. {c.name}のショート動画（アーカイブ）</strong>
+            <Link className="cta" href={`/admin/studio/shorts/new?character=${c.id}`} style={{ padding: "8px 16px" }}>＋ {c.name}で新しいショートを作る</Link>
+          </div>
+          <p style={{ margin: 0, fontSize: 13, color: "#666" }}>このキャラで作ったショートが全部ここに並びます。1本ごとに台本・絵・動画（作り直した分も）が残ります。</p>
+          <ShortList characterId={c.id} />
+        </section>
+      )}
 
       {!isNew && (
         <div>

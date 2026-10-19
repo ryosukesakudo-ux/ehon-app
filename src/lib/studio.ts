@@ -99,5 +99,19 @@ export function studioVideoPath(shortId: string, which: "a" | "full") {
   return which === "a" ? `shorts/${shortId}/a/video.mp4` : `shorts/${shortId}/full.mp4`;
 }
 
+/** 作った動画のアーカイブ（1本ごとに残す。キャラごとに何本でも作れるように、作り直しても古い動画は消さない：2026-10-19 作道さん） */
+export function studioTakesDir(shortId: string) {
+  return `shorts/${shortId}/takes`;
+}
+export type StudioTake = {
+  /** ファイル名（takes/ の中）。例：20261019-213000-full-fast.mp4 */
+  name: string;
+  kind: "a" | "full";
+  quality: VeoQuality | "";
+  /** 作った日時（ISO） */
+  at: string;
+  url: string;
+};
+
 export type VeoQuality = "fast" | "standard";
 export const VEO_COST: Record<VeoQuality, { a: number; b: number }> = { fast: { a: 120, b: 105 }, standard: { a: 480, b: 420 } };

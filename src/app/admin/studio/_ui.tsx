@@ -85,7 +85,7 @@ export function Steps({ items }: { items: { label: string; done: boolean }[] }) 
 }
 
 // Veo の operation を localStorage に覚えておき、リロードしても確認を続ける
-export type StoredOp = { operation: string; started: number };
+export type StoredOp = { operation: string; started: number; quality?: "fast" | "standard" };
 export function readStore(key: string): StoredOp | null {
   try {
     const raw = localStorage.getItem(key);
