@@ -1,4 +1,5 @@
 import { randomUUID } from "node:crypto";
+import { setSiblingPhoto } from "@/lib/siblings";
 import { CHARACTER_SCENES, guestScene, type Person } from "@/lib/catalog";
 import { customKeyWithPhotos, customPhotos, parseCustomKey } from "@/lib/custom-story";
 import { draftGuestCount, draftOrdered, draftPeople, guestCharacterPath, isDemoId, loadOwnedDraft } from "@/lib/drafts";
@@ -64,6 +65,10 @@ export async function POST(request: Request, ctx: RouteContext<"/api/drafts/[id]
       // （会員の「保存しているキャラクター」の絵は消さない。作り直すと同じ場所に新しい絵が入る）
       const { error } = await db.from("drafts").update({ [`${person}_photo_path`]: path, [`${person}_character_path`]: null }).eq("id", draft.id);
       if (error) throw new Error(error.message);
+    } else if (!parseCustomKey(draft.story)) {
+      // 台本のお話に足した兄弟姉妹
+      await setSiblingPhoto(db, draft.id, guest!, path);
+      await db.storage.from(BOOK_BUCKET).remove([guestCharacterPath(draft.id, guest!)]);
     } else {
       const custom = parseCustomKey(draft.story)!;
       const photos = customPhotos(draft.story);

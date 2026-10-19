@@ -11,6 +11,8 @@ export const TASTES: {
   /** 違いが一目で分かるよう、選択画面とトップに出す特徴（短い言葉を3つ） */
   points: string[];
   swatch: string;
+  /** 迷っている人向けに「オススメ」の印を付ける（2026-10-19 作道さん：水彩） */
+  recommended?: boolean;
   prompt: string;
 }[] = [
   {
@@ -19,6 +21,7 @@ export const TASTES: {
     description: "にじむ色合いの、やさしい手描き風",
     points: ["にじむ色", "紙の質感", "おだやか"],
     swatch: "#CFE3F0",
+    recommended: true,
     // 3つのテイストの違いが一目で分かるよう、画材の特徴と「ほかのテイストに見えないこと」をはっきり書く（2026-10-11 作道さん「見本の変わり映えがしない」）
     prompt:
       "ART STYLE: a loose, traditional transparent watercolor painting on rough cold-press watercolor paper, clearly painted by hand with a wet brush. " +
@@ -225,6 +228,18 @@ export type Person = "child" | "mom" | "dad";
 // 場面の番号と重ならないよう、キャラクターは 101〜103 で表す。
 export const CHARACTER_SCENES: Record<Person, number> = { child: 101, mom: 102, dad: 103 };
 
+/** ママ・パパの欄に入れられる兄弟姉妹の続柄（2026-10-19 作道さん）。role・kind は絵の指示（英語） */
+export const SIBLING_RELATIONS = [
+  { id: "older-sister", label: "お姉ちゃん", role: "older sister", kind: "girl", younger: false },
+  { id: "older-brother", label: "お兄ちゃん", role: "older brother", kind: "boy", younger: false },
+  { id: "younger-sister", label: "妹", role: "younger sister", kind: "girl", younger: true },
+  { id: "younger-brother", label: "弟", role: "younger brother", kind: "boy", younger: true },
+] as const;
+export type SiblingRelation = (typeof SIBLING_RELATIONS)[number]["id"];
+export function isSiblingRelation(v: unknown): v is SiblingRelation {
+  return SIBLING_RELATIONS.some((r) => r.id === v);
+}
+
 export function characterOf(scene: number): Person | null {
   return (Object.keys(CHARACTER_SCENES) as Person[]).find((p) => CHARACTER_SCENES[p] === scene) ?? null;
 }
@@ -289,13 +304,15 @@ export const LIKENESS_LEVELS = [
   },
   {
     id: "exact",
-    label: "写真そっくり",
+    label: "そっくり",
     hint: "写真の特徴をできるだけ忠実に",
     prompt:
       "Likeness to the photo is the top priority: the customer wants each person to look as close as possible to the person in their reference photo. Faithfully reproduce the face shape and proportions, the shape, size and spacing of the eyes, eyelids, eyebrows, nose, mouth and lips, ears, skin tone, hairline, hairstyle, bangs, hair length and hair color, and distinctive features visible in the photo such as glasses, dimples or moles. Only translate them into the picture-book art style; do not idealize, beautify or make the face generic.",
   },
 ] as const;
 export type LikenessId = (typeof LIKENESS_LEVELS)[number]["id"];
+/** キャラクターの最初の作成で描く3パターン（並び順もこのまま画面に出す） */
+export const CANDIDATE_LIKENESS: LikenessId[] = ["exact", "strong", "normal"];
 export function isLikenessId(v: unknown): v is LikenessId {
   return LIKENESS_LEVELS.some((l) => l.id === v);
 }
@@ -350,8 +367,6 @@ export function getSize(id: string) {
 // https://www.n-pri.jp/photobook/delivery/
 export const DELIVERY_NOTE = "ご注文から2〜3週間でお届けします。混雑状況によっては、それ以上かかる場合があります。";
 
-/** すべての絵本を1冊ずつギフトバッグに入れてお届け（しまうまのオプション +270円/冊はこちら負担。2026-10-16 作道さん決定） */
-export const GIFT_BAG_IMAGE = "/gift-bag.webp";
 /** 以前の注文で選ばれていた時間帯（表示用。いまは選べない） */
 export const DELIVERY_TIMES = [
   { id: "am", label: "午前中" },

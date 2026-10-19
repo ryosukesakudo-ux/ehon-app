@@ -6,6 +6,7 @@ import { isStoryKey, parseSeriesKey, withoutCombo } from "@/lib/story-key";
 import { parseCustomKey } from "@/lib/custom-story";
 import type { Face } from "@/lib/face";
 import { readLocalFlow, readLocalPhotos, writeLocalFlow, writeLocalPhotos } from "./flow-storage";
+import type { SiblingInput } from "./sibling-switch";
 
 // 注文フローの入力内容。ページをまたいで保持し、ログインや再読み込みに備えてブラウザ（localStorage）にも残す。
 // 選んだ写真は、送るまでこのブラウザの IndexedDB に残す（ログインから戻っても選び直さなくて済むように）。
@@ -19,8 +20,23 @@ export type FlowState = {
   childBirthday: string;
   /** 主人公の呼び方（kun / chan / none。catalog.ts の HONORIFICS）。登場人物しょうかいなどの特別ページで使う。空は未選択 */
   childHonorific: string;
-  /** 本人への似せ方（写真の画面で選ぶ。プレビューの最初の作成から使う） */
+  /**
+   * 本人への似せ方。キャラクターは最初に3パターン（そっくり・しっかり・ふつう）を描いて選んでもらい（2026-10-19）、
+   * 主人公で選んだものを表紙と本文にも使う
+   */
   likeness: LikenessId;
+  /** キャラクターの3パターンの候補（場面番号 → 候補）。選ぶとその人のキャラクターになり、ここから消える */
+  candidates: Record<number, { likeness: LikenessId; url: string }[]>;
+  /** キャラクターごとに選んだ似せ方（場面番号 → 似せ方）。作り直しはこの似せ方で1枚描く */
+  picked: Record<number, LikenessId>;
+  /** ママ・パパの欄に入れた兄弟姉妹（写真の画面。入れていない欄は無し） */
+  family: Partial<Record<"mom" | "dad", SiblingInput>>;
+  /** 下書きに保存した兄弟姉妹の入れ替え（JSON）。写真の画面で変えたら、下書きに送り直してキャラクターを描き直す */
+  familySent: string;
+  /** ママ・パパとは別に足す兄弟姉妹（台本のお話・会員だけ・最大2人）。写真は photos.guests に入れる */
+  siblings: SiblingInput[];
+  /** 下書きに保存した兄弟姉妹（JSON）。変えたら下書きを作り直す */
+  siblingsSent: string;
   /** 写真の顔の飾り（シール・メガネなど）を絵では描かない（写真の画面のチェック） */
   plainFace: boolean;
   draftId: string | null;
@@ -44,6 +60,9 @@ export type FlowState = {
   extraFor: string;
   /** 絵本の最後のページに入れる、おうちの方からのメッセージ（任意） */
   bookMessage: string;
+  /** お届け先のお名前のフリガナ（必須・セイとメイ）。しまうまの届け先登録にカナが要る（2026-10-19） */
+  shipKanaSei: string;
+  shipKanaMei: string;
   /**
    * 思い出の写真（任意・注文の確認画面でアップロード、20枚まで）の保存先。アップした順に、お話のあとの6ページに分けて並べる。
    * 空は無し（そのページはおえかきページになる）
@@ -68,6 +87,12 @@ const initial: FlowState = {
   childBirthday: "",
   childHonorific: "",
   likeness: "normal",
+  candidates: {},
+  picked: {},
+  family: {},
+  familySent: "{}",
+  siblings: [],
+  siblingsSent: "[]",
   plainFace: false,
   draftId: null,
   demo: false,
@@ -82,6 +107,8 @@ const initial: FlowState = {
   extraDrafts: {},
   extraFor: "",
   bookMessage: "",
+  shipKanaSei: "",
+  shipKanaMei: "",
   memoryPhotoPaths: [],
   deliveryDate: "",
   deliveryTime: "",
@@ -153,6 +180,12 @@ export function FlowProvider({ children }: { children: ReactNode }) {
           ? [oldPhoto]
           : [];
       if (!isLikenessId(restored.likeness)) restored.likeness = initial.likeness;
+      restored.candidates = restored.candidates && typeof restored.candidates === "object" ? restored.candidates : {};
+      restored.picked = restored.picked && typeof restored.picked === "object" ? restored.picked : {};
+      restored.family = restored.family && typeof restored.family === "object" ? restored.family : {};
+      restored.familySent = typeof restored.familySent === "string" ? restored.familySent : "{}";
+      restored.siblings = Array.isArray(restored.siblings) ? restored.siblings.slice(0, 2) : [];
+      restored.siblingsSent = typeof restored.siblingsSent === "string" ? restored.siblingsSent : "[]";
       restored.plainFace = restored.plainFace === true;
       restored.confirmed = restored.confirmed === true;
       restored.reused = Array.isArray(restored.reused) ? restored.reused.filter((n) => typeof n === "number") : [];

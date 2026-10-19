@@ -1,4 +1,4 @@
-import { MEMBER_MONTHLY_PREVIEWS, PREVIEW_PACK, REDO_NOTE_MAX, REDO_OPTIONS, isLikenessId, isPageScene, type RedoOptionId } from "@/lib/catalog";
+import { CANDIDATE_LIKENESS, MEMBER_MONTHLY_PREVIEWS, PREVIEW_PACK, REDO_NOTE_MAX, REDO_OPTIONS, isCharacterScene, isLikenessId, isPageScene, type RedoOptionId } from "@/lib/catalog";
 import { hasRedoRequest, type Redo } from "@/lib/illustrate";
 import { getBook } from "@/lib/book";
 import { draftPreviewScenes, generateScene, isDemoId, loadOwnedDraft } from "@/lib/drafts";
@@ -77,6 +77,21 @@ export async function POST(request: Request, ctx: RouteContext<"/api/drafts/[id]
       }
       refund = async () => db.rpc("refund_generation", { p_id: id });
     }
+  }
+
+  // 登場人物のキャラクターの最初の作成は、似せ方（ふつう・しっかり・そっくり）を変えた3パターンを描いて、お客様に選んでもらう。
+  // 3枚まとめてプレビュー1枚分（2026-10-19 作道さん）。作り直しは1枚（選んだパターンの似せ方で描く）
+  if (body?.candidates === true && initial && isCharacterScene(sceneIndex)) {
+    const results = await Promise.allSettled(
+      CANDIDATE_LIKENESS.map((l) => generateScene(draft, sceneIndex, "preview", { options: [], note: "", likeness: l, initial: true }, undefined, l)),
+    );
+    const candidates = results.flatMap((r, i) => (r.status === "fulfilled" ? [{ likeness: CANDIDATE_LIKENESS[i], url: r.value }] : []));
+    results.forEach((r) => r.status === "rejected" && console.error("candidate generation failed", r.reason));
+    if (!candidates.length) {
+      await refund?.().catch(() => {});
+      return Response.json({ error: "絵の作成に失敗しました。もう一度お試しください" }, { status: 500 });
+    }
+    return Response.json({ candidates, remaining });
   }
 
   try {

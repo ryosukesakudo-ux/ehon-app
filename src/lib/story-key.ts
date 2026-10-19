@@ -141,18 +141,19 @@ export function openEpisodes<E extends { no: number }>(episodes: E[]) {
   return episodes.filter((e) => e.no <= OPEN_EPISODES);
 }
 
-export type SeriesKey = { series: SeriesId; episode: number; level: LevelId; combo: Combo | null };
+/** siblings：ママ・パパとは別に足した兄弟姉妹の人数（0〜2。下書きの番号の末尾 :k1 / :k2。2026-10-19） */
+export type SeriesKey = { series: SeriesId; episode: number; level: LevelId; combo: Combo | null; siblings: number };
 
-const KEY_RE = /^(forest|star|birthday|sea|dinosaur|number):([1-5]):([snl])(?::(both|mom|dad|none))?$/;
+const KEY_RE = /^(forest|star|birthday|sea|dinosaur|number):([1-5]):([snl])(?::(both|mom|dad|none))?(?::k([12]))?$/;
 
 /** シリーズのお話の番号を読む。旧版のお話やおかしな値なら null */
 export function parseSeriesKey(key: string | null | undefined): SeriesKey | null {
   const m = typeof key === "string" ? key.match(KEY_RE) : null;
-  return m ? { series: m[1] as SeriesId, episode: Number(m[2]), level: m[3] as LevelId, combo: (m[4] as Combo | undefined) ?? null } : null;
+  return m ? { series: m[1] as SeriesId, episode: Number(m[2]), level: m[3] as LevelId, combo: (m[4] as Combo | undefined) ?? null, siblings: Number(m[5] ?? 0) } : null;
 }
 
-export function seriesKey(series: SeriesId, episode: number, level: LevelId, combo?: Combo | null) {
-  return `${series}:${episode}:${level}${combo ? `:${combo}` : ""}`;
+export function seriesKey(series: SeriesId, episode: number, level: LevelId, combo?: Combo | null, siblings = 0) {
+  return `${series}:${episode}:${level}${combo ? `:${combo}` : ""}${combo && siblings ? `:k${siblings}` : ""}`;
 }
 
 /** 写真の組み合わせを外した番号（選択画面・保存用） */

@@ -1,9 +1,11 @@
-import { COVER_SCENE, bookScenes, deliveryLabel, sizeLabel, getTaste, plainText, sceneText, SIZES, yen } from "@/lib/catalog";
-import { getBook } from "@/lib/book";
+import { CHARACTER_SCENES, COVER_SCENE, bookScenes, deliveryLabel, sizeLabel, getTaste, plainText, sceneText, SIZES, yen } from "@/lib/catalog";
+import { bookForDraft } from "@/lib/siblings";
 import { levelLabel, storyLabel } from "@/lib/story-key";
 import { BOOK_BUCKET, getSupabase } from "@/lib/services";
 import { syncPendingOrders } from "@/lib/order-sync";
+import { loadBookExtras } from "@/lib/book-extras";
 import { isViewPath, viewUrls } from "@/lib/book-images";
+import { standInText, standInsForDraft } from "@/lib/stand-ins";
 import { OrderActions, OrderDetailProvider, RedoSceneButton } from "./actions";
 
 export const dynamic = "force-dynamic";
@@ -51,16 +53,22 @@ export default async function AdminPage() {
   // 制作済みの絵を表示するための一時URL
   const rows = await Promise.all(
     (orders ?? []).map(async (o) => {
-      const story = getBook(o.drafts.story)!;
+      const story = (await bookForDraft(db, o.drafts))!;
       // 印刷用の絵（final）と、お客様が作ったプレビューの絵（preview）。
       // プレビューは「全ページの絵を作る」で印刷用にそのまま使われるので、印刷用がまだ無いページはプレビューを出す
       const [{ data: files }, { data: previewFiles }] = await Promise.all([
         db.storage.from(BOOK_BUCKET).list(`${o.draft_id}/final`),
         db.storage.from(BOOK_BUCKET).list(`${o.draft_id}/preview`),
       ]);
+      // ママ・パパの代わりの人がいる注文（stand-ins.ts）は、その人のキャラクターの絵も出して作り直せるようにする
+      const standIns = await standInsForDraft(db, o.draft_id);
+      // お届け先のフリガナ（2026-10-19 から。しまうまの届け先登録に使う）
+      const { shippingKana } = await loadBookExtras(db, o.draft_id, o.id);
+      const standInPeople = standIns ? (["mom", "dad"] as const).flatMap((who) => (standIns[who] ? [{ who, ...standIns[who], path: o.drafts[`${who}_character_path`] as string | null }] : [])) : [];
       const paths = [
         ...(files ?? []).map((f) => `${o.draft_id}/final/${f.name}`),
         ...(previewFiles ?? []).map((f) => `${o.draft_id}/preview/${f.name}`),
+        ...standInPeople.flatMap((p) => (p.path ? [p.path] : [])),
       ].filter((p) => !isViewPath(p));
       // 画面には表示用の軽い絵を出す（印刷用の 2048px の PNG は大きすぎるため）
       const urls = await viewUrls(paths);
@@ -68,10 +76,12 @@ export default async function AdminPage() {
       return {
         order: o,
         story,
+        shippingKana,
+        standIns: standInPeople.map((p) => ({ ...p, scene: CHARACTER_SCENES[p.who], url: p.path ? (urls.get(p.path) ?? null) : null })),
         // 表紙＋全場面
         pages: bookScenes().map((i) => ({
           index: i,
-          text: i === COVER_SCENE ? "表紙" : plainText(sceneText(story.scenes[i], o.drafts.child_name)),
+          text: i === COVER_SCENE ? "表紙" : plainText(standInText(sceneText(story.scenes[i], o.drafts.child_name), standIns)),
           url: urls.get(`${o.draft_id}/final/${file(i)}`) ?? null,
           previewUrl: urls.get(`${o.draft_id}/preview/${file(i)}`) ?? null,
         })),
@@ -93,7 +103,7 @@ export default async function AdminPage() {
       <a href="/admin/coupons">クーポン管理（コードの発行・停止、使われた回数）</a>
       <a href="/admin/reviews">レビュー管理（投稿されたレビューの確認・非表示）</a>
       {rows.length === 0 && <p>まだ注文はありません。</p>}
-      {rows.map(({ order: o, pages }) => {
+      {rows.map(({ order: o, pages, standIns, shippingKana }) => {
         const ship = o.shipping as Shipping;
         const a = ship?.address;
         return (
@@ -125,7 +135,8 @@ export default async function AdminPage() {
                   <br />
                 </>
               )}
-              お届け先：{ship?.name} 〒{a?.postal_code} {a?.state}{a?.city}{a?.line1} {a?.line2}
+              お届け先：{ship?.name}
+              {shippingKana ? `（${shippingKana.sei} ${shippingKana.mei}）` : ""} 〒{a?.postal_code} {a?.state}{a?.city}{a?.line1} {a?.line2}
               <br />
               {/* お届け希望日は2026-10-17に受付をやめた。以前の注文で選ばれていたときだけ出す */}
               {(o.delivery_date || o.delivery_time) && (
@@ -138,7 +149,52 @@ export default async function AdminPage() {
               <br />
               写真：{o.drafts.photos_deleted_at ? "削除済み" : "保管中"}
             </div>
+            {/* しまうまの届け先登録の入力欄の順（姓・名・セイ・メイ・郵便番号・住所・電話番号）。名前は空白で姓と名に分ける */}
+            <details style={{ fontSize: 14 }}>
+              <summary>しまうまの届け先登録用</summary>
+              <table style={{ borderCollapse: "collapse", marginTop: 6 }}>
+                <tbody>
+                  {[
+                    ["姓", splitName(ship?.name)[0]],
+                    ["名", splitName(ship?.name)[1]],
+                    ["セイ", shippingKana?.sei ?? "（未入力の注文）"],
+                    ["メイ", shippingKana?.mei ?? "（未入力の注文）"],
+                    ["郵便番号", a?.postal_code],
+                    ["都道府県", a?.state],
+                    ["市区町村", a?.city],
+                    ["番地", a?.line1],
+                    ["建物名・部屋番号", a?.line2],
+                    ["電話番号", o.phone],
+                  ].map(([label, value]) => (
+                    <tr key={label}>
+                      <th style={{ textAlign: "left", fontWeight: 700, padding: "2px 12px 2px 0", whiteSpace: "nowrap" }}>{label}</th>
+                      <td style={{ padding: "2px 0", userSelect: "all" }}>{value || "—"}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </details>
             <OrderActions orderId={o.id} status={o.status} scenes={pages.map((p) => p.index)} doneScenes={pages.flatMap((p) => (p.url ? [p.index] : []))} printSizes={SIZES.map((s) => s.id)} amount={o.amount} refunded={o.refunded_amount ?? 0} />
+            {standIns.length > 0 && (
+              <div style={{ fontSize: 14, lineHeight: 1.8 }}>
+                <strong>特別対応：この本は{standIns.map((p) => `${p.who === "mom" ? "ママ" : "パパ"}の代わりに「${p.name}」（${p.age}歳）`).join("、")}が出ます</strong>
+                （本文の名前と絵の指示を替えます。先に下の登場人物の絵を作り直してから、「全ページ作り直す」を押してください）
+                <ul style={{ display: "flex", flexWrap: "wrap", gap: 12, padding: 0, listStyle: "none" }}>
+                  {standIns.map((p) => (
+                    <li key={p.who} style={{ width: 160, fontSize: 12 }}>
+                      {p.url ? (
+                        // eslint-disable-next-line @next/next/no-img-element -- 署名付きURLの一時画像
+                        <img src={p.url} alt={p.name} style={{ width: "100%", aspectRatio: "1", objectFit: "contain", background: "#f3f3f3", borderRadius: 8 }} />
+                      ) : (
+                        <div style={{ aspectRatio: "1", borderRadius: 8, background: "#eee", display: "flex", alignItems: "center", justifyContent: "center" }}>未作成</div>
+                      )}
+                      {p.name}のキャラクター
+                      {!fullyRefunded(o) && (o.status === "paid" || o.status === "generated") && <RedoSceneButton orderId={o.id} scene={p.scene} />}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
             <details>
               <summary>
                 ページ一覧（{pages.filter((p) => p.url).length}/{pages.length} 枚作成済み
@@ -188,4 +244,10 @@ function fullyRefunded(o: { amount: number; refunded_amount?: number | null }) {
 /** 部数（copies 列がない古い注文は「2冊目あり」から読む） */
 function copiesOf(o: { copies?: number | null; extra_copy?: boolean | null }) {
   return o.copies ?? (o.extra_copy ? 2 : 1);
+}
+
+/** お届け先のお名前を姓と名に分ける（Stripe は1つの欄。空白が無ければ全部を姓にする） */
+function splitName(name?: string | null): [string, string] {
+  const [sei, ...mei] = (name ?? "").trim().split(/[\s\u3000]+/);
+  return [sei ?? "", mei.join(" ")];
 }

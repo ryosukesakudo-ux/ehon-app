@@ -1,5 +1,6 @@
 import { getSize, sceneText, type SizeId } from "@/lib/catalog";
-import { getBook } from "@/lib/book";
+import { bookForDraft } from "@/lib/siblings";
+import { standInText, standInsForDraft } from "@/lib/stand-ins";
 import { bookTitle } from "@/lib/story-key";
 import { buildCoverSpread } from "@/lib/cover-spread";
 import { loadFinalImages } from "@/lib/print-assets";
@@ -26,7 +27,7 @@ export async function POST(request: Request, ctx: RouteContext<"/api/admin/order
 
   const body = await request.json().catch(() => null);
   const size = getSize((body?.size as SizeId | undefined) ?? order.size);
-  const story = getBook(order.drafts.story);
+  const story = await bookForDraft(db, order.drafts);
   const title = bookTitle(order.drafts.story, order.drafts.child_name);
   if (!size || !story) return Response.json({ error: "注文の内容を読み込めません" }, { status: 400 });
   const spineMm = Number(body?.spineMm ?? DEFAULT_SPINE_MM);
@@ -39,7 +40,9 @@ export async function POST(request: Request, ctx: RouteContext<"/api/admin/order
   const volume = await bookVolume(db, order);
 
   try {
-    const texts = story.scenes.map((sc) => sceneText(sc, order.drafts.child_name));
+    // ママ・パパの代わりの人がいる注文（stand-ins.ts）は、本文の「ママ」「パパ」を名前に替える
+    const standIns = await standInsForDraft(db, order.draft_id);
+    const texts = story.scenes.map((sc) => standInText(sceneText(sc, order.drafts.child_name), standIns));
     // 見開きの絵の場面は、塗り足し（四方3mm）込みの大きさで文を重ねて左右のページに分ける（約300dpi）
     const bleedMm = size.trimMm + 6;
     const spreadPages = await renderSpreadPages({ images, texts, spots, trimMm: bleedMm, pagePx: Math.round((bleedMm / 25.4) * 300) });

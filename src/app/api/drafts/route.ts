@@ -10,6 +10,11 @@ import { PHOTO_BUCKET, getSupabase } from "@/lib/services";
 import { faceFromField, faceToPathTag } from "@/lib/face";
 import { customKeyWithPhotos, customStoryComplete, parseCustomKey } from "@/lib/custom-story";
 import { storyTextFlagged, verifyStory } from "@/lib/custom-story-server";
+import { parseFamily, saveFamily } from "@/lib/stand-ins";
+import { parseSiblings, saveSiblingsWithRewrite } from "@/lib/siblings";
+
+// 兄弟姉妹を足したときは、台本の文をAIで書き直すので時間に余裕を持たせる
+export const maxDuration = 120;
 
 const MAX_PHOTO_BYTES = 10 * 1024 * 1024;
 const PHOTO_TYPES: Record<string, string> = { "image/jpeg": "jpg", "image/png": "png", "image/webp": "webp" };
@@ -30,6 +35,14 @@ export async function POST(request: Request) {
   const childAge = Number(form.get("childAge"));
   const consent = form.get("consent") === "true";
   const plainFace = form.get("plainFace") === "true";
+  // ママ・パパの欄に入れた兄弟姉妹（2026-10-19）。その欄の写真があるときだけ使う
+  const family = parseFamily((() => {
+    try {
+      return JSON.parse(String(form.get("family") ?? "{}"));
+    } catch {
+      return {};
+    }
+  })());
   const childPhoto = form.get("childPhoto");
   const momPhoto = form.get("momPhoto");
   const dadPhoto = form.get("dadPhoto");
@@ -55,8 +68,16 @@ export async function POST(request: Request) {
   else if (!(await isPublished(series.series, series.episode)) || !(await readyEpisodes())[series.series].includes(series.episode)) return bad("このお話はまだ準備中です。ほかのお話を選んでください");
   if (!childName || childName.length > 12) return bad("名前は12文字以内で入力してください");
   if (!CHILD_AGES.includes(childAge)) return bad("お子さまの年齢を選んでください");
+  // 台本のお話に足す兄弟姉妹（最大2人・会員だけ。写真は guest0Photo… で受け取る）
+  const siblingInput = series ? parseSiblings((() => {
+    try {
+      return JSON.parse(String(form.get("siblings") ?? "[]"));
+    } catch {
+      return [];
+    }
+  })()) : [];
   // オリジナルのお話の、ほかの登場人物の写真（guest0Photo…・会員は保存している写真 guest0PhotoId… も）
-  const guestCount = custom?.cast.length ?? 0;
+  const guestCount = custom?.cast.length ?? siblingInput.length;
   const guestPhotos = Array.from({ length: guestCount }, (_, i) => form.get(`guest${i}Photo`));
   const guestPhotoIds = Array.from({ length: guestCount }, (_, i) => String(form.get(`guest${i}PhotoId`) ?? ""));
   for (const f of [childPhoto, momPhoto, dadPhoto, ...guestPhotos]) {
@@ -81,12 +102,14 @@ export async function POST(request: Request) {
     return Response.json({
       draftId: demoId,
       demo: true,
-      previewScenes: previewScenes({ hasMom: momPhoto instanceof File, hasDad: dadPhoto instanceof File, guests: guestCount }),
+      previewScenes: previewScenes({ hasMom: momPhoto instanceof File, hasDad: dadPhoto instanceof File, guests: custom?.cast.length ?? 0 }),
     });
   }
 
   const user = await currentUser();
   const id = randomUUID();
+  // 兄弟姉妹は会員だけ（登録前のお試しでは足さない）
+  const siblings = user ? siblingInput : [];
 
   const upload = async (f: File, who: string) => {
     // 顔を囲んだ位置はファイル名に入れておく（保存した写真を見返したとき、どの人を選んだか分かるように）
@@ -173,7 +196,7 @@ export async function POST(request: Request) {
       anon_id: anonId,
       taste,
       // シリーズは写真の組み合わせを足して保存する（写真を消したあとも、同じ本文で印刷できるように）
-      story: series ? `${story}:${comboOf(hasMom, hasDad)}` : custom ? customKeyWithPhotos(custom, guestPaths) : story,
+      story: series ? `${story}:${comboOf(hasMom, hasDad)}${siblings.length ? `:k${siblings.length}` : ""}` : custom ? customKeyWithPhotos(custom, guestPaths) : story,
       child_name: childName,
       child_age: childAge,
       child_photo_path: childPath,
@@ -192,6 +215,10 @@ export async function POST(request: Request) {
       ({ error } = await db.from("drafts").insert(base));
     }
     if (error) throw new Error(error.message);
+    if (!hasMom) delete family.mom;
+    if (!hasDad) delete family.dad;
+    if (Object.keys(family).length) await saveFamily(db, id, family);
+    if (siblings.length) await saveSiblingsWithRewrite(db, id, base.story, siblings.map((s, i) => ({ ...s, photo: guestPaths[i] ?? null })));
     // 同じテイストで作ったキャラクターは、そのままプレビューに使う（違うテイストは描き直す）
     const sameTaste = (["child", "mom", "dad"] as const).filter((who) => characters[who]?.taste === taste);
     if (sameTaste.length) {
@@ -207,6 +234,6 @@ export async function POST(request: Request) {
     draftId: id,
     member: !!user,
     previews,
-    previewScenes: previewScenes({ hasMom, hasDad, guests: guestCount }),
+    previewScenes: previewScenes({ hasMom, hasDad, guests: custom ? guestCount : siblings.length }),
   });
 }

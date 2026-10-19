@@ -3,8 +3,9 @@ import { fixedLevelEpisode, parseSeriesKey, seriesKey, withoutCombo, type LevelI
 import { clearFlowSave } from "@/lib/flow-save";
 import { getSupabase } from "@/lib/services";
 import { customKey, parseCustomKey } from "@/lib/custom-story";
-import { getBook } from "@/lib/book";
+import { bookForDraft } from "@/lib/siblings";
 import { sceneText } from "@/lib/catalog";
+import { parseFamily, saveFamily, standInText, standInsForDraft, type StandIns } from "@/lib/stand-ins";
 
 // 会員ページの「つづきから」で呼ぶ。下書きの内容と作成済みのプレビューを返す。
 export async function GET(_request: Request, ctx: RouteContext<"/api/drafts/[id]">) {
@@ -24,12 +25,19 @@ export async function GET(_request: Request, ctx: RouteContext<"/api/drafts/[id]
     previews: await previewUrls(draft.id),
     previewScenes: draftPreviewScenes(draft),
     // 本文12場面の文（プレビューで絵の下に出す。写真の組み合わせに合わせた、本に載るのと同じ文）
-    texts: textsOf(draft),
+    texts: await textsOf(draft, await standInsOf(draft.id)),
   });
 }
 
-function textsOf(draft: Pick<Draft, "story" | "child_name">) {
-  return getBook(draft.story)?.scenes.map((s) => sceneText(s, draft.child_name)) ?? [];
+async function textsOf(draft: Pick<Draft, "id" | "story" | "child_name">, standIns: StandIns | null) {
+  const book = await bookForDraft(isDemoId(draft.id) ? null : getSupabase(), draft);
+  return book?.scenes.map((s) => standInText(sceneText(s, draft.child_name), standIns)) ?? [];
+}
+
+/** ママ・パパの欄を兄弟姉妹に入れ替えている下書きは、本文の「ママ」「パパ」をその子の呼び方にする */
+async function standInsOf(draftId: string) {
+  const db = getSupabase();
+  return db && !isDemoId(draftId) ? standInsForDraft(db, draftId) : null;
 }
 
 const LEVEL_IDS: LevelId[] = ["s", "n", "l"];
@@ -41,6 +49,7 @@ export async function PATCH(request: Request, ctx: RouteContext<"/api/drafts/[id
   const { id } = await ctx.params;
   const body = await request.json().catch(() => ({}));
   if (typeof body?.plainFace === "boolean") return setPlainFace(id, body.plainFace);
+  if (body?.family !== undefined) return setFamily(id, body.family);
   const level = LEVEL_IDS.find((l) => l === body?.level);
   if (!level) return Response.json({ error: "文の量を選んでください" }, { status: 400 });
   const owned = await loadOwnedDraft(id);
@@ -49,7 +58,7 @@ export async function PATCH(request: Request, ctx: RouteContext<"/api/drafts/[id
   const k = parseSeriesKey(draft.story);
   if (!k || fixedLevelEpisode(k.series, k.episode)) return Response.json({ error: "このお話は文の量を変えられません" }, { status: 400 });
   if (await draftOrdered(draft.id)) return Response.json({ error: "ご注文済みの絵本は変更できません" }, { status: 409 });
-  const story = seriesKey(k.series, k.episode, level, k.combo);
+  const story = seriesKey(k.series, k.episode, level, k.combo, k.siblings);
   let draftId = draft.id;
   if (isDemoId(draft.id)) {
     // デモの下書きは番号に中身が入っているので、番号ごと作り直す
@@ -63,7 +72,24 @@ export async function PATCH(request: Request, ctx: RouteContext<"/api/drafts/[id
       return Response.json({ error: "保存できませんでした。もう一度お試しください" }, { status: 500 });
     }
   }
-  return Response.json({ draftId, story: withoutCombo(story), texts: textsOf({ story, child_name: draft.child_name }) });
+  return Response.json({ draftId, story: withoutCombo(story), texts: await textsOf({ id: draftId, story, child_name: draft.child_name }, await standInsOf(draftId)) });
+}
+
+/** ママ・パパの欄の入れ替え（兄弟姉妹）を変える（写真の画面。キャラクターは画面側で作り直す） */
+async function setFamily(id: string, value: unknown) {
+  const owned = await loadOwnedDraft(id);
+  if (!owned) return Response.json({ error: "下書きが見つかりません" }, { status: 404 });
+  if (isDemoId(id)) return Response.json({ ok: true });
+  if (await draftOrdered(id)) return Response.json({ error: "ご注文済みの絵本は変更できません" }, { status: 409 });
+  const db = getSupabase();
+  if (!db) return Response.json({ error: "保存できませんでした" }, { status: 500 });
+  try {
+    await saveFamily(db, id, parseFamily(value));
+  } catch (e) {
+    console.error("draft family update failed", e);
+    return Response.json({ error: "保存できませんでした。もう一度お試しください" }, { status: 500 });
+  }
+  return Response.json({ ok: true });
 }
 
 /** 写真の顔の飾りを描かない指定を変える（写真の画面のチェック。キャラクターは画面側で作り直す） */
