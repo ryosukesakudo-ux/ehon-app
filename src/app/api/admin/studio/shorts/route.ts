@@ -4,7 +4,7 @@ import { makeShortFrame } from "@/lib/illustrate";
 import { samplePublicUrl } from "@/lib/samples";
 import { SAMPLE_BUCKET, getSupabase } from "@/lib/services";
 import { SHORT_NEGATIVE_PROMPT, SHORT_PROMPT_RULES } from "@/lib/shorts";
-import { studioFramePath, studioVideoPath, type StudioShort, type VeoQuality } from "@/lib/studio";
+import { studioFramePath, studioVideoPath, type StudioFrameKind, type StudioShort, type VeoQuality } from "@/lib/studio";
 import { askShortQuestions, deleteShort, getCharacter, getShort, listShorts, saveShort, writeShortScript } from "@/lib/studio-server";
 import { veoExtend, veoPoll, veoReady, veoStart } from "@/lib/veo";
 
@@ -17,7 +17,7 @@ export const maxDuration = 300;
 //  POST { action: "delete", id }
 //  POST { action: "questions", id } … ヒアリング：AIが足りない情報を質問 → { enough, questions }（保存もする）
 //  POST { action: "script", id }    … 台本を書く → { short }
-//  POST { action: "frame", id, which: "first" | "last", note } … クリップAの絵 → { url, seconds }
+//  POST { action: "frame", id, which: "first" | "last" | "lastB", note } … Aの最初・Aの最後（8秒）・Bの最後（15秒）の絵 → { url, seconds }
 //  POST { action: "video", id, clip: "a" | "b", quality, note } … a: 絵から8秒 / b: a の動画を7秒延長 → { operation, ... }
 export async function GET(request: Request) {
   const url = new URL(request.url);
@@ -82,23 +82,27 @@ export async function POST(request: Request) {
     const started = Date.now();
 
     if (action === "frame") {
-      const which = body?.which === "last" ? "last" : "first";
-      const a = short.clips[0];
-      if (!(which === "last" ? a.lastFrame : a.frame)) return Response.json({ error: "先に台本（絵の指示）を書いてください" }, { status: 400 });
-      const [sheet, faces, first] = await Promise.all([
+      const which: StudioFrameKind = body?.which === "last" ? "last" : body?.which === "lastB" ? "lastB" : "first";
+      // first/last はクリップA、lastB はクリップB（15秒時点）。B の最後は A の最後の絵を参照して同じ場面・タッチに揃える
+      const clip = which === "lastB" ? short.clips[1] : short.clips[0];
+      const prompt = which === "first" ? clip.frame : clip.lastFrame;
+      if (!prompt) return Response.json({ error: "先に台本（絵の指示）を書いてください" }, { status: 400 });
+      const refPath = which === "last" ? studioFramePath(short.id, "first") : which === "lastB" ? studioFramePath(short.id, "last") : null;
+      const [sheet, faces, ref] = await Promise.all([
         download(characterArtPath(c.id, "sheet")),
         download(characterArtPath(c.id, "faces")),
-        which === "last" ? download(studioFramePath(short.id, "first")) : Promise.resolve(null),
+        refPath ? download(refPath) : Promise.resolve(null),
       ]);
       if (!sheet) return Response.json({ error: `先にキャラ「${c.name}」の設定画を作ってください` }, { status: 400 });
-      if (which === "last" && !first) return Response.json({ error: "先に最初のコマの絵を作ってください" }, { status: 400 });
+      if (which === "last" && !ref) return Response.json({ error: "先に最初のコマの絵を作ってください" }, { status: 400 });
+      if (which === "lastB" && !ref) return Response.json({ error: "先にクリップAの最後のコマの絵を作ってください" }, { status: 400 });
       const b64 = await makeShortFrame(
         c,
-        a,
+        clip,
         await toFile(sheet, "sheet.png", { type: "image/png" }),
         note,
         faces ? await toFile(faces, "faces.png", { type: "image/png" }) : undefined,
-        which === "last" ? { firstFrame: first ? await toFile(first, "first.png", { type: "image/png" }) : undefined } : undefined,
+        which === "first" ? undefined : { firstFrame: ref ? await toFile(ref, "ref.png", { type: "image/png" }) : undefined },
       );
       const path = studioFramePath(short.id, which);
       const { error } = await db.storage.from(SAMPLE_BUCKET).upload(path, Buffer.from(b64, "base64"), { contentType: "image/png", upsert: true, cacheControl: "300" });
@@ -135,12 +139,18 @@ export async function POST(request: Request) {
         return Response.json({ operation, usedReferenceImages, usedLastFrame: Boolean(last) });
       }
 
-      // b：a の動画そのものを渡して、続きを7秒延長する（つなぎ目なし）
-      const videoA = await download(studioVideoPath(short.id, "a"));
+      // b：a の動画そのものを渡して、続きを7秒延長する（つなぎ目なし）。15秒時点の絵があれば終わりとして渡す
+      const [videoA, lastB] = await Promise.all([download(studioVideoPath(short.id, "a")), download(studioFramePath(short.id, "lastB"))]);
       if (!videoA) return Response.json({ error: "先にクリップAの動画を作ってください" }, { status: 400 });
       const prompt = [character, clip.motion, SHORT_PROMPT_RULES, extra].filter(Boolean).join(" ");
-      const operation = await veoExtend({ prompt, videoMp4: Buffer.from(await videoA.arrayBuffer()), quality, negativePrompt: SHORT_NEGATIVE_PROMPT });
-      return Response.json({ operation });
+      const { name: operation, usedLastFrame } = await veoExtend({
+        prompt,
+        videoMp4: Buffer.from(await videoA.arrayBuffer()),
+        lastFramePng: lastB ? Buffer.from(await lastB.arrayBuffer()) : undefined,
+        quality,
+        negativePrompt: SHORT_NEGATIVE_PROMPT,
+      });
+      return Response.json({ operation, usedLastFrame, hadLastFrame: Boolean(lastB) });
     }
 
     return Response.json({ error: "不明な操作です" }, { status: 400 });

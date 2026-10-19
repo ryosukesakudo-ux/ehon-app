@@ -44,7 +44,7 @@ export type StudioClip = {
   sound: string;
   /** 最初のコマの絵の指示（英語）。Bは延長なので使わない */
   frame: string;
-  /** 最後のコマの絵の指示（英語）。Bは延長なので使わない */
+  /** 最後のコマの絵の指示（英語）。Aは8秒時点、Bは15秒時点（延長の終わり） */
   lastFrame: string;
   /** 動きと音の指示（英語） */
   motion: string;
@@ -82,7 +82,7 @@ export const CLIP_FIELDS: { key: keyof Omit<StudioClip, "id">; label: string; en
   { key: "scene", label: "場面（日本語）", rows: 2 },
   { key: "sound", label: "音・鳴き声（日本語）", rows: 1 },
   { key: "frame", label: "最初のコマの絵（英語）", en: true, rows: 3, onlyA: true },
-  { key: "lastFrame", label: "最後のコマの絵（英語）", en: true, rows: 3, onlyA: true },
+  { key: "lastFrame", label: "最後のコマの絵（英語）", en: true, rows: 3 },
   { key: "motion", label: "動きと音（英語）", en: true, rows: 4 },
 ];
 
@@ -90,7 +90,9 @@ export const PREMISE_MAX = 300;
 export const STUDIO_NOTE_MAX = 200;
 
 // 絵と動画の置き場所（公開ストレージ samples）
-export function studioFramePath(shortId: string, which: "first" | "last") {
+export type StudioFrameKind = "first" | "last" | "lastB";
+export function studioFramePath(shortId: string, which: StudioFrameKind) {
+  if (which === "lastB") return `shorts/${shortId}/b/last.png`;
   return `shorts/${shortId}/a/${which === "last" ? "last" : "frame"}.png`;
 }
 export function studioVideoPath(shortId: string, which: "a" | "full") {
