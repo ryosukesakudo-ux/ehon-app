@@ -1,8 +1,8 @@
-// YouTube ショートの台本（オリジナルキャラ「おちばの したの まち」）。
-// 1本＝約15秒＝動画AIの8秒クリップ×2。各話1話完結、1本に出るキャラは1体（2026-10-17 作道さん決定）。
+// YouTube ショートの台本の種データと、動画AIへの共通ルール（オリジナルキャラ「おちばの したの まち」）。
+// 1本＝約15秒＝クリップA 8秒＋続きのB 7秒延長。各話1話完結、1本に出るキャラは1体（2026-10-17 作道さん決定）。
 // セリフは無し。キャラは言葉を話さず、キャラごとの鳴き声（characters.ts の voice）と動きだけ（2026-10-18 作道さん決定: 発音が気になるため）。
+// 台本は今はスタジオ（/admin/studio）のデータベースにあり、ここの SHORTS は「取り込む」ための初期データ（2026-10-19）。
 // 台本の原本: /mnt/project-files/characters/shorts/short-01-kajitte-ii.md
-// 管理画面の「ショートスタジオ」(/admin/shorts) で、クリップごとに最初のコマの絵を作り、Veo で動かす。
 
 export type ShortClip = {
   id: string;
@@ -14,6 +14,7 @@ export type ShortClip = {
   frame: string;
   /** 最後のコマの絵の指示（英語）。最初と最後を絵で決め、間を Veo がつなぐ（顔を設定画どおりに保つため） */
   lastFrame: string;
+
   /** 動きと音の指示（英語） */
   motion: string;
 };
@@ -61,27 +62,10 @@ export const SHORTS: Short[] = [
 // 全クリップ共通の指示（2026-10-18 1本目の試作の感想から: 吹き出しが出る・声が機械っぽい・発音がおかしい・噛んだ感が弱い → セリフなし、鳴き声だけ）
 export const SHORT_PROMPT_RULES = [
   "Animation style: the character must look exactly like the reference character sheet in every frame, including when its face moves. Keep the same colors, textures and proportions throughout.",
-  "The character's face must stay the same design throughout: the cap is the upper jaw, the body is the lower jaw, the seam between them is the only mouth (upper teeth on the cap rim, lower teeth on the top edge of the body), and the two small round black dot eyes sit inside that gap just under the cap rim (never large eyes, never eyelashes, never pupils with highlights). Never draw a second mouth, lips or eyes on the body. Expressions change only by the cap lifting or closing (opening and closing the mouth gap), the eyes squinting, and the body posture, as on the expression sheet.",
+  "The character's face and body must stay exactly as described in the character description (FACE ANATOMY) in every frame: the same number and placement of eyes and teeth, the same single mouth. Never add a second mouth, lips, eyes or a creature coming out of the body. Expressions change only in the ways the description allows (for example a lid opening or closing, eyes squinting) and by body posture.",
   "No spoken words at all, in any language. Nobody talks. The character only makes wordless animal-like cries and body sounds, like a creature in a hand-made stop-motion film; no human speech, no narration, no singing, no robotic or synthetic voice.",
   "Do not show speech bubbles, captions, subtitles, letters or any text on screen. No on-screen graphics.",
 ].join(" ");
 
 export const SHORT_NEGATIVE_PROMPT =
   "speech bubble, text, caption, subtitle, letters, watermark, logo, spoken words, dialogue, talking, narration, singing, robotic voice, synthesized voice, extra characters, human face, cartoon outline style change";
-
-export function getShort(id: string) {
-  return SHORTS.find((s) => s.id === id) ?? null;
-}
-
-// 絵と動画の置き場所（公開ストレージ samples）
-export type ShortFrameKind = "first" | "last";
-
-export function shortFramePath(shortId: string, clipId: string, which: ShortFrameKind = "first") {
-  return `shorts/${shortId}/${clipId}/${which === "last" ? "last" : "frame"}.png`;
-}
-
-export function shortVideoPath(shortId: string, clipId: string) {
-  return `shorts/${shortId}/${clipId}/video.mp4`;
-}
-
-export type VeoQuality = "fast" | "standard";
