@@ -31,7 +31,7 @@ function Resume() {
         childBirthday: save.childBirthday ?? "",
         childHonorific: save.childHonorific ?? "",
         reached: "photo",
-        likeness: save.likeness ?? "normal",
+        likeness: "exact",
         plainFace: save.plainFace === true,
         draftId: null,
         demo: false,

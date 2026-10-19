@@ -1,7 +1,7 @@
 "use client";
 
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
-import { BOOK_SCENE_COUNT, FIRST_PAGES, clampCopies, getSize, isLikenessId, type LikenessId, type SizeId, type TasteId } from "@/lib/catalog";
+import { BOOK_SCENE_COUNT, FIRST_PAGES, clampCopies, getSize, type LikenessId, type SizeId, type TasteId } from "@/lib/catalog";
 import { isStoryKey, parseSeriesKey, withoutCombo } from "@/lib/story-key";
 import { parseCustomKey } from "@/lib/custom-story";
 import type { Face } from "@/lib/face";
@@ -20,15 +20,8 @@ export type FlowState = {
   childBirthday: string;
   /** 主人公の呼び方（kun / chan / none。catalog.ts の HONORIFICS）。登場人物しょうかいなどの特別ページで使う。空は未選択 */
   childHonorific: string;
-  /**
-   * 本人への似せ方。キャラクターは最初に3パターン（そっくり・しっかり・ふつう）を描いて選んでもらい（2026-10-19）、
-   * 主人公で選んだものを表紙と本文にも使う
-   */
+  /** 本人への似せ方。AI代を抑えるため「そっくり」1つだけ（2026-10-19 作道さん。3パターンから選ぶのはやめた） */
   likeness: LikenessId;
-  /** キャラクターの3パターンの候補（場面番号 → 候補）。選ぶとその人のキャラクターになり、ここから消える */
-  candidates: Record<number, { likeness: LikenessId; url: string }[]>;
-  /** キャラクターごとに選んだ似せ方（場面番号 → 似せ方）。作り直しはこの似せ方で1枚描く */
-  picked: Record<number, LikenessId>;
   /** 主人公といっしょに冒険する兄弟姉妹（台本のお話・会員だけ・最大2人）。写真は photos.guests に入れる */
   siblings: SiblingInput[];
   /** 下書きに保存した兄弟姉妹（JSON）。変えたら下書きを作り直す */
@@ -82,9 +75,7 @@ const initial: FlowState = {
   childAge: null,
   childBirthday: "",
   childHonorific: "",
-  likeness: "normal",
-  candidates: {},
-  picked: {},
+  likeness: "exact",
   siblings: [],
   siblingsSent: "[]",
   plainFace: false,
@@ -173,9 +164,7 @@ export function FlowProvider({ children }: { children: ReactNode }) {
         : typeof oldPhoto === "string" && oldPhoto
           ? [oldPhoto]
           : [];
-      if (!isLikenessId(restored.likeness)) restored.likeness = initial.likeness;
-      restored.candidates = restored.candidates && typeof restored.candidates === "object" ? restored.candidates : {};
-      restored.picked = restored.picked && typeof restored.picked === "object" ? restored.picked : {};
+      restored.likeness = initial.likeness;
       restored.siblings = Array.isArray(restored.siblings) ? restored.siblings.slice(0, 2) : [];
       restored.siblingsSent = typeof restored.siblingsSent === "string" ? restored.siblingsSent : "[]";
       restored.plainFace = restored.plainFace === true;
