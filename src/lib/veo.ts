@@ -85,31 +85,48 @@ export async function veoStart(opts: {
  * 作った動画の続きを7秒延長する（Veo 3.1 の extension）。元の動画＋続きが1本になって返る。
  * 元は Veo が作った動画（720p）に限る。参照: https://ai.google.dev/gemini-api/docs/veo
  */
-export async function veoExtend(opts: { prompt: string; videoMp4: Buffer; quality: VeoQuality; negativePrompt?: string }) {
-  const res = await fetch(`${BASE}/models/${model(opts.quality)}:predictLongRunning`, {
-    method: "POST",
-    headers: headers(),
-    body: JSON.stringify({
-      instances: [
-        {
-          prompt: opts.prompt,
-          // 公式SDK videoToMldev と同じ形（encodedVideo / encoding）
-          video: { encodedVideo: opts.videoMp4.toString("base64"), encoding: "video/mp4" },
+export async function veoExtend(opts: {
+  prompt: string;
+  videoMp4: Buffer;
+  quality: VeoQuality;
+  /** 延長の終わり（15秒時点）の絵。公式ドキュメントに延長との組み合わせ可否の記載がないため、断られたら無しで再試行する */
+  lastFramePng?: Buffer;
+  negativePrompt?: string;
+}) {
+  const request = (withLast: boolean) =>
+    fetch(`${BASE}/models/${model(opts.quality)}:predictLongRunning`, {
+      method: "POST",
+      headers: headers(),
+      body: JSON.stringify({
+        instances: [
+          {
+            prompt: opts.prompt,
+            // 公式SDK videoToMldev と同じ形（encodedVideo / encoding）
+            video: { encodedVideo: opts.videoMp4.toString("base64"), encoding: "video/mp4" },
+            ...(withLast && opts.lastFramePng ? { lastFrame: toImage(opts.lastFramePng) } : {}),
+          },
+        ],
+        parameters: {
+          resolution: "720p",
+          durationSeconds: 8,
+          personGeneration: "allow_adult",
+          ...(opts.negativePrompt ? { negativePrompt: opts.negativePrompt } : {}),
         },
-      ],
-      parameters: {
-        resolution: "720p",
-        durationSeconds: 8,
-        personGeneration: "allow_adult",
-        ...(opts.negativePrompt ? { negativePrompt: opts.negativePrompt } : {}),
-      },
-    }),
-  });
-  const json = await res.json().catch(() => ({}));
+      }),
+    });
+  let usedLastFrame = Boolean(opts.lastFramePng);
+  let res = await request(true);
+  let json = await res.json().catch(() => ({}));
+  if (!res.ok && opts.lastFramePng && res.status === 400) {
+    console.warn("Veo refused lastFrame with extension, retrying without:", json?.error?.message);
+    usedLastFrame = false;
+    res = await request(false);
+    json = await res.json().catch(() => ({}));
+  }
   if (!res.ok) throw new Error(json?.error?.message ?? `Veo の延長に失敗しました (${res.status})`);
   const name: string | undefined = json?.name;
   if (!name) throw new Error("Veo から operation 名が返りませんでした");
-  return name;
+  return { name, usedLastFrame };
 }
 
 function toImage(png: Buffer) {

@@ -6,7 +6,8 @@ import { samplePublicUrl } from "@/lib/samples";
 import { CLIP_FIELDS, PREMISE_MAX, QA_ANSWER_MAX, STUDIO_NOTE_MAX, VEO_COST, emptyShort, studioFramePath, studioVideoPath, type StudioCharacter, type StudioShort, type VeoQuality } from "@/lib/studio";
 import { Art, Field, Notice, Steps, VideoBox, api, apiGet, errorText, readStore, withVersion, writeStore } from "../../_ui";
 
-// ショートのページ：ねらい → AIのヒアリング → 台本 → 絵（Aの最初・最後）→ 動画（A 8秒 → 続きを延長して約15秒）（2026-10-19）
+// ショートのページ：ねらい → AIのヒアリング → 台本 → 絵（Aの最初・Aの最後(8秒)・Bの最後(15秒)）→ 動画（A 8秒 → 続きを延長して約15秒）（2026-10-19）
+const FRAME_LABEL = { first: "Aの最初（0秒）", last: "Aの最後（8秒）", lastB: "Bの最後（15秒）" } as const;
 export default function ShortPage() {
   const params = useParams<{ id: string }>();
   const router = useRouter();
@@ -18,9 +19,10 @@ export default function ShortPage() {
   const [status, setStatus] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [enough, setEnough] = useState<boolean | null>(null);
-  const [notes, setNotes] = useState({ first: "", last: "", a: "", b: "" });
+  const [notes, setNotes] = useState({ first: "", last: "", lastB: "", a: "", b: "" });
   const [first, setFirst] = useState<string | null>(null);
   const [last, setLast] = useState<string | null>(null);
+  const [lastB, setLastB] = useState<string | null>(null);
   const [videoA, setVideoA] = useState<string | null>(null);
   const [videoFull, setVideoFull] = useState<string | null>(null);
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -60,6 +62,7 @@ export default function ShortPage() {
   function applyMedia(id: string) {
     setFirst(withVersion(samplePublicUrl(studioFramePath(id, "first"))));
     setLast(withVersion(samplePublicUrl(studioFramePath(id, "last"))));
+    setLastB(withVersion(samplePublicUrl(studioFramePath(id, "lastB"))));
     setVideoA(withVersion(samplePublicUrl(studioVideoPath(id, "a"))));
     setVideoFull(withVersion(samplePublicUrl(studioVideoPath(id, "full"))));
   }
@@ -116,11 +119,11 @@ export default function ShortPage() {
     });
   }
 
-  async function frame(which: "first" | "last") {
+  async function frame(which: "first" | "last" | "lastB") {
     await run(`frame:${which}`, async () => {
-      setStatus(`${which === "first" ? "最初" : "最後"}のコマの絵を作成中…（1〜2分）`);
+      setStatus(`${FRAME_LABEL[which]}の絵を作成中…（1〜2分）`);
       const r = await api("/api/admin/studio/shorts", { action: "frame", short: s, which, note: notes[which] });
-      (which === "first" ? setFirst : setLast)(r.url);
+      (which === "first" ? setFirst : which === "last" ? setLast : setLastB)(r.url);
       setStatus(`絵ができました（${r.seconds}秒）`);
     });
   }
@@ -135,6 +138,7 @@ export default function ShortPage() {
       const started = Date.now();
       writeStore(storeKey(s.id, clip), { operation: r.operation, started });
       if (clip === "a") setStatus((t) => `${t}（${r.usedLastFrame ? "最初と最後のコマを指定" : "最初のコマだけ"}・${r.usedReferenceImages ? "設定画と表情集を参考画像に" : "参考画像は Veo に断られたので無し"}）`);
+      else setStatus((t) => `${t}（${!r.hadLastFrame ? "15秒時点の絵は未作成なので文章だけで延長" : r.usedLastFrame ? "15秒時点の絵を終わりとして指定" : "15秒時点の絵は Veo に断られたので文章だけで延長"}）`);
       watch(s.id, clip, r.operation, started);
     } catch (e) {
       setError(errorText(e));
@@ -196,7 +200,7 @@ export default function ShortPage() {
         { label: "ねらい", done: Boolean(s.premise) },
         { label: "ヒアリング", done: enough === true || (s.qa.length > 0 && unanswered === 0) },
         { label: "台本", done: hasScript },
-        { label: "絵", done: Boolean(first && last) },
+        { label: "絵", done: Boolean(first && last && lastB) },
         { label: "A 8秒", done: Boolean(videoA) },
         { label: "完成15秒", done: Boolean(videoFull) },
       ]} />
@@ -259,7 +263,7 @@ export default function ShortPage() {
           const clip = s.clips[i];
           return (
             <div key={clip.id} style={{ display: "flex", flexDirection: "column", gap: 8, paddingTop: 8, borderTop: "1px solid #eee" }}>
-              <strong>クリップ {clip.id.toUpperCase()}（{i === 0 ? "0〜8秒・最初と最後の絵から" : "8〜15秒・Aの続きとして延長"}）</strong>
+              <strong>クリップ {clip.id.toUpperCase()}（{i === 0 ? "0〜8秒・最初と最後の絵から" : "8〜15秒・Aの続きとして延長、最後の絵は15秒時点"}）</strong>
               {CLIP_FIELDS.filter((f) => !(f.onlyA && i === 1)).map((f) => (
                 <Field key={f.key} label={f.label} value={clip[f.key]} onChange={(v) => setClip(i, f.key, v)} rows={f.rows} mono={f.en} />
               ))}
@@ -271,17 +275,21 @@ export default function ShortPage() {
 
       {/* 4. 絵 */}
       <section className="card" style={{ gap: 12 }}>
-        <strong style={{ fontSize: 18 }}>4. クリップAの絵（1枚 約25円）</strong>
-        <p style={{ margin: 0, fontSize: 13, color: "#666" }}>最初のコマ → 最後のコマの順に。最後のコマは最初のコマを参照して同じ場面・同じタッチで描きます。キャラの設定画・表情集が先に必要です。</p>
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, maxWidth: 640 }}>
-          {(["first", "last"] as const).map((w) => (
-            <div key={w} style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-              <span style={{ fontSize: 13, color: "#666" }}>{w === "first" ? "最初のコマ" : "最後のコマ"}</span>
-              <Art src={w === "first" ? first : last} alt={w} ratio="2 / 3" />
-              <textarea value={notes[w]} maxLength={STUDIO_NOTE_MAX} rows={2} onChange={(e) => setNotes((n) => ({ ...n, [w]: e.target.value }))} placeholder="追加の指示（任意・日本語でOK）" />
-              <button type="button" className="cta" onClick={() => frame(w)} disabled={disabled || !hasScript || (w === "last" && !first)}>{busy === `frame:${w}` ? "作成中…" : `${w === "first" ? "最初" : "最後"}のコマを作る`}</button>
-            </div>
-          ))}
+        <strong style={{ fontSize: 18 }}>4. コマの絵（1枚 約25円）</strong>
+        <p style={{ margin: 0, fontSize: 13, color: "#666" }}>左から順に。2枚目は1枚目を、3枚目は2枚目を参照して同じ場面・同じタッチで描きます。3枚目（15秒時点）は延長の終わりの絵として Veo に渡します（Veo が受け付けない場合は文章だけで延長し、その旨を表示します）。</p>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 16, maxWidth: 900 }}>
+          {(["first", "last", "lastB"] as const).map((w) => {
+            const src = w === "first" ? first : w === "last" ? last : lastB;
+            const blocked = w === "last" ? !first : w === "lastB" ? !last : false;
+            return (
+              <div key={w} style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                <span style={{ fontSize: 13, color: "#666" }}>{FRAME_LABEL[w]}</span>
+                <Art src={src} alt={FRAME_LABEL[w]} ratio="2 / 3" />
+                <textarea value={notes[w]} maxLength={STUDIO_NOTE_MAX} rows={2} onChange={(e) => setNotes((n) => ({ ...n, [w]: e.target.value }))} placeholder="追加の指示（任意・日本語でOK）" />
+                <button type="button" className="cta" onClick={() => frame(w)} disabled={disabled || !hasScript || blocked}>{busy === `frame:${w}` ? "作成中…" : `${FRAME_LABEL[w]}を作る`}</button>
+              </div>
+            );
+          })}
         </div>
       </section>
 

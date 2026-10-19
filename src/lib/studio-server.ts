@@ -271,8 +271,8 @@ export async function writeShortScript(c: StudioCharacter, premise: string, qa: 
     "セリフは一切なし。キャラは言葉を話さず、鳴き声と体の音だけ。人間が出る場合も顔は映さず、声は息をのむ程度まで。文字・吹き出し・字幕も出さない。",
     "キャラの見た目は design の FACE ANATOMY どおり。口や目の場所を変えない。体の中に別の生き物や顔がいるように描かせない（例：殻そのものが口であって、中から何かが出てきて噛むのではない）。",
     "日本語の項目: scene（その場面で何が起きるか、40〜120字）、sound（効果音と鳴き声、30〜80字）。",
-    "英語の項目: frame（Aの最初のコマの絵。場所・光・キャラの姿勢と表情、キャラは画面の下2/3、縦長）、lastFrame（Aの最後のコマの絵。同じ場所・同じカメラ距離、最後の止まった状態）、motion（その8秒／7秒で起きる動きと音の順番。カメラはゆっくり、カットなし。Bの motion は 'Continue directly from the previous shot:' で始める）。英語の中で鳴き声は voice の説明に合わせる。",
-    "Bの frame と lastFrame は空文字にする。",
+    "英語の項目: frame（Aの最初のコマの絵。場所・光・キャラの姿勢と表情、キャラは画面の下2/3、縦長）、lastFrame（Aは8秒時点、Bは15秒時点＝お話の終わりの絵。どちらも同じ場所・同じカメラ距離で、止まった状態）、motion（その8秒／7秒で起きる動きと音の順番。カメラはゆっくり、カットなし。Bの motion は 'Continue directly from the previous shot:' で始める）。英語の中で鳴き声は voice の説明に合わせる。",
+    "Bの frame は空文字にする（Aの続きなので最初の絵は無い）。Bの lastFrame は必ず書く。",
     "title は日本語で8文字まで、キャラの行動が分かる言葉。",
   ].join("\n");
   const user = [
@@ -294,7 +294,7 @@ export async function writeShortScript(c: StudioCharacter, premise: string, qa: 
     title: body.title,
     clips: [
       { id: "a", ...body.a },
-      { id: "b", ...body.b, frame: "", lastFrame: "" },
+      { id: "b", ...body.b, frame: "" },
     ],
   };
 }
