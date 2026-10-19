@@ -11,7 +11,7 @@ import type { StudioSeries } from "./series-studio";
 import type { Continuity } from "./series-data";
 import { sceneTextSide } from "./spread-scene";
 import { CHARACTER_STYLE, CHARACTER_WORLD, NO_TEXT, type OriginalCharacter } from "./characters";
-import type { ShortClip } from "./shorts";
+import type { StudioClip as ShortClip } from "./studio";
 import { standInPrompt, type StandIns } from "./stand-ins";
 
 export type { Person };
@@ -1083,7 +1083,7 @@ export async function makeOriginalLineup(items: { c: OriginalCharacter; sheet: U
       CHARACTER_STYLE,
       CHARACTER_WORLD,
       `The reference images are the character design sheets of ${items.length} characters, in this order: ${items.map((i, n) => `(${n + 1}) ${i.c.design}`).join(" ")}`,
-      "Draw all of them standing together in one row on the forest floor among fallen leaves at night, in the same order as the reference images, each exactly as designed on its sheet, full body, front view, friendly and a little creepy, with sizes that make sense for the real objects (the pine cone and the mossy stone are the biggest, the resin drop is the smallest).",
+      "Draw all of them standing together in one row on the forest floor among fallen leaves at night, in the same order as the reference images, each exactly as designed on its sheet, full body, front view, friendly and a little creepy, with sizes that make sense for the real objects they are based on.",
       "Plain dark-blue night background with a few fallen leaves on the ground, no people, no other creatures.",
       NO_TEXT,
       seriesNote(note),
@@ -1100,12 +1100,12 @@ export async function makeOriginalLineup(items: { c: OriginalCharacter; sheet: U
 }
 
 /**
- * ショート動画の1クリップの「最初のコマ」を、キャラの設定画を参照して縦長で描く（2026-10-17）。
- * この絵を Veo に渡して8秒動かす（src/lib/veo.ts）。
+ * ショート動画のクリップAの「最初のコマ」「最後のコマ」を、キャラの設定画・表情集を参照して縦長で描く（2026-10-17、2026-10-19 スタジオ化）。
+ * 最後のコマは最初のコマも渡して同じ場面・同じ画角・同じタッチに揃える。この2枚を Veo に渡して8秒動かす（src/lib/veo.ts）。
  */
 export async function makeShortFrame(
   c: OriginalCharacter,
-  clip: ShortClip,
+  clip: Pick<ShortClip, "frame" | "lastFrame">,
   sheet: Uploadable,
   note?: string,
   faces?: Uploadable,
@@ -1122,9 +1122,9 @@ export async function makeShortFrame(
       CHARACTER_STYLE,
       CHARACTER_WORLD,
       `The first reference image is the character design sheet of this character: ${c.design}`,
-      faces ? "The second reference image is the same character's expression sheet; take the expression (how far the cap lifts, how the eyes squint) from it. If any panel there contradicts the face anatomy described above, the design sheet and the anatomy description win." : "",
+      faces ? "The second reference image is the same character's expression sheet; take the expression from it. If any panel there contradicts the face anatomy described above, the design sheet and the anatomy description win." : "",
       last
-        ? `${last.firstFrame ? "The last reference image is the opening frame of this video clip; keep the same scene, lighting, colors and camera framing. " : ""}Draw exactly the same character, same colors and details as on the sheet, as the final frame of that short vertical video clip for children.`
+        ? `${last.firstFrame ? "The last reference image is the opening frame of this video clip; keep exactly the same scene, lighting, colors, brush texture and camera framing. " : ""}Draw exactly the same character, same colors and details as on the sheet, as the final frame of that short vertical video clip for children.`
         : "Draw exactly the same character, same colors and details as on the sheet, as the opening frame of a short vertical video for children.",
       `Scene: ${last ? clip.lastFrame : clip.frame}`,
       "Keep the composition simple with space for the character to move. No other characters.",

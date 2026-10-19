@@ -1,5 +1,5 @@
 import "server-only";
-import type { VeoQuality } from "./shorts";
+import type { VeoQuality } from "./studio";
 
 // Google の動画AI Veo 3.1（Gemini API）で、1枚の絵を最初のコマ（＋任意で最後のコマ）にして8秒の動画を作る。
 // キーは GEMINI_API_KEY（Google AI Studio で発行）。未設定なら使えない。
@@ -79,6 +79,37 @@ export async function veoStart(opts: {
   const name: string | undefined = json?.name;
   if (!name) throw new Error("Veo から operation 名が返りませんでした");
   return { name, usedReferenceImages };
+}
+
+/**
+ * 作った動画の続きを7秒延長する（Veo 3.1 の extension）。元の動画＋続きが1本になって返る。
+ * 元は Veo が作った動画（720p）に限る。参照: https://ai.google.dev/gemini-api/docs/veo
+ */
+export async function veoExtend(opts: { prompt: string; videoMp4: Buffer; quality: VeoQuality; negativePrompt?: string }) {
+  const res = await fetch(`${BASE}/models/${model(opts.quality)}:predictLongRunning`, {
+    method: "POST",
+    headers: headers(),
+    body: JSON.stringify({
+      instances: [
+        {
+          prompt: opts.prompt,
+          // 公式SDK videoToMldev と同じ形（encodedVideo / encoding）
+          video: { encodedVideo: opts.videoMp4.toString("base64"), encoding: "video/mp4" },
+        },
+      ],
+      parameters: {
+        resolution: "720p",
+        durationSeconds: 8,
+        personGeneration: "allow_adult",
+        ...(opts.negativePrompt ? { negativePrompt: opts.negativePrompt } : {}),
+      },
+    }),
+  });
+  const json = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(json?.error?.message ?? `Veo の延長に失敗しました (${res.status})`);
+  const name: string | undefined = json?.name;
+  if (!name) throw new Error("Veo から operation 名が返りませんでした");
+  return name;
 }
 
 function toImage(png: Buffer) {
