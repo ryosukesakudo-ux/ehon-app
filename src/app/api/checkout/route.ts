@@ -15,6 +15,9 @@ import { draftForEpisode, extraEpisodeChoices } from "@/lib/episode-bundle";
 import { PHOTO_BUCKET, getStripe, getSupabase, siteUrl } from "@/lib/services";
 import { storyLabel } from "@/lib/story-key";
 
+// 兄弟姉妹を足した本は、ほかの話の文をAIで書き直すので時間に余裕を持たせる
+export const maxDuration = 120;
+
 // サイズ選択後に呼ぶ。金額はサーバー側で計算し、Stripe の決済画面へのURLを返す。
 // お届け先・電話番号・メールアドレスは Stripe の画面で入力してもらう。
 // 支払い方法（カード・Apple Pay・Google Pay・コンビニ・PayPay など）は Stripe のダッシュボードで選ぶ。

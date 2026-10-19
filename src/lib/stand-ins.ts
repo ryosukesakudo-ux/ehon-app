@@ -146,9 +146,11 @@ export function standInPrompt(prompt: string, s: StandIns | null | undefined) {
   let out = prompt
     .replaceAll("next to the adults", "next to the siblings")
     // 台本のシリーズの「人間の子どもは主人公だけ」の決まり（SERIES_CAST_RULES）を、きょうだいも描けるように替える
-    .replaceAll(
-      "The main character is the only human child in this picture book: never draw any other human child,",
-      `The main character and ${people.map(label).join(" and ")} are the only human children in this picture book: never draw any other human child,`,
+    // （兄弟姉妹を足した本では「The main character and Companion 1 … are the only human children」になっている）
+    .replace(
+      /The main character(?: and (.+?))? (?:is|are) the only human child(?:ren)? in this picture book: never draw any other human child,/g,
+      (_, others: string | undefined) =>
+        `The main character and ${[...people.map(label), ...(others ? [others] : [])].join(" and ")} are the only human children in this picture book: never draw any other human child,`,
     );
   for (const [word, p] of [["mother", s.mom], ["father", s.dad]] as const) {
     if (!p) continue;

@@ -28,7 +28,6 @@ export function SiblingSwitch({ parent, value, onChange }: { parent: "ママ" | 
     color: "var(--navy)",
     fontWeight: active ? 800 : 500,
   });
-  const field = { height: 44, padding: "0 10px", borderRadius: 10, border: "1px solid var(--line)", fontSize: 16, background: "#fff" };
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
       <div role="radiogroup" aria-label={`${parent}の欄に入れる人`} style={{ display: "flex", gap: 6 }}>
@@ -41,35 +40,46 @@ export function SiblingSwitch({ parent, value, onChange }: { parent: "ママ" | 
       </div>
       {value && (
         <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-          <label style={{ display: "flex", flexDirection: "column", gap: 4, fontSize: 12, color: "var(--sub)" }}>
-            本の中での呼び方（例：ゆずき／おねえちゃん）
-            <input type="text" value={value.name} maxLength={10} onChange={(e) => onChange({ ...value, name: e.target.value })} style={field} />
-          </label>
-          <div style={{ display: "flex", gap: 8 }}>
-            <label style={{ display: "flex", flexDirection: "column", gap: 4, fontSize: 12, color: "var(--sub)", flex: 1 }}>
-              年齢
-              <select value={value.age ?? ""} onChange={(e) => onChange({ ...value, age: e.target.value === "" ? null : Number(e.target.value) })} style={field}>
-                <option value="">えらぶ</option>
-                {AGES.map((a) => (
-                  <option key={a} value={a}>{a}歳</option>
-                ))}
-              </select>
-            </label>
-            <label style={{ display: "flex", flexDirection: "column", gap: 4, fontSize: 12, color: "var(--sub)", flex: 1 }}>
-              主人公から見て
-              <select value={value.relation} onChange={(e) => onChange({ ...value, relation: e.target.value as SiblingRelation | "" })} style={field}>
-                <option value="">えらぶ</option>
-                {SIBLING_RELATIONS.map((r) => (
-                  <option key={r.id} value={r.id}>{r.label}</option>
-                ))}
-              </select>
-            </label>
-          </div>
+          <SiblingFields value={value} onChange={onChange} />
           <p style={{ margin: 0, fontSize: 12, lineHeight: 1.6, color: "var(--sub)" }}>
             お話の中の「{parent}」が、この子になります。絵では、この年齢の子どもとして描きます。
           </p>
         </div>
       )}
     </div>
+  );
+}
+
+const field = { height: 44, padding: "0 10px", borderRadius: 10, border: "1px solid var(--line)", fontSize: 16, background: "#fff" };
+
+/** 兄弟姉妹の呼び方・年齢・続柄の入力欄（ママ・パパの欄の入れ替えと、足した兄弟姉妹の欄で使う） */
+export function SiblingFields({ value, onChange }: { value: SiblingInput; onChange: (v: SiblingInput) => void }) {
+  return (
+    <>
+      <label style={{ display: "flex", flexDirection: "column", gap: 4, fontSize: 12, color: "var(--sub)" }}>
+        本の中での呼び方（例：ゆずき／おねえちゃん）
+        <input type="text" value={value.name} maxLength={10} onChange={(e) => onChange({ ...value, name: e.target.value })} style={field} />
+      </label>
+      <div style={{ display: "flex", gap: 8 }}>
+        <label style={{ display: "flex", flexDirection: "column", gap: 4, fontSize: 12, color: "var(--sub)", flex: 1 }}>
+          年齢
+          <select value={value.age ?? ""} onChange={(e) => onChange({ ...value, age: e.target.value === "" ? null : Number(e.target.value) })} style={field}>
+            <option value="">えらぶ</option>
+            {AGES.map((a) => (
+              <option key={a} value={a}>{a}歳</option>
+            ))}
+          </select>
+        </label>
+        <label style={{ display: "flex", flexDirection: "column", gap: 4, fontSize: 12, color: "var(--sub)", flex: 1 }}>
+          主人公から見て
+          <select value={value.relation} onChange={(e) => onChange({ ...value, relation: e.target.value as SiblingRelation | "" })} style={field}>
+            <option value="">えらぶ</option>
+            {SIBLING_RELATIONS.map((r) => (
+              <option key={r.id} value={r.id}>{r.label}</option>
+            ))}
+          </select>
+        </label>
+      </div>
+    </>
   );
 }

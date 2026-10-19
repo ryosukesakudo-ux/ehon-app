@@ -2,6 +2,9 @@ import { draftForEpisode, extraEpisodeChoices } from "@/lib/episode-bundle";
 import { isDemoId, loadOwnedDraft } from "@/lib/drafts";
 import { getSeriesInfo, parseSeriesKey } from "@/lib/story-key";
 
+// 兄弟姉妹を足した本は、ほかの話の文をAIで書き直すので時間に余裕を持たせる
+export const maxDuration = 120;
+
 // 2話目以降のまとめ買い（2026-10-16 作道さん）。
 // GET：この下書きと一緒に買える話 / POST { episode, draftId? }：その話の下書きを用意する（プレビューを見るとき）
 export async function GET(_request: Request, ctx: RouteContext<"/api/drafts/[id]/episodes">) {

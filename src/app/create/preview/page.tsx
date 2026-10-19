@@ -118,11 +118,19 @@ function Preview() {
       return {};
     }
   })();
+  // 足した兄弟姉妹（下書きに保存したもの。キャラクターの場面は「ほかの登場人物」と同じ番号）
+  const sentSiblings = (() => {
+    try {
+      return JSON.parse(state.siblingsSent) as { name: string }[];
+    } catch {
+      return [];
+    }
+  })();
   const nameOf = (i: number) => {
     const p = characterOf(i);
     if (p) return p === "child" ? state.childName || PERSON_LABEL.child : (sentFamily[p]?.name ?? PERSON_LABEL[p]);
     const g = guestOf(i);
-    return g === null ? "" : (custom?.cast[g]?.name ?? `登場人物${g + 1}`);
+    return g === null ? "" : (custom?.cast[g]?.name ?? sentSiblings[g]?.name ?? `登場人物${g + 1}`);
   };
   const labelOf = (i: number) => (i === COVER_SCENE ? "表紙" : isCharacterScene(i) ? nameOf(i) : `${i + 1}ページ`);
   const remaining = account?.loggedIn ? account.remaining : Infinity;

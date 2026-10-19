@@ -1,5 +1,5 @@
 import { getSize, sceneText, type SizeId } from "@/lib/catalog";
-import { getBook } from "@/lib/book";
+import { bookForDraft } from "@/lib/siblings";
 import { standInText, standInsForDraft } from "@/lib/stand-ins";
 import { bookTitle } from "@/lib/story-key";
 import { buildCoverSpread } from "@/lib/cover-spread";
@@ -27,7 +27,7 @@ export async function POST(request: Request, ctx: RouteContext<"/api/admin/order
 
   const body = await request.json().catch(() => null);
   const size = getSize((body?.size as SizeId | undefined) ?? order.size);
-  const story = getBook(order.drafts.story);
+  const story = await bookForDraft(db, order.drafts);
   const title = bookTitle(order.drafts.story, order.drafts.child_name);
   if (!size || !story) return Response.json({ error: "注文の内容を読み込めません" }, { status: 400 });
   const spineMm = Number(body?.spineMm ?? DEFAULT_SPINE_MM);
