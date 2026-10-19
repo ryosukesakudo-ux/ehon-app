@@ -98,7 +98,8 @@ function cleanQa(v: unknown): StudioQA[] {
 
 function cleanClip(id: "a" | "b", v: unknown): StudioClip {
   const o = (v && typeof v === "object" ? v : {}) as Record<string, unknown>;
-  return { id, scene: STR(o.scene, 400), sound: STR(o.sound, 300), frame: STR(o.frame, 1500), lastFrame: STR(o.lastFrame, 1500), motion: STR(o.motion, 2000) };
+  const videoUri = typeof o.videoUri === "string" && /^https:\/\/generativelanguage\.googleapis\.com\//.test(o.videoUri) ? o.videoUri : "";
+  return { id, scene: STR(o.scene, 400), sound: STR(o.sound, 300), frame: STR(o.frame, 1500), lastFrame: STR(o.lastFrame, 1500), motion: STR(o.motion, 2000), ...(videoUri ? { videoUri } : {}) };
 }
 
 function rowToShort(r: ShortRow): StudioShort {
