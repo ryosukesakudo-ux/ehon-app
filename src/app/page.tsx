@@ -410,7 +410,7 @@ export default function Home() {
             <div className={`${s.albumTo} display`}>{SAMPLE_CHILD_NAME}へ</div>
             <p>うまれてきてくれて ありがとう。<br />これからも たくさん わらってね。</p>
             <div className={s.albumFrom}>パパ・ママより</div>
-            <div className={s.albumNo}>No.0001</div>
+            <div className={s.albumNo}>No.001</div>
           </div>
         </div>
         <ul className={s.albumList}>
