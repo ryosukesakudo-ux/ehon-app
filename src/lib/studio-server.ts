@@ -313,13 +313,13 @@ export async function writeShortScript(c: StudioCharacter, premise: string, qa: 
   const system = [
     "あなたは子ども向けショートアニメ（YouTube ショート、縦長、15〜25秒）の演出家です。1体のオリジナルキャラが出る、1話完結の短い台本を書きます。",
     KEYFRAME_RULES,
-    `構成: keys（止め絵）を3〜${KEYS_MAX}枚、segments（区間）を keys の数 − 1 個。区間 n は 絵 n から 絵 n+1 へ動く。合計は15〜25秒。見せ場（キメの瞬間）は必ず止め絵の1枚にし、その直前の区間はその姿に向かって進んで最後の1〜2秒はその姿のまま止まる。次の区間はその結果（欠けて飛び散る、吐き出す、驚く など）。`,
+    `構成: keys（止め絵）を4〜${KEYS_MAX}枚（最低でも3枚）、segments（区間）を keys の数 − 1 個。区間 n は 絵 n から 絵 n+1 へ動く。合計は15〜25秒。見せ場（キメの瞬間）は必ず止め絵の1枚にし、その直前の区間はその姿に向かって進んで最後の1〜2秒はその姿のまま止まる。次の区間はその結果（欠けて飛び散る、吐き出す、驚く など）。`,
     "同じ場所・同じ時間・同じカメラ距離で、ひとつの小さな出来事を最後まで見せる。場面転換はしない。",
     "1区間の動作は1〜2個まで。物を『持つ・挟む・噛む』ときは、物が口や手の中に消えないよう、半分見えている状態を文章で指定する。小道具はキャラの体に対して十分大きく（歯のすき間に入って見えなくならない大きさ、目安は体の1/4〜1/3）。絵に出てくる物（小石など）は全部の止め絵で同じ大きさ・同じ形にし、どこにあるかを毎回書く。",
     "セリフは一切なし。キャラは言葉を話さず、鳴き声と体の音だけ。人間が出る場合も顔は映さず、声は息をのむ程度まで。文字・吹き出し・字幕も出さない。",
     "キャラの見た目は design の FACE ANATOMY どおり。口や目の場所を変えない。体の中に別の生き物や顔がいるように描かせない（例：殻そのものが口であって、中から何かが出てきて噛むのではない）。",
     "keys の項目: scene（日本語、その瞬間に何が見えているか、30〜80字）、frame（英語、絵の指示：場所・光・キャラの姿勢と表情・小道具の位置、キャラは画面の下2/3、縦長、止まった状態。60〜140語）。",
-    "segments の項目: sound（日本語、効果音と鳴き声、20〜60字）、motion（英語、その区間で起きる動きと音の順番。'From the first frame to the last frame:' で始め、最後の1〜2秒は最後の絵の姿で止まると書く。カメラはゆっくり、カットなし。鳴き声は voice の説明に合わせる。50〜120語）、seconds（4・6・8 のどれか。動作1個なら4、2個なら6〜8）。",
+    "segments の項目: sound（日本語、効果音と鳴き声、20〜60字）、motion（英語、その区間で起きる動きと音の順番。'From the first frame to the last frame:' で始め、最後の1〜2秒は最後の絵の姿で止まると書く。カメラはゆっくり、カットなし。鳴き声は voice の説明に合わせる。50〜120語）、seconds（4・6・8 のどれか。基本は4か6：動作1個なら4、2個なら6。8は「ゆっくり見せたい」区間だけに使い、全区間を8にはしない）。",
     "title は日本語で8文字まで、キャラの行動が分かる言葉。",
   ].join("\n");
   const user = [
@@ -334,7 +334,8 @@ export async function writeShortScript(c: StudioCharacter, premise: string, qa: 
     `movement: ${c.movement}`,
     `ねらい・あらすじ: ${premise || "（おまかせ。キャラのキモ要素と性格がいちばん出る小さな出来事）"}`,
     ...(qa.length ? ["監督への質問と答え（必ず反映する）:", ...qa.map((x) => `- ${x.q} → ${x.a || "（未回答・おまかせ）"}`)] : []),
-    current?.keys.some((k) => k.scene || k.frame) ? `今の台本（直す場合の元）: ${JSON.stringify({ keys: current.keys, segments: current.segments })}` : "",
+    // 今の台本は内容（場所・出来事・見せ場）の参考にだけ使い、絵の枚数と秒数は引き継がせない（以前のA/B形式を写した「8秒×2」のまま書き直されたため：2026-10-20 作道さん）
+    current?.keys.some((k) => k.scene || k.frame) ? `今の台本（場所・出来事・見せ場の参考。絵の枚数と区間の秒数はこれに合わせず、上の構成のルールで決め直す）: ${JSON.stringify({ keys: current.keys.map((k) => k.scene || k.frame), segments: current.segments.map((g) => g.motion) })}` : "",
   ].filter(Boolean).join("\n");
   const body = await runJson<{ title: string; keys: StudioKey[]; segments: StudioSegment[] }>(ai, system, user, "short_script", SCRIPT_SCHEMA);
   // 絵の数と区間の数を合わせる（絵 = 区間 + 1）
