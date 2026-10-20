@@ -321,6 +321,7 @@ export function SeriesStudio({ list }: { list: StudioView[] }) {
   return (
     <main style={{ maxWidth: 1100, margin: "0 auto", padding: "24px 16px 64px", display: "flex", flexDirection: "column", gap: 20 }}>
       <a href="/admin">← 注文管理へ</a>
+      <a href="/admin/series/saved">見本の保存版（今の13枚をとっておく・見返す）→</a>
       <h1 className="display" style={{ margin: 0, color: "var(--navy)" }}>台本の絵スタジオ</h1>
       <p style={{ margin: 0, fontSize: 14, lineHeight: 1.8 }}>
         {childName === seriesSampleChildName("forest") ? "作例と同じ" : "このシリーズ用の"}架空の家族（主人公「{childName}」とママ・パパ）で、「{series.name}」の台本の見本の絵を水彩で作ります。表紙と12場面の13枚がそろった話から、お客様がお話選びの画面で選べるようになります（表紙はその見本として表示されます）。

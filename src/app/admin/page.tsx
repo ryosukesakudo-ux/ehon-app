@@ -32,6 +32,7 @@ export default async function AdminPage() {
         <p><a href="/admin/trial">試作スタジオ（写真から絵本を試しに作る）</a></p>
         <p><a href="/admin/samples">作例スタジオ（見本の絵を作る）</a></p>
         <p><a href="/admin/series">台本の絵スタジオ（台本の各話の絵を作例の家族で作る）</a></p>
+        <p><a href="/admin/series/saved">見本の保存版（各話の13枚をとっておく・見返す）</a></p>
         <p><a href="/admin/compare">画質くらべ（以前の方式と今のA方式を1枚ずつ）</a></p>
         <p><a href="/admin/deforme">デフォルメ試作（新しい絵柄を1枚ためす）</a></p>
         <p><a href="/admin/studio">スタジオ（オリジナルキャラの登録・設定画・台本・ショート動画）</a></p>
@@ -97,6 +98,7 @@ export default async function AdminPage() {
       <a href="/admin/trial">試作スタジオ（写真から絵本を試しに作る）</a>
       <a href="/admin/samples">作例スタジオ（トップページなどの見本の絵を作る）</a>
       <a href="/admin/series">台本の絵スタジオ（台本の各話の絵を作例の家族で作る）</a>
+      <a href="/admin/series/saved">見本の保存版（各話の今の13枚を別の場所にとっておき、見返す）</a>
       <a href="/admin/compare">画質くらべ（以前の方式と今のA方式を1枚ずつ作って比べる）</a>
       <a href="/admin/deforme">デフォルメ試作（新しい絵柄で家族3人を1枚ためす）</a>
       <a href="/admin/studio">スタジオ（オリジナルキャラ「おちばの したの まち」の登録・設定画・台本・ショート動画を1か所で）</a>
