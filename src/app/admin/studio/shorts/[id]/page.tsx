@@ -3,11 +3,10 @@
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { samplePublicUrl } from "@/lib/samples";
-import { CLIP_FIELDS, PREMISE_MAX, QA_ANSWER_MAX, STUDIO_NOTE_MAX, VEO_COST, emptyShort, studioFramePath, studioVideoPath, type StudioCharacter, type StudioShort, type StudioTake, type VeoQuality } from "@/lib/studio";
-import { Art, Field, Notice, Steps, VideoBox, api, apiGet, errorText, readStore, withVersion, writeStore } from "../../_ui";
+import { KEYS_MAX, KEYS_MIN, PREMISE_MAX, QA_ANSWER_MAX, SEGMENT_SECONDS, STUDIO_NOTE_MAX, emptyKey, emptySegment, emptyShort, studioFullPath, studioKeyPath, studioSegmentPath, toSeconds, totalSeconds, veoCost, type StudioCharacter, type StudioShort, type StudioTake, type VeoQuality } from "@/lib/studio";
+import { Art, Field, Notice, Steps, VideoBox, api, apiGet, errorText, exists, readStore, withVersion, writeStore } from "../../_ui";
 
-// ショートのページ：ねらい → AIのヒアリング → 台本 → 絵（Aの最初・Aの最後(8秒)・Bの最後(15秒)）→ 動画（A 8秒 → 続きを延長して約15秒）（2026-10-19）
-const FRAME_LABEL = { first: "Aの最初（0秒）", last: "Aの最後（8秒）", lastB: "Bの最後（15秒）" } as const;
+// ショートのページ（止め絵方式、2026-10-20）：ねらい → AIのヒアリング → 台本（止め絵2〜6枚＋間の区間）→ 止め絵を描く → 区間ごとに Veo で動かす → つないで完成
 export default function ShortPage() {
   const params = useParams<{ id: string }>();
   const router = useRouter();
@@ -16,63 +15,41 @@ export default function ShortPage() {
   const [s, setS] = useState<StudioShort>(() => ({ ...emptyShort(), characterId: (typeof window !== "undefined" && new URLSearchParams(window.location.search).get("character")) || null }));
   const [takes, setTakes] = useState<StudioTake[]>([]);
   /** 直近に作った動画の画質（アーカイブに保存するときのラベル用） */
-  const [lastQuality, setLastQuality] = useState<{ a?: VeoQuality; b?: VeoQuality }>({});
+  const [lastQuality, setLastQuality] = useState<VeoQuality | undefined>();
   const [characters, setCharacters] = useState<StudioCharacter[]>([]);
   const [loaded, setLoaded] = useState(false);
   const [busy, setBusy] = useState<string | null>(null);
+  /** Veo で作成中の区間（複数同時に作れる） */
+  const [videoBusy, setVideoBusy] = useState<Record<number, boolean>>({});
   const [status, setStatus] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [enough, setEnough] = useState<boolean | null>(null);
-  const [notes, setNotes] = useState({ first: "", last: "", lastB: "", a: "", b: "" });
-  const [first, setFirst] = useState<string | null>(null);
-  const [last, setLast] = useState<string | null>(null);
-  const [lastB, setLastB] = useState<string | null>(null);
-  const [videoA, setVideoA] = useState<string | null>(null);
-  const [videoFull, setVideoFull] = useState<string | null>(null);
-  const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [keyNotes, setKeyNotes] = useState<Record<number, string>>({});
+  const [segNotes, setSegNotes] = useState<Record<number, string>>({});
+  /** 絵 n・区間 n の動画が保存されているか（URL は版付き） */
+  const [keyUrls, setKeyUrls] = useState<Record<number, string | null>>({});
+  const [segUrls, setSegUrls] = useState<Record<number, string | null>>({});
+  const [full, setFull] = useState<string | null>(null);
+  const timers = useRef<ReturnType<typeof setTimeout>[]>([]);
 
-  useEffect(() => {
-    (async () => {
-      try {
-        const c = await apiGet("/api/admin/studio/characters");
-        setCharacters(c.characters);
-        if (!isNew) {
-          const r = await apiGet(`/api/admin/studio/shorts?id=${params.id}`);
-          applyMedia(r.short.id);
-          setS(r.short);
-          setTakes(r.takes ?? []);
-          // リロード前に動画を作っていたら続きを確認する
-          for (const clip of ["a", "b"] as const) {
-            const saved = readStore(storeKey(r.short.id, clip));
-            if (saved) {
-              timer.current = setTimeout(() => {
-                setBusy(`video:${clip}`);
-                setStatus("Veo で作成中…（リロード前の続きを確認しています）");
-                watch(r.short.id, clip, saved.operation, saved.started, saved.quality ?? "fast");
-              }, 0);
-              break;
-            }
-          }
-        }
-      } catch (e) {
-        setError(errorText(e));
-      } finally {
-        setLoaded(true);
-      }
-    })();
-    return () => { if (timer.current) clearTimeout(timer.current); };
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- 開いたときに1回だけ
-  }, []);
 
-  function applyMedia(id: string) {
-    setFirst(withVersion(samplePublicUrl(studioFramePath(id, "first"))));
-    setLast(withVersion(samplePublicUrl(studioFramePath(id, "last"))));
-    setLastB(withVersion(samplePublicUrl(studioFramePath(id, "lastB"))));
-    setVideoA(withVersion(samplePublicUrl(studioVideoPath(id, "a"))));
-    setVideoFull(withVersion(samplePublicUrl(studioVideoPath(id, "full"))));
+  /** 絵・区間・完成の動画が保存されているか確かめて、あるものだけ URL を持つ */
+  async function loadMedia(short: StudioShort) {
+    const keys = await Promise.all(short.keys.map(async (_, i) => {
+      const u = withVersion(samplePublicUrl(studioKeyPath(short.id, i + 1)));
+      return [i + 1, (await exists(u)) ? u : null] as const;
+    }));
+    const segs = await Promise.all(short.segments.map(async (_, i) => {
+      const u = withVersion(samplePublicUrl(studioSegmentPath(short.id, i + 1)));
+      return [i + 1, (await exists(u)) ? u : null] as const;
+    }));
+    const f = withVersion(samplePublicUrl(studioFullPath(short.id)));
+    setKeyUrls(Object.fromEntries(keys));
+    setSegUrls(Object.fromEntries(segs));
+    setFull((await exists(f)) ? f : null);
   }
 
-  const storeKey = (id: string, clip: "a" | "b") => `ehon-studio-op:${id}:${clip}`;
+  const storeKey = (id: string, n: number) => `ehon-studio-op:${id}:seg${n}`;
 
   async function reloadTakes(id: string) {
     try {
@@ -95,18 +72,18 @@ export default function ShortPage() {
     }
   }
 
-  /** 保存して、保存後の内容を返す（新規なら URL も切り替える） */
+  /** 新規のときは保存後に URL を切り替える */
+  function afterSave(saved: StudioShort) {
+    setS(saved);
+    if (isNew) router.replace(`/admin/studio/shorts/${saved.id}`);
+  }
+
   async function save(quiet = false): Promise<StudioShort | null> {
     return run("save", async () => {
       const r = await api("/api/admin/studio/shorts", { action: "save", short: s });
-      const saved = r.short as StudioShort;
-      setS(saved);
+      afterSave(r.short);
       if (!quiet) setStatus("保存しました");
-      if (isNew) {
-        applyMedia(saved.id);
-        router.replace(`/admin/studio/shorts/${saved.id}`);
-      }
-      return saved;
+      return r.short as StudioShort;
     });
   }
 
@@ -114,9 +91,8 @@ export default function ShortPage() {
     await run("questions", async () => {
       setStatus("AIが足りない情報を考えています…（20秒ほど）");
       const r = await api("/api/admin/studio/shorts", { action: "questions", short: s });
-      setS(r.short);
+      afterSave(r.short);
       setEnough(r.enough);
-      if (isNew) { applyMedia(r.short.id); router.replace(`/admin/studio/shorts/${r.short.id}`); }
       setStatus(r.enough ? "情報は十分です。「台本を書く」に進めます" : `質問が${r.questions.length}つあります。答えてからもう一度「質問をもらう」か、そのまま「台本を書く」へ`);
     });
   }
@@ -125,67 +101,101 @@ export default function ShortPage() {
     await run("script", async () => {
       setStatus("AIが台本を書いています…（30秒ほど）");
       const r = await api("/api/admin/studio/shorts", { action: "script", short: s });
-      setS(r.short);
-      if (isNew) { applyMedia(r.short.id); router.replace(`/admin/studio/shorts/${r.short.id}`); }
-      setStatus("台本を書きました。内容を確認・修正して、絵に進んでください（修正したら「保存」）");
+      afterSave(r.short);
+      setStatus(`台本を書きました（止め絵${r.short.keys.length}枚・${totalSeconds(r.short)}秒）。内容を確認・修正して、絵に進んでください（修正したら「保存」）`);
     });
   }
 
-  async function frame(which: "first" | "last" | "lastB") {
-    await run(`frame:${which}`, async () => {
-      setStatus(`${FRAME_LABEL[which]}の絵を作成中…（1〜2分）`);
-      const r = await api("/api/admin/studio/shorts", { action: "frame", short: s, which, note: notes[which] });
-      (which === "first" ? setFirst : which === "last" ? setLast : setLastB)(r.url);
-      if (typeof r.lastFrame === "string") {
-        // Bの最後の絵の指示が空だったので AI が足した。画面の台本にも反映する
-        setS((x) => ({ ...x, clips: x.clips.map((cl, n) => (n === 1 ? { ...cl, lastFrame: r.lastFrame } : cl)) as StudioShort["clips"] }));
-        setStatus(`絵ができました（${r.seconds}秒）。Bの「最後のコマの絵（英語）」が空だったので AI が書き足して保存しました`);
-      } else setStatus(`絵ができました（${r.seconds}秒）`);
+  async function frame(n: number) {
+    await run(`frame:${n}`, async () => {
+      setStatus(`絵${n}を作成中…（1〜2分）`);
+      const r = await api("/api/admin/studio/shorts", { action: "frame", short: s, n, note: keyNotes[n] ?? "" });
+      setKeyUrls((u) => ({ ...u, [n]: r.url }));
+      setStatus(`絵${n}ができました（${r.seconds}秒）`);
     });
   }
 
-  async function video(clip: "a" | "b", quality: VeoQuality) {
-    const label = `video:${clip}`;
-    setBusy(label);
+  async function video(n: number, quality: VeoQuality) {
+    setVideoBusy((b) => ({ ...b, [n]: true }));
     setError(null);
-    setStatus(`Veo（${quality === "fast" ? "Fast" : "Standard"}）で${clip === "a" ? "クリップA（8秒）" : "続き（7秒延長）"}を作成中…（1〜6分）`);
+    const seconds = s.segments[n - 1]?.seconds ?? 6;
+    setStatus(`区間${n}（絵${n}→絵${n + 1}・${seconds}秒）を Veo（${quality === "fast" ? "Fast" : "Standard"}）で作成中…（1〜6分）`);
     try {
-      const r = await api("/api/admin/studio/shorts", { action: "video", short: s, clip, quality, note: notes[clip] });
+      const r = await api("/api/admin/studio/shorts", { action: "video", short: s, seg: n, quality, note: segNotes[n] ?? "" });
       const started = Date.now();
-      writeStore(storeKey(s.id, clip), { operation: r.operation, started, quality });
-      setLastQuality((q) => ({ ...q, [clip]: quality }));
-      if (clip === "a") setStatus((t) => `${t}（${r.usedLastFrame ? "最初と最後のコマを指定" : "最初のコマだけ"}・${r.usedReferenceImages ? "設定画と表情集を参考画像に" : "参考画像は Veo に断られたので無し"}）`);
-      else setStatus((t) => `${t}（${!r.hadLastFrame ? "15秒時点の絵は未作成なので文章だけで延長" : r.usedLastFrame ? "15秒時点の絵を終わりとして指定" : "15秒時点の絵は Veo に断られたので文章だけで延長"}${r.usedUri ? "・Aの動画は Veo 側の控えを使用" : ""}）`);
-      watch(s.id, clip, r.operation, started, quality);
+      writeStore(storeKey(s.id, n), { operation: r.operation, started, quality });
+      setLastQuality(quality);
+      setStatus((t) => `${t}（${r.usedReferenceImages ? "設定画と表情集を参考画像に" : seconds === 8 ? "参考画像は Veo に断られたので無し" : "参考画像は8秒のときだけ使えます"}）`);
+      watch(s.id, n, r.operation, started);
     } catch (e) {
       setError(errorText(e));
       setStatus(null);
-      setBusy(null);
+      setVideoBusy((b) => ({ ...b, [n]: false }));
     }
   }
 
-  function watch(id: string, clip: "a" | "b", operation: string, started: number, quality: VeoQuality) {
+  function watch(id: string, n: number, operation: string, started: number) {
     const poll = async () => {
       try {
-        const q = new URLSearchParams({ operation, id, clip, q: quality });
+        const q = new URLSearchParams({ operation, id, seg: String(n) });
         const json = await apiGet(`/api/admin/studio/shorts?${q}`);
         if (json.done) {
-          writeStore(storeKey(id, clip), null);
-          (clip === "a" ? setVideoA : setVideoFull)(json.url);
-          setStatus(`${clip === "a" ? "クリップA" : "完成の15秒"}ができました（${Math.round((Date.now() - started) / 1000)}秒）。残したいときは動画の下の「アーカイブに保存」を押してください（作り直すと上書きされます）`);
-          setBusy(null);
+          writeStore(storeKey(id, n), null);
+          setSegUrls((u) => ({ ...u, [n]: json.url }));
+          setStatus(`区間${n}ができました（${Math.round((Date.now() - started) / 1000)}秒）。全部の区間ができたら「つないで完成にする」`);
+          setVideoBusy((b) => ({ ...b, [n]: false }));
           return;
         }
-        setStatus(`Veo で作成中…（${Math.round((Date.now() - started) / 1000)}秒経過。この画面を閉じたりリロードしても続きます）`);
-        timer.current = setTimeout(poll, 10000);
+        setStatus(`区間${n}を Veo で作成中…（${Math.round((Date.now() - started) / 1000)}秒経過。この画面を閉じたりリロードしても続きます）`);
+        timers.current.push(setTimeout(poll, 10000));
       } catch (e) {
-        writeStore(storeKey(id, clip), null);
+        writeStore(storeKey(id, n), null);
         setError(errorText(e));
         setStatus(null);
-        setBusy(null);
+        setVideoBusy((b) => ({ ...b, [n]: false }));
       }
     };
-    timer.current = setTimeout(poll, 10000);
+    timers.current.push(setTimeout(poll, 10000));
+  }
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const c = await apiGet("/api/admin/studio/characters");
+        setCharacters(c.characters);
+        if (!isNew) {
+          const r = await apiGet(`/api/admin/studio/shorts?id=${params.id}`);
+          setS(r.short);
+          setTakes(r.takes ?? []);
+          await loadMedia(r.short);
+          // リロード前に動画を作っていたら続きを確認する
+          for (let n = 1; n <= r.short.segments.length; n++) {
+            const saved = readStore(storeKey(r.short.id, n));
+            if (saved) {
+              setVideoBusy((b) => ({ ...b, [n]: true }));
+              setStatus(`区間${n}を Veo で作成中…（リロード前の続きを確認しています）`);
+              watch(r.short.id, n, saved.operation, saved.started);
+            }
+          }
+        }
+      } catch (e) {
+        setError(errorText(e));
+      } finally {
+        setLoaded(true);
+      }
+    })();
+    const pending = timers.current;
+    return () => { pending.forEach(clearTimeout); };
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- 開いたときに1回だけ
+  }, []);
+
+  async function join() {
+    await run("join", async () => {
+      setStatus("区間の動画をつないでいます…（数十秒）");
+      const r = await api("/api/admin/studio/shorts", { action: "join", id: s.id });
+      setFull(r.url);
+      setStatus(`完成の動画ができました（${totalSeconds(s)}秒）。残したいときは動画の下の「アーカイブに保存」を押してください（つなぎ直すと上書きされます）`);
+    });
   }
 
   async function duplicate() {
@@ -195,20 +205,20 @@ export default function ShortPage() {
     });
   }
 
-  async function keep(kind: "a" | "full") {
-    await run(`keep:${kind}`, async () => {
-      await api("/api/admin/studio/shorts", { action: "keep", id: s.id, kind, quality: lastQuality[kind === "a" ? "a" : "b"] });
-      setStatus(`${kind === "a" ? "クリップA" : "完成の15秒"}をアーカイブに保存しました`);
+  async function keep() {
+    await run("keep", async () => {
+      await api("/api/admin/studio/shorts", { action: "keep", id: s.id, quality: lastQuality });
+      setStatus("完成の動画をアーカイブに保存しました");
       await reloadTakes(s.id);
     });
   }
 
   async function adopt(t: StudioTake) {
-    if (!confirm(`この動画（${takeLabel(t)}）を今の${t.kind === "a" ? "クリップA" : "完成"}にしますか？`)) return;
+    if (!confirm(`この動画（${takeLabel(t)}）を今の完成にしますか？`)) return;
     await run(`take:${t.name}`, async () => {
       const r = await api("/api/admin/studio/shorts", { action: "adopt", id: s.id, name: t.name });
-      (r.kind === "a" ? setVideoA : setVideoFull)(r.url);
-      setStatus(`${takeLabel(t)}を今の${r.kind === "a" ? "クリップA" : "完成"}にしました`);
+      setFull(r.url);
+      setStatus(`${takeLabel(t)}を今の完成にしました`);
     });
   }
 
@@ -228,14 +238,25 @@ export default function ShortPage() {
     });
   }
 
+  // 台本の編集
+  const setKey = (i: number, key: "scene" | "frame", v: string) => setS((x) => ({ ...x, keys: x.keys.map((k, n) => (n === i ? { ...k, [key]: v } : k)) }));
+  const setSeg = (i: number, key: "motion" | "sound" | "seconds", v: string) => setS((x) => ({ ...x, segments: x.segments.map((g, n) => (n === i ? { ...g, [key]: key === "seconds" ? toSeconds(v) : v } : g)) }));
+  const addKey = () => setS((x) => (x.keys.length >= KEYS_MAX ? x : { ...x, keys: [...x.keys, emptyKey()], segments: [...x.segments, emptySegment()] }));
+  const removeLastKey = () => {
+    if (s.keys.length <= KEYS_MIN) return;
+    if (!confirm(`最後の絵${s.keys.length}と区間${s.segments.length}を台本から消しますか？（作った絵と動画のファイルは残ります）`)) return;
+    setS((x) => ({ ...x, keys: x.keys.slice(0, -1), segments: x.segments.slice(0, -1) }));
+  };
+
   if (!loaded) return <main style={{ padding: 24 }}>読み込み中…</main>;
   const c = characters.find((x) => x.id === s.characterId) ?? null;
-  const a = s.clips[0];
-  const b = s.clips[1];
-  const setClip = (i: 0 | 1, key: keyof typeof a, v: string) => setS((x) => ({ ...x, clips: x.clips.map((cl, n) => (n === i ? { ...cl, [key]: v } : cl)) as StudioShort["clips"] }));
-  const hasScript = Boolean(a.motion && b.motion);
+  const hasScript = s.segments.length > 0 && s.segments.every((x) => x.motion) && s.keys.every((k) => k.frame);
   const unanswered = s.qa.filter((x) => !x.a.trim()).length;
   const disabled = busy !== null;
+  const keysDone = s.keys.filter((_, i) => keyUrls[i + 1]).length;
+  const segsDone = s.segments.filter((_, i) => segUrls[i + 1]).length;
+  const anyVideoBusy = Object.values(videoBusy).some(Boolean);
+  const seconds = totalSeconds(s);
 
   return (
     <main style={{ maxWidth: 1080, margin: "0 auto", padding: "24px 16px 64px", display: "flex", flexDirection: "column", gap: 20 }}>
@@ -243,15 +264,15 @@ export default function ShortPage() {
       <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "baseline" }}>
         <h1 className="display" style={{ margin: 0, color: "var(--navy)" }}>{isNew ? "ショートを作る" : `「${s.title || "題名なし"}」`}</h1>
         {c && <span className="tag">{c.name}</span>}
-        <span className="tag">約15秒・セリフなし</span>
+        <span className="tag">止め絵{s.keys.length}枚・{seconds}秒・セリフなし</span>
       </div>
       <Steps items={[
         { label: "ねらい", done: Boolean(s.premise) },
         { label: "ヒアリング", done: enough === true || (s.qa.length > 0 && unanswered === 0) },
         { label: "台本", done: hasScript },
-        { label: "絵", done: Boolean(first && last && lastB) },
-        { label: "A 8秒", done: Boolean(videoA) },
-        { label: "完成15秒", done: Boolean(videoFull) },
+        { label: `絵 ${keysDone}/${s.keys.length}`, done: keysDone === s.keys.length },
+        { label: `動画 ${segsDone}/${s.segments.length}`, done: segsDone === s.segments.length },
+        { label: `完成${seconds}秒`, done: Boolean(full) },
       ]} />
       <Notice status={status} error={error} />
 
@@ -304,39 +325,55 @@ export default function ShortPage() {
       {/* 3. 台本 */}
       <section className="card" style={{ gap: 12 }}>
         <div style={{ display: "flex", flexWrap: "wrap", gap: 8, alignItems: "center", justifyContent: "space-between" }}>
-          <strong style={{ fontSize: 18 }}>3. 台本（A 8秒 ＋ 続きのB 7秒）</strong>
+          <strong style={{ fontSize: 18 }}>3. 台本（止め絵{s.keys.length}枚 ＋ 間の動き{s.segments.length}区間 ＝ {seconds}秒）</strong>
           <button type="button" className="cta yellow" onClick={script} disabled={disabled || !s.characterId} style={{ padding: "10px 18px" }}>{busy === "script" ? "書いています…" : hasScript ? "AIに台本を書き直させる" : "AIに台本を書かせる"}</button>
         </div>
-        <p style={{ margin: 0, fontSize: 13, color: "#666" }}>Bは「Aの動画の続きを延長」して作るので、Aの最後の状態からそのまま続きます。コツ：Aの最後＝いちばん見せたい「見せ場」を止めた姿（例：小石を歯でがっちり挟んで力んでいる）。Veo は最初と最後の絵にいちばん従うので、見せ場を「Aの最後の絵」にすると確実に出ます。Bはその結果（欠ける・吐き出す・驚く）。</p>
-        {([0, 1] as const).map((i) => {
-          const clip = s.clips[i];
-          return (
-            <div key={clip.id} style={{ display: "flex", flexDirection: "column", gap: 8, paddingTop: 8, borderTop: "1px solid #eee" }}>
-              <strong>クリップ {clip.id.toUpperCase()}（{i === 0 ? "0〜8秒・最初と最後の絵から" : "8〜15秒・Aの続きとして延長、最後の絵は15秒時点"}）</strong>
-              {CLIP_FIELDS.filter((f) => !(f.onlyA && i === 1)).map((f) => (
-                <Field key={f.key} label={f.label} value={clip[f.key]} onChange={(v) => setClip(i, f.key, v)} rows={f.rows} mono={f.en} />
-              ))}
+        <p style={{ margin: 0, fontSize: 13, color: "#666" }}>お話を「止め絵」に分け、絵と絵の間だけを Veo に動かしてもらいます。Veo は最初と最後の絵にいちばん従うので、見せたい瞬間（例：小石を歯でがっちり挟んで力んでいる姿）は全部、止め絵の1枚にします。1区間の動きは1〜2個まで。</p>
+        {s.keys.map((k, i) => (
+          <div key={i} style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: 8, padding: 12, borderRadius: 12, background: "#f7f5ef" }}>
+              <strong>絵{i + 1}{i === 0 ? "（始まり）" : i === s.keys.length - 1 ? "（終わり）" : ""}</strong>
+              <Field label="この瞬間に見えているもの（日本語）" value={k.scene} onChange={(v) => setKey(i, "scene", v)} rows={2} />
+              <Field label="絵の指示（英語）" value={k.frame} onChange={(v) => setKey(i, "frame", v)} rows={3} mono />
             </div>
-          );
-        })}
-        <div><button type="button" className="cta" onClick={() => save()} disabled={disabled} style={{ padding: "10px 18px" }}>{busy === "save" ? "保存中…" : "台本を保存"}</button></div>
+            {i < s.segments.length && (
+              <div style={{ display: "flex", flexDirection: "column", gap: 8, padding: "4px 12px 8px", borderLeft: "3px solid #dcd6c6", marginLeft: 12 }}>
+                <div style={{ display: "flex", gap: 12, alignItems: "center", flexWrap: "wrap" }}>
+                  <strong>区間{i + 1}（絵{i + 1} → 絵{i + 2}）</strong>
+                  <label style={{ fontSize: 14, display: "flex", gap: 6, alignItems: "center" }}>
+                    長さ
+                    <select value={s.segments[i].seconds} onChange={(e) => setSeg(i, "seconds", e.target.value)}>
+                      {SEGMENT_SECONDS.map((v) => <option key={v} value={v}>{v}秒</option>)}
+                    </select>
+                  </label>
+                </div>
+                <Field label="音・鳴き声（日本語）" value={s.segments[i].sound} onChange={(v) => setSeg(i, "sound", v)} />
+                <Field label="動きと音（英語）" value={s.segments[i].motion} onChange={(v) => setSeg(i, "motion", v)} rows={4} mono />
+              </div>
+            )}
+          </div>
+        ))}
+        <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+          <button type="button" className="cta" onClick={() => save()} disabled={disabled} style={{ padding: "10px 18px" }}>{busy === "save" ? "保存中…" : "台本を保存"}</button>
+          <button type="button" onClick={addKey} disabled={disabled || s.keys.length >= KEYS_MAX} style={plainButton}>＋ 絵を1枚足す（最大{KEYS_MAX}枚）</button>
+          <button type="button" onClick={removeLastKey} disabled={disabled || s.keys.length <= KEYS_MIN} style={plainButton}>− 最後の絵を消す</button>
+        </div>
       </section>
 
-      {/* 4. 絵 */}
+      {/* 4. 止め絵 */}
       <section className="card" style={{ gap: 12 }}>
-        <strong style={{ fontSize: 18 }}>4. コマの絵（1枚 約25円）</strong>
-        <p style={{ margin: 0, fontSize: 13, color: "#666" }}>左から順に。2枚目は1枚目を、3枚目は2枚目を参照して同じ場面・同じタッチで描きます。3枚目（15秒時点）は延長の終わりの絵として Veo に渡します（Veo が受け付けない場合は文章だけで延長し、その旨を表示します）。</p>
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 16, maxWidth: 900 }}>
-          {(["first", "last", "lastB"] as const).map((w) => {
-            const src = w === "first" ? first : w === "last" ? last : lastB;
-            const blocked = w === "last" ? !first : w === "lastB" ? !last : false;
+        <strong style={{ fontSize: 18 }}>4. 止め絵（1枚 約25円）</strong>
+        <p style={{ margin: 0, fontSize: 13, color: "#666" }}>左から順に。2枚目以降は1つ前の絵を参照して同じ場面・同じタッチで描きます。気に入らなければ追加の指示を書いて作り直してください（絵を作り直したら、その絵を使う区間の動画も作り直し）。</p>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(160px, 1fr))", gap: 16 }}>
+          {s.keys.map((k, i) => {
+            const n = i + 1;
+            const blocked = n > 1 && !keyUrls[n - 1];
             return (
-              <div key={w} style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-                <span style={{ fontSize: 13, color: "#666" }}>{FRAME_LABEL[w]}</span>
-                <Art src={src} alt={FRAME_LABEL[w]} ratio="2 / 3" />
-                <textarea value={notes[w]} maxLength={STUDIO_NOTE_MAX} rows={2} onChange={(e) => setNotes((n) => ({ ...n, [w]: e.target.value }))} placeholder="追加の指示（任意・日本語でOK）" />
-                <button type="button" className="cta" onClick={() => frame(w)} disabled={disabled || !hasScript || blocked}>{busy === `frame:${w}` ? "作成中…" : `${FRAME_LABEL[w]}を作る`}</button>
-                {w === "lastB" && hasScript && !b.lastFrame && <span style={{ fontSize: 12, color: "#888" }}>絵の指示が空なので、押すと AI が書き足してから描きます</span>}
+              <div key={n} style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                <span style={{ fontSize: 13, color: "#666" }}>絵{n}{k.scene ? `：${k.scene.slice(0, 24)}${k.scene.length > 24 ? "…" : ""}` : ""}</span>
+                <Art src={keyUrls[n] ?? null} alt={`絵${n}`} ratio="2 / 3" />
+                <textarea value={keyNotes[n] ?? ""} maxLength={STUDIO_NOTE_MAX} rows={2} onChange={(e) => setKeyNotes((x) => ({ ...x, [n]: e.target.value }))} placeholder="追加の指示（任意・日本語でOK）" />
+                <button type="button" className="cta" onClick={() => frame(n)} disabled={disabled || !k.frame || blocked}>{busy === `frame:${n}` ? "作成中…" : keyUrls[n] ? `絵${n}を作り直す` : `絵${n}を作る`}</button>
               </div>
             );
           })}
@@ -345,41 +382,51 @@ export default function ShortPage() {
 
       {/* 5. 動画 */}
       <section className="card" style={{ gap: 12 }}>
-        <strong style={{ fontSize: 18 }}>5. 動画（Veo 3.1）</strong>
-        <p style={{ margin: 0, fontSize: 13, color: "#666" }}>まずクリップA（8秒）。よければ「続きを延長」でBを足し、1本の約15秒になります。試作は Fast、公開用は Standard がおすすめ。作成中は画面を閉じても続きます。</p>
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, maxWidth: 640 }}>
-          <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-            <span style={{ fontSize: 13, color: "#666" }}>クリップA（8秒）</span>
-            <VideoBox src={videoA} />
-            <textarea value={notes.a} maxLength={STUDIO_NOTE_MAX} rows={2} onChange={(e) => setNotes((n) => ({ ...n, a: e.target.value }))} placeholder="追加の指示（任意）" />
-            <button type="button" className="cta yellow" onClick={() => video("a", "fast")} disabled={disabled || !first}>{busy === "video:a" ? "作成中…" : `A を Fast で作る（約${VEO_COST.fast.a}円）`}</button>
-            <button type="button" className="cta yellow" onClick={() => video("a", "standard")} disabled={disabled || !first}>{busy === "video:a" ? "作成中…" : `A を Standard で作る（約${VEO_COST.standard.a}円）`}</button>
-            {!isNew && <button type="button" className="cta" onClick={() => keep("a")} disabled={disabled} style={{ padding: "8px 12px", fontSize: 13 }}>{busy === "keep:a" ? "保存中…" : "この A をアーカイブに保存"}</button>}
-          </div>
-          <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-            <span style={{ fontSize: 13, color: "#666" }}>完成（A＋続き・約15秒）</span>
-            <VideoBox src={videoFull} />
-            <textarea value={notes.b} maxLength={STUDIO_NOTE_MAX} rows={2} onChange={(e) => setNotes((n) => ({ ...n, b: e.target.value }))} placeholder="追加の指示（任意）" />
-            <button type="button" className="cta yellow" onClick={() => video("b", "fast")} disabled={disabled || !videoA}>{busy === "video:b" ? "作成中…" : `続きを Fast で延長（約${VEO_COST.fast.b}円）`}</button>
-            <button type="button" className="cta yellow" onClick={() => video("b", "standard")} disabled={disabled || !videoA}>{busy === "video:b" ? "作成中…" : `続きを Standard で延長（約${VEO_COST.standard.b}円）`}</button>
-            {!isNew && <button type="button" className="cta" onClick={() => keep("full")} disabled={disabled} style={{ padding: "8px 12px", fontSize: 13 }}>{busy === "keep:full" ? "保存中…" : "この完成をアーカイブに保存"}</button>}
-            {videoFull && <a href={videoFull} download={`${s.title || "short"}.mp4`} style={{ fontSize: 14 }}>完成した動画をダウンロード</a>}
-          </div>
+        <strong style={{ fontSize: 18 }}>5. 区間の動画（Veo 3.1）</strong>
+        <p style={{ margin: 0, fontSize: 13, color: "#666" }}>区間ごとに、前後の絵を Veo に渡して間を動かします。複数の区間を同時に作れます。試作は Fast、公開用は Standard がおすすめ。作成中は画面を閉じても続きます。</p>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))", gap: 16 }}>
+          {s.segments.map((g, i) => {
+            const n = i + 1;
+            const ready = Boolean(keyUrls[n] && keyUrls[n + 1]);
+            const making = Boolean(videoBusy[n]);
+            return (
+              <div key={n} style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                <span style={{ fontSize: 13, color: "#666" }}>区間{n}（絵{n}→絵{n + 1}・{g.seconds}秒）</span>
+                <VideoBox src={segUrls[n] ?? null} />
+                <textarea value={segNotes[n] ?? ""} maxLength={STUDIO_NOTE_MAX} rows={2} onChange={(e) => setSegNotes((x) => ({ ...x, [n]: e.target.value }))} placeholder="追加の指示（任意）" />
+                <button type="button" className="cta yellow" onClick={() => video(n, "fast")} disabled={disabled || making || !ready || !g.motion}>{making ? "作成中…" : `Fast で作る（約${veoCost("fast", g.seconds)}円）`}</button>
+                <button type="button" className="cta yellow" onClick={() => video(n, "standard")} disabled={disabled || making || !ready || !g.motion}>{making ? "作成中…" : `Standard で作る（約${veoCost("standard", g.seconds)}円）`}</button>
+                {!ready && <span style={{ fontSize: 12, color: "#888" }}>先に絵{n}と絵{n + 1}を作ってください</span>}
+              </div>
+            );
+          })}
         </div>
       </section>
 
-      {/* 6. アーカイブ */}
+      {/* 6. 完成 */}
+      <section className="card" style={{ gap: 12 }}>
+        <strong style={{ fontSize: 18 }}>6. つないで完成（{seconds}秒）</strong>
+        <p style={{ margin: 0, fontSize: 13, color: "#666" }}>全部の区間ができたら、順につないで1本にします（再エンコードなし、数十秒・無料）。つなぎ目は同じ絵なので形はずれません。</p>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: 8, maxWidth: 320 }}>
+          <VideoBox src={full} />
+          <button type="button" className="cta yellow" onClick={join} disabled={disabled || anyVideoBusy || segsDone < s.segments.length || isNew} style={{ padding: "10px 18px" }}>{busy === "join" ? "つないでいます…" : full ? "もう一度つないで完成にする" : "つないで完成にする"}</button>
+          {!isNew && <button type="button" className="cta" onClick={keep} disabled={disabled || !full} style={{ padding: "8px 12px", fontSize: 13 }}>{busy === "keep" ? "保存中…" : "この完成をアーカイブに保存"}</button>}
+          {full && <a href={full} download={`${s.title || "short"}.mp4`} style={{ fontSize: 14 }}>完成した動画をダウンロード</a>}
+        </div>
+      </section>
+
+      {/* 7. アーカイブ */}
       {!isNew && (
         <section className="card" style={{ gap: 12 }}>
-          <strong style={{ fontSize: 18 }}>6. アーカイブ（保存した動画 {takes.length}本）</strong>
-          <p style={{ margin: 0, fontSize: 13, color: "#666" }}>「アーカイブに保存」を押した動画だけがここに残ります（押さずに作り直すと上書きされて消えます）。気に入ったものは「これを採用」で上の「今の動画」に戻せます。別のお話を作るときは「複製して別のショートに」か、スタジオの「＋ ショートを作る」から。</p>
+          <strong style={{ fontSize: 18 }}>7. アーカイブ（保存した動画 {takes.length}本）</strong>
+          <p style={{ margin: 0, fontSize: 13, color: "#666" }}>「アーカイブに保存」を押した動画だけがここに残ります（押さずに作り直すと上書きされて消えます）。気に入ったものは「これを採用」で上の「完成」に戻せます。別のお話を作るときは「複製して別のショートに」か、スタジオの「＋ ショートを作る」から。</p>
           {takes.length === 0 && <p style={{ margin: 0, fontSize: 14, color: "#888" }}>まだありません。残したい動画の下の「アーカイブに保存」を押してください。</p>}
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(180px, 1fr))", gap: 12 }}>
             {takes.map((t) => (
               <div key={t.name} style={{ display: "flex", flexDirection: "column", gap: 6, padding: 8, border: "1px solid #eee", borderRadius: 12 }}>
                 <VideoBox src={t.url} />
                 <span style={{ fontSize: 12, color: "#555" }}>{takeLabel(t)}</span>
-                <button type="button" className="cta" onClick={() => adopt(t)} disabled={disabled} style={{ padding: "6px 10px", fontSize: 13 }}>{busy === `take:${t.name}` ? "処理中…" : "これを採用"}</button>
+                {t.kind === "full" && <button type="button" className="cta" onClick={() => adopt(t)} disabled={disabled} style={{ padding: "6px 10px", fontSize: 13 }}>{busy === `take:${t.name}` ? "処理中…" : "これを採用"}</button>}
                 <div style={{ display: "flex", gap: 10, fontSize: 12 }}>
                   <a href={t.url} download={`${s.title || "short"}-${t.name}`}>ダウンロード</a>
                   <button type="button" onClick={() => deleteTake(t)} disabled={disabled} style={{ background: "none", border: 0, padding: 0, color: "#999", cursor: "pointer", fontSize: 12 }}>消す</button>
@@ -392,16 +439,18 @@ export default function ShortPage() {
 
       {!isNew && (
         <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-          <button type="button" onClick={duplicate} disabled={disabled} style={{ background: "none", border: "1px solid #ccc", borderRadius: 8, padding: "6px 12px", color: "#555", cursor: "pointer" }}>{busy === "duplicate" ? "複製中…" : "複製して別のショートに（同じキャラ・台本で）"}</button>
-          <button type="button" onClick={remove} disabled={disabled} style={{ background: "none", border: "1px solid #ccc", borderRadius: 8, padding: "6px 12px", color: "#888", cursor: "pointer" }}>このショートを削除</button>
+          <button type="button" onClick={duplicate} disabled={disabled} style={plainButton}>{busy === "duplicate" ? "複製中…" : "複製して別のショートに（同じキャラ・台本で）"}</button>
+          <button type="button" onClick={remove} disabled={disabled} style={{ ...plainButton, color: "#888" }}>このショートを削除</button>
         </div>
       )}
     </main>
   );
 }
 
+const plainButton = { background: "none", border: "1px solid #ccc", borderRadius: 8, padding: "6px 12px", color: "#555", cursor: "pointer" } as const;
+
 function takeLabel(t: StudioTake) {
   const d = new Date(t.at);
   const when = Number.isNaN(d.getTime()) ? t.at : `${d.getMonth() + 1}/${d.getDate()} ${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}`;
-  return `${when}　${t.kind === "a" ? "A 8秒" : "完成15秒"}${t.quality ? `・${t.quality === "fast" ? "Fast" : "Standard"}` : ""}`;
+  return `${when}　${t.kind === "a" ? "以前のA 8秒" : "完成"}${t.quality ? `・${t.quality === "fast" ? "Fast" : "Standard"}` : ""}`;
 }

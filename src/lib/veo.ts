@@ -1,9 +1,10 @@
 import "server-only";
-import type { VeoQuality } from "./studio";
+import type { SegmentSeconds, VeoQuality } from "./studio";
 
-// Google の動画AI Veo 3.1（Gemini API）で、1枚の絵を最初のコマ（＋任意で最後のコマ）にして8秒の動画を作る。
+// Google の動画AI Veo 3.1（Gemini API）で、1枚の絵を最初のコマ、もう1枚を最後のコマにして 4〜8秒の動画を作る。
 // キーは GEMINI_API_KEY（Google AI Studio で発行）。未設定なら使えない。
 // 作成には11秒〜6分かかるので、「開始」と「できたか確認」を分けている（Vercel の関数の制限時間内に収めるため）。
+// 2026-10-20 「延長」（veoExtend）はやめた：延長は最後の絵を指定できる保証がなく、見せ場が流れるため。区間ごとに作って mp4-concat.ts でつなぐ。
 // 参照: https://ai.google.dev/gemini-api/docs/veo
 
 const BASE = "https://generativelanguage.googleapis.com/v1beta";
@@ -30,13 +31,16 @@ export async function veoStart(opts: {
   imagePng: Buffer;
   /** 最後のコマ。あると最初と最後が絵で固定され、間を Veo がつなぐ */
   lastFramePng?: Buffer;
+  /** 長さ（4・6・8秒）。参考画像を使えるのは8秒のときだけ（公式の制限） */
+  seconds: SegmentSeconds;
   quality: VeoQuality;
   /** 見た目を揃えるための参考画像（設定画など、最大3枚）。Veo 3.1 の referenceImages（referenceType: asset） */
   referenceImages?: Buffer[];
   /** 出してほしくないもの */
   negativePrompt?: string;
 }) {
-  const refs = (opts.referenceImages ?? []).slice(0, 3);
+  // 参考画像は8秒のときしか受け付けない（https://ai.google.dev/gemini-api/docs/veo）
+  const refs = opts.seconds === 8 ? (opts.referenceImages ?? []).slice(0, 3) : [];
   const request = (withRefs: boolean) =>
     fetch(`${BASE}/models/${model(opts.quality)}:predictLongRunning`, {
       method: "POST",
@@ -56,8 +60,8 @@ export async function veoStart(opts: {
         parameters: {
           aspectRatio: "9:16",
           resolution: "720p",
-          // 数値で渡す（文字列だと "needs to be a number" になる）。絵から動かすときは 8 のみ
-          durationSeconds: 8,
+          // 数値で渡す（文字列だと "needs to be a number" になる）
+          durationSeconds: opts.seconds,
           // 絵から動かすときは allow_adult しか選べない（子どもの顔は出さない前提）
           personGeneration: "allow_adult",
           ...(opts.negativePrompt ? { negativePrompt: opts.negativePrompt } : {}),
@@ -79,73 +83,6 @@ export async function veoStart(opts: {
   const name: string | undefined = json?.name;
   if (!name) throw new Error("Veo から operation 名が返りませんでした");
   return { name, usedReferenceImages };
-}
-
-/**
- * 作った動画の続きを7秒延長する（Veo 3.1 の extension）。元の動画＋続きが1本になって返る。
- * 元は Veo が作った動画（720p）に限る。参照: https://ai.google.dev/gemini-api/docs/veo
- */
-export async function veoExtend(opts: {
-  prompt: string;
-  videoMp4: Buffer;
-  /** Veo が A を作ったときの動画 URI（あれば。bytes を断られたときにこちらで再試行） */
-  videoUri?: string;
-  quality: VeoQuality;
-  /** 延長の終わり（15秒時点）の絵。公式ドキュメントに延長との組み合わせ可否の記載がないため、断られたら無しで再試行する */
-  lastFramePng?: Buffer;
-  negativePrompt?: string;
-}) {
-  // 動画の渡し方: Gemini API は encodedVideo（base64）。encoding（mimeType）を付けると
-  // 「`encoding` isn't supported by this model」で断られる（2026-10-19 実機で確認）ので付けない。
-  // それでも断られたら、Veo が A を作ったときの URI で再試行する
-  const videoOf = (byUri: boolean) => (byUri && opts.videoUri ? { uri: opts.videoUri } : { encodedVideo: opts.videoMp4.toString("base64") });
-  const request = (withLast: boolean, byUri = false) =>
-    fetch(`${BASE}/models/${model(opts.quality)}:predictLongRunning`, {
-      method: "POST",
-      headers: headers(),
-      body: JSON.stringify({
-        instances: [
-          {
-            prompt: opts.prompt,
-            video: videoOf(byUri),
-            ...(withLast && opts.lastFramePng ? { lastFrame: toImage(opts.lastFramePng) } : {}),
-          },
-        ],
-        parameters: {
-          resolution: "720p",
-          durationSeconds: 8,
-          personGeneration: "allow_adult",
-          ...(opts.negativePrompt ? { negativePrompt: opts.negativePrompt } : {}),
-        },
-      }),
-    });
-  let usedLastFrame = Boolean(opts.lastFramePng);
-  let usedUri = false;
-  let res = await request(true);
-  let json = await res.json().catch(() => ({}));
-  const refused = (j: unknown) => (j as { error?: { message?: string } })?.error?.message ?? "";
-  if (!res.ok && opts.lastFramePng && res.status === 400) {
-    console.warn("Veo refused lastFrame with extension, retrying without:", refused(json));
-    usedLastFrame = false;
-    res = await request(false);
-    json = await res.json().catch(() => ({}));
-  }
-  if (!res.ok && opts.videoUri && res.status === 400) {
-    console.warn("Veo refused encodedVideo, retrying with uri:", refused(json));
-    usedUri = true;
-    usedLastFrame = Boolean(opts.lastFramePng);
-    res = await request(true, true);
-    json = await res.json().catch(() => ({}));
-    if (!res.ok && opts.lastFramePng && res.status === 400) {
-      usedLastFrame = false;
-      res = await request(false, true);
-      json = await res.json().catch(() => ({}));
-    }
-  }
-  if (!res.ok) throw new Error(refused(json) || `Veo の延長に失敗しました (${res.status})`);
-  const name: string | undefined = json?.name;
-  if (!name) throw new Error("Veo から operation 名が返りませんでした");
-  return { name, usedLastFrame, usedUri };
 }
 
 function toImage(png: Buffer) {

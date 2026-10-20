@@ -84,7 +84,7 @@ export default function StudioHome() {
       <div>
         <h1 className="display" style={{ margin: 0, color: "var(--navy)" }}>スタジオ「おちばの したの まち」</h1>
         <p className="step-lead" style={{ marginTop: 8 }}>
-          キャラの登録 → 設定画・表情集 → ショートの台本（AIとヒアリング）→ 絵 → 動画（約15秒）まで、ここで作ります。お客様の画面には出ません。
+          キャラの登録 → 設定画・表情集 → ショートの台本（AIとヒアリング）→ 止め絵 → 区間ごとの動画 → つないで完成（15〜25秒）まで、ここで作ります。お客様の画面には出ません。
         </p>
       </div>
       <Notice status={status} error={error} />

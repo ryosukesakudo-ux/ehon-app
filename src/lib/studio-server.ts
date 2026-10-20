@@ -2,7 +2,7 @@ import "server-only";
 import { ORIGINAL_CHARACTERS } from "./characters";
 import { SHORTS } from "./shorts";
 import { getOpenAI, getSupabase } from "./services";
-import { CLIP_IDS, PREMISE_MAX, QA_ANSWER_MAX, QA_MAX, emptyClip, type StudioCharacter, type StudioClip, type StudioQA, type StudioShort } from "./studio";
+import { KEYS_MAX, KEYS_MIN, PREMISE_MAX, QA_ANSWER_MAX, QA_MAX, emptyKey, emptySegment, fromLegacyClips, toSeconds, type StudioCharacter, type StudioKey, type StudioQA, type StudioSegment, type StudioShort } from "./studio";
 
 // スタジオのサーバー側：Supabase の studio_characters / studio_shorts の読み書きと、AIで英語の指示・台本を書く。
 
@@ -85,6 +85,7 @@ export async function deleteCharacter(id: string) {
 
 // ---------- ショート ----------
 
+// clips 列（jsonb）に保存する形。以前は [クリップA, クリップB] の配列、2026-10-20 からは { v: 2, keys, segments }。列を増やさず同じ列に入れる（SQL の再実行が不要）
 type ShortRow = { id: string; title: string; character_id: string | null; premise: string; qa: unknown; clips: unknown; created_at: string };
 
 function cleanQa(v: unknown): StudioQA[] {
@@ -96,23 +97,52 @@ function cleanQa(v: unknown): StudioQA[] {
     .slice(0, QA_MAX);
 }
 
-function cleanClip(id: "a" | "b", v: unknown): StudioClip {
+function cleanKey(v: unknown): StudioKey {
   const o = (v && typeof v === "object" ? v : {}) as Record<string, unknown>;
-  const videoUri = typeof o.videoUri === "string" && /^https:\/\/generativelanguage\.googleapis\.com\//.test(o.videoUri) ? o.videoUri : "";
-  return { id, scene: STR(o.scene, 400), sound: STR(o.sound, 300), frame: STR(o.frame, 1500), lastFrame: STR(o.lastFrame, 1500), motion: STR(o.motion, 2000), ...(videoUri ? { videoUri } : {}) };
+  return { scene: STR(o.scene, 400), frame: STR(o.frame, 1500) };
+}
+
+function cleanSegment(v: unknown): StudioSegment {
+  const o = (v && typeof v === "object" ? v : {}) as Record<string, unknown>;
+  return { motion: STR(o.motion, 2000), sound: STR(o.sound, 300), seconds: toSeconds(o.seconds) };
+}
+
+/** 止め絵と区間を整える：絵は 2〜KEYS_MAX 枚、区間は絵の数 − 1 */
+function cleanBody(keys: unknown, segments: unknown): Pick<StudioShort, "keys" | "segments"> {
+  const ks = (Array.isArray(keys) ? keys : []).map(cleanKey).slice(0, KEYS_MAX);
+  while (ks.length < KEYS_MIN) ks.push(emptyKey());
+  const ss = (Array.isArray(segments) ? segments : []).map(cleanSegment).slice(0, ks.length - 1);
+  while (ss.length < ks.length - 1) ss.push(emptySegment());
+  return { keys: ks, segments: ss };
+}
+
+/** 保存されている clips 列の中身を読む（以前の配列の形も受け付ける） */
+function readBody(clips: unknown): Pick<StudioShort, "keys" | "segments"> {
+  if (Array.isArray(clips)) {
+    const legacy = fromLegacyClips(clips.map((c) => (c && typeof c === "object" ? c : {})));
+    return cleanBody(legacy.keys, legacy.segments);
+  }
+  const o = (clips && typeof clips === "object" ? clips : {}) as Record<string, unknown>;
+  return cleanBody(o.keys, o.segments);
 }
 
 function rowToShort(r: ShortRow): StudioShort {
-  const arr = Array.isArray(r.clips) ? r.clips : [];
   return {
     id: r.id,
     title: r.title,
     characterId: r.character_id,
     premise: r.premise,
     qa: cleanQa(r.qa),
-    clips: CLIP_IDS.map((id, i) => cleanClip(id, arr[i] ?? emptyClip(id))),
+    ...readBody(r.clips),
     createdAt: r.created_at,
   };
+}
+
+/** 以前の形（クリップA/B）のまま保存されているか。絵と動画のファイルを新しい置き場所に写す判断に使う */
+export async function isLegacyShort(id: string) {
+  const { data, error } = await db().from("studio_shorts").select("clips").eq("id", id).maybeSingle();
+  if (error) tableError(error);
+  return Array.isArray((data as { clips?: unknown } | null)?.clips);
 }
 
 export async function listShorts(): Promise<StudioShort[]> {
@@ -135,7 +165,7 @@ export async function saveShort(input: Partial<StudioShort>): Promise<StudioShor
     character_id: typeof input.characterId === "string" && input.characterId ? input.characterId : null,
     premise: STR(input.premise, PREMISE_MAX),
     qa: cleanQa(input.qa),
-    clips: CLIP_IDS.map((id, i) => cleanClip(id, input.clips?.[i])),
+    clips: { v: 2, ...cleanBody(input.keys, input.segments) },
     updated_at: new Date().toISOString(),
   };
   const { data, error } = await db().from("studio_shorts").upsert(row).select("*").single();
@@ -171,7 +201,7 @@ export async function importSeeds() {
       title: s.title,
       characterId: s.character,
       premise: "ガジリが夜に小石をかじって痛がり、朝に子どもに拾われてもただのどんぐりのふりをする",
-      clips: CLIP_IDS.map((id, i) => ({ ...(s.clips[i] ?? emptyClip(id)), id })),
+      ...fromLegacyClips(s.clips),
     });
     added++;
   }
@@ -211,18 +241,25 @@ export async function writeCharacterEnglish(c: Partial<StudioCharacter>): Promis
   return runJson<{ design: string; voice: string; movement: string }>(ai, system, user, "character_english", ENGLISH_SCHEMA);
 }
 
-const CLIP_SCHEMA = {
+const KEY_SCHEMA = {
   type: "object",
   additionalProperties: false,
-  required: ["scene", "sound", "frame", "lastFrame", "motion"],
-  properties: { scene: { type: "string" }, sound: { type: "string" }, frame: { type: "string" }, lastFrame: { type: "string" }, motion: { type: "string" } },
+  required: ["scene", "frame"],
+  properties: { scene: { type: "string" }, frame: { type: "string" } },
+} as const;
+
+const SEGMENT_SCHEMA = {
+  type: "object",
+  additionalProperties: false,
+  required: ["motion", "sound", "seconds"],
+  properties: { motion: { type: "string" }, sound: { type: "string" }, seconds: { type: "integer", enum: [4, 6, 8] } },
 } as const;
 
 const SCRIPT_SCHEMA = {
   type: "object",
   additionalProperties: false,
-  required: ["title", "a", "b"],
-  properties: { title: { type: "string" }, a: CLIP_SCHEMA, b: CLIP_SCHEMA },
+  required: ["title", "keys", "segments"],
+  properties: { title: { type: "string" }, keys: { type: "array", items: KEY_SCHEMA }, segments: { type: "array", items: SEGMENT_SCHEMA } },
 } as const;
 
 const QUESTIONS_SCHEMA = {
@@ -235,6 +272,12 @@ const QUESTIONS_SCHEMA = {
   },
 } as const;
 
+/** 止め絵方式の説明（ヒアリングと台本で共通） */
+const KEYFRAME_RULES = [
+  "作り方（止め絵方式）: お話を『止め絵（キーフレーム）』3〜5枚に分け、隣り合う2枚の間を動画AI（Veo）が4〜8秒で動かす。動画AIは最初と最後の絵にはよく従うが、途中の細かい動きは文章だけだと流されやすい。だから『見せたい瞬間』は全部止め絵にする。",
+  "止め絵は『止まった姿』にする（例：小石を帽子と殻の歯でがっちり挟み、半分はみ出した状態で力んでいる）。1つの区間（絵と絵の間）で起きる動作は1〜2個まで。",
+].join("\n");
+
 /**
  * 台本を書く前のヒアリング（2026-10-19 作道さん）。ざっくりしたねらいから、AIが足りない情報を質問する。
  * 十分にそろったら enough=true・質問なしを返す。
@@ -243,10 +286,11 @@ export async function askShortQuestions(c: StudioCharacter, premise: string, qa:
   const ai = getOpenAI();
   if (!ai) throw new Error("OPENAI_API_KEY が未設定です");
   const system = [
-    "あなたは子ども向けショートアニメ（縦長・約15秒・セリフなし・キャラ1体）の演出家です。これから台本を書くために、監督（作道さん）にまだ決まっていないことを日本語で質問します。",
-    "15秒＝クリップA 8秒＋続きのB 7秒。同じ場所・同じ時間で小さな出来事をひとつ見せる。セリフはなく鳴き声と動きだけ。",
+    "あなたは子ども向けショートアニメ（縦長・15〜25秒・セリフなし・キャラ1体）の演出家です。これから台本を書くために、監督（作道さん）にまだ決まっていないことを日本語で質問します。",
+    KEYFRAME_RULES,
+    "同じ場所・同じ時間で小さな出来事をひとつ見せる。セリフはなく鳴き声と動きだけ。",
     "聞くとよいこと：場所と時間帯、きっかけになる物や相手（人の手など、顔は映さない）、キャラが何をして何が起きるか、オチ（最後にどうなるか）、テンポ（ゆっくり／せわしない）、避けたいこと。",
-    "必ず聞くこと（まだ答えがなければ）：『いちばん見せたい見せ場（キメの瞬間）はどんな姿か』。例：小石を歯でがっちり挟んで力んでいる姿。見せ場はクリップAの最後で止めた絵にして、動画はそこで必ず止まるようにする。",
+    "必ず聞くこと（まだ答えがなければ）：『いちばん見せたい見せ場（キメの瞬間）はどんな姿か』。例：小石を歯でがっちり挟んで力んでいる姿。見せ場は止め絵の1枚にする。",
     "すでに分かっていること・キャラ設定から決められること・細かすぎることは聞かない。1問は50文字まで、やさしい話し言葉。",
     `質問は一度に4問まで、これまでの質問と合わせて${QA_MAX}問まで。台本を書くのに十分なら enough=true にして質問は空にする。`,
   ].join("\n");
@@ -262,20 +306,20 @@ export async function askShortQuestions(c: StudioCharacter, premise: string, qa:
   return { enough: body.enough || questions.length === 0, questions };
 }
 
-/** キャラとねらいから、15秒ショート（A 8秒＋B 7秒延長）の台本を書く */
-export async function writeShortScript(c: StudioCharacter, premise: string, qa: StudioQA[], current?: StudioShort): Promise<Pick<StudioShort, "title" | "clips">> {
+/** キャラとねらいから、止め絵3〜5枚と区間の台本を書く */
+export async function writeShortScript(c: StudioCharacter, premise: string, qa: StudioQA[], current?: StudioShort): Promise<Pick<StudioShort, "title" | "keys" | "segments">> {
   const ai = getOpenAI();
   if (!ai) throw new Error("OPENAI_API_KEY が未設定です");
   const system = [
-    "あなたは子ども向けショートアニメ（YouTube ショート、縦長、約15秒）の演出家です。1体のオリジナルキャラが出る、1話完結の短い台本を書きます。",
-    "構成: クリップA（8秒）とクリップB（7秒）。Bは「Aの動画の続きとして延長」して作るので、Bの最初はAの最後の状態からそのまま続く。AとBで場面転換（夜→朝、場所の移動）はしない。同じ場所・同じ時間で、ひとつの小さな出来事を最後まで見せる。",
-    "Aの最後は『見せ場（キメの瞬間）』を止めた絵にする：例「小石を帽子と殻の歯でがっちり挟み、半分はみ出した状態で力んでいる」。Aはその姿に向かって進み、最後の2秒はその姿のまま止まる。Bはその続き（結果・オチ：欠けて飛び散る、吐き出す、驚く など）。延長のつなぎ目で動きが飛ばないようにするためでもある。",
-    "動作は1クリップに3つまで。見せ場は2秒以上見せる。物を『持つ・挟む・噛む』ときは、物が口や手の中に消えないよう、半分見えている状態を文章で指定する。小道具はキャラの体に対して十分大きく（歯のすき間に入って見えなくならない大きさ、目安は体の1/4〜1/3）。",
+    "あなたは子ども向けショートアニメ（YouTube ショート、縦長、15〜25秒）の演出家です。1体のオリジナルキャラが出る、1話完結の短い台本を書きます。",
+    KEYFRAME_RULES,
+    `構成: keys（止め絵）を3〜${KEYS_MAX}枚、segments（区間）を keys の数 − 1 個。区間 n は 絵 n から 絵 n+1 へ動く。合計は15〜25秒。見せ場（キメの瞬間）は必ず止め絵の1枚にし、その直前の区間はその姿に向かって進んで最後の1〜2秒はその姿のまま止まる。次の区間はその結果（欠けて飛び散る、吐き出す、驚く など）。`,
+    "同じ場所・同じ時間・同じカメラ距離で、ひとつの小さな出来事を最後まで見せる。場面転換はしない。",
+    "1区間の動作は1〜2個まで。物を『持つ・挟む・噛む』ときは、物が口や手の中に消えないよう、半分見えている状態を文章で指定する。小道具はキャラの体に対して十分大きく（歯のすき間に入って見えなくならない大きさ、目安は体の1/4〜1/3）。絵に出てくる物（小石など）は全部の止め絵で同じ大きさ・同じ形にし、どこにあるかを毎回書く。",
     "セリフは一切なし。キャラは言葉を話さず、鳴き声と体の音だけ。人間が出る場合も顔は映さず、声は息をのむ程度まで。文字・吹き出し・字幕も出さない。",
     "キャラの見た目は design の FACE ANATOMY どおり。口や目の場所を変えない。体の中に別の生き物や顔がいるように描かせない（例：殻そのものが口であって、中から何かが出てきて噛むのではない）。",
-    "日本語の項目: scene（その場面で何が起きるか、40〜120字）、sound（効果音と鳴き声、30〜80字）。",
-    "英語の項目: frame（Aの最初のコマの絵。場所・光・キャラの姿勢と表情、キャラは画面の下2/3、縦長）、lastFrame（Aは8秒時点、Bは15秒時点＝お話の終わりの絵。どちらも同じ場所・同じカメラ距離で、止まった状態）、motion（その8秒／7秒で起きる動きと音の順番。カメラはゆっくり、カットなし。Bの motion は 'Continue directly from the previous shot:' で始める）。英語の中で鳴き声は voice の説明に合わせる。",
-    "Bの frame は空文字にする（Aの続きなので最初の絵は無い）。Bの lastFrame は必ず書く。",
+    "keys の項目: scene（日本語、その瞬間に何が見えているか、30〜80字）、frame（英語、絵の指示：場所・光・キャラの姿勢と表情・小道具の位置、キャラは画面の下2/3、縦長、止まった状態。60〜140語）。",
+    "segments の項目: sound（日本語、効果音と鳴き声、20〜60字）、motion（英語、その区間で起きる動きと音の順番。'From the first frame to the last frame:' で始め、最後の1〜2秒は最後の絵の姿で止まると書く。カメラはゆっくり、カットなし。鳴き声は voice の説明に合わせる。50〜120語）、seconds（4・6・8 のどれか。動作1個なら4、2個なら6〜8）。",
     "title は日本語で8文字まで、キャラの行動が分かる言葉。",
   ].join("\n");
   const user = [
@@ -290,43 +334,15 @@ export async function writeShortScript(c: StudioCharacter, premise: string, qa: 
     `movement: ${c.movement}`,
     `ねらい・あらすじ: ${premise || "（おまかせ。キャラのキモ要素と性格がいちばん出る小さな出来事）"}`,
     ...(qa.length ? ["監督への質問と答え（必ず反映する）:", ...qa.map((x) => `- ${x.q} → ${x.a || "（未回答・おまかせ）"}`)] : []),
-    current?.clips.some((x) => x.scene) ? `今の台本（直す場合の元）: ${JSON.stringify(current.clips)}` : "",
+    current?.keys.some((k) => k.scene || k.frame) ? `今の台本（直す場合の元）: ${JSON.stringify({ keys: current.keys, segments: current.segments })}` : "",
   ].filter(Boolean).join("\n");
-  const body = await runJson<{ title: string; a: Omit<StudioClip, "id">; b: Omit<StudioClip, "id"> }>(ai, system, user, "short_script", SCRIPT_SCHEMA);
-  return {
-    title: body.title,
-    clips: [
-      { id: "a", ...body.a },
-      { id: "b", ...body.b, frame: "" },
-    ],
-  };
-}
-
-/** Bの「最後のコマの絵」が空のとき（PR #171 より前に書いた台本）、今の台本から15秒時点の絵の指示だけを書き足す */
-export async function writeClipBLastFrame(c: StudioCharacter, short: StudioShort): Promise<string> {
-  const ai = getOpenAI();
-  if (!ai) throw new Error("OPENAI_API_KEY が未設定です");
-  const [a, b] = short.clips;
-  const system = [
-    "あなたは子ども向けショートアニメの演出家です。クリップB（7秒・クリップAの続き）の終わり＝15秒時点の『最後のコマの絵』の指示を英語で1つ書きます。",
-    "条件: クリップAの最後のコマと同じ場所・同じカメラ距離・同じ光。Bの motion の最後に起きたことの直後で、キャラは止まった状態。場所・光・キャラの姿勢と表情を具体的に。キャラは画面の下2/3、縦長。",
-    "キャラの見た目は design の FACE ANATOMY どおり。口や目の場所を変えない。文字・吹き出しなし。英語 60〜140 語。",
-  ].join("\n");
-  const user = [
-    `キャラ: ${c.name}（${c.base}）`,
-    `design: ${c.design}`,
-    `クリップA 最後のコマ（8秒時点）: ${a.lastFrame || a.frame}`,
-    `クリップA 動き: ${a.motion}`,
-    `クリップB 場面: ${b.scene}`,
-    `クリップB 動き: ${b.motion}`,
-  ].join("\n");
-  const body = await runJson<{ lastFrame: string }>(ai, system, user, "clip_b_last_frame", {
-    type: "object",
-    additionalProperties: false,
-    properties: { lastFrame: { type: "string" } },
-    required: ["lastFrame"],
-  });
-  return body.lastFrame.trim();
+  const body = await runJson<{ title: string; keys: StudioKey[]; segments: StudioSegment[] }>(ai, system, user, "short_script", SCRIPT_SCHEMA);
+  // 絵の数と区間の数を合わせる（絵 = 区間 + 1）
+  const keys = body.keys.slice(0, KEYS_MAX);
+  while (keys.length < KEYS_MIN) keys.push(emptyKey());
+  const segments = body.segments.slice(0, keys.length - 1).map((x) => ({ ...x, seconds: toSeconds(x.seconds) }));
+  while (segments.length < keys.length - 1) segments.push(emptySegment());
+  return { title: body.title, keys, segments };
 }
 
 async function runJson<T>(ai: NonNullable<ReturnType<typeof getOpenAI>>, system: string, user: string, name: string, schema: Record<string, unknown>): Promise<T> {
