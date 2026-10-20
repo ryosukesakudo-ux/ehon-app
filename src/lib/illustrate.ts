@@ -11,7 +11,6 @@ import type { StudioSeries } from "./series-studio";
 import type { Continuity } from "./series-data";
 import { sceneTextSide } from "./spread-scene";
 import { CHARACTER_STYLE, CHARACTER_WORLD, NO_TEXT, type OriginalCharacter } from "./characters";
-import type { StudioClip as ShortClip } from "./studio";
 import { standInPrompt, type StandIns } from "./stand-ins";
 
 export type { Person };
@@ -1100,21 +1099,22 @@ export async function makeOriginalLineup(items: { c: OriginalCharacter; sheet: U
 }
 
 /**
- * ショート動画のクリップAの「最初のコマ」「最後のコマ」を、キャラの設定画・表情集を参照して縦長で描く（2026-10-17、2026-10-19 スタジオ化）。
- * 最後のコマは最初のコマも渡して同じ場面・同じ画角・同じタッチに揃える。この2枚を Veo に渡して8秒動かす（src/lib/veo.ts）。
+ * ショート動画の「止め絵」（キーフレーム）を、キャラの設定画・表情集を参照して縦長で描く（2026-10-17、2026-10-19 スタジオ化、2026-10-20 止め絵方式）。
+ * 2枚目以降は1つ前の止め絵も渡して同じ場面・同じ画角・同じタッチに揃える。隣り合う2枚を Veo に渡して間を動かす（src/lib/veo.ts）。
  */
 export async function makeShortFrame(
   c: OriginalCharacter,
-  clip: Pick<ShortClip, "frame" | "lastFrame">,
+  /** この止め絵の指示（英語） */
+  frame: string,
   sheet: Uploadable,
   note?: string,
   faces?: Uploadable,
-  /** 最後のコマを描くときは、最初のコマも渡して同じ場面・同じ画角に揃える */
-  last?: { firstFrame?: Uploadable },
+  /** 1つ前の止め絵（2枚目以降）。同じ場面・同じ画角に揃える */
+  previous?: Uploadable,
 ) {
   const ai = getOpenAI();
   if (!ai) throw new Error("OPENAI_API_KEY が未設定です");
-  const images = [sheet, faces, last?.firstFrame].filter((x): x is Uploadable => Boolean(x));
+  const images = [sheet, faces, previous].filter((x): x is Uploadable => Boolean(x));
   const result = await ai.images.edit({
     model: process.env.OPENAI_IMAGE_MODEL ?? "gpt-image-2",
     image: images,
@@ -1123,10 +1123,11 @@ export async function makeShortFrame(
       CHARACTER_WORLD,
       `The first reference image is the character design sheet of this character: ${c.design}`,
       faces ? "The second reference image is the same character's expression sheet; take the expression from it. If any panel there contradicts the face anatomy described above, the design sheet and the anatomy description win." : "",
-      last
-        ? `${last.firstFrame ? "The last reference image is the opening frame of this video clip; keep exactly the same scene, lighting, colors, brush texture and camera framing. " : ""}Draw exactly the same character, same colors and details as on the sheet, as the final frame of that short vertical video clip for children. This frame is the key pose of the clip, so make the action unmistakable: if the character grips, bites or holds an object, the object is clearly visible in contact (for example clamped between the upper and lower teeth with half of it sticking out), large enough to read at a glance, and the body shows the effort.`
-        : "Draw exactly the same character, same colors and details as on the sheet, as the opening frame of a short vertical video for children.",
-      `Scene: ${last ? clip.lastFrame : clip.frame}`,
+      previous
+        ? "The last reference image is the previous key frame of this video clip; keep exactly the same scene, lighting, colors, brush texture, camera distance and framing, and keep every object from it in the picture (same size, same place unless the scene says it moved)."
+        : "This is the opening frame of a short vertical video for children.",
+      "Draw exactly the same character, same colors and details as on the sheet. This frame is a key pose of the clip, a held moment, so make the action unmistakable: if the character grips, bites or holds an object, the object is clearly visible in contact (for example clamped between the upper and lower teeth with half of it sticking out), large enough to read at a glance, and the body shows the effort.",
+      `Scene: ${frame}`,
       "Keep the composition simple with space for the character to move. No other characters.",
       NO_TEXT,
       seriesNote(note),

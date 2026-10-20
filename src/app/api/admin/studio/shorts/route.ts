@@ -1,51 +1,53 @@
 import { toFile } from "openai";
 import { characterArtPath } from "@/lib/characters";
 import { makeShortFrame } from "@/lib/illustrate";
+import { concatMp4 } from "@/lib/mp4-concat";
 import { samplePublicUrl } from "@/lib/samples";
 import { SAMPLE_BUCKET, getSupabase } from "@/lib/services";
 import { SHORT_NEGATIVE_PROMPT, SHORT_PROMPT_RULES } from "@/lib/shorts";
-import { studioFramePath, studioTakesDir, studioVideoPath, type StudioFrameKind, type StudioShort, type StudioTake, type VeoQuality } from "@/lib/studio";
-import { askShortQuestions, deleteShort, getCharacter, getShort, listShorts, saveShort, writeClipBLastFrame, writeShortScript } from "@/lib/studio-server";
-import { veoExtend, veoPoll, veoReady, veoStart } from "@/lib/veo";
+import { KEYS_MAX, legacyKeyPath, legacySegmentPath, studioFullPath, studioKeyPath, studioSegmentPath, studioTakesDir, type StudioShort, type StudioTake, type VeoQuality } from "@/lib/studio";
+import { askShortQuestions, deleteShort, getCharacter, getShort, isLegacyShort, listShorts, saveShort, writeShortScript } from "@/lib/studio-server";
+import { veoPoll, veoReady, veoStart } from "@/lib/veo";
 
 export const maxDuration = 300;
 
-// スタジオのショート：
-//  GET ?id=…                       … 1本（無ければ一覧）
-//  GET ?operation=…&id=…&clip=a|b … Veo の進み具合。できていれば保存して { done, url }
-//  POST { action: "save", short }  … 保存 → { short }
+// スタジオのショート（止め絵方式、2026-10-20）：
+//  GET ?id=…                         … 1本（無ければ一覧）。以前の形（A/B）なら絵と動画を新しい置き場所に写してから返す
+//  GET ?operation=…&id=…&seg=n       … Veo の進み具合。できていれば区間 n の動画として保存して { done, url }
+//  POST { action: "save", short }    … 保存 → { short }
 //  POST { action: "delete", id }
-//  POST { action: "duplicate", id } … 同じキャラ・ねらい・台本で新しいショートを作る（絵と動画は付かない）→ { short }
-//  POST { action: "keep", id, kind: "a" | "full", quality } … 今の動画をアーカイブに残す（押したものだけ残す：2026-10-19 作道さん）→ { name }
-//  POST { action: "adopt", id, name } … アーカイブの動画を「今の動画」（A または 完成）にする → { url }
+//  POST { action: "duplicate", id }  … 同じキャラ・ねらい・台本で新しいショートを作る（絵と動画は付かない）→ { short }
+//  POST { action: "keep", id, quality } … 今の完成動画をアーカイブに残す（押したものだけ残す：2026-10-19 作道さん）→ { name }
+//  POST { action: "adopt", id, name } … アーカイブの動画を「今の完成」にする → { url }
 //  POST { action: "deleteTake", id, name } … アーカイブの動画を1本消す
-//  POST { action: "questions", id } … ヒアリング：AIが足りない情報を質問 → { enough, questions }（保存もする）
-//  POST { action: "script", id }    … 台本を書く → { short }
-//  POST { action: "frame", id, which: "first" | "last" | "lastB", note } … Aの最初・Aの最後（8秒）・Bの最後（15秒）の絵 → { url, seconds }
-//  POST { action: "video", id, clip: "a" | "b", quality, note } … a: 絵から8秒 / b: a の動画を7秒延長 → { operation, ... }
+//  POST { action: "questions", id }  … ヒアリング：AIが足りない情報を質問 → { enough, questions }（保存もする）
+//  POST { action: "script", id }     … 台本を書く → { short }
+//  POST { action: "frame", id, n, note } … 止め絵 n（1から）を描く。2枚目以降は1つ前の絵を参照 → { url, seconds }
+//  POST { action: "video", id, seg: n, quality, note } … 区間 n（絵 n → 絵 n+1）を Veo で作り始める → { operation, ... }
+//  POST { action: "join", id }       … 全区間の動画をつないで完成（full.mp4）にする → { url, seconds }
 export async function GET(request: Request) {
   const url = new URL(request.url);
   const id = url.searchParams.get("id") ?? "";
   const operation = url.searchParams.get("operation");
   try {
     if (operation) {
-      const clip = url.searchParams.get("clip") === "b" ? "b" : "a";
       const short = await getShort(id);
       const db = getSupabase();
       if (!short || !db) return Response.json({ error: "ショートが見つかりません" }, { status: 404 });
+      const seg = segmentIndex(url.searchParams.get("seg"), short);
+      if (!seg) return Response.json({ error: "区間の番号が不正です" }, { status: 400 });
       const result = await veoPoll(operation);
       if (!result.done) return Response.json({ done: false });
-      // a は8秒の動画、b は「a＋続き」で1本になった約15秒の動画
-      const path = studioVideoPath(short.id, clip === "a" ? "a" : "full");
+      const path = studioSegmentPath(short.id, seg);
       const { error } = await db.storage.from(SAMPLE_BUCKET).upload(path, result.mp4, { contentType: "video/mp4", upsert: true, cacheControl: "300" });
       if (error) throw new Error(error.message);
-      // A のときは Veo 側の URI も覚えておく（延長で bytes を断られたときの予備）
-      if (clip === "a") await saveShort({ ...short, clips: [{ ...short.clips[0], videoUri: result.uri }, short.clips[1]] });
       return Response.json({ done: true, url: `${samplePublicUrl(path)}?v=${Date.now()}` });
     }
     if (id) {
       const short = await getShort(id);
-      return short ? Response.json({ short, takes: await listTakes(short.id) }) : Response.json({ error: "ショートが見つかりません" }, { status: 404 });
+      if (!short) return Response.json({ error: "ショートが見つかりません" }, { status: 404 });
+      await migrateFiles(short);
+      return Response.json({ short, takes: await listTakes(short.id) });
     }
     return Response.json({ shorts: await listShorts() });
   } catch (e) {
@@ -66,18 +68,17 @@ export async function POST(request: Request) {
     if (action === "duplicate") {
       const src = await getShort(String(body?.id ?? ""));
       if (!src) return Response.json({ error: "ショートが見つかりません" }, { status: 404 });
-      const short = await saveShort({ title: `${src.title || "題名なし"}（コピー）`.slice(0, 60), characterId: src.characterId, premise: src.premise, qa: src.qa, clips: src.clips });
+      const short = await saveShort({ title: `${src.title || "題名なし"}（コピー）`.slice(0, 60), characterId: src.characterId, premise: src.premise, qa: src.qa, keys: src.keys, segments: src.segments });
       return Response.json({ short });
     }
     if (action === "keep") {
       const db = getSupabase();
       const short = await getShort(String(body?.id ?? ""));
       if (!short || !db) return Response.json({ error: "ショートが見つかりません" }, { status: 404 });
-      const kind = body?.kind === "full" ? "full" : "a";
       const q = body?.quality === "standard" ? "standard" : body?.quality === "fast" ? "fast" : "";
-      const { data, error } = await db.storage.from(SAMPLE_BUCKET).download(studioVideoPath(short.id, kind));
-      if (error || !data) return Response.json({ error: `先に${kind === "a" ? "クリップA" : "完成"}の動画を作ってください` }, { status: 400 });
-      const name = `${stamp()}-${kind}-${q}.mp4`;
+      const { data, error } = await db.storage.from(SAMPLE_BUCKET).download(studioFullPath(short.id));
+      if (error || !data) return Response.json({ error: "先に「つないで完成にする」で完成の動画を作ってください" }, { status: 400 });
+      const name = `${stamp()}-full-${q}.mp4`;
       const up = await db.storage.from(SAMPLE_BUCKET).upload(`${studioTakesDir(short.id)}/${name}`, Buffer.from(await data.arrayBuffer()), { contentType: "video/mp4", upsert: true, cacheControl: "31536000" });
       if (up.error) throw new Error(up.error.message);
       return Response.json({ name });
@@ -94,13 +95,12 @@ export async function POST(request: Request) {
         if (error) throw new Error(error.message);
         return Response.json({ ok: true });
       }
-      const kind = name.includes("-full-") ? "full" : "a";
       const { data, error } = await db.storage.from(SAMPLE_BUCKET).download(from);
       if (error || !data) throw new Error(error?.message ?? "アーカイブの動画が見つかりません");
-      const path = studioVideoPath(short.id, kind);
+      const path = studioFullPath(short.id);
       const up = await db.storage.from(SAMPLE_BUCKET).upload(path, Buffer.from(await data.arrayBuffer()), { contentType: "video/mp4", upsert: true, cacheControl: "300" });
       if (up.error) throw new Error(up.error.message);
-      return Response.json({ kind, url: `${samplePublicUrl(path)}?v=${Date.now()}` });
+      return Response.json({ url: `${samplePublicUrl(path)}?v=${Date.now()}` });
     }
 
     // 以下は保存済みのショートに対する操作。画面の最新の内容（short）が来ていればまず保存する
@@ -117,7 +117,7 @@ export async function POST(request: Request) {
     }
     if (action === "script") {
       const r = await writeShortScript(c, short.premise, short.qa, short);
-      const saved = await saveShort({ ...short, title: short.title || r.title, clips: r.clips });
+      const saved = await saveShort({ ...short, title: short.title || r.title, keys: r.keys, segments: r.segments });
       return Response.json({ short: saved });
     }
 
@@ -127,90 +127,110 @@ export async function POST(request: Request) {
     const started = Date.now();
 
     if (action === "frame") {
-      const which: StudioFrameKind = body?.which === "last" ? "last" : body?.which === "lastB" ? "lastB" : "first";
-      // first/last はクリップA、lastB はクリップB（15秒時点）。B の最後は A の最後の絵を参照して同じ場面・タッチに揃える
-      let clip = which === "lastB" ? short.clips[1] : short.clips[0];
-      let filled = false;
-      if (which === "lastB" && !clip.lastFrame && short.clips[1].motion) {
-        // 古い台本（Bの最後の絵が無い）は、台本全体を書き直さずに15秒時点の絵の指示だけ AI に足して保存する
-        const lastFrame = await writeClipBLastFrame(c, short);
-        const saved = await saveShort({ ...short, clips: [short.clips[0], { ...short.clips[1], lastFrame }] });
-        clip = saved.clips[1];
-        filled = true;
-      }
-      const prompt = which === "first" ? clip.frame : clip.lastFrame;
-      if (!prompt) return Response.json({ error: "先に台本（絵の指示）を書いてください" }, { status: 400 });
-      const refPath = which === "last" ? studioFramePath(short.id, "first") : which === "lastB" ? studioFramePath(short.id, "last") : null;
-      const [sheet, faces, ref] = await Promise.all([
+      const n = keyIndex(body?.n, short);
+      if (!n) return Response.json({ error: "絵の番号が不正です" }, { status: 400 });
+      const key = short.keys[n - 1];
+      if (!key.frame) return Response.json({ error: `絵${n}の指示（英語）が空です。先に台本を書いてください` }, { status: 400 });
+      const [sheet, faces, prev] = await Promise.all([
         download(characterArtPath(c.id, "sheet")),
         download(characterArtPath(c.id, "faces")),
-        refPath ? download(refPath) : Promise.resolve(null),
+        n > 1 ? download(studioKeyPath(short.id, n - 1)) : Promise.resolve(null),
       ]);
       if (!sheet) return Response.json({ error: `先にキャラ「${c.name}」の設定画を作ってください` }, { status: 400 });
-      if (which === "last" && !ref) return Response.json({ error: "先に最初のコマの絵を作ってください" }, { status: 400 });
-      if (which === "lastB" && !ref) return Response.json({ error: "先にクリップAの最後のコマの絵を作ってください" }, { status: 400 });
+      if (n > 1 && !prev) return Response.json({ error: `先に絵${n - 1}を作ってください（同じ場面に揃えるため）` }, { status: 400 });
       const b64 = await makeShortFrame(
         c,
-        clip,
+        key.frame,
         await toFile(sheet, "sheet.png", { type: "image/png" }),
         note,
         faces ? await toFile(faces, "faces.png", { type: "image/png" }) : undefined,
-        which === "first" ? undefined : { firstFrame: ref ? await toFile(ref, "ref.png", { type: "image/png" }) : undefined },
+        prev ? await toFile(prev, "prev.png", { type: "image/png" }) : undefined,
       );
-      const path = studioFramePath(short.id, which);
+      const path = studioKeyPath(short.id, n);
       const { error } = await db.storage.from(SAMPLE_BUCKET).upload(path, Buffer.from(b64, "base64"), { contentType: "image/png", upsert: true, cacheControl: "300" });
       if (error) throw new Error(error.message);
-      return Response.json({ url: `${samplePublicUrl(path)}?v=${Date.now()}`, seconds: Math.round((Date.now() - started) / 1000), lastFrame: filled ? clip.lastFrame : undefined });
+      return Response.json({ url: `${samplePublicUrl(path)}?v=${Date.now()}`, seconds: Math.round((Date.now() - started) / 1000) });
     }
 
     if (action === "video") {
       if (!veoReady()) return Response.json({ error: "GEMINI_API_KEY が未設定です（Vercel の環境変数に追加してください）" }, { status: 503 });
       const quality: VeoQuality = body?.quality === "standard" ? "standard" : "fast";
-      const clip = body?.clip === "b" ? short.clips[1] : short.clips[0];
-      if (!clip.motion) return Response.json({ error: "先に台本（動きの指示）を書いてください" }, { status: 400 });
+      const seg = segmentIndex(body?.seg, short);
+      if (!seg) return Response.json({ error: "区間の番号が不正です" }, { status: 400 });
+      const segment = short.segments[seg - 1];
+      if (!segment.motion) return Response.json({ error: `区間${seg}の動きの指示（英語）が空です。先に台本を書いてください` }, { status: 400 });
+      const [first, last, sheet, faces] = await Promise.all([
+        download(studioKeyPath(short.id, seg)),
+        download(studioKeyPath(short.id, seg + 1)),
+        download(characterArtPath(c.id, "sheet")),
+        download(characterArtPath(c.id, "faces")),
+      ]);
+      if (!first) return Response.json({ error: `先に絵${seg}を作ってください` }, { status: 400 });
+      if (!last) return Response.json({ error: `先に絵${seg + 1}を作ってください` }, { status: 400 });
       const character = [`Character: ${c.design}`, c.movement && `How this character moves: ${c.movement}`, `This character's voice: ${c.voice}. It never speaks words.`].filter(Boolean).join(" ");
       const extra = note && `Additional instructions from the director (may be in Japanese), follow them: ${note}`;
-
-      if (clip.id === "a") {
-        const [frame, last, sheet, faces] = await Promise.all([
-          download(studioFramePath(short.id, "first")),
-          download(studioFramePath(short.id, "last")),
-          download(characterArtPath(c.id, "sheet")),
-          download(characterArtPath(c.id, "faces")),
-        ]);
-        if (!frame) return Response.json({ error: "先に最初のコマの絵を作ってください" }, { status: 400 });
-        const referenceImages = await Promise.all([sheet, faces].filter((b): b is Blob => Boolean(b)).map(async (b) => Buffer.from(await b.arrayBuffer())));
-        const prompt = [character, clip.motion, SHORT_PROMPT_RULES, extra].filter(Boolean).join(" ");
-        const { name: operation, usedReferenceImages } = await veoStart({
-          prompt,
-          imagePng: Buffer.from(await frame.arrayBuffer()),
-          lastFramePng: last ? Buffer.from(await last.arrayBuffer()) : undefined,
-          quality,
-          referenceImages,
-          negativePrompt: SHORT_NEGATIVE_PROMPT,
-        });
-        return Response.json({ operation, usedReferenceImages, usedLastFrame: Boolean(last) });
-      }
-
-      // b：a の動画そのものを渡して、続きを7秒延長する（つなぎ目なし）。15秒時点の絵があれば終わりとして渡す
-      const [videoA, lastB] = await Promise.all([download(studioVideoPath(short.id, "a")), download(studioFramePath(short.id, "lastB"))]);
-      if (!videoA) return Response.json({ error: "先にクリップAの動画を作ってください" }, { status: 400 });
-      const prompt = [character, clip.motion, SHORT_PROMPT_RULES, extra].filter(Boolean).join(" ");
-      const { name: operation, usedLastFrame, usedUri } = await veoExtend({
+      const referenceImages = await Promise.all([sheet, faces].filter((b): b is Blob => Boolean(b)).map(async (b) => Buffer.from(await b.arrayBuffer())));
+      // 最初の絵と最後の絵は渡してあるので、文章では「その間」だけを書く
+      const prompt = [character, `This clip starts exactly at the first frame and ends exactly at the last frame; animate only what happens between them. ${segment.motion}`, SHORT_PROMPT_RULES, extra].filter(Boolean).join(" ");
+      const { name: operation, usedReferenceImages } = await veoStart({
         prompt,
-        videoMp4: Buffer.from(await videoA.arrayBuffer()),
-        videoUri: short.clips[0].videoUri,
-        lastFramePng: lastB ? Buffer.from(await lastB.arrayBuffer()) : undefined,
+        imagePng: Buffer.from(await first.arrayBuffer()),
+        lastFramePng: Buffer.from(await last.arrayBuffer()),
+        seconds: segment.seconds,
         quality,
+        referenceImages,
         negativePrompt: SHORT_NEGATIVE_PROMPT,
       });
-      return Response.json({ operation, usedLastFrame, usedUri, hadLastFrame: Boolean(lastB) });
+      return Response.json({ operation, usedReferenceImages });
+    }
+
+    if (action === "join") {
+      const parts: Buffer[] = [];
+      for (let i = 1; i <= short.segments.length; i++) {
+        const v = await download(studioSegmentPath(short.id, i));
+        if (!v) return Response.json({ error: `区間${i}の動画がまだありません。全部の区間を作ってからつないでください` }, { status: 400 });
+        parts.push(Buffer.from(await v.arrayBuffer()));
+      }
+      const full = concatMp4(parts);
+      const path = studioFullPath(short.id);
+      const { error } = await db.storage.from(SAMPLE_BUCKET).upload(path, full, { contentType: "video/mp4", upsert: true, cacheControl: "300" });
+      if (error) throw new Error(error.message);
+      return Response.json({ url: `${samplePublicUrl(path)}?v=${Date.now()}`, seconds: Math.round((Date.now() - started) / 1000) });
     }
 
     return Response.json({ error: "不明な操作です" }, { status: 400 });
   } catch (e) {
     return fail(e);
   }
+}
+
+/** 絵の番号（1〜絵の数）。範囲外なら 0 */
+function keyIndex(v: unknown, short: StudioShort) {
+  const n = Number(v);
+  return Number.isInteger(n) && n >= 1 && n <= Math.min(short.keys.length, KEYS_MAX) ? n : 0;
+}
+/** 区間の番号（1〜区間の数）。範囲外なら 0 */
+function segmentIndex(v: unknown, short: StudioShort) {
+  const n = Number(v);
+  return Number.isInteger(n) && n >= 1 && n <= short.segments.length ? n : 0;
+}
+
+/**
+ * 以前の形（クリップA/B）で保存されていたショートを開いたとき、絵（a/frame.png・a/last.png・b/last.png）と区間1の動画（a/video.mp4）を
+ * 新しい置き場所（keys/n.png・segs/1.mp4）に写し、台本を新しい形で保存し直す（1回だけ。古いファイルは消さない）
+ */
+async function migrateFiles(short: StudioShort) {
+  const db = getSupabase();
+  if (!db || !(await isLegacyShort(short.id))) return;
+  const copy = async (from: string | null, to: string) => {
+    if (!from) return;
+    const { data } = await db.storage.from(SAMPLE_BUCKET).download(from);
+    if (!data) return;
+    await db.storage.from(SAMPLE_BUCKET).upload(to, Buffer.from(await data.arrayBuffer()), { contentType: to.endsWith(".mp4") ? "video/mp4" : "image/png", upsert: true, cacheControl: "300" });
+  };
+  for (let n = 1; n <= short.keys.length; n++) await copy(legacyKeyPath(short.id, n), studioKeyPath(short.id, n));
+  for (let n = 1; n <= short.segments.length; n++) await copy(legacySegmentPath(short.id, n), studioSegmentPath(short.id, n));
+  await saveShort(short);
 }
 
 /** アーカイブの動画一覧（新しい順）。名前 = 日時-種類-画質.mp4 */
