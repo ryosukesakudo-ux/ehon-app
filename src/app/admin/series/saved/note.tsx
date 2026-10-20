@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 /**
@@ -28,6 +29,7 @@ export function SavedNote({
   max: number;
   placeholder: string;
 }) {
+  const router = useRouter();
   const [text, setText] = useState(initial);
   const [saved, setSaved] = useState(initial);
   const [redrawn, setRedrawn] = useState(redrawnAt ?? "");
@@ -45,6 +47,8 @@ export function SavedNote({
     try {
       await post("/api/admin/series/saved", { kind: "note", series, episode, stamp, page, text });
       setSaved(text.trim());
+      // 「まとめて作り直す」の枚数とコピーするメモを新しくする
+      router.refresh();
     } catch (e) {
       setError(e instanceof Error ? e.message : "保存できませんでした");
     } finally {
