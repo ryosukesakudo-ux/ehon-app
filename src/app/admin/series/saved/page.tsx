@@ -115,6 +115,7 @@ export default async function SavedSamplesPage() {
               </summary>
               <div style={{ display: "flex", flexDirection: "column", gap: 16, marginTop: 12 }}>
                 <SaveButton series={s.id} episode={ep.no} title={ep.title} />
+                {!sets.length && <span style={{ fontSize: 13, color: "var(--sub)" }}>保存版を作ると、その下でメモを書いて1枚ずつ・まとめて作り直せます。</span>}
                 <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
                   <strong style={{ fontSize: 14 }}>今の見本</strong>
                   <Thumbs unoptimized script={script} src={(p) => { const u = samplePublicUrl(seriesImagePath(s.id, ep.no, p)); return u && `${u}?v=${now}`; }} />

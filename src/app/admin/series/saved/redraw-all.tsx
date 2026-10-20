@@ -16,7 +16,6 @@ export function RedrawAll({ series, episode, stamp, notes }: { series: string; e
   const [errors, setErrors] = useState<string[]>([]);
   const all = notes.all ?? "";
   const pages = Array.from({ length: 13 }, (_, p) => p).filter((p) => all || notes[String(p)]);
-  if (!pages.length) return null;
 
   async function post(url: string, body: object) {
     const res = await fetch(url, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(body) });
@@ -53,9 +52,10 @@ export function RedrawAll({ series, episode, stamp, notes }: { series: string; e
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 4, alignItems: "flex-start" }}>
-      <button type="button" className="cta" style={{ width: "auto", height: 40, padding: "0 16px", fontSize: 14 }} disabled={!!progress} onClick={run}>
+      <button type="button" className="cta" style={{ width: "auto", height: 40, padding: "0 16px", fontSize: 14 }} disabled={!!progress || !pages.length} onClick={run}>
         {progress ? `作り直しています… ${progress}` : `メモのある絵をまとめて作り直す（${pages.length}枚）`}
       </button>
+      {!pages.length && <span style={{ fontSize: 12, color: "var(--sub)" }}>下の絵にメモを書いて「メモを保存」を押すと押せるようになります</span>}
       {errors.map((e) => (
         <span key={e} className="error">{e}</span>
       ))}
