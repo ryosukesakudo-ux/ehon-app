@@ -62,36 +62,69 @@ export async function listSavedSets(id: SeriesId, episode: number): Promise<stri
   return (data ?? []).filter((f) => !f.id && /^\d{8}-\d{6}$/.test(f.name)).map((f) => f.name).sort().reverse();
 }
 
-/** 保存版ごとの、直してほしい点のメモ（ページ番号 → 文。"all" は一式全体へのメモ）。保存版のフォルダの notes.json */
-export type SavedNotes = Record<string, string>;
+/**
+ * 保存版ごとの、直してほしい点のメモ（ページ番号 → メモ。"all" は一式全体へのメモ）。保存版のフォルダの notes.json。
+ * 2026-10-20 作道さん「そこで指示したり修正したことが本番にも反映されるように」→ 両方に反映する：
+ * ・見本：メモを指示にして、今の見本のその1枚を作り直す（redrawnAt に日時を残す）
+ * ・お客様の本：Claude がメモ（管理画面の「コピー」か、公開の一覧 series/saved-notes.json）を読んで台本・絵の指示に入れ、
+ *   入れたメモは saved-notes-done.ts に書く（画面に「台本に反映済み」と出る）
+ */
+export type SavedNote = { text: string; updatedAt: string; redrawnAt?: string };
+export type SavedNotes = Record<string, SavedNote>;
 export const SAVED_NOTE_MAX = 400;
+/** すべての保存版のメモをまとめた一覧（Claude が読んで台本に反映するため） */
+const NOTES_INDEX_PATH = "series/saved-notes.json";
+export type SavedNoteRow = SavedNote & { series: SeriesId; episode: number; stamp: string; page: string };
 
 function notesPath(id: SeriesId, episode: number, stamp: string) {
   return `${savedDir(id, episode, stamp)}/notes.json`;
 }
 
-export async function readSavedNotes(id: SeriesId, episode: number, stamp: string): Promise<SavedNotes> {
+async function readJson(path: string): Promise<unknown> {
   const db = getSupabase();
-  if (!db) return {};
-  const { data, error } = await db.storage.from(SAMPLE_BUCKET).download(notesPath(id, episode, stamp));
-  if (error || !data) return {};
+  if (!db) return null;
+  const { data, error } = await db.storage.from(SAMPLE_BUCKET).download(path);
+  if (error || !data) return null;
   try {
-    const raw = JSON.parse(await data.text());
-    return raw && typeof raw === "object" ? (raw as SavedNotes) : {};
+    return JSON.parse(await data.text());
   } catch {
-    return {};
+    return null;
   }
 }
 
-/** メモを1つ書き換える（空なら消す） */
-export async function writeSavedNote(id: SeriesId, episode: number, stamp: string, key: string, text: string) {
+async function writeJson(path: string, value: unknown) {
   const db = getSupabase();
   if (!db) throw new Error("Supabase が未設定です");
-  const notes = await readSavedNotes(id, episode, stamp);
-  if (text) notes[key] = text;
-  else delete notes[key];
-  const { error } = await db.storage
-    .from(SAMPLE_BUCKET)
-    .upload(notesPath(id, episode, stamp), JSON.stringify(notes), { contentType: "application/json", upsert: true, cacheControl: "0" });
+  const { error } = await db.storage.from(SAMPLE_BUCKET).upload(path, JSON.stringify(value, null, 1), { contentType: "application/json", upsert: true, cacheControl: "0" });
   if (error) throw new Error(error.message);
+}
+
+export async function readSavedNotes(id: SeriesId, episode: number, stamp: string): Promise<SavedNotes> {
+  const raw = await readJson(notesPath(id, episode, stamp));
+  if (!raw || typeof raw !== "object") return {};
+  const out: SavedNotes = {};
+  for (const [k, v] of Object.entries(raw as Record<string, unknown>)) {
+    if (typeof v === "string") out[k] = { text: v, updatedAt: "" };
+    else if (v && typeof v === "object" && typeof (v as SavedNote).text === "string") out[k] = v as SavedNote;
+  }
+  return out;
+}
+
+/** メモを1つ書き換える（空なら消す）。redrawn=true のときは文はそのままで「作り直した」日時だけ残す */
+export async function writeSavedNote(id: SeriesId, episode: number, stamp: string, key: string, change: { text: string } | { redrawn: true }) {
+  const notes = await readSavedNotes(id, episode, stamp);
+  const now = new Date().toISOString();
+  if ("redrawn" in change) {
+    if (notes[key]) notes[key] = { ...notes[key], redrawnAt: now };
+  } else if (change.text) {
+    notes[key] = notes[key]?.text === change.text ? notes[key] : { text: change.text, updatedAt: now };
+  } else delete notes[key];
+  await writeJson(notesPath(id, episode, stamp), notes);
+
+  // まとめの一覧も書き換える
+  const rawIndex = await readJson(NOTES_INDEX_PATH);
+  const index = (Array.isArray(rawIndex) ? rawIndex : []) as SavedNoteRow[];
+  const rest = index.filter((r) => !(r.series === id && r.episode === episode && r.stamp === stamp && r.page === key));
+  const row = notes[key];
+  await writeJson(NOTES_INDEX_PATH, row ? [...rest, { series: id, episode, stamp, page: key, ...row }] : rest);
 }
