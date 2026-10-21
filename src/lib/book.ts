@@ -3,6 +3,7 @@ import { STORIES, type Scene } from "./catalog";
 import { LEVELS, getSeriesInfo, parseSeriesKey, type Combo, type SeriesId } from "./story-key";
 import { SERIES_DATA, type Continuity, type SeriesSceneData } from "./series-data";
 import { parseCustomKey } from "./custom-story";
+import { applyScriptEdits, type ScriptEdits } from "./script-edits";
 
 // 注文の「お話の番号」から、絵本の中身（表紙の絵・12場面の文と絵）を組み立てる（サーバー専用）。
 // 旧版の1話だけのお話は catalog.ts の STORIES、シリーズは src/data/series/*.json（確定した台本）から。
@@ -69,7 +70,8 @@ function pick(scene: SeriesSceneData, combo: Combo, level: number): BookScene {
   return { text: v.text[level], art: v.art, withMom: v.withMom, withDad: v.withDad, withSidekick: v.withSidekick, camera: v.camera ?? scene.camera };
 }
 
-export function getBook(key: string | null | undefined, siblings?: SiblingOverlay | null): Book | null {
+/** edits：管理画面で直した台本の文（script-edits.ts）。文を読む所では渡す（絵の指示だけ使う所は無くてよい） */
+export function getBook(key: string | null | undefined, siblings?: SiblingOverlay | null, edits?: ScriptEdits | null): Book | null {
   const legacy = STORIES.find((s) => s.id === key);
   if (legacy) return { key: legacy.id, name: legacy.name, cover: legacy.cover, scenes: legacy.scenes };
 
@@ -97,7 +99,7 @@ export function getBook(key: string | null | undefined, siblings?: SiblingOverla
 
   const k = parseSeriesKey(key);
   if (!k) return null;
-  const data = SERIES_DATA[k.series];
+  const data = edits ? applyScriptEdits(SERIES_DATA[k.series], edits) : SERIES_DATA[k.series];
   const info = getSeriesInfo(k.series)!;
   const ep = data.episodes.find((e) => e.no === k.episode);
   if (!ep) return null;

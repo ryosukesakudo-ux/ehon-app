@@ -6,7 +6,7 @@ import { SampleImage } from "@/components/sample-image";
 import { SITE_NAME } from "@/components/brand";
 import { samplePublicUrl, versioned } from "@/lib/samples";
 import { SERIES_PAGES, seriesFamilyPhotoPath, seriesImagePath, seriesSampleChildName, seriesSheetPath } from "@/lib/series";
-import { SERIES_DATA } from "@/lib/series-data";
+import { seriesDataWithEdits } from "@/lib/script-edits";
 import { OPEN_SERIES, getSeriesInfo, openEpisodes } from "@/lib/story-key";
 import { SampleEpisodes, type SampleEpisode } from "./episodes";
 import s from "./samples.module.css";
@@ -30,8 +30,8 @@ function plainText(text: string) {
   return text.replaceAll("{name}", SAMPLE_CHILD_NAME).replace(/《[^》]*》/g, "");
 }
 
-export default function SamplesPage() {
-  const data = SERIES_DATA[SERIES];
+export default async function SamplesPage() {
+  const data = await seriesDataWithEdits(SERIES);
   const info = getSeriesInfo(SERIES)!;
   const episodes: SampleEpisode[] = openEpisodes(data.episodes).map((ep) => ({
     no: ep.no,

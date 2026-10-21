@@ -2,7 +2,8 @@ import type { ReactNode } from "react";
 import { SampleImage } from "@/components/sample-image";
 import { samplePublicUrl } from "@/lib/samples";
 import { SERIES_PAGES, seriesImagePath, seriesSampleChildName } from "@/lib/series";
-import { SERIES_DATA } from "@/lib/series-data";
+import type { SeriesData } from "@/lib/series-data";
+import { seriesDataWithEdits } from "@/lib/script-edits";
 import { savedNoteDone } from "@/lib/saved-notes-done";
 import { SAVED_NOTE_MAX, listSavedSets, readSavedNotes, savedImagePath, stampLabel, type SavedNotes } from "@/lib/series-saved";
 import { getStudioSeries } from "@/lib/series-studio";
@@ -26,9 +27,9 @@ type NoteOf = (p: number) => ReactNode;
 /** 台本：絵の説明と本文（文の量「普通」、ママもパパもいる形。ふりがなは外す）。0 が表紙 */
 type Script = { label: string; text: string }[];
 
-function scriptOf(id: keyof typeof SERIES_DATA, no: number, cover: string, title: string): Script {
-  const name = seriesSampleChildName(id);
-  const scenes = SERIES_DATA[id].episodes.find((e) => e.no === no)?.scenes ?? [];
+function scriptOf(data: SeriesData, no: number, cover: string, title: string): Script {
+  const name = seriesSampleChildName(data.id);
+  const scenes = data.episodes.find((e) => e.no === no)?.scenes ?? [];
   return [
     { label: cover, text: title },
     ...scenes.map((sc) => {
@@ -75,11 +76,12 @@ export default async function SavedSamplesPage() {
   const list = await Promise.all(
     SHOWN_SERIES_LIST.map(async (info) => {
       const s = getStudioSeries(info.id)!;
+      const data = await seriesDataWithEdits(info.id);
       return { s, episodes: await Promise.all(
           s.episodes.map(async (ep) => {
             const stamps = await listSavedSets(s.id, ep.no);
             const sets = await Promise.all(stamps.map(async (stamp) => ({ stamp, notes: (await readSavedNotes(s.id, ep.no, stamp)) as SavedNotes })));
-            return { ep, sets, script: scriptOf(s.id, ep.no, ep.cover.label, ep.title) };
+            return { ep, sets, script: scriptOf(data, ep.no, ep.cover.label, ep.title) };
           }),
         ),
       };

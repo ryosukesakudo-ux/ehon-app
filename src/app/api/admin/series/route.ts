@@ -35,6 +35,7 @@ import { buildSpreadBook } from "@/lib/spread-book";
 import { findSpreadTextSpot, isSpotDark } from "@/lib/spread-text";
 import { episodeArtComplete, getStudioSeries, studioScenesFor } from "@/lib/series-studio";
 import { setPublished } from "@/lib/published-episodes";
+import { readScriptEdits } from "@/lib/script-edits";
 import { BOOK_BUCKET, SAMPLE_BUCKET, getSupabase } from "@/lib/services";
 import { SHOWN_SERIES_LIST, bookTitle, seriesKey, type Combo, type LevelId } from "@/lib/story-key";
 
@@ -338,7 +339,7 @@ async function renderBook(db: Db, id: Parameters<typeof seriesImagePath>[0], epi
     const { data } = await db.storage.from(bucket).download(path);
     return data ? Buffer.from(await data.arrayBuffer()) : null;
   };
-  const book = getBook(seriesKey(id, episode, level, combo));
+  const book = getBook(seriesKey(id, episode, level, combo), null, await readScriptEdits());
   if (!book) return { error: "台本を読み込めません" };
   const coverImage = await download(opts.own ? ownCoverPath(id, episode) : seriesImagePath(id, episode, 0));
   if (!coverImage) return { error: opts.own ? "先にこの話の表紙の絵を作ってください（「まだ無い絵をまとめて作る」で作れます）" : "先にこの話の表紙の絵を作ってください（下の「まとめて作る」の表紙）" };
