@@ -243,6 +243,25 @@ export default async function Home() {
             <span className="nowrap">製本してお届けします。</span>
           </span>
         </p>
+        {/* 思い出の写真を入れられることは最初の画面で強調する（2026-10-21 作道さん：特に20枚まで入る点）。見本はAIで作った架空の家族 */}
+        <a href="#album" className={s.memoryCallout}>
+          <div className={s.memoryStack} aria-hidden="true">
+            {["50% 50%", "88% 30%", "52% 40%"].map((pos, i) => (
+              <div key={pos} className={s.memoryPolaroid} style={{ transform: `rotate(${[-10, 7, -2][i]}deg)`, left: [0, 26, 12][i], top: [6, 0, 22][i] }}>
+                <Image src="/memory-sample.webp" alt="" width={768} height={512} sizes="80px" style={{ objectPosition: pos, scale: ["1", "1.7", "2.4"][i] }} />
+              </div>
+            ))}
+          </div>
+          <div className={s.memoryText}>
+            <span className={`${s.memoryTag} display`}>さらに</span>
+            <span className={`${s.memoryLine} display`}>思い出の写真を</span>
+            <span className={`${s.memoryBig} display`}>
+              <span className={s.memoryNum}>{MEMORY_PHOTO_MAX}</span>枚まで
+            </span>
+            <span className={`${s.memoryLine} display`}>絵本に入れられる！</span>
+            <span className={s.memorySub}>お話のあとの<span className="nowrap">アルバムページ（6ページ）に</span></span>
+          </div>
+        </a>
         <div className={s.bookStage} aria-hidden="true">
           {/* 完成した絵本の表紙（作道さんが用意した画像、2026-10-16 こうちゃん森1話に差し替え）。ページの重なりと背の陰を少しだけ画像に描き込み済み */}
           <div className={s.sun} />
@@ -390,7 +409,7 @@ export default async function Home() {
       </section>
 
       {/* 最後のページは思い出のアルバムに（2026-10-19 友達の声「最後に分かったので、もっと大きく宣伝していい」） */}
-      <section className={s.section} style={{ background: "#fff", paddingTop: 8 }}>
+      <section id="album" className={s.section} style={{ background: "#fff", paddingTop: 8, scrollMarginTop: 70 }}>
         <Eyebrow color="#F07FA0">最後のページはアルバムに</Eyebrow>
         <h2 className={`${s.h2} display`} data-reveal="up">
           <span className="nowrap">思い出の写真{MEMORY_PHOTO_MAX}枚と、</span>
