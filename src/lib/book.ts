@@ -3,6 +3,7 @@ import { STORIES, type Scene } from "./catalog";
 import { LEVELS, getSeriesInfo, parseSeriesKey, type Combo, type SeriesId } from "./story-key";
 import { SERIES_DATA, type Continuity, type SeriesSceneData } from "./series-data";
 import { parseCustomKey } from "./custom-story";
+import type { CountRule } from "./count-check";
 import { applyScriptEdits, type ScriptEdits } from "./script-edits";
 
 // 注文の「お話の番号」から、絵本の中身（表紙の絵・12場面の文と絵）を組み立てる（サーバー専用）。
@@ -14,6 +15,8 @@ export type BookScene = Scene & {
   camera?: string;
   /** オリジナルのお話で、この場面に出るほかの登場人物（cast の番号） */
   guests?: number[];
+  /** 数を守りたい物（数のお勉強のシリーズ）。count-check.ts */
+  counts?: CountRule[];
   /** オリジナルのお話で、場所・屋内か屋外か・時間帯（英語） */
   setting?: string;
 };
@@ -67,7 +70,7 @@ export type SiblingOverlay = {
 /** 写真の組み合わせに合わせて、場面の文と絵を選ぶ。シリーズの表は「その場面の親」が出る形で書いてあり、違う組み合わせは alt にある */
 function pick(scene: SeriesSceneData, combo: Combo, level: number): BookScene {
   const v = scene.alt?.[combo] ?? scene;
-  return { text: v.text[level], art: v.art, withMom: v.withMom, withDad: v.withDad, withSidekick: v.withSidekick, camera: v.camera ?? scene.camera };
+  return { text: v.text[level], art: v.art, withMom: v.withMom, withDad: v.withDad, withSidekick: v.withSidekick, camera: v.camera ?? scene.camera, counts: scene.counts };
 }
 
 /** edits：管理画面で直した台本の文（script-edits.ts）。文を読む所では渡す（絵の指示だけ使う所は無くてよい） */

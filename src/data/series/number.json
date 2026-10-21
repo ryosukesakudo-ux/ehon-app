@@ -142,7 +142,14 @@
      "withMom": false,
      "withDad": false,
      "withSidekick": true,
-     "camera": "Low ground-level view among the tulip stems, the three chicks large in the foreground and the child's delighted face just behind them."
+     "camera": "Low ground-level view among the tulip stems, the three chicks large in the foreground and the child's delighted face just behind them.",
+     "counts": [
+      {
+       "what": "chicks",
+       "label": "ひよこ",
+       "n": 3
+      }
+     ]
     },
     {
      "label": "青い池。蓮の葉の上にひよこが2わ、岸に3わ並ぶ（合わせて5わ）",
@@ -155,7 +162,14 @@
      "withMom": false,
      "withDad": false,
      "withSidekick": true,
-     "camera": "Eye-level wide view along the pond bank, the lotus leaf with two chicks and the row of three chicks on the bank both clearly visible, the child pointing from the side."
+     "camera": "Eye-level wide view along the pond bank, the lotus leaf with two chicks and the row of three chicks on the bank both clearly visible, the child pointing from the side.",
+     "counts": [
+      {
+       "what": "chicks",
+       "label": "ひよこ",
+       "n": 5
+      }
+     ]
     },
     {
      "label": "木の枝の巣から3わのひよこが並んで顔を出す（3わともはっきり大きく）。はしごに登る主人公を下から見上げる（あおり）。下に5わが待つ",
@@ -168,7 +182,19 @@
      "withMom": false,
      "withDad": false,
      "withSidekick": true,
-     "camera": "Low angle from below and slightly to the side of the ladder, close enough that the nest with the three chicks fills the upper part of the frame large and in sharp focus, the climbing child just below it, the bear cub and the row of five chicks small at the bottom."
+     "camera": "Low angle from below and slightly to the side of the ladder, close enough that the nest with the three chicks fills the upper part of the frame large and in sharp focus, the climbing child just below it, the bear cub and the row of five chicks small at the bottom.",
+     "counts": [
+      {
+       "what": "chicks in the nest",
+       "label": "巣の中のひよこ",
+       "n": 3
+      },
+      {
+       "what": "chicks at the foot of the tree",
+       "label": "木の下のひよこ",
+       "n": 5
+      }
+     ]
     },
     {
      "label": "草むらから転がり出るひよこ。全部で9わ。カゾエが首をかしげ、空はまだ薄暗い",
@@ -181,7 +207,14 @@
      "withMom": false,
      "withDad": false,
      "withSidekick": true,
-     "camera": "Eye-level medium shot, the nine chicks clearly countable in the foreground, the child and the puzzled bear cub behind them under the dim sky."
+     "camera": "Eye-level medium shot, the nine chicks clearly countable in the foreground, the child and the puzzled bear cub behind them under the dim sky.",
+     "counts": [
+      {
+       "what": "chicks",
+       "label": "ひよこ",
+       "n": 9
+      }
+     ]
     },
     {
      "label": "散らばって走り回る9わのひよこ。座りこむ主人公と涙ぐむカゾエを上から見下ろす（俯瞰）。空は暗い",
@@ -194,7 +227,14 @@
      "withMom": false,
      "withDad": false,
      "withSidekick": true,
-     "camera": "High overhead view looking straight down on the child and the bear cub sitting in the middle, the nine chicks running in all directions around them."
+     "camera": "High overhead view looking straight down on the child and the bear cub sitting in the middle, the nine chicks running in all directions around them.",
+     "counts": [
+      {
+       "what": "chicks",
+       "label": "ひよこ",
+       "n": 9
+      }
+     ]
     },
     {
      "label": "木の「ひよこのおうち」（5へやずつ2だん）に9わ、1つだけ空いたへやを指さす主人公。主人公のフードから10わめのひよこが顔を出す（アップ）",
@@ -207,7 +247,14 @@
      "withMom": false,
      "withDad": false,
      "withSidekick": true,
-     "camera": "Close-up at the child's eye level beside the chick house, the child's pointing finger and the empty room in sharp focus, the tenth chick peeking out of the hood just above the child's shoulder."
+     "camera": "Close-up at the child's eye level beside the chick house, the child's pointing finger and the empty room in sharp focus, the tenth chick peeking out of the hood just above the child's shoulder.",
+     "counts": [
+      {
+       "what": "chicks sitting in the rooms of the chick house",
+       "label": "おうちの中のひよこ",
+       "n": 9
+      }
+     ]
     },
     {
      "label": "見開き。朝日がのぼる花ばたけ、ひよこのおうちに10わがそろって歌う。主人公が指さし、カゾエがばんざい",
@@ -220,7 +267,14 @@
      "withMom": false,
      "withDad": false,
      "withSidekick": true,
-     "camera": "Very wide panoramic view of the sunrise over the flower field, the chick house with ten chicks near the center, the child and the cheering bear cub on either side."
+     "camera": "Very wide panoramic view of the sunrise over the flower field, the chick house with ten chicks near the center, the child and the cheering bear cub on either side.",
+     "counts": [
+      {
+       "what": "chicks",
+       "label": "ひよこ",
+       "n": 10
+      }
+     ]
     },
     {
      "label": "【パパ】リビングで目をかくして数える主人公。カーテンの下からパパの足がはみ出している",
@@ -287,7 +341,14 @@
      "withMom": false,
      "withDad": false,
      "withSidekick": true,
-     "camera": "From inside the dark bedroom behind the child, the child's back to the viewer, looking out through the window at the chicks and the bear cub on the moonlit branches."
+     "camera": "From inside the dark bedroom behind the child, the child's back to the viewer, looking out through the window at the chicks and the bear cub on the moonlit branches.",
+     "counts": [
+      {
+       "what": "chicks",
+       "label": "ひよこ",
+       "n": 10
+      }
+     ]
     }
    ]
   },
@@ -460,8 +521,8 @@
      "camera": "High overhead view looking down on the child, the pig and the bear cub sitting together under the lanterns."
     },
     {
-     "label": "自分の両手を広げて見つめる主人公。その横で、ふうせんを10こずつリボンで束ねた色ちがいのたばができはじめている（アップ）",
-     "art": "the child holds up both hands with all ten fingers spread and looks at them with a bright idea; beside the child, Kazoe and Bubu the pig have begun tying balloons together with ribbons into bundles of exactly ten balloons each, every bundle a single color, a different color for each bundle",
+     "label": "場面8と同じ提灯の屋台まつり・むらさきの夕焼け空。両手を広げて見つめる主人公の横で、カゾエが青い風船10この束、ブーブさんがピンクの風船10この束を持つ",
+     "art": "at the festival square under the glowing red-and-white paper lanterns with the festival stalls behind, the same place as the previous page, the sky a purple sunset; the child holds up both hands with all ten fingers spread and looks at them with a bright idea; beside the child, Kazoe holds up one bundle of exactly ten blue balloons and Bubu the pig holds up one bundle of exactly ten pink balloons, each bundle tied together with a ribbon; in each bundle the ten balloons are spread out flat side by side in a neat triangle, four on top, then three, then two, then one at the bottom, so every balloon is fully visible and none is hidden behind another balloon",
      "text": [
       "ゆびは じゅっぽん。「じゅっこずつ たばに しよう！」",
       "ゆびは じゅっぽん。「じゅっこずつ たばに しよう！」",
@@ -470,11 +531,23 @@
      "withMom": false,
      "withDad": false,
      "withSidekick": true,
-     "camera": "Close-up at the child's eye level, the spread ten fingers large in the foreground and the first neat ten-balloon bundles just behind."
+     "camera": "Eye-level medium shot, the child's spread ten fingers in front and the blue and pink ten-balloon bundles held up beside the child, both bundles whole and fully inside the picture.",
+     "counts": [
+      {
+       "what": "blue balloons",
+       "label": "青い風船",
+       "n": 10
+      },
+      {
+       "what": "pink balloons",
+       "label": "ピンクの風船",
+       "n": 10
+      }
+     ]
     },
     {
      "label": "見開き。夜空の花火と、10色のふうせんのたば10こがいっせいに舞い上がる。主人公・カゾエ・ブーブさんが見上げる（あおり）",
-     "art": "fireworks bloom in the night sky as exactly ten bundles of balloons rise into the sky together, each bundle ten balloons of one color, in ten different colors; the child, Kazoe and Bubu the pig look up and cheer",
+     "art": "fireworks bloom in the night sky as exactly ten bundles of balloons rise into the sky together, spread out in two rows of five with clear sky between the bundles; each bundle is ten balloons of one color in a neat triangle (four, three, two, one), in ten different colors; the child, Kazoe and Bubu the pig look up and cheer",
      "text": [
       "いち たば、に たば……じゅう たば！ ひゃっこ、とんでけー！",
       "いち たば、に たば……じゅう たば！ ひゃっこ、とんでけー！",
@@ -483,7 +556,14 @@
      "withMom": false,
      "withDad": false,
      "withSidekick": true,
-     "camera": "Very wide low-angle view from the ground, the ten balloon bundles and the fireworks filling the sky, the three cheering figures small at the bottom."
+     "camera": "Very wide low-angle view from the ground, the ten balloon bundles and the fireworks filling the sky, the three cheering figures small at the bottom.",
+     "counts": [
+      {
+       "what": "separate balloon bundles (groups of balloons tied together)",
+       "label": "風船のたば",
+       "n": 10
+      }
+     ]
     },
     {
      "label": "【ママ】テーブルでおはじきを10こずつ（5×2）並べる主人公と、のぞきこむママ",
@@ -537,7 +617,14 @@
        "withSidekick": false,
        "camera": "High angle over the table, the two rows of five marbles clearly countable and the child's proud face."
       }
-     }
+     },
+     "counts": [
+      {
+       "what": "glass marbles (ohajiki) on the table",
+       "label": "おはじき",
+       "n": 10
+      }
+     ]
     },
     {
      "label": "夜、窓から空に浮かぶ色とりどりのふうせんを見上げる主人公の後ろ姿（背面）",

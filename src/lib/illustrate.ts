@@ -6,6 +6,7 @@ import { getBook, type Book, type BookScene } from "./book";
 import { getOpenAI } from "./services";
 import { upscalePng } from "./upscale";
 import { cropSpreadToBook } from "./spread-crop";
+import { countPrompt, drawCounted, type CountedImage } from "./count-check";
 import { SERIES_NOTE_MAX, type SeriesScene } from "./series";
 import type { StudioSeries } from "./series-studio";
 import type { Continuity } from "./series-data";
@@ -379,6 +380,7 @@ export function buildPrompt(taste: TasteId, story: string, sceneIndex: number, r
     scene.setting ? `Setting: ${scene.setting}.` : "",
     `Scene: ${scene.art}.`,
     series ? lookPrompt(series.cast, series.props, scene.art, scene.camera) : "",
+    countPrompt(scene.counts),
     series ? seriesCastRules(book.cast?.length ?? 0) : "",
     !series && book.cast ? CUSTOM_CAST_RULES : "",
     guestsPrompt(book.cast, scene.guests),
@@ -431,31 +433,37 @@ export async function illustrate(opts: {
   const upscaleTo = !opts.size && !isCover && character === null && opts.quality === "final" ? FINAL_PX : null;
   const spread = !!opts.spread && !opts.size && !isCover && character === null;
   // シリーズの表紙・場面には、見本の保存版のメモも入れる（2026-10-21 作道さん）
-  const series = character === null ? (opts.book ?? getBook(opts.story))?.series : null;
+  const book = character === null ? (opts.book ?? getBook(opts.story)) : null;
+  const series = book?.series;
   const artNote = series ? await savedArtNote(series.id, series.episode, isCover ? 0 : opts.sceneIndex + 1) : "";
-  const result = await ai.images.edit({
-    model: process.env.OPENAI_IMAGE_MODEL ?? "gpt-image-2",
-    image: opts.images.map((i) => i.file),
-    prompt: standInPrompt(
-      [
-        character !== null
-          ? buildCharacterPrompt(opts.taste, character, opts.images, opts.childAge, opts.redo, opts.story, opts.book)
-          : buildPrompt(opts.taste, opts.story, opts.sceneIndex, opts.images, opts.childAge, opts.redo, spread, opts.book, artNote),
-        opts.plainFace ? PLAIN_FACE : "",
-      ]
-        .filter(Boolean)
-        .join(" "),
-      opts.standIns,
-    ),
-    // 表紙は横長（タイトルは絵の上の帯に置くので、絵に文字の場所はいらない）
-    size: opts.size ?? (isCover ? COVER_SIZE : spread ? "1536x1024" : "1024x1024"),
-    quality: opts.detail ?? (opts.quality === "final" ? "high" : "medium"),
-    output_format: "png",
+  // 数のお勉強の数が大事な場面は、描いたあと数を確かめて、違えば描き直す（count-check.ts）
+  const counts = isCover ? undefined : book?.scenes[opts.sceneIndex]?.counts;
+  const { b64, warning } = await drawCounted(counts, async () => {
+    const result = await ai.images.edit({
+      model: process.env.OPENAI_IMAGE_MODEL ?? "gpt-image-2",
+      image: opts.images.map((i) => i.file),
+      prompt: standInPrompt(
+        [
+          character !== null
+            ? buildCharacterPrompt(opts.taste, character, opts.images, opts.childAge, opts.redo, opts.story, opts.book)
+            : buildPrompt(opts.taste, opts.story, opts.sceneIndex, opts.images, opts.childAge, opts.redo, spread, opts.book, artNote),
+          opts.plainFace ? PLAIN_FACE : "",
+        ]
+          .filter(Boolean)
+          .join(" "),
+        opts.standIns,
+      ),
+      // 表紙は横長（タイトルは絵の上の帯に置くので、絵に文字の場所はいらない）
+      size: opts.size ?? (isCover ? COVER_SIZE : spread ? "1536x1024" : "1024x1024"),
+      quality: opts.detail ?? (opts.quality === "final" ? "high" : "medium"),
+      output_format: "png",
+    });
+    const generated = result.data?.[0]?.b64_json;
+    if (!generated) throw new Error("画像が生成されませんでした");
+    // 見開きの絵は、頭が切れない位置で本と同じ 2:1 に切ってから保存する（数は切ったあとの絵で確かめる）
+    return spread ? await cropSpreadToBook(generated) : generated;
   });
-  const generated = result.data?.[0]?.b64_json;
-  if (!generated) throw new Error("画像が生成されませんでした");
-  // 見開きの絵は、頭が切れない位置で本と同じ 2:1 に切ってから保存する
-  const b64 = spread ? await cropSpreadToBook(generated) : generated;
+  if (warning) console.warn(`illustrate ${opts.story} scene ${opts.sceneIndex + 1}: ${warning}`);
   if (upscaleTo && spread) return upscaleSpread(b64);
   return upscaleTo ? upscalePng(b64, upscaleTo) : b64;
 }
@@ -885,6 +893,7 @@ export function buildSeriesPrompt(series: StudioSeries, scene: SeriesScene, opts
       : `Do not include ${sidekickName(series.sidekick)} (the sidekick) in this scene.`,
     `Scene: ${scene.art}.`,
     lookPrompt(series.cast, series.props, scene.art, scene.camera),
+    countPrompt(scene.counts),
     SERIES_CAST_RULES,
     scene.withMom ? "" : "Do not include the mother in this scene.",
     scene.withDad ? "" : "Do not include the father in this scene.",
@@ -902,22 +911,27 @@ export function buildSeriesPrompt(series: StudioSeries, scene: SeriesScene, opts
     .join(" ");
 }
 
-/** シリーズの1ページ（表紙または場面）を水彩で描き、PNG の base64 を返す。spread：見開きの試作（横長 1536x1024） */
-export async function illustrateSeries(opts: { series: StudioSeries; scene: SeriesScene; page: number; outfits?: string; continuity?: Continuity[]; note?: string; savedNote?: string; quality: Quality; sheet: Uploadable; photo?: Uploadable | null; spread?: boolean; textSide?: "left" | "right"; ownPhotos?: { who: Person; file: Uploadable }[] }) {
+/**
+ * シリーズの1ページ（表紙または場面）を水彩で描き、PNG の base64 を返す。spread：見開きの試作（横長 1536x1024）。
+ * 数が大事な場面は数を確かめて描き直し、合わなかったときは warning（画面に出す）を付ける
+ */
+export async function illustrateSeries(opts: { series: StudioSeries; scene: SeriesScene; page: number; outfits?: string; continuity?: Continuity[]; note?: string; savedNote?: string; quality: Quality; sheet: Uploadable; photo?: Uploadable | null; spread?: boolean; textSide?: "left" | "right"; ownPhotos?: { who: Person; file: Uploadable }[] }): Promise<CountedImage> {
   const cover = opts.page === 0;
   const ai = getOpenAI();
   if (!ai) throw new Error("OPENAI_API_KEY が未設定です");
-  const result = await ai.images.edit({
-    model: process.env.OPENAI_IMAGE_MODEL ?? "gpt-image-2",
-    image: [opts.sheet, ...(opts.photo ? [opts.photo] : []), ...(opts.ownPhotos ?? []).map((p) => p.file)],
-    prompt: buildSeriesPrompt(opts.series, opts.scene, { cover, page: opts.page, outfits: opts.outfits, continuity: opts.continuity, note: opts.note, savedNote: opts.savedNote, withPhoto: !!opts.photo, spread: opts.spread && !cover, textSide: opts.textSide, ownPhotos: opts.ownPhotos?.map((p) => p.who) }),
-    size: cover ? COVER_SIZE : opts.spread ? "1536x1024" : "1024x1024",
-    quality: opts.quality === "final" ? "high" : "medium",
-    output_format: "png",
+  return drawCounted(cover ? undefined : opts.scene.counts, async () => {
+    const result = await ai.images.edit({
+      model: process.env.OPENAI_IMAGE_MODEL ?? "gpt-image-2",
+      image: [opts.sheet, ...(opts.photo ? [opts.photo] : []), ...(opts.ownPhotos ?? []).map((p) => p.file)],
+      prompt: buildSeriesPrompt(opts.series, opts.scene, { cover, page: opts.page, outfits: opts.outfits, continuity: opts.continuity, note: opts.note, savedNote: opts.savedNote, withPhoto: !!opts.photo, spread: opts.spread && !cover, textSide: opts.textSide, ownPhotos: opts.ownPhotos?.map((p) => p.who) }),
+      size: cover ? COVER_SIZE : opts.spread ? "1536x1024" : "1024x1024",
+      quality: opts.quality === "final" ? "high" : "medium",
+      output_format: "png",
+    });
+    const b64 = result.data?.[0]?.b64_json;
+    if (!b64) throw new Error("画像が生成されませんでした");
+    return b64;
   });
-  const b64 = result.data?.[0]?.b64_json;
-  if (!b64) throw new Error("画像が生成されませんでした");
-  return b64;
 }
 
 /**

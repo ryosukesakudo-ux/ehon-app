@@ -152,7 +152,7 @@ export async function POST(request: Request) {
       const scene = episode.cover;
       const people: Who[] = ["child", ...(scene.withMom ? (["mom"] as const) : []), ...(scene.withDad ? (["dad"] as const) : [])];
       const quality = body?.quality === "preview" ? "preview" : "final";
-      const b64 = await illustrateSeries({ series, scene, page: 0, outfits: episode.outfits, continuity: episode.continuity, note, savedNote: await savedNote(episode.no, 0), quality, sheet: await ownSheet(), ownPhotos: await ownPhotos(people) });
+      const { b64 } = await illustrateSeries({ series, scene, page: 0, outfits: episode.outfits, continuity: episode.continuity, note, savedNote: await savedNote(episode.no, 0), quality, sheet: await ownSheet(), ownPhotos: await ownPhotos(people) });
       await save(ownCoverPath(series.id, episode.no), b64);
       return Response.json({ ok: true });
     }
@@ -229,18 +229,19 @@ export async function POST(request: Request) {
       const side = bookTextSide(page);
       const quality = body?.quality === "preview" ? "preview" : "final";
       let b64: string;
+      let warning: string | undefined;
       if (own) {
         const people: Who[] = ["child", ...(scene.withMom ? (["mom"] as const) : []), ...(scene.withDad ? (["dad"] as const) : [])];
         const photos = await ownPhotos(people);
         const lacking = people.filter((w) => !photos.some((p) => p.who === w));
         if (lacking.length) return Response.json({ error: `この場面に出る人の写真がありません（${lacking.map((w) => WHO_LABEL[w]).join("・")}）` }, { status: 400 });
-        b64 = await illustrateSeries({ series, scene, page, outfits: episode.outfits, continuity: episode.continuity, note, savedNote: await savedNote(episode.no, page), quality, sheet: await ownSheet(), ownPhotos: photos, spread: true, textSide: side });
+        ({ b64, warning } = await illustrateSeries({ series, scene, page, outfits: episode.outfits, continuity: episode.continuity, note, savedNote: await savedNote(episode.no, page), quality, sheet: await ownSheet(), ownPhotos: photos, spread: true, textSide: side }));
       } else {
         const sheet = await load(seriesSheetPath(series.id), "characters.png");
         if (!sheet) return Response.json({ error: "先に登場人物の設定画を作ってください" }, { status: 400 });
         const photo = series.photoFirst ? await load(seriesFamilyPhotoPath(series.id), "family-photo.png") : null;
         if (series.photoFirst && !photo) return Response.json({ error: noPhoto }, { status: 400 });
-        b64 = await illustrateSeries({ series, scene, page, outfits: episode.outfits, continuity: episode.continuity, note, savedNote: await savedNote(episode.no, page), quality, sheet, photo, spread: true, textSide: side });
+        ({ b64, warning } = await illustrateSeries({ series, scene, page, outfits: episode.outfits, continuity: episode.continuity, note, savedNote: await savedNote(episode.no, page), quality, sheet, photo, spread: true, textSide: side }));
       }
       await save((own ? ownBookSpreadPath : seriesBookSpreadPath)(series.id, episode.no, combo, page), b64);
       const spot = await findSpreadTextSpot(Buffer.from(b64, "base64"), side);
@@ -248,7 +249,7 @@ export async function POST(request: Request) {
         .from(bucket)
         .upload((own ? ownBookSpreadTextPath : seriesBookSpreadTextPath)(series.id, episode.no, combo, page), JSON.stringify({ spot }), { contentType: "application/json", upsert: true, cacheControl: "300" });
       if (error) throw new Error(error.message);
-      return Response.json({ ok: true });
+      return Response.json({ ok: true, warning });
     }
 
     if (body?.kind === "bookRender") {
@@ -291,7 +292,7 @@ export async function POST(request: Request) {
     // 文の置き場所をAIに選ばせて隣にJSONで保存する。表紙はもともと横長
     const wide = !spread && body?.wide === true && page > 0;
     const side = wide ? seriesSceneTextSide(page) : textSide;
-    const b64 = await illustrateSeries({ series, scene, page, outfits: episode.outfits, continuity: episode.continuity, note, savedNote: await savedNote(episode.no, page), quality, sheet, photo, spread: spread || wide, textSide: side });
+    const { b64, warning } = await illustrateSeries({ series, scene, page, outfits: episode.outfits, continuity: episode.continuity, note, savedNote: await savedNote(episode.no, page), quality, sheet, photo, spread: spread || wide, textSide: side });
     await save(spread ? seriesSpreadPath(series.id, episode.no, page) : seriesImagePath(series.id, episode.no, page), b64);
     if (spread) await saveSpot(episode.no, page, Buffer.from(b64, "base64"), textSide);
     if (wide) {
@@ -304,7 +305,7 @@ export async function POST(request: Request) {
       // 正方形で描き直したら、前の横長の絵の置き場所は使わない
       await db.storage.from(SAMPLE_BUCKET).remove([seriesImageTextPath(series.id, episode.no, page)]);
     }
-    return Response.json({ ok: true });
+    return Response.json({ ok: true, warning });
   } catch (e) {
     console.error("series generation failed", e);
     return Response.json({ error: e instanceof Error ? e.message : "作成に失敗しました" }, { status: 500 });

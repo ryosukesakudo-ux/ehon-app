@@ -1,4 +1,5 @@
 import { SAMPLE_CHILD_NAME, SHOWCASE_PHOTO } from "./samples";
+import type { CountRule } from "./count-check";
 import type { SeriesId } from "./story-key";
 
 export type { SeriesId };
@@ -17,6 +18,8 @@ export type SeriesScene = {
   withSidekick?: boolean;
   /** カメラの位置・構図（英語） */
   camera?: string;
+  /** 数を守りたい物（数のお勉強）。描いたあと数を確かめ、違えば描き直す（count-check.ts） */
+  counts?: CountRule[];
 };
 
 /**

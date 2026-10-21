@@ -84,6 +84,8 @@ export function SeriesStudio({ list }: { list: StudioView[] }) {
       const json = await res.json();
       if (!res.ok) throw new Error(json.error ?? "作成に失敗しました");
       setVersion((v) => ({ ...v, [key]: Date.now() }));
+      // 数が大事な場面で、描き直しても数が合わなかったとき（count-check.ts）
+      if (typeof json.warning === "string") setErrors((x) => ({ ...x, [key]: json.warning }));
       return json;
     } catch (e) {
       setErrors((x) => ({ ...x, [key]: e instanceof Error ? e.message : "作成に失敗しました" }));
