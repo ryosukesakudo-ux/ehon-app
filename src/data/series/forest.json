@@ -10,7 +10,7 @@
   "glowing seed": "a small round seed about the size of a marble that glows a warm golden-white light",
   "map": "a small hand-drawn map on a piece of beige paper about the size of the child's palm, drawn with a blue river line, small trees and a red X mark",
   "golden acorn": "a shiny solid-gold acorn about the size of the child's thumb, with a darker golden textured cap",
-  "star crown": "a small sparkling golden crown with five star points and tiny glittering stars on its band",
+  "star crown": "the festival's star crown, always exactly the same design on every page including the cover: a shiny golden-yellow crown with exactly five pointed star-shaped tips standing up in a row around the top, a smooth gold band with one small red round jewel at the front center, and tiny white sparkles around it; no other jewels, no fabric, no flowers or leaves on it, never silver and never a tiara. The child's crown fits the child's head snugly, about as tall as the child's ear; Chicchi's crown is an identical tiny copy, the same five star tips, gold band and red jewel, sized to fit the mouse's head",
   "white feather": "a small pure-white downy feather about the length of the child's finger",
   "giant ancient tree": "Grandpa Tree, a huge, very old broad tree with a thick gnarled light-brown trunk, wide spreading branches and big roots that rise above the ground",
   "giant tree": "Grandpa Tree, a huge, very old broad tree with a thick gnarled light-brown trunk, wide spreading branches and big roots that rise above the ground",
@@ -589,6 +589,26 @@
      "from": 12,
      "to": 12,
      "text": "On this page the child wears plain light-blue pajamas instead of the usual clothes. Leaf badges are small softly glowing leaf-shaped badges about the size of a coin, pinned in a neat horizontal row on the front of the child's top, on the child's own left chest over the heart, on whatever the child wears; they are never on the back, shoulders, sleeves, hat or bag, and when the child is seen from behind the badges are hidden and must not be drawn; whenever the front of the child's top can be seen, the badges must be drawn clearly and never left out: exactly three badges, a cherry-blossom-pink leaf, a fresh-green leaf and a golden-yellow leaf."
+    },
+    {
+     "from": 0,
+     "to": 0,
+     "text": "The star crown (see its description) on this cover: the child wears the big star crown on top of the head and tiny Chicchi wears the identical tiny star crown; draw both crowns in exactly the same design as on scene 10."
+    },
+    {
+     "from": 1,
+     "to": 9,
+     "text": "Nobody wears a crown on this page: the child and every animal are bare-headed. If the festival stage is visible, the one star crown (golden, five star tips, a small red jewel at the front) rests on a small red cushion on a wooden stand on the stage; otherwise do not draw any crown."
+    },
+    {
+     "from": 10,
+     "to": 10,
+     "text": "The star crown has split into two identical crowns of exactly the same design (golden, five star tips, a small red jewel at the front): a big one on the child's head and a tiny one on tiny Chicchi's head. No other crowns anywhere."
+    },
+    {
+     "from": 11,
+     "to": 12,
+     "text": "No crown on this page: the child is bare-headed and no crown is drawn anywhere."
     }
    ],
    "cover": {
