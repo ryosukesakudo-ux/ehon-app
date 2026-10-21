@@ -36,6 +36,7 @@ import { findSpreadTextSpot, isSpotDark } from "@/lib/spread-text";
 import { episodeArtComplete, getStudioSeries, studioScenesFor } from "@/lib/series-studio";
 import { setPublished } from "@/lib/published-episodes";
 import { readScriptEdits } from "@/lib/script-edits";
+import { savedArtNote } from "@/lib/saved-art-notes";
 import { BOOK_BUCKET, SAMPLE_BUCKET, getSupabase } from "@/lib/services";
 import { SHOWN_SERIES_LIST, bookTitle, seriesKey, type Combo, type LevelId } from "@/lib/story-key";
 
@@ -98,6 +99,12 @@ export async function POST(request: Request) {
   const textSide = body?.textSide === "left" ? "left" : "right";
 
   const note = typeof body?.note === "string" ? body.note.trim() : "";
+  // 見本の保存版のメモ（お客様の本の絵にも入るもの）を見本の表紙・場面にも入れる。同じメモを note で渡されたとき（保存版の画面の作り直し）は二重にしない
+  const savedNote = async (episodeNo: number, p: number) =>
+    (await savedArtNote(series.id, episodeNo, p))
+      .split("\n")
+      .filter((t) => t && !note.includes(t))
+      .join("\n");
   const noPhoto = usesShowcasePhoto(series.id) ? "先に作例スタジオで「この写真から → この絵本に」の①（家族の写真）を作ってください" : "先に家族写真を作ってください";
 
   // 自分の写真（いる人だけ）と、その写真から描く設定画（無ければ先に作る）
@@ -145,7 +152,7 @@ export async function POST(request: Request) {
       const scene = episode.cover;
       const people: Who[] = ["child", ...(scene.withMom ? (["mom"] as const) : []), ...(scene.withDad ? (["dad"] as const) : [])];
       const quality = body?.quality === "preview" ? "preview" : "final";
-      const b64 = await illustrateSeries({ series, scene, page: 0, outfits: episode.outfits, continuity: episode.continuity, note, quality, sheet: await ownSheet(), ownPhotos: await ownPhotos(people) });
+      const b64 = await illustrateSeries({ series, scene, page: 0, outfits: episode.outfits, continuity: episode.continuity, note, savedNote: await savedNote(episode.no, 0), quality, sheet: await ownSheet(), ownPhotos: await ownPhotos(people) });
       await save(ownCoverPath(series.id, episode.no), b64);
       return Response.json({ ok: true });
     }
@@ -227,13 +234,13 @@ export async function POST(request: Request) {
         const photos = await ownPhotos(people);
         const lacking = people.filter((w) => !photos.some((p) => p.who === w));
         if (lacking.length) return Response.json({ error: `この場面に出る人の写真がありません（${lacking.map((w) => WHO_LABEL[w]).join("・")}）` }, { status: 400 });
-        b64 = await illustrateSeries({ series, scene, page, outfits: episode.outfits, continuity: episode.continuity, note, quality, sheet: await ownSheet(), ownPhotos: photos, spread: true, textSide: side });
+        b64 = await illustrateSeries({ series, scene, page, outfits: episode.outfits, continuity: episode.continuity, note, savedNote: await savedNote(episode.no, page), quality, sheet: await ownSheet(), ownPhotos: photos, spread: true, textSide: side });
       } else {
         const sheet = await load(seriesSheetPath(series.id), "characters.png");
         if (!sheet) return Response.json({ error: "先に登場人物の設定画を作ってください" }, { status: 400 });
         const photo = series.photoFirst ? await load(seriesFamilyPhotoPath(series.id), "family-photo.png") : null;
         if (series.photoFirst && !photo) return Response.json({ error: noPhoto }, { status: 400 });
-        b64 = await illustrateSeries({ series, scene, page, outfits: episode.outfits, continuity: episode.continuity, note, quality, sheet, photo, spread: true, textSide: side });
+        b64 = await illustrateSeries({ series, scene, page, outfits: episode.outfits, continuity: episode.continuity, note, savedNote: await savedNote(episode.no, page), quality, sheet, photo, spread: true, textSide: side });
       }
       await save((own ? ownBookSpreadPath : seriesBookSpreadPath)(series.id, episode.no, combo, page), b64);
       const spot = await findSpreadTextSpot(Buffer.from(b64, "base64"), side);
@@ -284,7 +291,7 @@ export async function POST(request: Request) {
     // 文の置き場所をAIに選ばせて隣にJSONで保存する。表紙はもともと横長
     const wide = !spread && body?.wide === true && page > 0;
     const side = wide ? seriesSceneTextSide(page) : textSide;
-    const b64 = await illustrateSeries({ series, scene, page, outfits: episode.outfits, continuity: episode.continuity, note, quality, sheet, photo, spread: spread || wide, textSide: side });
+    const b64 = await illustrateSeries({ series, scene, page, outfits: episode.outfits, continuity: episode.continuity, note, savedNote: await savedNote(episode.no, page), quality, sheet, photo, spread: spread || wide, textSide: side });
     await save(spread ? seriesSpreadPath(series.id, episode.no, page) : seriesImagePath(series.id, episode.no, page), b64);
     if (spread) await saveSpot(episode.no, page, Buffer.from(b64, "base64"), textSide);
     if (wide) {

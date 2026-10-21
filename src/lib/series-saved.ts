@@ -1,6 +1,7 @@
 import "server-only";
 import { SERIES_PAGES, seriesImagePath, seriesImageTextPath, type SeriesId } from "./series";
 import { SAMPLE_BUCKET, getSupabase } from "./services";
+import { clearArtNotesCache } from "./saved-art-notes";
 
 // 見本の保存版（2026-10-20 作道さん「今の13枚一式を保存版として別の場所にとっておく」）。
 // 絵スタジオで作り直すと見本の絵は上書きされるので、その時点の表紙＋12場面（文の置き場所の JSON も）を
@@ -66,13 +67,13 @@ export async function listSavedSets(id: SeriesId, episode: number): Promise<stri
  * 保存版ごとの、直してほしい点のメモ（ページ番号 → メモ。"all" は一式全体へのメモ）。保存版のフォルダの notes.json。
  * 2026-10-20 作道さん「そこで指示したり修正したことが本番にも反映されるように」→ 両方に反映する：
  * ・見本：メモを指示にして、今の見本のその1枚を作り直す（redrawnAt に日時を残す）
- * ・お客様の本：Claude がメモ（管理画面の「コピー」か、公開の一覧 series/saved-notes.json）を読んで台本・絵の指示に入れ、
- *   入れたメモは saved-notes-done.ts に書く（画面に「台本に反映済み」と出る）
+ * ・お客様の本：2026-10-21 から、保存したメモは自動でお客様の本の絵の指示にも入る（saved-art-notes.ts。話・ページごとにいちばん新しいメモ）。
+ *   Claude が台本に書き写したメモは saved-notes-done.ts に書く（画面に「台本に反映済み」と出て、自動では入れない）
  */
 export type SavedNote = { text: string; updatedAt: string; redrawnAt?: string };
 export type SavedNotes = Record<string, SavedNote>;
 export const SAVED_NOTE_MAX = 400;
-/** すべての保存版のメモをまとめた一覧（Claude が読んで台本に反映するため） */
+/** すべての保存版のメモをまとめた一覧（お客様の本の絵に入れるメモは saved-art-notes.ts がここから選ぶ） */
 const NOTES_INDEX_PATH = "series/saved-notes.json";
 export type SavedNoteRow = SavedNote & { series: SeriesId; episode: number; stamp: string; page: string };
 
@@ -127,6 +128,7 @@ export async function writeSavedNote(id: SeriesId, episode: number, stamp: strin
   const rest = index.filter((r) => !(r.series === id && r.episode === episode && r.stamp === stamp && r.page === key));
   const row = notes[key];
   await writeJson(NOTES_INDEX_PATH, row ? [...rest, { series: id, episode, stamp, page: key, ...row }] : rest);
+  clearArtNotesCache();
 }
 
 /** 保存版をまるごと消す（絵・メモ）。まとめのメモ一覧からも外す。今の見本には影響しない */
@@ -146,5 +148,6 @@ export async function deleteSavedSet(id: SeriesId, episode: number, stamp: strin
   if (Array.isArray(rawIndex)) {
     const rest = (rawIndex as SavedNoteRow[]).filter((r) => !(r.series === id && r.episode === episode && r.stamp === stamp));
     if (rest.length !== rawIndex.length) await writeJson(NOTES_INDEX_PATH, rest);
+    clearArtNotesCache();
   }
 }

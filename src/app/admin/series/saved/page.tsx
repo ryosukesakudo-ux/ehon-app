@@ -5,11 +5,11 @@ import { SERIES_PAGES, seriesImagePath, seriesSampleChildName } from "@/lib/seri
 import type { SeriesData } from "@/lib/series-data";
 import { seriesDataWithEdits } from "@/lib/script-edits";
 import { savedNoteDone } from "@/lib/saved-notes-done";
+import { isActiveArtNote, readActiveArtNotes } from "@/lib/saved-art-notes";
 import { SAVED_NOTE_MAX, listSavedSets, readSavedNotes, savedImagePath, stampLabel, type SavedNotes } from "@/lib/series-saved";
 import { getStudioSeries } from "@/lib/series-studio";
 import { SHOWN_SERIES_LIST } from "@/lib/story-key";
 import { SavedNote } from "./note";
-import { CopyNotes } from "./copy-notes";
 import { DeleteSavedButton } from "./delete-button";
 import { RedrawAll } from "./redraw-all";
 import { SaveButton } from "./save-button";
@@ -88,16 +88,10 @@ export default async function SavedSamplesPage() {
     }),
   );
 
-  // 台本にまだ入れていないメモ（Claude に渡す文）
-  const pending = list.flatMap(({ s, episodes }) =>
-    episodes.flatMap(({ ep, sets }) =>
-      sets.flatMap(({ stamp, notes }) =>
-        Object.entries(notes)
-          .filter(([page]) => !savedNoteDone(s.id, ep.no, stamp, page === "all" ? "all" : Number(page)))
-          .map(([page, n]) => `${s.id}/${ep.no}/${stamp}/${page}（${s.name} 第${ep.no}話 ${page === "all" ? "全体" : pageLabel(Number(page))}）：${n.text}`),
-      ),
-    ),
-  );
+  // お客様の本の絵に今入っているメモ（話・ページごとにいちばん新しいメモ）
+  const active = await readActiveArtNotes();
+  const customer = (series: string, episode: number, stamp: string, page: number | "all", has: boolean) =>
+    !has || savedNoteDone(series, episode, stamp, page) ? null : isActiveArtNote(active, series, episode, stamp, page) ? "active" : "superseded";
 
   return (
     <main style={{ maxWidth: 960, margin: "0 auto", padding: "24px 16px 64px", display: "flex", flexDirection: "column", gap: 16 }}>
@@ -105,9 +99,8 @@ export default async function SavedSamplesPage() {
       <h1 className="display" style={{ margin: 0, color: "var(--navy)" }}>見本の保存版</h1>
       {/* 今の見本は作り直すと同じ名前のまま変わるので、縮めずに元の絵を読む（保存版は変わらないので縮めてよい） */}
       <p style={{ margin: 0, fontSize: 14 }}>
-        絵スタジオで作り直すと見本の絵は上書きされます。残しておきたい時に「今の13枚を保存版にする」を押すと、表紙＋12場面を日時つきで別の場所にとっておけます。絵を押すと元の大きさで開きます。絵の下に台本（絵の説明と本文。文の量は「普通」）を出しています。保存版には1枚ごとに直してほしい点をメモできます。メモは「このメモで見本を作り直す」（1枚）か「メモのある絵をまとめて作り直す」（保存済みのメモ全部）で今の見本（本番）に反映でき、「台本にまだ入れていないメモをコピー」で Claude に貼って頼むと、台本に入れてお客様の本にも効くようにします。新しいシリーズも絵スタジオに出せば、ここに並びます。
+        絵スタジオで作り直すと見本の絵は上書きされます。残しておきたい時に「今の13枚を保存版にする」を押すと、表紙＋12場面を日時つきで別の場所にとっておけます。絵を押すと元の大きさで開きます。絵の下に台本（絵の説明と本文。文の量は「普通」）を出しています。保存版には1枚ごとに直してほしい点をメモできます。メモは「このメモで見本を作り直す」（1枚）か「メモのある絵をまとめて作り直す」（保存済みのメモ全部）で今の見本（本番）に反映できます。保存したメモは、これから描くお客様の本の絵（と絵スタジオで作り直す見本）の指示にも自動で入ります。同じ話・同じ絵に何度かメモを書いたときは、いちばん新しく書いたメモが使われます（メモを消すか保存版を消すと入らなくなります）。すでに描いたお客様の絵は変わりません。新しいシリーズも絵スタジオに出せば、ここに並びます。
       </p>
-      <CopyNotes count={pending.length} text={`保存版のメモを台本に反映して\n${pending.join("\n")}`} />
       {list.map(({ s, episodes }) => (
         <section key={s.id} style={{ display: "flex", flexDirection: "column", gap: 12 }}>
           <h2 className="display" style={{ margin: 0, fontSize: 20, color: "var(--navy)" }}>{s.name}</h2>
@@ -130,11 +123,11 @@ export default async function SavedSamplesPage() {
                       <DeleteSavedButton series={s.id} episode={ep.no} stamp={stamp} label={stampLabel(stamp)} />
                     </div>
                     <RedrawAll series={s.id} episode={ep.no} stamp={stamp} notes={Object.fromEntries(Object.entries(notes).map(([k, n]) => [k, n.text]))} />
-                    <SavedNote series={s.id} episode={ep.no} stamp={stamp} page="all" initial={notes.all?.text ?? ""} done={savedNoteDone(s.id, ep.no, stamp, "all")} max={SAVED_NOTE_MAX} placeholder="この一式全体について直してほしい点・気づいたこと" />
+                    <SavedNote series={s.id} episode={ep.no} stamp={stamp} page="all" initial={notes.all?.text ?? ""} done={savedNoteDone(s.id, ep.no, stamp, "all")} customer={customer(s.id, ep.no, stamp, "all", !!notes.all)} max={SAVED_NOTE_MAX} placeholder="この一式全体について直してほしい点・気づいたこと" />
                     <Thumbs
                       script={script}
                       src={(p) => samplePublicUrl(savedImagePath(s.id, ep.no, stamp, p))}
-                      note={(p) => <SavedNote key={notes[String(p)]?.redrawnAt ?? ""} series={s.id} episode={ep.no} stamp={stamp} page={p} initial={notes[String(p)]?.text ?? ""} redrawnAt={notes[String(p)]?.redrawnAt} done={savedNoteDone(s.id, ep.no, stamp, p)} max={SAVED_NOTE_MAX} placeholder="直してほしい点" />}
+                      note={(p) => <SavedNote key={notes[String(p)]?.redrawnAt ?? ""} series={s.id} episode={ep.no} stamp={stamp} page={p} initial={notes[String(p)]?.text ?? ""} redrawnAt={notes[String(p)]?.redrawnAt} done={savedNoteDone(s.id, ep.no, stamp, p)} customer={customer(s.id, ep.no, stamp, p, !!notes[String(p)])} max={SAVED_NOTE_MAX} placeholder="直してほしい点" />}
                     />
                   </div>
                 ))}
