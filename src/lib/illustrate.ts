@@ -12,6 +12,7 @@ import type { Continuity } from "./series-data";
 import { sceneTextSide } from "./spread-scene";
 import { CHARACTER_STYLE, CHARACTER_WORLD, NO_TEXT, type OriginalCharacter } from "./characters";
 import { standInPrompt, type StandIns } from "./stand-ins";
+import { savedArtNote } from "./saved-art-notes";
 
 export type { Person };
 
@@ -247,6 +248,16 @@ function redoNotePrompt(redo?: Redo | null) {
   );
 }
 
+/** 見本の保存版で作道さんが書いた絵の直し（お客様の本にも入れる）。お客様の作り直しのひとことはこれより後に置き、そちらを優先する */
+function savedArtNotePrompt(note?: string) {
+  const n = note?.trim();
+  if (!n) return "";
+  return (
+    `Additional instructions from the art director for this page (written in Japanese while reviewing the sample book of this series); follow them carefully, they take priority over the scene description and the camera direction above: 「${n}」 ` +
+    "The sample book was drawn with a different family, so apply these instructions to the characters of this book, keep their faces and looks from the references, and skip any part about a person who is not in this picture."
+  );
+}
+
 /** キャラクター（1人の全身・正面の絵）を描く指示。プレビューで見せ、本番の絵の参考にする。 */
 export function buildCharacterPrompt(taste: TasteId, who: Who, refs: { who: Who; kind?: RefKind }[], childAge?: number | null, redo?: Redo | null, story?: string, bookOverride?: Book | null) {
   const t = getTaste(taste)!;
@@ -331,7 +342,8 @@ async function upscaleSpread(b64: string) {
 }
 
 /** spread：本文の場面を見開き（横長）で描く（2026-10-15 作道さん：お客様の本も見開き版に切り替え） */
-export function buildPrompt(taste: TasteId, story: string, sceneIndex: number, refs: { who: Who; kind?: RefKind }[], childAge?: number | null, redo?: Redo | null, spread = false, bookOverride?: Book | null) {
+/** artNote：見本の保存版のメモ（saved-art-notes.ts）。シリーズのその話・ページの分 */
+export function buildPrompt(taste: TasteId, story: string, sceneIndex: number, refs: { who: Who; kind?: RefKind }[], childAge?: number | null, redo?: Redo | null, spread = false, bookOverride?: Book | null, artNote?: string) {
   const t = getTaste(taste)!;
   const isCover = sceneIndex === COVER_SCENE;
   const book = bookOverride ?? getBook(story)!;
@@ -379,6 +391,7 @@ export function buildPrompt(taste: TasteId, story: string, sceneIndex: number, r
       : spread
         ? spreadFraming(sceneTextSide(sceneIndex))
         : framing(scene.camera),
+    savedArtNotePrompt(artNote),
     redoNotePrompt(redo),
   ]
     .filter(Boolean)
@@ -417,6 +430,9 @@ export async function illustrate(opts: {
   const character: Who | null = characterOf(opts.sceneIndex) ?? guest;
   const upscaleTo = !opts.size && !isCover && character === null && opts.quality === "final" ? FINAL_PX : null;
   const spread = !!opts.spread && !opts.size && !isCover && character === null;
+  // シリーズの表紙・場面には、見本の保存版のメモも入れる（2026-10-21 作道さん）
+  const series = character === null ? (opts.book ?? getBook(opts.story))?.series : null;
+  const artNote = series ? await savedArtNote(series.id, series.episode, isCover ? 0 : opts.sceneIndex + 1) : "";
   const result = await ai.images.edit({
     model: process.env.OPENAI_IMAGE_MODEL ?? "gpt-image-2",
     image: opts.images.map((i) => i.file),
@@ -424,7 +440,7 @@ export async function illustrate(opts: {
       [
         character !== null
           ? buildCharacterPrompt(opts.taste, character, opts.images, opts.childAge, opts.redo, opts.story, opts.book)
-          : buildPrompt(opts.taste, opts.story, opts.sceneIndex, opts.images, opts.childAge, opts.redo, spread, opts.book),
+          : buildPrompt(opts.taste, opts.story, opts.sceneIndex, opts.images, opts.childAge, opts.redo, spread, opts.book, artNote),
         opts.plainFace ? PLAIN_FACE : "",
       ]
         .filter(Boolean)
@@ -842,7 +858,8 @@ function seriesNote(note?: string) {
   return n ? `Additional instructions from the art director (may be written in Japanese); follow them carefully, they take priority over the instructions above: ${n}` : "";
 }
 
-export function buildSeriesPrompt(series: StudioSeries, scene: SeriesScene, opts: { cover: boolean; page: number; outfits?: string; continuity?: Continuity[]; note?: string; withPhoto?: boolean; spread?: boolean; textSide?: "left" | "right"; ownPhotos?: Person[] }) {
+/** savedNote：見本の保存版のメモ（お客様の本と同じものを見本にも入れる。note より前に置く） */
+export function buildSeriesPrompt(series: StudioSeries, scene: SeriesScene, opts: { cover: boolean; page: number; outfits?: string; continuity?: Continuity[]; note?: string; savedNote?: string; withPhoto?: boolean; spread?: boolean; textSide?: "left" | "right"; ownPhotos?: Person[] }) {
   const t = getTaste("watercolor")!;
   const people: Person[] = ["child", ...(scene.withMom ? (["mom"] as const) : []), ...(scene.withDad ? (["dad"] as const) : [])];
   return [
@@ -878,6 +895,7 @@ export function buildSeriesPrompt(series: StudioSeries, scene: SeriesScene, opts
       : opts.spread
         ? spreadFraming(opts.textSide ?? "right")
         : framing(scene.camera),
+    opts.savedNote?.trim() ? `Additional instructions from the art director for this page (may be written in Japanese); follow them carefully, they take priority over the scene description and the camera direction above: ${opts.savedNote.trim()}` : "",
     seriesNote(opts.note),
   ]
     .filter(Boolean)
@@ -885,14 +903,14 @@ export function buildSeriesPrompt(series: StudioSeries, scene: SeriesScene, opts
 }
 
 /** シリーズの1ページ（表紙または場面）を水彩で描き、PNG の base64 を返す。spread：見開きの試作（横長 1536x1024） */
-export async function illustrateSeries(opts: { series: StudioSeries; scene: SeriesScene; page: number; outfits?: string; continuity?: Continuity[]; note?: string; quality: Quality; sheet: Uploadable; photo?: Uploadable | null; spread?: boolean; textSide?: "left" | "right"; ownPhotos?: { who: Person; file: Uploadable }[] }) {
+export async function illustrateSeries(opts: { series: StudioSeries; scene: SeriesScene; page: number; outfits?: string; continuity?: Continuity[]; note?: string; savedNote?: string; quality: Quality; sheet: Uploadable; photo?: Uploadable | null; spread?: boolean; textSide?: "left" | "right"; ownPhotos?: { who: Person; file: Uploadable }[] }) {
   const cover = opts.page === 0;
   const ai = getOpenAI();
   if (!ai) throw new Error("OPENAI_API_KEY が未設定です");
   const result = await ai.images.edit({
     model: process.env.OPENAI_IMAGE_MODEL ?? "gpt-image-2",
     image: [opts.sheet, ...(opts.photo ? [opts.photo] : []), ...(opts.ownPhotos ?? []).map((p) => p.file)],
-    prompt: buildSeriesPrompt(opts.series, opts.scene, { cover, page: opts.page, outfits: opts.outfits, continuity: opts.continuity, note: opts.note, withPhoto: !!opts.photo, spread: opts.spread && !cover, textSide: opts.textSide, ownPhotos: opts.ownPhotos?.map((p) => p.who) }),
+    prompt: buildSeriesPrompt(opts.series, opts.scene, { cover, page: opts.page, outfits: opts.outfits, continuity: opts.continuity, note: opts.note, savedNote: opts.savedNote, withPhoto: !!opts.photo, spread: opts.spread && !cover, textSide: opts.textSide, ownPhotos: opts.ownPhotos?.map((p) => p.who) }),
     size: cover ? COVER_SIZE : opts.spread ? "1536x1024" : "1024x1024",
     quality: opts.quality === "final" ? "high" : "medium",
     output_format: "png",

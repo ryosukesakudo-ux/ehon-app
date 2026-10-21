@@ -5,7 +5,8 @@ import { useState } from "react";
 
 /**
  * 保存版の1枚（または一式全体）に、直してほしい点のメモを書く欄。
- * 1枚ごとの欄には「このメモで今の見本を作り直す」もある（絵スタジオの1枚作り直しと同じ。本番の見本にそのまま出る）
+ * 1枚ごとの欄には「このメモで今の見本を作り直す」もある（絵スタジオの1枚作り直しと同じ。本番の見本にそのまま出る）。
+ * 保存したメモはお客様の本の絵にも自動で入る（saved-art-notes.ts）。customer はその状態
  */
 export function SavedNote({
   series,
@@ -15,6 +16,7 @@ export function SavedNote({
   initial,
   redrawnAt,
   done,
+  customer,
   max,
   placeholder,
 }: {
@@ -26,6 +28,8 @@ export function SavedNote({
   redrawnAt?: string;
   /** Claude が台本に入れたときの説明 */
   done: string | null;
+  /** active：お客様の本の絵に入っている / superseded：同じ絵に新しい保存版のメモがあるので入っていない */
+  customer: "active" | "superseded" | null;
   max: number;
   placeholder: string;
 }) {
@@ -93,6 +97,8 @@ export function SavedNote({
       </div>
       {redrawn && <span style={{ fontSize: 11, color: "var(--sub)" }}>見本を作り直しました（{new Date(redrawn).toLocaleString("ja-JP", { month: "numeric", day: "numeric", hour: "2-digit", minute: "2-digit" })}）</span>}
       {done && <span style={{ fontSize: 11, color: "#2a7a4b" }}>台本に反映済み：{done}</span>}
+      {!changed && customer === "active" && <span style={{ fontSize: 11, color: "#2a7a4b" }}>お客様の本の絵にも入っています</span>}
+      {!changed && customer === "superseded" && <span style={{ fontSize: 11, color: "var(--sub)" }}>新しい保存版に書いたメモの方がお客様の本の絵に入っています</span>}
       {error && <span className="error">{error}</span>}
     </div>
   );
