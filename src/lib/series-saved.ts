@@ -128,3 +128,23 @@ export async function writeSavedNote(id: SeriesId, episode: number, stamp: strin
   const row = notes[key];
   await writeJson(NOTES_INDEX_PATH, row ? [...rest, { series: id, episode, stamp, page: key, ...row }] : rest);
 }
+
+/** 保存版をまるごと消す（絵・メモ）。まとめのメモ一覧からも外す。今の見本には影響しない */
+export async function deleteSavedSet(id: SeriesId, episode: number, stamp: string) {
+  const db = getSupabase();
+  if (!db) throw new Error("Supabase が未設定です");
+  const bucket = db.storage.from(SAMPLE_BUCKET);
+  const dir = savedDir(id, episode, stamp);
+  const { data, error } = await bucket.list(dir, { limit: 200 });
+  if (error) throw new Error(error.message);
+  const paths = (data ?? []).filter((f) => f.id).map((f) => `${dir}/${f.name}`);
+  if (paths.length) {
+    const { error: removeError } = await bucket.remove(paths);
+    if (removeError) throw new Error(removeError.message);
+  }
+  const rawIndex = await readJson(NOTES_INDEX_PATH);
+  if (Array.isArray(rawIndex)) {
+    const rest = (rawIndex as SavedNoteRow[]).filter((r) => !(r.series === id && r.episode === episode && r.stamp === stamp));
+    if (rest.length !== rawIndex.length) await writeJson(NOTES_INDEX_PATH, rest);
+  }
+}

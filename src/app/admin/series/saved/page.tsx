@@ -9,6 +9,7 @@ import { getStudioSeries } from "@/lib/series-studio";
 import { SHOWN_SERIES_LIST } from "@/lib/story-key";
 import { SavedNote } from "./note";
 import { CopyNotes } from "./copy-notes";
+import { DeleteSavedButton } from "./delete-button";
 import { RedrawAll } from "./redraw-all";
 import { SaveButton } from "./save-button";
 
@@ -122,7 +123,10 @@ export default async function SavedSamplesPage() {
                 </div>
                 {sets.map(({ stamp, notes }) => (
                   <div key={stamp} style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-                    <strong style={{ fontSize: 14 }}>保存版 {stampLabel(stamp)}</strong>
+                    <div style={{ display: "flex", gap: 12, alignItems: "center", flexWrap: "wrap" }}>
+                      <strong style={{ fontSize: 14 }}>保存版 {stampLabel(stamp)}</strong>
+                      <DeleteSavedButton series={s.id} episode={ep.no} stamp={stamp} label={stampLabel(stamp)} />
+                    </div>
                     <RedrawAll series={s.id} episode={ep.no} stamp={stamp} notes={Object.fromEntries(Object.entries(notes).map(([k, n]) => [k, n.text]))} />
                     <SavedNote series={s.id} episode={ep.no} stamp={stamp} page="all" initial={notes.all?.text ?? ""} done={savedNoteDone(s.id, ep.no, stamp, "all")} max={SAVED_NOTE_MAX} placeholder="この一式全体について直してほしい点・気づいたこと" />
                     <Thumbs
