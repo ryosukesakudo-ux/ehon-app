@@ -3,6 +3,7 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import { SIBLING_RELATIONS, isSiblingRelation, type SiblingRelation } from "./catalog";
 import { getBook, type Book, type SiblingOverlay } from "./book";
 import { LEVELS, parseSeriesKey, seriesKey, type LevelId } from "./story-key";
+import { readScriptEdits } from "./script-edits";
 import { BOOK_BUCKET, getOpenAI } from "./services";
 
 // ママ・パパとは別に足す兄弟姉妹（最大2人。2026-10-19 作道さん「イ」：12場面すべてで主人公と一緒に冒険する）。
@@ -79,9 +80,10 @@ function overlayOf(f: SiblingFile, story: string): SiblingOverlay | null {
 
 /** 兄弟姉妹を足した下書きの絵本（書き直しが無いときは、元の文のまま絵にだけ一緒に描く） */
 export async function bookForDraft(db: SupabaseClient | null, draft: { id: string; story: string }): Promise<Book | null> {
-  if (!db || !parseSeriesKey(draft.story)?.siblings) return getBook(draft.story);
+  const edits = parseSeriesKey(draft.story) ? await readScriptEdits() : null;
+  if (!db || !parseSeriesKey(draft.story)?.siblings) return getBook(draft.story, null, edits);
   const f = await loadFile(db, draft.id);
-  return getBook(draft.story, f ? overlayOf(f, draft.story) : null);
+  return getBook(draft.story, f ? overlayOf(f, draft.story) : null, edits);
 }
 
 /** 兄弟姉妹の写真の保存先（PHOTO_BUCKET。写真が無い人は null） */
@@ -148,7 +150,8 @@ async function rewriteStory(story: string, siblings: Pick<Sibling, "name" | "age
   const ai = getOpenAI();
   const k = parseSeriesKey(story);
   if (!ai || !k || !siblings.length) return null;
-  const books = LEVELS.map((l) => getBook(seriesKey(k.series, k.episode, l.id, k.combo)));
+  const edits = await readScriptEdits();
+  const books = LEVELS.map((l) => getBook(seriesKey(k.series, k.episode, l.id, k.combo), null, edits));
   if (books.some((b) => !b)) return null;
   const [s, n, l] = books as Book[];
   const labels = siblings.map((x, i) => `Companion ${i + 1}`);

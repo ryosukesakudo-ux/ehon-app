@@ -5,7 +5,7 @@ import { Arrow, Sparkle, Star } from "@/components/icons";
 import { BOOK_FORMAT, DELIVERY_NOTE, EXTRA_COPY_DISCOUNT, MEMBER_MONTHLY_PREVIEWS, MEMORY_PHOTO_MAX, PREVIEW_PACK, SIZES, STORIES, TASTES, sceneText, yen } from "@/lib/catalog";
 import { SAMPLE_CHILD_NAME, SHOWCASE, SHOWCASE_BOOK, SHOWCASE_PHOTO, samplePublicUrl, sampleUrl, versioned } from "@/lib/samples";
 import { seriesImagePath, seriesSampleChildName } from "@/lib/series";
-import { SERIES_DATA } from "@/lib/series-data";
+import { seriesDataWithEdits } from "@/lib/script-edits";
 import { OPEN_SERIES, SHOWN_SERIES_LIST, isOpenSeries, openEpisodes } from "@/lib/story-key";
 import { TopBook } from "./top-book";
 import { StepCards } from "./step-cards";
@@ -152,9 +152,9 @@ const PROMISES = [
 const TOP_BOOK_PAGES = 5;
 
 /** トップの見本の絵本：公開中のシリーズ（森）の第1話。文の量「普通」、ママもパパもいる形 */
-function topBook() {
+async function topBook() {
   const id = OPEN_SERIES[0];
-  const data = SERIES_DATA[id];
+  const data = await seriesDataWithEdits(id);
   const ep = openEpisodes(data.episodes)[0];
   const name = seriesSampleChildName(id);
   return {
@@ -203,7 +203,8 @@ function Pop({ children, color }: { children: string; color: string }) {
   );
 }
 
-export default function Home() {
+export default async function Home() {
+  const top = await topBook();
   return (
     <div className={s.page}>
       <ScrollFx />
@@ -298,7 +299,7 @@ export default function Home() {
             showcasePhoto: versioned(samplePublicUrl(SHOWCASE_PHOTO)),
             showcaseBook: versioned(samplePublicUrl(SHOWCASE_BOOK)),
             preview: (() => {
-              const b = topBook();
+              const b = top;
               return { cover: b.cover, pages: b.pages.slice(0, 2).map((p) => p.url) };
             })(),
             sizes: SIZES.map((z) => ({ name: z.name, cover: z.cover, price: yen(z.price) })),
@@ -365,7 +366,7 @@ export default function Home() {
           <span className="nowrap"><Pop color="#F07FA0">その子だけ</Pop>の物語。</span>
         </h2>
         <div data-reveal="up">
-          <TopBook {...topBook()} />
+          <TopBook {...top} />
         </div>
         <div className={s.note}>見本はAIで作った架空の家族です。横にめくれます</div>
         <div className={s.tastes}>
