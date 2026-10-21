@@ -5,6 +5,7 @@ import birthday from "@/data/series/birthday.json";
 import sea from "@/data/series/sea.json";
 import dinosaur from "@/data/series/dinosaur.json";
 import number from "@/data/series/number.json";
+import type { CountRule } from "./count-check";
 import type { Combo, SeriesId } from "./story-key";
 
 // 確定した台本（/mnt/project-files/stories/*-script.md、Claude Doc で 2026-10-11 承認）を、サイトで使う形にしたデータ。
@@ -24,6 +25,8 @@ export type SeriesVersion = {
 
 export type SeriesSceneData = SeriesVersion & {
   alt?: Partial<Record<Combo, SeriesVersion>>;
+  /** 数を守りたい物（写真の組み合わせによらず同じ）。count-check.ts */
+  counts?: CountRule[];
 };
 
 /** 話の中で絵をそろえる決まり。from〜to（表紙0、場面1〜12）のページにだけ付ける。省略時は全ページ */

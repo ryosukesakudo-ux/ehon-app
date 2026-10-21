@@ -45,7 +45,7 @@ export function getStudioSeries(id: string): StudioSeries | null {
       cover: ep.cover,
       scenes: ep.scenes.map((s) => {
         const v = s.alt?.both ?? s;
-        return { label: v.label, art: v.art, withMom: v.withMom, withDad: v.withDad, withSidekick: v.withSidekick, camera: v.camera ?? s.camera };
+        return { label: v.label, art: v.art, withMom: v.withMom, withDad: v.withDad, withSidekick: v.withSidekick, camera: v.camera ?? s.camera, counts: s.counts };
       }),
     })),
   };
@@ -84,6 +84,6 @@ export function studioScenesFor(id: SeriesId, episode: number, combo: Combo): Se
   if (!ep) return null;
   return ep.scenes.map((s) => {
     const v = s.alt?.[combo] ?? s;
-    return { label: v.label, art: v.art, withMom: v.withMom, withDad: v.withDad, withSidekick: v.withSidekick, camera: v.camera ?? s.camera };
+    return { label: v.label, art: v.art, withMom: v.withMom, withDad: v.withDad, withSidekick: v.withSidekick, camera: v.camera ?? s.camera, counts: s.counts };
   });
 }
