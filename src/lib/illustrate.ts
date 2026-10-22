@@ -1051,7 +1051,7 @@ export async function makeDeformeCharacters(photo: Uploadable, note?: string) {
 const HANDMADE_RULES =
   "It must look made entirely by hand by a human illustrator with real art materials, not digital art and not AI: " +
   "no smooth airbrushed or blended shading, no glossy highlights or rim light, no fine detail or intricate texture, no even studio lighting, no glow, no bokeh or depth of field, no 3D rendering. " +
-  "Draw much less: only what the scene needs, with big simple shapes. The background is just one or two flat colors with only a few very simple shapes (such as a few simple trees or a simple hill), no detailed scenery. " +
+  "Draw much less: only what the scene needs, with big simple shapes. The background is just one or two flat colors with at most two or three very simple shapes (such as a few simple trees or a simple hill); no detailed scenery, no forest of many trees, no individual leaves or grass blades. " +
   "Very simple faces: small eyes, a tiny simple nose and a simple mouth, no detailed irises, no eyelashes, no realistic skin";
 
 export async function illustrateTouch(opts: { touch: Touch; series: StudioSeries; scene: SeriesScene; outfits?: string; photo: Uploadable; note?: string }) {
