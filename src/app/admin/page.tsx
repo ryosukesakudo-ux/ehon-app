@@ -35,6 +35,7 @@ export default async function AdminPage() {
         <p><a href="/admin/series/saved">見本の保存版（各話の13枚をとっておく・見返す）</a></p>
         <p><a href="/admin/compare">画質くらべ（以前の方式と今のA方式を1枚ずつ）</a></p>
         <p><a href="/admin/deforme">デフォルメ試作（新しい絵柄を1枚ためす）</a></p>
+        <p><a href="/admin/touch">タッチ試作（手描き風の3つのタッチを見比べる）</a></p>
         <p><a href="/admin/studio">スタジオ（オリジナルキャラの登録・設定画・台本・ショート動画）</a></p>
       </main>
     );
@@ -101,6 +102,7 @@ export default async function AdminPage() {
       <a href="/admin/series/saved">見本の保存版（各話の今の13枚を別の場所にとっておき、見返す）</a>
       <a href="/admin/compare">画質くらべ（以前の方式と今のA方式を1枚ずつ作って比べる）</a>
       <a href="/admin/deforme">デフォルメ試作（新しい絵柄で家族3人を1枚ためす）</a>
+      <a href="/admin/touch">タッチ試作（手描き風の3つのタッチで森1話の同じ場面を見比べる）</a>
       <a href="/admin/studio">スタジオ（オリジナルキャラ「おちばの したの まち」の登録・設定画・台本・ショート動画を1か所で）</a>
       <a href="/admin/coupons">クーポン管理（コードの発行・停止、使われた回数）</a>
       <a href="/admin/reviews">レビュー管理（投稿されたレビューの確認・非表示）</a>

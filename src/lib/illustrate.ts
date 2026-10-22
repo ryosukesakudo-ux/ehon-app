@@ -14,6 +14,7 @@ import { sceneTextSide } from "./spread-scene";
 import { CHARACTER_STYLE, CHARACTER_WORLD, NO_TEXT, type OriginalCharacter } from "./characters";
 import { standInPrompt, type StandIns } from "./stand-ins";
 import { savedArtNote } from "./saved-art-notes";
+import type { Touch } from "./touch";
 
 export type { Person };
 
@@ -1038,6 +1039,47 @@ export async function makeDeformeCharacters(photo: Uploadable, note?: string) {
       .join(" "),
     size: "1536x1024",
     quality: "high",
+    output_format: "png",
+  });
+  const b64 = result.data?.[0]?.b64_json;
+  if (!b64) throw new Error("画像が生成されませんでした");
+  return b64;
+}
+
+// --- 手描き風タッチの試作（2026-10-22）。src/lib/touch.ts のタッチで、森の1場面を作例の家族写真から描く ---
+// AIっぽさは「なめらかすぎる塗り・細かすぎる描き込み・均一な光」から来るので、それを禁止し、背景も1〜2色のベタに減らす。
+const HANDMADE_RULES =
+  "It must look made entirely by hand by a human illustrator with real art materials, not digital art and not AI: " +
+  "no smooth airbrushed or blended shading, no glossy highlights or rim light, no fine detail or intricate texture, no even studio lighting, no glow, no bokeh or depth of field, no 3D rendering. " +
+  "Draw much less: only what the scene needs, with big simple shapes. The background is just one or two flat colors with only a few very simple shapes (such as a few simple trees or a simple hill), no detailed scenery. " +
+  "Very simple faces: small eyes, a tiny simple nose and a simple mouth, no detailed irises, no eyelashes, no realistic skin";
+
+export async function illustrateTouch(opts: { touch: Touch; series: StudioSeries; scene: SeriesScene; outfits?: string; photo: Uploadable; note?: string }) {
+  const ai = getOpenAI();
+  if (!ai) throw new Error("OPENAI_API_KEY が未設定です");
+  const { scene } = opts;
+  const result = await ai.images.edit({
+    model: process.env.OPENAI_IMAGE_MODEL ?? "gpt-image-2",
+    image: [opts.photo],
+    prompt: [
+      `${opts.touch.prompt}.`,
+      `${HANDMADE_RULES}.`,
+      `The reference image is a photo of the real family: ${SHOWCASE_PHOTO_ORDER}.`,
+      "Use the photo only to know who the people are. Keep the traits that make each person recognizable even in this simplified style: hairstyle and hair color, glasses, face shape and overall look.",
+      "Ignore the photo's realism, lighting, background and texture and draw everything strictly in the ART STYLE above.",
+      opts.outfits ? outfitsPrompt(opts.outfits) : "",
+      scene.withSidekick ? `The sidekick appears: ${opts.series.sidekick}.` : `Do not include ${sidekickName(opts.series.sidekick)} (the sidekick) in this scene.`,
+      `Scene: ${scene.art}.`,
+      SERIES_CAST_RULES,
+      scene.withMom ? "" : "Do not include the mother in this scene.",
+      scene.withDad ? "" : "Do not include the father in this scene.",
+      SQUARE_FRAMING,
+      seriesNote(opts.note),
+    ]
+      .filter(Boolean)
+      .join(" "),
+    size: "1024x1024",
+    quality: "medium",
     output_format: "png",
   });
   const b64 = result.data?.[0]?.b64_json;
