@@ -11,10 +11,14 @@ export const TOUCHES: Touch[] = [
   {
     id: "acrylic",
     label: "厚塗りアクリル",
-    lead: "筆のかすれ・ムラ、筆で描いた太い縁取り",
+    lead: "子どもの手描きのような歪んだ線、もっとデフォルメ、木は丸や三角に",
+    // 2026-10-22 作道さん：質感はこれが一番近いが線がAIっぽい → 線のランダムさ・デフォルメ・背景の単純化を強める
     prompt:
-      "ART STYLE: painted by hand with thick, opaque acrylic paint on rough paper. Visible brush strokes and dry-brush streaks in every color area, uneven paint coverage where the paper texture shows through, " +
-      "slightly lumpy, imperfect shapes. Loose, thick dark outlines painted with a brush, varying in width and not perfectly closed. Bold, warm, slightly muted colors mixed by hand",
+      "ART STYLE: painted by hand with thick, opaque acrylic paint on rough paper, in the naive, childlike manner of a picture book illustrated to look as if a young child painted it. " +
+      "Visible brush strokes and dry-brush streaks in every color area, uneven paint coverage where the paper texture shows through, lumpy imperfect shapes. " +
+      "The outlines are the most important part: thick dark lines painted with a clumsy brush, wobbly, crooked and shaky, varying a lot in thickness, overshooting corners, breaking off and restarting, never smooth, never evenly weighted, never following the shape precisely, so the drawing feels spontaneous and random like a child's painting. " +
+      "Strong deformation: heads about one third of the body height, round and a little lopsided, stubby bodies and arms, mitten hands, uneven eyes drawn as two simple dark dots, a tiny mark for the nose, a single curved line for the mouth, round blush spots. " +
+      "Everything is strongly abstracted and simplified: trees are just plain shapes such as a brown stick with a green blob or triangle on top, with no leaves, branches, bark or texture painted inside; grass and sky are single flat areas of color with rough edges. Bold, warm, slightly muted colors mixed by hand",
   },
   {
     id: "flat",
