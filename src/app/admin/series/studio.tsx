@@ -18,6 +18,7 @@ import {
   seriesFamilyPhotoPath,
   seriesSampleChildName,
   seriesImagePath,
+  seriesOutfitPath,
   seriesSceneTextSide,
   seriesSheetPath,
   seriesSidekickPath,
@@ -47,6 +48,10 @@ export type StudioView = {
   open: boolean;
   /** 本番に出している（お客様が注文できる）話 */
   published: number[];
+  /** お客様が服を選ぶシリーズ（ヒーロー・プリンセス）の、服の形と色。見本は最初の形・最初の色で描く */
+  outfits?: { id: string; name: string; colors: { id: string; name: string }[] }[];
+  /** シリーズで決まっている絵のタッチの名前（無ければ水彩） */
+  styleName?: string;
   episodes: { no: number; title: string; cover: { label: string }; scenes: { label: string; texts: string[] }[] }[];
 };
 
@@ -327,7 +332,7 @@ export function SeriesStudio({ list }: { list: StudioView[] }) {
       <a href="/admin/series/script">台本の文を直す（各場面の本文）→</a>
       <h1 className="display" style={{ margin: 0, color: "var(--navy)" }}>台本の絵スタジオ</h1>
       <p style={{ margin: 0, fontSize: 14, lineHeight: 1.8 }}>
-        {childName === seriesSampleChildName("forest") ? "作例と同じ" : "このシリーズ用の"}架空の家族（主人公「{childName}」とママ・パパ）で、「{series.name}」の台本の見本の絵を水彩で作ります。表紙と12場面の13枚がそろった話から、お客様がお話選びの画面で選べるようになります（表紙はその見本として表示されます）。
+        {childName === seriesSampleChildName("forest") ? "作例と同じ" : "このシリーズ用の"}架空の家族（主人公「{childName}」とママ・パパ）で、「{series.name}」の台本の見本の絵を{series.styleName ? `「${series.styleName}」` : "水彩"}で作ります。表紙と12場面の13枚がそろった話から、お客様がお話選びの画面で選べるようになります（表紙はその見本として表示されます）。
         {photoFirst
           ? "このシリーズは、先に架空の家族写真を作り、設定画と場面はその写真にそっくりに寄せて描きます（お客様の写真から絵本ができる流れと同じです）。まず「まとめて作る」を押してください（家族写真と設定画がまだなければ、その順に先に作ります）。"
           : "まず「まとめて作る」を押してください（登場人物の設定画がまだなければ先に作ります）。"}気に入らない絵は、その絵の下の欄に直してほしいこと（日本語で大丈夫です）を書いて、ボタンで1枚ずつ作り直せます。指示はその絵にだけ効きます。
@@ -348,6 +353,43 @@ export function SeriesStudio({ list }: { list: StudioView[] }) {
 
       {photoFirst ? photoSection : sheetSection}
       {photoFirst ? sheetSection : photoSection}
+
+      {series.outfits && (
+        <section className="card" style={{ gap: 12 }}>
+          <h2 className="display" style={{ margin: 0, fontSize: 18, color: "var(--navy)" }}>服の見本（服選びの画面に出す絵）</h2>
+          <p style={{ margin: 0, fontSize: 13, lineHeight: 1.7 }}>
+            お客様がお話の直後に選ぶ服の形と色です。{childName}がその服を着た全身の絵を、服選びの画面のカードに出します（無い間は色の丸を出します）。1枚 約15円です。
+            見本の絵本（表紙と12場面）は、いちばん左の形・いちばん左の色で描きます。形や色の名前と絵の指示は「台本を直す」ページで直せます。
+          </p>
+          <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+            {series.outfits.map((t) => (
+              <div key={t.id} style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                <div className="display" style={{ fontWeight: 800, color: "var(--navy)" }}>{t.name}</div>
+                <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
+                  {t.colors.map((c) => {
+                    const key = `outfit/${t.id}/${c.id}`;
+                    return (
+                      <Tile
+                        key={key}
+                        path={seriesOutfitPath(SERIES_ID, t.id, c.id)}
+                        version={version[key]}
+                        busy={busy[key]}
+                        error={errors[key]}
+                        label={`${t.name}・${c.name}`}
+                        aspect="1 / 1"
+                        width={200}
+                        onMake={() => call(key, { kind: "outfitSample", type: t.id, color: c.id })}
+                        disabled={anyBusy}
+                        {...noteProps(key)}
+                      />
+                    );
+                  })}
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
 
       {spreadEpisode && (
         <section className="card" style={{ gap: 12 }}>

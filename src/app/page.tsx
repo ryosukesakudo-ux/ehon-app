@@ -6,7 +6,8 @@ import { BOOK_FORMAT, DELIVERY_NOTE, EXTRA_COPY_DISCOUNT, MEMBER_MONTHLY_PREVIEW
 import { SAMPLE_CHILD_NAME, SHOWCASE, SHOWCASE_BOOK, SHOWCASE_PHOTO, samplePublicUrl, sampleUrl, versioned } from "@/lib/samples";
 import { seriesImagePath, seriesSampleChildName } from "@/lib/series";
 import { seriesDataWithEdits } from "@/lib/script-edits";
-import { OPEN_SERIES, SHOWN_SERIES_LIST, isOpenSeries, openEpisodes } from "@/lib/story-key";
+import { OPEN_SERIES, SHOWN_SERIES_LIST, isOpenSeries, openEpisodes, type SeriesId } from "@/lib/story-key";
+import { publishedEpisodes } from "@/lib/published-episodes";
 import { TopBook } from "./top-book";
 import { StepCards } from "./step-cards";
 import { SampleImage } from "@/components/sample-image";
@@ -205,6 +206,9 @@ function Pop({ children, color }: { children: string; color: string }) {
 
 export default async function Home() {
   const top = await topBook();
+  // 注文できる話があるシリーズだけ「えらべます」（ヒーロー・プリンセスは見本の絵ができて本番に出すまで「準備中」）
+  const published = await publishedEpisodes();
+  const selectable = (id: SeriesId) => isOpenSeries(id) && (published[id]?.length ?? 0) > 0;
   return (
     <div className={s.page}>
       <ScrollFx />
@@ -314,7 +318,7 @@ export default async function Home() {
               const t = TASTES.find((x) => x.id === id)!;
               return { name: t.name, img: sampleUrl(t.id, "forest", 0), points: t.points.slice(0, 2).join("・") };
             }),
-            stories: SHOWN_SERIES_LIST.map((st) => ({ name: st.name, open: isOpenSeries(st.id) })),
+            stories: SHOWN_SERIES_LIST.map((st) => ({ name: st.name, open: selectable(st.id) })),
             showcasePhoto: versioned(samplePublicUrl(SHOWCASE_PHOTO)),
             showcaseBook: versioned(samplePublicUrl(SHOWCASE_BOOK)),
             preview: (() => {
@@ -453,7 +457,7 @@ export default async function Home() {
         {/* お話選びの画面で選べるシリーズと同じものを出す（以前は旧版の3話を出していて、選べないお話が混ざっていた） */}
         <div className={s.gallery}>
           {SHOWN_SERIES_LIST.map((st, i) => {
-            const open = isOpenSeries(st.id);
+            const open = selectable(st.id);
             return (
               <div key={st.id} className={s.galleryCard} data-reveal="up" data-d={i * 2}>
                 <div className={s.galleryMain} style={{ aspectRatio: "3 / 2", ...(open ? {} : { filter: "grayscale(0.4)", opacity: 0.75 }) }}>

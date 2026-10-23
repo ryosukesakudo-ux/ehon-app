@@ -75,8 +75,8 @@ export default async function SavedSamplesPage() {
   const now = openedAt();
   const list = await Promise.all(
     SHOWN_SERIES_LIST.map(async (info) => {
-      const s = getStudioSeries(info.id)!;
       const data = await seriesDataWithEdits(info.id);
+      const s = getStudioSeries(info.id, data)!;
       return { s, episodes: await Promise.all(
           s.episodes.map(async (ep) => {
             const stamps = await listSavedSets(s.id, ep.no);

@@ -58,7 +58,7 @@ export async function PATCH(request: Request, ctx: RouteContext<"/api/drafts/[id
   const k = parseSeriesKey(draft.story);
   if (!k || fixedLevelEpisode(k.series, k.episode)) return Response.json({ error: "このお話は文の量を変えられません" }, { status: 400 });
   if (await draftOrdered(draft.id)) return Response.json({ error: "ご注文済みの絵本は変更できません" }, { status: 409 });
-  const story = seriesKey(k.series, k.episode, level, k.combo, k.siblings);
+  const story = seriesKey(k.series, k.episode, level, k.combo, k.siblings, k.outfit);
   let draftId = draft.id;
   if (isDemoId(draft.id)) {
     // デモの下書きは番号に中身が入っているので、番号ごと作り直す

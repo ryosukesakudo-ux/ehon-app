@@ -10,7 +10,7 @@ import { parseCustomKey } from "./custom-story";
 //   下書きを作るとき、写真の組み合わせを足して "forest:2:n:mom" のように保存する（写真を消したあとも同じ本文で印刷するため）
 // - オリジナルのお話：     "custom:{...}"（custom-story.ts。お話の中身をそのまま入れる）
 
-export type SeriesId = "forest" | "star" | "birthday" | "sea" | "dinosaur" | "number";
+export type SeriesId = "forest" | "star" | "birthday" | "sea" | "dinosaur" | "number" | "hero" | "princess";
 export type LevelId = "s" | "n" | "l";
 /** 写真の組み合わせ：ママとパパ / ママだけ / パパだけ / 子どもだけ */
 export type Combo = "both" | "mom" | "dad" | "none";
@@ -36,6 +36,16 @@ export const SERIES_LIST: {
    * お話選びで文の量を選ばせず、対象年齢を表示する
    */
   episodes: { no: number; title: string; season: string; level?: LevelId; ages?: string }[];
+  /** お話選びに出す、向いている子の目安（例：男の子に人気） */
+  audience?: string;
+  /** 女の子だけが選べる（呼び方が「くん」だと選べない。2026-10-23 作道さん：プリンセスはシンデレラ役なので女の子向け） */
+  girlsOnly?: boolean;
+  /** ママ・パパが出ないお話（写真はお子さまだけ） */
+  noParents?: boolean;
+  /** 絵のタッチが決まっているシリーズの、タッチの名前（えらんだタッチは使わない） */
+  styleName?: string;
+  /** お客様が服を選ぶシリーズの、服の呼び方（例：ヒーロースーツ）。選択肢は台本の outfitChoices（/api/series/outfits） */
+  outfitLabel?: string;
 }[] = [
   {
     id: "forest",
@@ -109,18 +119,40 @@ export const SERIES_LIST: {
       { no: 4, title: "ゆきの ひの クッキーやさん", season: "冬", level: "n", ages: "4〜6歳" },
     ],
   },
+  {
+    // 2026-10-22 作道さん（友人の助言）：男の子向けのヒーロー。少年まんが風のタッチ。まずは1話だけ（台本 /mnt/project-files/stories/hero-script.md）
+    id: "hero",
+    name: "ひかりの ヒーロー",
+    description: "ロボットの「ピカリ」とヒーローに変身して、町をまもるお話",
+    episodes: [{ no: 1, title: "はじめての へんしん", season: "" }],
+    audience: "男の子に人気",
+    styleName: "少年まんが風",
+    outfitLabel: "ヒーロースーツ",
+  },
+  {
+    // 2026-10-22 作道さん：女の子向けのプリンセス。昔話のシンデレラの筋で、ママ・パパは出ない。今風のCGアニメのタッチ。まずは1話だけ
+    id: "princess",
+    name: "まほうの おひめさま",
+    description: "小鳥の「ピピ」と、まほうのドレスでぶとうかいへ行くお話",
+    episodes: [{ no: 1, title: "まよなかの ガラスの くつ", season: "" }],
+    audience: "女の子向け",
+    girlsOnly: true,
+    noParents: true,
+    styleName: "おひめさまアニメ風",
+    outfitLabel: "ドレス",
+  },
 ];
 
 /** お客様と絵スタジオに出す話の数。5話目は 2026-10-11 に一旦取り下げ（台本とデータは残している） */
 export const OPEN_EPISODES = 4;
 
 /** サイト（お話選び）と絵スタジオに出すシリーズ。星・海・恐竜は 2026-10-12 に外した（台本とデータは残している。戻すときはここに足す） */
-export const SHOWN_SERIES: SeriesId[] = ["forest", "birthday", "number"];
+export const SHOWN_SERIES: SeriesId[] = ["forest", "birthday", "number", "hero", "princess"];
 
 export const SHOWN_SERIES_LIST = SERIES_LIST.filter((s) => SHOWN_SERIES.includes(s.id));
 
 /** 注文できるシリーズ。まずは森だけを公開し、ほかは「準備中」にする（2026-10-11 作道さん） */
-export const OPEN_SERIES: SeriesId[] = ["forest"];
+export const OPEN_SERIES: SeriesId[] = ["forest", "hero", "princess"];
 
 export function isOpenSeries(id: SeriesId) {
   return OPEN_SERIES.includes(id);
@@ -136,30 +168,48 @@ export function isProofread(id: SeriesId, no: number) {
   return PROOFREAD_EPISODES[id]?.includes(no) ?? false;
 }
 
+/** 服を選ぶお話で、まだ服を選んでいないか */
+export function needsOutfit(key: string) {
+  const k = parseSeriesKey(key);
+  return !!k && !!getSeriesInfo(k.series)?.outfitLabel && !k.outfit;
+}
+
 /** 公開中の話だけ */
 export function openEpisodes<E extends { no: number }>(episodes: E[]) {
   return episodes.filter((e) => e.no <= OPEN_EPISODES);
 }
 
-/** siblings：ママ・パパとは別に足した兄弟姉妹の人数（0〜2。下書きの番号の末尾 :k1 / :k2。2026-10-19） */
-export type SeriesKey = { series: SeriesId; episode: number; level: LevelId; combo: Combo | null; siblings: number };
+/** 服を選ぶシリーズ（ヒーロー・プリンセス）で選んだ服の形と色（outfit-choice.ts）。番号の末尾 :w形-色（2026-10-23） */
+export type OutfitPick = { type: string; color: string };
 
-const KEY_RE = /^(forest|star|birthday|sea|dinosaur|number):([1-5]):([snl])(?::(both|mom|dad|none))?(?::k([12]))?$/;
+/** siblings：ママ・パパとは別に足した兄弟姉妹の人数（0〜2。下書きの番号の末尾 :k1 / :k2。2026-10-19） */
+export type SeriesKey = { series: SeriesId; episode: number; level: LevelId; combo: Combo | null; siblings: number; outfit: OutfitPick | null };
+
+const KEY_RE = /^(forest|star|birthday|sea|dinosaur|number|hero|princess):([1-5]):([snl])(?::(both|mom|dad|none))?(?::k([12]))?(?::w([a-z]+)-([a-z]+))?$/;
 
 /** シリーズのお話の番号を読む。旧版のお話やおかしな値なら null */
 export function parseSeriesKey(key: string | null | undefined): SeriesKey | null {
   const m = typeof key === "string" ? key.match(KEY_RE) : null;
-  return m ? { series: m[1] as SeriesId, episode: Number(m[2]), level: m[3] as LevelId, combo: (m[4] as Combo | undefined) ?? null, siblings: Number(m[5] ?? 0) } : null;
+  return m
+    ? {
+        series: m[1] as SeriesId,
+        episode: Number(m[2]),
+        level: m[3] as LevelId,
+        combo: (m[4] as Combo | undefined) ?? null,
+        siblings: Number(m[5] ?? 0),
+        outfit: m[6] ? { type: m[6], color: m[7] } : null,
+      }
+    : null;
 }
 
-export function seriesKey(series: SeriesId, episode: number, level: LevelId, combo?: Combo | null, siblings = 0) {
-  return `${series}:${episode}:${level}${combo ? `:${combo}` : ""}${combo && siblings ? `:k${siblings}` : ""}`;
+export function seriesKey(series: SeriesId, episode: number, level: LevelId, combo?: Combo | null, siblings = 0, outfit?: OutfitPick | null) {
+  return `${series}:${episode}:${level}${combo ? `:${combo}` : ""}${combo && siblings ? `:k${siblings}` : ""}${outfit ? `:w${outfit.type}-${outfit.color}` : ""}`;
 }
 
-/** 写真の組み合わせを外した番号（選択画面・保存用） */
+/** 写真の組み合わせを外した番号（選択画面・保存用）。選んだ服は残す */
 export function withoutCombo(key: string) {
   const k = parseSeriesKey(key);
-  return k ? seriesKey(k.series, k.episode, k.level) : key;
+  return k ? seriesKey(k.series, k.episode, k.level, null, 0, k.outfit) : key;
 }
 
 export function comboOf(hasMom: boolean, hasDad: boolean): Combo {

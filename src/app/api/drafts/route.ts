@@ -1,7 +1,8 @@
 import { randomUUID } from "node:crypto";
 import { ANON_TRIAL_IP_DAYS, CHILD_AGES, getTaste, previewScenes, type Person, type TasteId } from "@/lib/catalog";
 import { isPublished } from "@/lib/published-episodes";
-import { comboOf, isStoryKey, parseSeriesKey, withoutCombo } from "@/lib/story-key";
+import { comboOf, getSeriesInfo, isStoryKey, parseSeriesKey, seriesKey, withoutCombo } from "@/lib/story-key";
+import { outfitOk } from "@/lib/outfit-choice";
 import { readyEpisodes } from "@/lib/series-studio";
 import { copySavedCharacters, demoDraftId, previewUrls, type Draft } from "@/lib/drafts";
 import { currentUser } from "@/lib/auth";
@@ -44,15 +45,17 @@ export async function POST(request: Request) {
     }
   })());
   const childPhoto = form.get("childPhoto");
-  const momPhoto = form.get("momPhoto");
-  const dadPhoto = form.get("dadPhoto");
+  // ママ・パパが出ないお話（プリンセス）は、ママ・パパの写真を受け取らない
+  const noParents = !!getSeriesInfo(parseSeriesKey(story)?.series ?? "")?.noParents;
+  const momPhoto = noParents ? null : form.get("momPhoto");
+  const dadPhoto = noParents ? null : form.get("dadPhoto");
   const childPhotoId = String(form.get("childPhotoId") ?? "");
-  const momPhotoId = String(form.get("momPhotoId") ?? "");
-  const dadPhotoId = String(form.get("dadPhotoId") ?? "");
+  const momPhotoId = noParents ? "" : String(form.get("momPhotoId") ?? "");
+  const dadPhotoId = noParents ? "" : String(form.get("dadPhotoId") ?? "");
   const characterIds: Record<Person, string> = {
     child: String(form.get("childCharacterId") ?? ""),
-    mom: String(form.get("momCharacterId") ?? ""),
-    dad: String(form.get("dadCharacterId") ?? ""),
+    mom: noParents ? "" : String(form.get("momCharacterId") ?? ""),
+    dad: noParents ? "" : String(form.get("dadCharacterId") ?? ""),
   };
 
   if (!getTaste(taste) || !isStoryKey(story)) return bad("テイストとお話を選んでください");
@@ -66,6 +69,7 @@ export async function POST(request: Request) {
     if (await storyTextFlagged(custom).catch(() => false)) return bad("絵本にふさわしくない言葉が含まれているようです。文を直してください");
   } else if (!series) return bad("このお話は今はお選びいただけません。お話を選び直してください");
   else if (!(await isPublished(series.series, series.episode)) || !(await readyEpisodes())[series.series].includes(series.episode)) return bad("このお話はまだ準備中です。ほかのお話を選んでください");
+  else if (!(await outfitOk(series.series, series.outfit))) return bad("服の形と色を選んでください");
   if (!childName || childName.length > 12) return bad("名前は12文字以内で入力してください");
   if (!CHILD_AGES.includes(childAge)) return bad("お子さまの年齢を選んでください");
   // 台本のお話に足す兄弟姉妹（最大2人・会員だけ。写真は guest0Photo… で受け取る）
@@ -93,7 +97,7 @@ export async function POST(request: Request) {
     if (!(childPhoto instanceof File)) return bad("お子さまの写真を選んでください");
     const demoId = demoDraftId({
       taste: taste as TasteId,
-      story: series ? `${story}:${comboOf(momPhoto instanceof File, dadPhoto instanceof File)}` : story,
+      story: series ? seriesKey(series.series, series.episode, series.level, comboOf(momPhoto instanceof File, dadPhoto instanceof File), 0, series.outfit) : story,
       childName,
       childAge,
       hasMom: momPhoto instanceof File,
@@ -196,7 +200,7 @@ export async function POST(request: Request) {
       anon_id: anonId,
       taste,
       // シリーズは写真の組み合わせを足して保存する（写真を消したあとも、同じ本文で印刷できるように）
-      story: series ? `${story}:${comboOf(hasMom, hasDad)}${siblings.length ? `:k${siblings.length}` : ""}` : custom ? customKeyWithPhotos(custom, guestPaths) : story,
+      story: series ? seriesKey(series.series, series.episode, series.level, comboOf(hasMom, hasDad), siblings.length, series.outfit) : custom ? customKeyWithPhotos(custom, guestPaths) : story,
       child_name: childName,
       child_age: childAge,
       child_photo_path: childPath,

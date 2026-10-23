@@ -1,7 +1,7 @@
 import "server-only";
 import { STORIES, type Scene } from "./catalog";
 import { LEVELS, getSeriesInfo, parseSeriesKey, type Combo, type SeriesId } from "./story-key";
-import { SERIES_DATA, type Continuity, type SeriesSceneData } from "./series-data";
+import { SERIES_DATA, resolveOutfits, type Continuity, type SeriesSceneData } from "./series-data";
 import { parseCustomKey } from "./custom-story";
 import type { CountRule } from "./count-check";
 import { applyScriptEdits, type ScriptEdits } from "./script-edits";
@@ -55,6 +55,10 @@ export type Book = {
     continuity: Continuity[];
     /** 本文に 漢字《かな》 のふりがながある（文の量が「多い」） */
     ruby: boolean;
+    /** シリーズで決まっている絵のタッチ（英語）。あれば選んだタッチの代わりに使う */
+    style?: string;
+    /** 登場人物の決まり（英語）。あれば「人間の子どもは主人公だけ」の代わりに使う */
+    castRules?: string;
   };
 };
 
@@ -133,9 +137,11 @@ export function getBook(key: string | null | undefined, siblings?: SiblingOverla
       sidekick: data.sidekick,
       cast: data.cast,
       props: data.props ?? {},
-      outfits: ep.outfits,
+      outfits: resolveOutfits(data, ep.outfits, k.outfit),
       continuity: ep.continuity ?? [],
       ruby: k.level === "l",
+      style: data.style,
+      castRules: data.castRules,
     },
   };
 }

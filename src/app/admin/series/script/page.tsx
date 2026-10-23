@@ -1,5 +1,5 @@
 import { SERIES_DATA } from "@/lib/series-data";
-import { readScriptEdits, scriptEditKey, variantFor, type ScriptVariant } from "@/lib/script-edits";
+import { applyScriptEdits, isStructured, readScriptEdits, readStructuredEdit, scriptEditKey, variantFor, type ScriptVariant } from "@/lib/script-edits";
 import { SHOWN_SERIES_LIST, openEpisodes, type Combo, type SeriesId } from "@/lib/story-key";
 import { ScriptEditor, type ScriptSeries } from "./editor";
 
@@ -12,13 +12,18 @@ const COMBOS: Combo[] = ["both", "mom", "dad", "none"];
 export default async function ScriptPage({ searchParams }: { searchParams: Promise<{ series?: string; ep?: string }> }) {
   const q = await searchParams;
   const edits = await readScriptEdits();
-  const list: ScriptSeries[] = SHOWN_SERIES_LIST.map((info) => {
+  const list: ScriptSeries[] = await Promise.all(SHOWN_SERIES_LIST.map(async (info) => {
     const data = SERIES_DATA[info.id];
+    // ヒーロー・プリンセスは台本まるごとを直す（直した台本が無ければ、文の直しを重ねた元の台本から始める）
+    const structured = isStructured(info.id)
+      ? { data: applyScriptEdits(data, edits), updatedAt: (await readStructuredEdit(info.id))?.updatedAt ?? null }
+      : undefined;
     return {
       id: info.id,
       name: data.name,
       // 数のお勉強は文が1種類だけ（3つとも同じ文）
       single: info.id === "number",
+      structured,
       episodes: openEpisodes(data.episodes).map((ep) => ({
         no: ep.no,
         title: ep.title,
@@ -41,7 +46,7 @@ export default async function ScriptPage({ searchParams }: { searchParams: Promi
         }),
       })),
     };
-  });
+  }));
   const series = list.find((s) => s.id === q.series)?.id ?? list[0].id;
   const ep = Number(q.ep) || 1;
   return (
@@ -52,6 +57,7 @@ export default async function ScriptPage({ searchParams }: { searchParams: Promi
         各場面の本文を、文の量（少ない・普通・多い）ごとに直して「保存」します。保存するとすぐ、お客様の本（プレビュー・印刷・しまうま用の画像）、トップとサンプル集の見本の文、絵スタジオの見開きの文に使われます（注文済みでまだ印刷していない本も、新しい文になります）。
         「{"{name}"}」の所には主人公の名前が入ります。「多い」は 漢字《かな》 の形でふりがなを付けます。改行はそのまま本の改行になります。
         ママ・パパの写真の組み合わせで文が違う場面は、組み合わせごとに直せます。「元の台本に戻す」で直す前の文に戻せます。
+        作り込み中のシリーズ（ひかりの ヒーロー・まほうの おひめさま）は、本文に加えて絵の説明・服の形と色・登場人物・タッチも直せます（下の「保存」で台本まるごとを保存します）。
       </p>
       <ScriptEditor list={list} initialSeries={series as SeriesId} initialEpisode={ep} />
     </main>

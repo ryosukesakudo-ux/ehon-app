@@ -11,9 +11,9 @@ export const dynamic = "force-dynamic";
 export default async function SeriesPage() {
   const published = await publishedEpisodes();
   const list: StudioView[] = await Promise.all(SHOWN_SERIES_LIST.map(async (info) => {
-    const s = getStudioSeries(info.id)!;
-    const name = seriesSampleChildName(info.id);
     const data = await seriesDataWithEdits(info.id);
+    const s = getStudioSeries(info.id, data)!;
+    const name = seriesSampleChildName(info.id);
     // 見開きの試作で絵に重ねて見せる文（文の量 少ない・普通・多い の3つ、見本の家族はママもパパもいる形）。ふりがなは外す
     const textsOf = (no: number, i: number) => {
       const sc = data.episodes.find((e) => e.no === no)?.scenes[i];
@@ -26,6 +26,8 @@ export default async function SeriesPage() {
       sidekickLabel: s.sidekickLabel,
       open: OPEN_SERIES.includes(s.id),
       published: published[s.id],
+      outfits: data.outfitChoices?.types.map((t) => ({ id: t.id, name: t.name, colors: t.colors.map((c) => ({ id: c.id, name: c.name })) })),
+      styleName: info.styleName,
       episodes: s.episodes.map((ep) => ({ no: ep.no, title: ep.title, cover: { label: ep.cover.label }, scenes: ep.scenes.map((sc, i) => ({ label: sc.label, texts: textsOf(ep.no, i) })) })),
     };
   }));

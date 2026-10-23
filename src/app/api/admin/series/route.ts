@@ -21,6 +21,7 @@ import {
   seriesFamilyPhotoPath,
   seriesImagePath,
   seriesImageTextPath,
+  seriesOutfitPath,
   seriesSceneTextSide,
   seriesSampleChildName,
   seriesSheetPath,
@@ -33,9 +34,9 @@ import {
 } from "@/lib/series";
 import { buildSpreadBook } from "@/lib/spread-book";
 import { findSpreadTextSpot, isSpotDark } from "@/lib/spread-text";
-import { episodeArtComplete, getStudioSeries, studioScenesFor } from "@/lib/series-studio";
+import { episodeArtComplete, getStudioSeries, getStudioSeriesLive, studioScenesFor } from "@/lib/series-studio";
 import { setPublished } from "@/lib/published-episodes";
-import { readScriptEdits } from "@/lib/script-edits";
+import { readScriptEdits, seriesDataWithEdits } from "@/lib/script-edits";
 import { savedArtNote } from "@/lib/saved-art-notes";
 import { BOOK_BUCKET, SAMPLE_BUCKET, getSupabase } from "@/lib/services";
 import { SHOWN_SERIES_LIST, bookTitle, seriesKey, type Combo, type LevelId } from "@/lib/story-key";
@@ -68,7 +69,7 @@ export const maxDuration = 300;
 export async function POST(request: Request) {
   if (request.headers.get("content-type")?.includes("multipart/form-data")) return saveOwnPhoto(request);
   const body = await request.json().catch(() => null);
-  const series = getStudioSeries(String(body?.series ?? ""));
+  const series = await getStudioSeriesLive(String(body?.series ?? ""));
   if (!series) return Response.json({ error: "指定が正しくありません" }, { status: 400 });
   const db = getSupabase();
   if (!db) return Response.json({ error: "Supabase が未設定のため、絵を保存できません" }, { status: 503 });
@@ -183,6 +184,20 @@ export async function POST(request: Request) {
       return Response.json({ ok: true });
     }
 
+    // kind=outfitSample：服選びの画面に出す服の見本（見本の主人公が、その形・色の服を着た全身）。type・color で選ぶ
+    if (body?.kind === "outfitSample") {
+      const type = String(body?.type ?? "");
+      const color = String(body?.color ?? "");
+      const data = await seriesDataWithEdits(series.id);
+      if (!data.outfitChoices?.types.find((t) => t.id === type)?.colors.some((c) => c.id === color)) return Response.json({ error: "指定が正しくありません" }, { status: 400 });
+      const sheet = await load(seriesSheetPath(series.id), "characters.png");
+      if (!sheet) return Response.json({ error: "先に登場人物の設定画を作ってください" }, { status: 400 });
+      const outfits = getStudioSeries(series.id, data, { type, color })?.episodes[0]?.outfits;
+      const photo = series.photoFirst ? await load(seriesFamilyPhotoPath(series.id), "family-photo.png") : null;
+      await save(seriesOutfitPath(series.id, type, color), await makeSeriesCharacter({ series, who: "child", outfits, sheet, photo, note }));
+      return Response.json({ ok: true });
+    }
+
     if (body?.kind === "photo") {
       const sheet = await load(seriesSheetPath(series.id), "characters.png");
       if (!sheet) return Response.json({ error: "先に登場人物の設定画を作ってください" }, { status: 400 });
@@ -224,7 +239,7 @@ export async function POST(request: Request) {
     }
 
     if (body?.kind === "bookSpread") {
-      const scene = episode && combo && Number.isInteger(page) ? studioScenesFor(series.id, episode.no, combo)?.[page - 1] : null;
+      const scene = episode && combo && Number.isInteger(page) ? studioScenesFor(series.id, episode.no, combo, await seriesDataWithEdits(series.id))?.[page - 1] : null;
       if (!episode || !combo || !scene) return Response.json({ error: "指定が正しくありません" }, { status: 400 });
       const side = bookTextSide(page);
       const quality = body?.quality === "preview" ? "preview" : "final";
@@ -373,7 +388,7 @@ async function renderBook(db: Db, id: Parameters<typeof seriesImagePath>[0], epi
   if (missing.length) return { error: `見開きの絵がまだ無い場面があります（場面${missing.join("・")}）` };
 
   // 登場人物しょうかい：主人公と、この組み合わせで出るママ・パパ（絵がある人）と相棒
-  const honorific = opts.honorific ?? (id === "number" ? "chan" : "kun");
+  const honorific = opts.honorific ?? (id === "number" || id === "princess" ? "chan" : "kun");
   const called = calledName(childName, honorific);
   const people: ("child" | "mom" | "dad")[] = ["child"];
   if (combo === "both" || combo === "mom") people.push("mom");
@@ -383,7 +398,7 @@ async function renderBook(db: Db, id: Parameters<typeof seriesImagePath>[0], epi
     const image = await download(characterPath(id, episode, who));
     if (image) characters.push({ name: who === "child" ? called : who === "mom" ? "ママ" : "パパ", image });
   }
-  const studio = getStudioSeries(id);
+  const studio = await getStudioSeriesLive(id);
   const { data: sidekickData } = await db.storage.from(SAMPLE_BUCKET).download(seriesSidekickPath(id));
   if (studio && sidekickData) characters.push({ name: sidekickShortName(studio.sidekickLabel), image: Buffer.from(await sidekickData.arrayBuffer()) });
   const familyPhoto = opts.own ? null : await download(seriesFamilyPhotoPath(id));

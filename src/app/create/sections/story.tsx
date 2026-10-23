@@ -52,6 +52,8 @@ export function StorySection({ ready, onDecide }: { ready: ReadyEpisodes; onDeci
           const firstReady = openEpisodes(s.episodes).find((e) => hasArt(s.id, e.no));
           // 公開前のシリーズは「準備中」で、押せない
           const soon = !isOpenSeries(s.id);
+          // 女の子向けのお話（プリンセス）は、呼び方が「くん」だと選べない（2026-10-23 作道さん）
+          const girlsOnlyBlocked = !!s.girlsOnly && state.childHonorific === "kun";
           const picked = current?.series === s.id;
           return (
             <button
@@ -60,11 +62,12 @@ export function StorySection({ ready, onDecide }: { ready: ReadyEpisodes; onDeci
               className="choice story-card"
               aria-pressed={picked}
               aria-haspopup="dialog"
-              disabled={soon}
+              disabled={soon || girlsOnlyBlocked}
               onClick={() => setModal(s.id)}
             >
               <Thumb src={firstReady ? versioned(samplePublicUrl(seriesImagePath(s.id, firstReady.no, 0))) : null} alt={`${s.name}の見本`} size="100%" />
               <div className="choice-title display story-card-title">{s.name}</div>
+              {s.audience && <span className="tag" style={{ background: s.girlsOnly ? "#FDE4EE" : "#E3EEFC" }}>{s.audience}</span>}
               {soon ? <span className="soon">準備中</span> : picked ? <span className="tag">第{current.episode}話を選択中</span> : <span className="tag">全{openEpisodes(s.episodes).length}話</span>}
               {picked && <div className="check story-card-check"><Check /></div>}
             </button>
@@ -83,6 +86,9 @@ export function StorySection({ ready, onDecide }: { ready: ReadyEpisodes; onDeci
         </button>
       </div>
       <p className="section-lead" style={{ margin: 0 }}>シリーズは1冊に1話。季節がめぐるように、続きのお話もあとから作れます。</p>
+      {state.childHonorific === "kun" && SHOWN_SERIES_LIST.some((s) => s.girlsOnly) && (
+        <p style={{ margin: 0, fontSize: 12, lineHeight: 1.6, color: "var(--sub)" }}>「女の子向け」のお話は、呼び方を「ちゃん」か「名前だけ」にすると選べます。</p>
+      )}
 
       {customOpen && (
         <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
@@ -151,6 +157,12 @@ function EpisodeDialog({ series, ready, onClose, onDecide }: { series: SeriesId;
           <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
             <h2 id="story-dialog-title" className="display" style={{ margin: 0, fontSize: 19, fontWeight: 900, color: "var(--navy)" }}>{s.name}</h2>
             <p style={{ margin: 0, fontSize: 13, lineHeight: 1.6, color: "var(--sub)" }}>{s.description}</p>
+            {(s.styleName || s.noParents) && (
+              <p style={{ margin: 0, fontSize: 12, lineHeight: 1.6, color: "var(--sub)" }}>
+                {s.styleName && `このお話の絵は「${s.styleName}」で描きます（えらんだテイストは使いません）。`}
+                {s.noParents && "ママ・パパは出てこないお話です（写真はお子さまだけ）。"}
+              </p>
+            )}
           </div>
         </div>
         <div style={{ display: "flex", flexDirection: "column", gap: 8 }} role="radiogroup" aria-label="お話">
@@ -174,7 +186,7 @@ function EpisodeDialog({ series, ready, onClose, onDecide }: { series: SeriesId;
                 <Thumb src={ok || comingSoon ? versioned(samplePublicUrl(seriesImagePath(series, ep.no, 0))) : null} alt={`第${ep.no}話の見本`} size={44} />
                 <div style={{ display: "flex", flexDirection: "column", gap: 4, flexGrow: 1 }}>
                   <div style={{ display: "flex", gap: 6, alignItems: "center", flexWrap: "wrap", fontSize: 12, color: "var(--sub)" }}>
-                    <span>第{ep.no}話・{ep.season}</span>
+                    <span>第{ep.no}話{ep.season ? `・${ep.season}` : ""}</span>
                     {ep.ages && <span className="tag">{ep.ages}向け</span>}
                     {!ok && <span className="soon">{comingSoon ? "Coming soon" : ready ? "準備中" : "確認中"}</span>}
                   </div>
@@ -208,7 +220,7 @@ function EpisodeDialog({ series, ready, onClose, onDecide }: { series: SeriesId;
           <button type="button" className="ghost gray" style={{ height: 54, padding: "0 16px", flexShrink: 0 }} onClick={onClose}>
             閉じる
           </button>
-          <button type="button" className="cta" style={{ height: 54, flex: 1, minWidth: 0 }} disabled={!episode} onClick={() => episode && onDecide(seriesKey(series, episode, fixed?.level ?? level))}>
+          <button type="button" className="cta" style={{ height: 54, flex: 1, minWidth: 0 }} disabled={!episode} onClick={() => episode && onDecide(seriesKey(series, episode, fixed?.level ?? level, null, 0, current?.series === series ? current.outfit : null))}>
             決定
           </button>
         </div>
