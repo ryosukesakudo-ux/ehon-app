@@ -736,7 +736,7 @@ export async function makeSeriesSheet(series: StudioSeries, familySheet: Uploada
   if (!ai) throw new Error("OPENAI_API_KEY が未設定です");
   const common = [
     `Show all ${series.sidekick ? "four" : "three"} characters side by side, full body, front view, on a plain white background, at heights that fit them.`,
-    `Simple, warm picture-book character design with clear shapes and flat colors so the faces, hairstyles${series.sidekick ? ", outfits and the sidekick" : " and outfits"} are easy to copy.`,
+    sheetDesign(series),
     "Do not draw any letters, words or text.",
     seriesNote(note),
   ];
@@ -745,6 +745,7 @@ export async function makeSeriesSheet(series: StudioSeries, familySheet: Uploada
         model: process.env.OPENAI_IMAGE_MODEL ?? "gpt-image-2",
         image: [familyPhoto],
         prompt: [
+          ...sheetStyle(series),
           "Character reference sheet for a children's picture book series.",
           "The reference image is a photo of the real family: the mother on the left, the child in the middle and the father on the right. Draw these three people as picture-book characters.",
           PHOTO_LIKENESS,
@@ -763,6 +764,7 @@ export async function makeSeriesSheet(series: StudioSeries, familySheet: Uploada
         model: process.env.OPENAI_IMAGE_MODEL ?? "gpt-image-2",
         image: [familySheet],
         prompt: [
+          ...sheetStyle(series),
           "Character reference sheet for a children's picture book series.",
           "The reference image shows the family: keep the child, the mother and the father exactly the same (faces, hairstyles, body proportions, outfits and colors).",
           series.sidekick ? `Add the series sidekick standing next to the child: ${series.sidekick}.` : "",
@@ -777,6 +779,7 @@ export async function makeSeriesSheet(series: StudioSeries, familySheet: Uploada
     : await ai.images.generate({
         model: process.env.OPENAI_IMAGE_MODEL ?? "gpt-image-2",
         prompt: [
+          ...sheetStyle(series),
           "Character reference sheet for a children's picture book series about a fictional Japanese family.",
           sampleCast(series.id, ["child", "mom", "dad"]),
           series.sidekick ? `The series sidekick stands next to the child: ${series.sidekick}.` : "",
@@ -810,6 +813,7 @@ export async function makeOwnSeriesSheet(series: StudioSeries, photos: { who: Pe
     model: process.env.OPENAI_IMAGE_MODEL ?? "gpt-image-2",
     image: photos.map((p) => p.file),
     prompt: [
+      ...sheetStyle(series),
       "Character reference sheet for a children's picture book series.",
       ownPhotosPrompt(people, 1),
       `Draw ${people.length === 1 ? "this person" : `these ${people.length} people`} as picture-book characters.`,
@@ -818,7 +822,7 @@ export async function makeOwnSeriesSheet(series: StudioSeries, photos: { who: Pe
       sampleOutfits(series.id, people),
       series.sidekick ? `Add the series sidekick standing next to the child: ${series.sidekick}.` : "",
       "Show all characters side by side, full body, front view, on a plain white background, at heights that fit them.",
-      `Simple, warm picture-book character design with clear shapes and flat colors so the faces, hairstyles${series.sidekick ? ", outfits and the sidekick" : " and outfits"} are easy to copy.`,
+      sheetDesign(series),
       "Do not draw anyone who is not in the photos. Do not draw any letters, words or text.",
       seriesNote(note),
     ]
@@ -894,6 +898,19 @@ export async function makeSeriesFamilyPhoto(sheet: Uploadable, note?: string) {
 /** 絵スタジオの見本のタッチ。ふつうは水彩、タッチが決まっているシリーズ（ヒーロー・プリンセス）はそのタッチ */
 function seriesStyle(series: Pick<StudioSeries, "style">) {
   return series.style ?? getTaste("watercolor")!.prompt;
+}
+
+/** タッチが決まっているシリーズ（ヒーロー・プリンセス）の設定画は、そのタッチと本人の顔立ちを残す決まりで描く。ほかのシリーズは今までどおり */
+function sheetStyle(series: Pick<StudioSeries, "style">) {
+  return series.style ? [`${series.style}.`, STYLED_CHARACTERS] : [];
+}
+
+/** 設定画の描き方。タッチが決まっているシリーズは、絵本風の単純な絵にしない */
+function sheetDesign(series: Pick<StudioSeries, "style" | "sidekick">) {
+  const what = `the faces, hairstyles${series.sidekick ? ", outfits and the sidekick" : " and outfits"}`;
+  return series.style
+    ? `Clear character design in the ART STYLE above so ${what} are easy to copy.`
+    : `Simple, warm picture-book character design with clear shapes and flat colors so ${what} are easy to copy.`;
 }
 
 /** 絵スタジオで1枚ごとに書く追加の指示（日本語でよい）。ほかの指示より優先させるため最後に置く */
