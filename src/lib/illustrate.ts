@@ -837,6 +837,12 @@ export async function makeOwnSeriesSheet(series: StudioSeries, photos: { who: Pe
   return b64;
 }
 
+/** 見本の家族写真を本物の写真らしくする決まり（2026-10-23 作道さん「実物っぽくない」） */
+const PHOTO_REALISM =
+  "It must be indistinguishable from a real photograph: shot on a smartphone main camera at eye level, natural skin texture with pores and slight unevenness, individual hair strands and flyaways, " +
+  "real fabric texture and wrinkles, real human proportions for each age (no big heads, no oversized eyes), natural slightly uneven daylight, a softly blurred real park background with depth of field, ordinary candid framing. " +
+  "It must NOT look like an illustration, painting, 3D render, CGI, anime, a doll or an airbrushed advertisement: no smooth plastic skin, no glossy perfect lighting, no cartoon features.";
+
 /**
  * 写真が先のシリーズで、最初に作る架空の家族写真（文章の家族から）。設定画と場面はこの写真に寄せて描く。
  * サンプル集では左からママ・主人公・パパの順に名前を付けて表示する。
@@ -852,6 +858,7 @@ export async function makeSeriesFamilyPhotoFromText(series: StudioSeries, note?:
       "They wear everyday casual clothes.",
       "They stand side by side in a row, evenly spaced across the frame, in this exact order from left to right: the mother on the left third, the child in the middle, the father on the right third. The child stands in front, between the parents.",
       "All three smile at the camera, faces clearly visible and not overlapping, upper bodies in the frame, soft daylight, realistic photo, no text. Do not include any animal.",
+      PHOTO_REALISM,
       seriesNote(note),
     ]
       .filter(Boolean)
@@ -882,6 +889,8 @@ export async function makeSeriesFamilyPhoto(sheet: Uploadable, note?: string) {
       "Do not include the animal sidekick or any animal.",
       "They stand side by side in a row, evenly spaced across the frame, in this exact order from left to right: the mother on the left third, the child in the middle, the father on the right third. The child stands in front, between the parents.",
       "All three smile at the camera, faces clearly visible and not overlapping, upper bodies in the frame, soft daylight, realistic photo, no text.",
+      "Use the character sheet only to know who the people are (hairstyles, hair colors, glasses, face shapes); do not copy its drawing style, simplified faces, big eyes, flat colors or outlines.",
+      PHOTO_REALISM,
       seriesNote(note),
     ]
       .filter(Boolean)
