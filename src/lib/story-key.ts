@@ -131,11 +131,11 @@ export const SERIES_LIST: {
     outfitLabel: "ちからの いろ",
   },
   {
-    // 2026-10-22 作道さん：女の子向けのプリンセス。昔話のシンデレラの筋で、ママ・パパは出ない。今風のCGアニメのタッチ。まずは1話だけ
+    // 2026-10-22 作道さん：女の子向けのプリンセス。昔話のシンデレラの筋で、ママ・パパは出ない。今風のCGアニメのタッチ。まずは1話だけ（2026-10-23 作道さん：1話の題名を「シンデレラ」に）
     id: "princess",
     name: "まほうの おひめさま",
     description: "小鳥の「ピピ」と、まほうのドレスでぶとうかいへ行くお話",
-    episodes: [{ no: 1, title: "まよなかの ガラスの くつ", season: "" }],
+    episodes: [{ no: 1, title: "シンデレラ", season: "" }],
     audience: "女の子向け",
     girlsOnly: true,
     noParents: true,
