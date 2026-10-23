@@ -63,7 +63,7 @@ export type OutfitChoices = {
 export type SeriesData = {
   id: SeriesId;
   name: string;
-  /** 絵のタッチ（英語）。あれば、お客様が選んだタッチの代わりにこれで描く（ヒーロー＝少年まんが風、プリンセス＝CGアニメ風） */
+  /** 絵のタッチ（英語）。あれば、お客様が選んだタッチの代わりにこれで描く（ヒーロー＝劇画風（写実寄りのまんが）、プリンセス＝CGアニメ風） */
   style?: string;
   /** ママ・パパが出ないシリーズ（写真はお子さまだけ） */
   noParents?: boolean;

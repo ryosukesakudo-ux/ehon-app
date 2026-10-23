@@ -120,14 +120,14 @@ export const SERIES_LIST: {
     ],
   },
   {
-    // 2026-10-22 作道さん（友人の助言）：男の子向けのヒーロー。少年まんが風のタッチ。まずは1話だけ（台本 /mnt/project-files/stories/hero-script.md）
+    // 2026-10-22 作道さん（友人の助言）：男の子向けのヒーロー。少年まんが風のタッチ（2026-10-23 劇画風＝写実寄りのまんがに変更）。まずは1話だけ（台本 /mnt/project-files/stories/hero-script.md）
     // 2026-10-23 作道さんの流れで作り直し：ふしぎな扉の先で光の腕輪を手に入れ、メカの兵たいから町を救う。腕輪の色（力）を選ぶ
     id: "hero",
     name: "ひかりの ヒーロー",
     description: "ひかりの うでわの ちからで ヒーローに へんしんして、町を まもる お話",
     episodes: [{ no: 1, title: "えらばれし ヒーロー", season: "" }],
     audience: "男の子に人気",
-    styleName: "少年まんが風",
+    styleName: "リアルなまんが風",
     outfitLabel: "ちからの いろ",
   },
   {
