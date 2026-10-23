@@ -26,7 +26,7 @@ export type SeriesScene = {
  * 作例とは別の架空の家族で見本を描くシリーズの、主人公の名前（家族の見た目は illustrate.ts の SERIES_SAMPLE_CAST）。
  * 数のお勉強は 2026-10-12 作道さん「別の家族で」：3歳くらいの女の子とママ・パパ
  */
-const SERIES_SAMPLE_CHILD_NAME: Partial<Record<SeriesId, string>> = { number: "みお" };
+const SERIES_SAMPLE_CHILD_NAME: Partial<Record<SeriesId, string>> = { number: "みお", princess: "ゆい" };
 
 /**
  * 見本を「写真が先」で作るシリーズ。架空の家族写真を先に作り、設定画と場面はその写真に「写真そっくり」で寄せて描く
@@ -69,6 +69,14 @@ export function usesShowcasePhoto(id: SeriesId) {
 /** サンプル集に出す、シリーズの家族（設定画の3人）そっくりの架空の家族写真。左からママ・主人公・パパの順に並ぶ */
 export function seriesFamilyPhotoPath(id: SeriesId) {
   return usesShowcasePhoto(id) ? SHOWCASE_PHOTO : `series/${id}/family-photo.png`;
+}
+
+/**
+ * 服を選ぶお話（ヒーロー・プリンセス）の、服の見本の絵（見本の主人公がその形・色の服を着た全身）。
+ * 服選びの画面で、形は最初の色の絵、色はその色の絵を出す。絵スタジオの「服の見本を作る」で作る
+ */
+export function seriesOutfitPath(id: SeriesId, type: string, color: string) {
+  return `series/${id}/outfits/${type}-${color}.png`;
 }
 
 /** 0 が表紙、1〜12 が場面 */

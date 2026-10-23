@@ -1,7 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import type { SeriesData } from "@/lib/series-data";
 import type { Combo, SeriesId } from "@/lib/story-key";
+import { StructuredEditor } from "./structured";
 
 export type ScriptVersion = {
   variant: "main" | Combo;
@@ -19,6 +21,8 @@ export type ScriptSeries = {
   id: SeriesId;
   name: string;
   single: boolean;
+  /** 台本まるごとを直すシリーズ（ヒーロー・プリンセス）：今の台本と、直した日時 */
+  structured?: { data: SeriesData; updatedAt: string | null };
   episodes: { no: number; title: string; scenes: { versions: ScriptVersion[] }[] }[];
 };
 
@@ -46,14 +50,18 @@ export function ScriptEditor({ list, initialSeries, initialEpisode }: { list: Sc
             {list.map((s) => <option key={s.id} value={s.id}>{s.name}</option>)}
           </select>
         </label>
-        <label style={{ display: "flex", gap: 6, alignItems: "center", fontSize: 14 }}>
-          話
-          <select value={episode.no} onChange={(e) => setEpisodeNo(Number(e.target.value))}>
-            {series.episodes.map((ep) => <option key={ep.no} value={ep.no}>第{ep.no}話「{ep.title}」</option>)}
-          </select>
-        </label>
+        {!series.structured && (
+          <label style={{ display: "flex", gap: 6, alignItems: "center", fontSize: 14 }}>
+            話
+            <select value={episode.no} onChange={(e) => setEpisodeNo(Number(e.target.value))}>
+              {series.episodes.map((ep) => <option key={ep.no} value={ep.no}>第{ep.no}話「{ep.title}」</option>)}
+            </select>
+          </label>
+        )}
+        {series.structured && <span className="tag" style={{ background: "#E3EEFC" }}>作り込み中：本文・絵の説明・服・登場人物・タッチを直せます</span>}
       </div>
-      {episode.scenes.map((sc, i) => (
+      {series.structured && <StructuredEditor key={series.id} series={series.id} current={series.structured.data} updatedAt={series.structured.updatedAt} />}
+      {!series.structured && episode.scenes.map((sc, i) => (
         <section key={`${series.id}/${episode.no}/${i}`} id={`scene-${i + 1}`} className="card" style={{ gap: 12 }}>
           <h2 className="display" style={{ margin: 0, fontSize: 17, color: "var(--navy)" }}>場面{i + 1}</h2>
           {sc.versions.map((v) => (

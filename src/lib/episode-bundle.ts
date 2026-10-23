@@ -30,7 +30,7 @@ export function episodeStoryKey(story: string, episode: number) {
   const k = parseSeriesKey(story);
   if (!k) return null;
   const level = fixedLevelEpisode(k.series, episode)?.level ?? k.level;
-  return seriesKey(k.series, episode, level, k.combo, k.siblings);
+  return seriesKey(k.series, episode, level, k.combo, k.siblings, k.outfit);
 }
 
 /**

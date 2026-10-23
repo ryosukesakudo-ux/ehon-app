@@ -250,6 +250,11 @@ button, input { font-family: inherit; }
 @media (prefers-reduced-motion: reduce) { .story-dialog-backdrop, .story-dialog { animation: none; } }
 .level-row { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
 .level-choice { flex-direction: column; align-items: flex-start; gap: 6px; padding: 12px 10px; border-radius: 18px; }
+/* 服選び（ヒーロースーツ・ドレス。2026-10-23 作道さん）：形3つ、色3つを横に並べる */
+.outfit-choice { position: relative; flex-direction: column; align-items: stretch; gap: 6px; padding: 8px; border-radius: 18px; text-align: center; }
+.outfit-choice .choice-title { font-size: 15px; justify-content: center; }
+.outfit-art { aspect-ratio: 3 / 4; border-radius: 12px; overflow: hidden; display: flex; align-items: center; justify-content: center; }
+.outfit-check { position: absolute; top: 12px; right: 12px; box-shadow: 0 0 0 3px #fff; }
 .choice-title { font-size: 17px; font-weight: 800; color: var(--navy); }
 /* オリジナルのお話の「ほかの登場人物」の1行（名前・人か動物か・どんな人か） */
 .cast-row { display: flex; flex-direction: column; gap: 6px; padding: 10px; border-radius: 14px; background: #FBF7F0; border: 1px solid var(--line); }

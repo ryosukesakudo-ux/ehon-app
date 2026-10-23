@@ -1,0 +1,301 @@
+{
+  "id": "princess",
+  "name": "まほうの おひめさま",
+  "sidekick": "Pipi, a tiny round white songbird about the size of the child's fist, with a short pink beak, a little pink feather tuft on top of its head, lemon-yellow wing tips and shiny black eyes (an ordinary small bird that wears nothing); when it rests on the child, it always perches on the child's own right shoulder",
+  "sidekickLabel": "相棒の小鳥「ピピ」",
+  "cast": {
+    "stepmother": "the stepmother, a tall thin grown-up woman with a pointed nose, gray hair in a tall tight bun, a stiff high-collared dark-purple dress and a cold, haughty look (stern but not monstrous)",
+    "stepsisters": "the two stepsisters, two grown-up teenage girls much taller than the child: the older one tall and thin with curly red hair, a green ruffled dress and too many ribbons; the younger one short and round with straight black hair cut in a bob, an orange ruffled dress and a big feather in her hair",
+    "fairy godmother": "the fairy godmother, a small round kind old woman with white hair in a soft bun, round gold-rimmed glasses and rosy cheeks, wearing a moss-green hooded cloak covered with tiny gold stars, holding a thin wooden wand with a glowing gold star on its tip",
+    "prince": "the prince, a kind boy a few years older than the child, with short wavy chestnut-brown hair, warm brown eyes, a small simple gold crown, a deep-green velvet jacket with gold embroidery, a short burgundy cape, cream trousers and brown boots"
+  },
+  "props": {
+    "carriage": "the magic carriage: a round golden pumpkin-shaped carriage with curling golden vines as its frame, round windows and four golden wheels shaped like flowers, pulled by white horses",
+    "glass slipper": "a clear sparkling glass slipper with a small low heel and a tiny glass bow on the toe, exactly the same design every time",
+    "castle": "the royal castle on a hill: cream-white stone walls with rounded towers topped by rose-pink pointed roofs, golden flags and a big round clock on the front tower"
+  },
+  "outfitChoices": {
+    "label": "ドレス",
+    "types": [
+      {
+        "id": "ballgown",
+        "name": "ふんわり",
+        "note": "ふくらんだスカートの、ぶとうかいのドレス",
+        "look": "a sparkling princess ball gown in {color}: a fitted bodice with tiny sparkles, short puffy sleeves, a very full floor-length layered skirt that flares out like a bell, long white gloves and a small sparkling silver tiara",
+        "colors": [
+          {
+            "id": "pink",
+            "name": "ピンク",
+            "swatch": "#F4A6C1",
+            "look": "soft rose pink with white sparkles"
+          },
+          {
+            "id": "purple",
+            "name": "むらさき",
+            "swatch": "#A98BD8",
+            "look": "lilac purple with silver sparkles"
+          },
+          {
+            "id": "yellow",
+            "name": "きいろ",
+            "swatch": "#F6CF5A",
+            "look": "warm golden yellow with gold sparkles"
+          }
+        ]
+      },
+      {
+        "id": "ribbon",
+        "name": "リボン",
+        "note": "大きなリボンがかわいいドレス",
+        "look": "a princess dress in {color} with a big satin bow at the back of the waist, smaller bows on both shoulders, a ruffled knee-length skirt layered over a long sheer underskirt, and a matching ribbon headband with a small bow",
+        "colors": [
+          {
+            "id": "pink",
+            "name": "ピンク",
+            "swatch": "#F4A6C1",
+            "look": "candy pink with white bows"
+          },
+          {
+            "id": "purple",
+            "name": "むらさき",
+            "swatch": "#A98BD8",
+            "look": "lavender purple with white bows"
+          },
+          {
+            "id": "yellow",
+            "name": "きいろ",
+            "swatch": "#F6CF5A",
+            "look": "lemon yellow with white bows"
+          }
+        ]
+      },
+      {
+        "id": "flower",
+        "name": "おはな",
+        "note": "お花のかざりがたくさんのドレス",
+        "look": "a princess dress in {color} decorated with many small fabric flowers along the neckline and around the hem, a flowing floor-length skirt with petal-shaped layers, and a crown of small fresh flowers in the hair",
+        "colors": [
+          {
+            "id": "pink",
+            "name": "ピンク",
+            "swatch": "#F4A6C1",
+            "look": "peach pink with white and pink roses"
+          },
+          {
+            "id": "purple",
+            "name": "むらさき",
+            "swatch": "#A98BD8",
+            "look": "violet purple with white and lilac flowers"
+          },
+          {
+            "id": "yellow",
+            "name": "きいろ",
+            "swatch": "#F6CF5A",
+            "look": "sunflower yellow with white daisies"
+          }
+        ]
+      }
+    ]
+  },
+  "style": "ART STYLE: a modern 3D computer-animated fairy-tale film still, like a frame from a feature-length family animation. Soft rounded stylized characters with big expressive eyes, smooth subsurface-scattered skin, soft volumetric lighting and gentle glow, rich saturated jewel colors, sparkling magical particles, detailed storybook European fairy-tale architecture and costumes with soft fabric folds and subtle shine, a shallow depth of field with a softly blurred background. Characters keep their own faces, hairstyles and clothes from the references; do not imitate any existing animated film character, costume, logo or famous castle. It must NOT look like a flat 2D drawing, watercolor, crayon, manga or a photograph",
+  "noParents": true,
+  "castRules": "The main character is the only small child in this picture book; the only other young people are the prince and the two stepsisters, and they appear only when this scene mentions them. Never draw a second child who looks or dresses like the main character. Do not add people who are not mentioned in this scene; crowds of townspeople and guests are grown-ups, never children. Each animal character keeps exactly its own species and look on every page; never turn one into a person or into a different animal. Everyone stands, sits or kneels on top of the ground; never draw a body sunk into the ground or a hole.",
+  "episodes": [
+    {
+      "no": 1,
+      "title": "まよなかの ガラスの くつ",
+      "outfits": "the child, when dressed by magic (on the cover, on the character design and on pages 6, 7, 10, 11 and 12): {outfit}, with clear sparkling glass slippers; the child in everyday life (pages 1 to 5, 8 and 9): a plain worn brown work dress with two patches, a faded cream apron with one front pocket, a gray head scarf over the hair and worn brown slip-on shoes.",
+      "continuity": [
+        {
+          "from": 1,
+          "to": 5,
+          "text": "The magic has not happened yet: the child wears the everyday work clothes (a plain worn brown work dress with two patches, a faded cream apron with one front pocket, a gray head scarf over the hair and worn brown slip-on shoes), never the ball dress and never glass slippers."
+        },
+        {
+          "from": 6,
+          "to": 7,
+          "text": "The child wears the magic dress described in the clothes list on this page, exactly the same shape and color on every page, with clear sparkling glass slippers; no head scarf and no apron."
+        },
+        {
+          "from": 8,
+          "to": 9,
+          "text": "The magic has ended: the child wears the everyday work clothes again (a plain worn brown work dress with two patches, a faded cream apron with one front pocket, a gray head scarf over the hair and worn brown slip-on shoes). The child has only one glass slipper left; it is held in the child's hands on page 8 and hidden in the apron pocket on page 9."
+        },
+        {
+          "from": 10,
+          "to": 12,
+          "text": "The child wears the magic dress again, exactly the same shape and color as on pages 6 and 7, with clear sparkling glass slippers; no head scarf and no apron."
+        },
+        {
+          "from": 1,
+          "to": 5,
+          "text": "Pages 1 to 5 take place in and around the stepmother's old stone house in a fairy-tale European town: a plain kitchen with a fireplace and a small garden; it is evening on pages 3 to 5."
+        }
+      ],
+      "cover": {
+        "label": "夜のお城の前で、ドレス姿の主人公がくるりと回る。かたに小鳥のピピ、うしろに金のかぼちゃのばしゃ",
+        "art": "in front of the glowing royal castle at night under a starry sky, the child in the magic dress twirls happily, the skirt swirling out and sparkles flying, with Pipi the little white bird on the child's shoulder; the golden carriage waits behind on the castle road",
+        "withSidekick": true,
+        "camera": "Low three-quarter angle from slightly below the child, the child's joyful face clearly visible, the castle rising behind with the starry sky, sparkles swirling around the dress."
+      },
+      "scenes": [
+        {
+          "label": "古い家の台所で、ほうきを持ってそうじをする主人公。ままははとおねえさんたちが命令する。まどべに小鳥のピピ",
+          "art": "in the plain kitchen of an old stone house, the child sweeps the floor with a big broom while the stepmother points and gives orders and the two stepsisters lounge in chairs eating sweets; Pipi the little white bird sits on the windowsill watching the child kindly",
+          "text": [
+            "{name}は まいにち おそうじ。ともだちは ことりの ピピ。",
+            "むかし むかし。{name}は いじわるな ままははと、ふたりの おねえさんと くらして いました。まいにち そうじに せんたく。ともだちは、ことりの ピピだけです。",
+            "むかしむかし、ある国《くに》に、{name}という女《おんな》の子《こ》がいました。{name}は、いじわるなままははと二人《ふたり》のおねえさんといっしょにくらしています。朝《あさ》から夜《よる》まで、そうじにせんたく、おさらあらい。「ぐずぐずしないで！」としかられてばかりです。そんな{name}の友《とも》だちは、まどべに来《く》る小鳥《ことり》のピピだけでした。"
+          ],
+          "withMom": false,
+          "withDad": false,
+          "withSidekick": true,
+          "camera": "Wide high-angle view looking down over the kitchen, the small child sweeping in the center, the stepmother and stepsisters at one side and Pipi on the windowsill."
+        },
+        {
+          "label": "お城から金色の手紙。よろこぶおねえさんたち、手紙をとり上げるままはは",
+          "art": "in the house's hallway, the stepmother holds a golden invitation letter high out of the child's reach with a cold look, while the two stepsisters squeal with delight and the child reaches up hopefully; Pipi flutters near the child",
+          "text": [
+            "おしろから ぶとうかいの しょうたいじょう！",
+            "ある ひ、おしろから ぶとうかいの しょうたいじょうが とどきました。「{name}も いきたい！」 でも ままははは いいました。「あなたは おるすばんよ」",
+            "ある日《ひ》、おしろから金色《きんいろ》の手紙《てがみ》がとどきました。「王子《おうじ》さまのぶとうかいに、国《くに》じゅうのむすめをまねきます」 おねえさんたちは大《おお》よろこび。「{name}も行《い》きたい！」と言《い》うと、ままははは手紙《てがみ》をとり上《あ》げました。「あなたはおるすばん。そんなぼろの服《ふく》で、行《い》けるものですか」"
+          ],
+          "withMom": false,
+          "withDad": false,
+          "withSidekick": true,
+          "camera": "Low angle from the child's height looking up past the child's reaching hand at the stepmother holding the golden letter high, the stepsisters' excited faces beside her."
+        },
+        {
+          "label": "みんなが出かけたあと、だんろのそばでひとりなく主人公。かたのピピがほっぺをなでる",
+          "art": "in the dim kitchen in the evening, the child sits alone on a little stool by the fireplace crying, while Pipi perches on the child's shoulder and gently strokes the child's cheek with its wing; through the window, a carriage drives away toward the distant glowing castle",
+          "text": [
+            "ひとりぼっちで、ぽろぽろ なみだ。",
+            "みんなが でかけた あと、{name}は ひとりで なきました。ピピが かたに とまって、そっと ほっぺを なでて くれました。",
+            "ばしゃに乗《の》って、おねえさんたちが出《で》かけていくと、家《いえ》の中《なか》はしんとしずかになりました。{name}はだんろのそばにすわりこんで、ぽろぽろなみだをこぼしました。「一度《いちど》でいいから、ぶとうかいに行《い》ってみたかったな」 ピピがかたにとまって、小《ちい》さなつばさで、そっとほっぺをなでてくれました。"
+          ],
+          "withMom": false,
+          "withDad": false,
+          "withSidekick": true,
+          "camera": "Back view from behind the child by the fireplace, the child's small slumped shoulders and Pipi in the foreground, the window with the distant glowing castle in the background."
+        },
+        {
+          "label": "だんろの火が金色にかがやいて、星のつえを持ったまほうつかいのおばあさんがあらわれる",
+          "art": "in the kitchen in the evening, the fireplace flares with golden light and the fairy godmother appears in a swirl of sparkles, smiling warmly at the astonished child; Pipi flutters up in surprise",
+          "text": [
+            "まほうつかいの おばあさんが あらわれた！",
+            "そのとき、ぱあっと ひかりが あふれて、まほうつかいの おばあさんが あらわれました。「なかないで。にわの かぼちゃと、ねずみを つれて おいで」",
+            "すると、だんろの火《ひ》がぱあっと金色《きんいろ》にかがやいて、星《ほし》のつえを持《も》ったおばあさんがあらわれました。「なかないで。わたしは、まほうつかい。やさしい子《こ》のねがいを、かなえに来《き》たのよ」 おばあさんはにっこりわらいました。「さあ、にわの大《おお》きなかぼちゃと、ねずみを六《ろっ》ぴき、つれておいで」"
+          ],
+          "withMom": false,
+          "withDad": false,
+          "withSidekick": true,
+          "camera": "Eye-level three-quarter view, the glowing fairy godmother on one side and the child's amazed tear-streaked face on the other, golden sparkles filling the space between them."
+        },
+        {
+          "label": "「きらきら ぽん！」 にわのかぼちゃが金のばしゃに、ねずみたちが白い馬にかわる",
+          "art": "in the small moonlit garden behind the house, the fairy godmother waves her wand and a big pumpkin swells and transforms into the golden carriage, while six little gray mice turn into white horses in a burst of sparkles; the child, still in the work clothes, watches with hands clasped in delight and Pipi hops on the child's shoulder",
+          "text": [
+            "きらきら ぽん！ かぼちゃが ばしゃに！",
+            "おばあさんが つえを ふりました。「きらきら ぽん！」 かぼちゃは きんいろの ばしゃに、ねずみたちは しろい うまに かわりました。",
+            "おばあさんが星《ほし》のつえをくるりとふりました。「きらきら ぽん！」 すると、かぼちゃがむくむくふくらんで、金色《きんいろ》にかがやくばしゃになりました。ねずみたちは、たてがみのりっぱな白《しろ》い馬《うま》に。ピピはびっくりして、{name}のかたの上《うえ》でぴょんととびはねました。"
+          ],
+          "withMom": false,
+          "withDad": false,
+          "withSidekick": true,
+          "camera": "Dynamic low side angle on the pumpkin mid-transformation, swirls of sparkles arcing through the frame, the child's delighted face in three-quarter view at the edge."
+        },
+        {
+          "label": "主人公にもまほう。ぼろの服がドレスに、足にはガラスのくつ。「十二時までよ」とおばあさん",
+          "art": "in the moonlit garden, magical sparkles spiral around the child and the work clothes have turned into the magic dress with glass slippers; the child twirls in wonder, the skirt flaring out, while the fairy godmother raises one finger in warning and points toward the clock tower of the distant castle",
+          "text": [
+            "{name}も きらきら ぽん！ すてきな ドレス！",
+            "「さあ、{name}にも。きらきら ぽん！」 ぼろの ふくが、ゆめのような ドレスに かわりました。あしには ガラスの くつ。「でも、12じの かねが なったら、まほうは とけて しまうよ」",
+            "「さいごは、あなたよ。きらきら ぽん！」 光《ひかり》のつぶが{name}をくるくるつつむと、ぼろの服《ふく》は、ゆめのようなドレスにかわっていました。足《あし》には、すきとおったガラスのくつ。「わあ……！」 くるりと回《まわ》ると、スカートがふわりと広《ひろ》がります。「ただし、よく聞《き》いて。夜《よる》の十二時《じゅうにじ》のかねが鳴《な》ったら、まほうはとけてしまうからね」"
+          ],
+          "withMom": false,
+          "withDad": false,
+          "withSidekick": true,
+          "camera": "Front view at the child's eye level, the child twirling at the center in a spiral of sparkles, the face clearly visible and glowing with joy, the fairy godmother at one side."
+        },
+        {
+          "label": "お城の大広間。みんながふり向く中、王子さまが手をさし出し、二人でダンス",
+          "art": "in the grand ballroom of the castle under glittering chandeliers, the prince bows and takes the child's hand and the two dance together on the shining floor, while grown-up guests in fine clothes step back and watch in admiration; the two stepsisters stare from the side without recognizing the child",
+          "text": [
+            "おうじさまと ダンス。くるくる くるり。",
+            "おしろの ぶとうかい。{name}が はいると、みんなが ふりむきました。おうじさまが てを さしだします。「いっしょに おどって くれませんか」 ふたりは くるくる おどりました。",
+            "おしろの大広間《おおひろま》では、シャンデリアがきらきらかがやいていました。{name}が入《はい》っていくと、音楽《おんがく》がぴたりと止《と》まり、みんながふり向《む》きました。おくから王子《おうじ》さまがやってきて、手《て》をさし出《だ》しました。「ぼくと、おどってくれませんか」 二人《ふたり》はくるくる、くるりとおどりました。おねえさんたちも、それが{name}だとは気《き》づきません。"
+          ],
+          "withMom": false,
+          "withDad": false,
+          "withSidekick": false,
+          "camera": "Grand high-angle wide view from the chandelier height looking down on the ballroom, the child and the prince dancing at the center of a circle of watching guests."
+        },
+        {
+          "label": "十二時のかね。まほうがとけ、夜の帰り道でぼろの服にもどった主人公。手にはガラスのくつのかたほうだけ",
+          "art": "on a dark country road at midnight, the child sits on a stone by the roadside back in the work clothes, holding one glass slipper sadly in both hands; a plain pumpkin lies rolled in the grass and six little gray mice huddle nearby, and far behind on the hill the castle's clock tower shows twelve; Pipi perches on the child's shoulder",
+          "text": [
+            "ゴーン！ 12じ。まほうが とけちゃった。",
+            "ゴーン、ゴーン！ 12じの かねです。{name}は いそいで かいだんを かけおりました。かたほうの ガラスの くつが ぬげて しまい、かえりみちで まほうは とけて しまいました。",
+            "ゴーン、ゴーン……。楽《たの》しくて、時間《じかん》をわすれていました。十二時《じゅうにじ》のかねです！ {name}は王子《おうじ》さまの手《て》をはなして、かいだんをかけおりました。とちゅうで、ガラスのくつがかたほう、ぬげてしまいました。帰《かえ》り道《みち》で、まほうはすっかりとけてしまいました。手《て》に残《のこ》ったのは、ガラスのくつのかたほうだけ。「もう、王子《おうじ》さまには会《あ》えないね」"
+          ],
+          "withMom": false,
+          "withDad": false,
+          "withSidekick": true,
+          "camera": "Medium close-up at the child's eye level from the roadside, the child's sad face in three-quarter view looking down at the slipper, the far castle clock tower glowing small in the dark background."
+        },
+        {
+          "label": "次の日、王子さまがガラスのくつを持って家に。やねうらにとじこめられた主人公は、ピピが運んだかぎで出て、勇気を出して前へ",
+          "art": "the next day in the house's hallway, the prince holds the glass slipper on a red cushion while the stepsisters fail to squeeze their big feet into it; the child, in the work clothes, has just run down the attic stairs with Pipi carrying a small key in its beak, and steps forward bravely raising one hand, while the stepmother glares",
+          "text": [
+            "「わたしにも はかせて ください！」",
+            "つぎの ひ、おうじさまが ガラスの くつを もって やって きました。ままははは {name}を やねうらに とじこめましたが、ピピが かぎを はこんで きて くれました。「わたしにも はかせて ください！」",
+            "次《つぎ》の日《ひ》、王子《おうじ》さまが、ガラスのくつを持《も》って国《くに》じゅうの家《いえ》を回《まわ》っていました。「このくつがぴったり合《あ》う人《ひと》をさがしています」 ままははは、{name}をやねうらにとじこめて、かぎをかけてしまいました。でも、ピピがまどから、かぎをくわえて入《はい》ってきたのです。{name}は、どきどきするむねをおさえて、かいだんをかけおりました。「わたしにも、はかせてください！」"
+          ],
+          "withMom": false,
+          "withDad": false,
+          "withSidekick": true,
+          "camera": "Low angle from the bottom of the attic stairs looking up at the child stepping forward bravely, the child's determined face clearly visible, the prince and the slipper in the foreground."
+        },
+        {
+          "label": "【見開き】くつはぴったり！ エプロンからもうかたほうのくつを出すと、光があふれてドレス姿にもどる。おどろくままははとおねえさんたち",
+          "art": "the climax in the house's hallway: the glass slipper fits the child's foot perfectly, and as the child holds up the other glass slipper from the apron pocket, a great burst of light and sparkles fills the room and the work clothes turn back into the magic dress; the prince kneels with a joyful smile, Pipi sings in the air, and the stepmother and the two stepsisters freeze with their mouths hanging open",
+          "text": [
+            "ぴったり！ もう かたほうも ここに！",
+            "くつは ぴったり！ {name}が エプロンの ポケットから もう かたほうの くつを だすと、ぱあっと ひかりが あふれ、あの ドレスすがたに もどりました。「やっと あえた！」 おうじさまは にっこり わらいました。",
+            "王子《おうじ》さまがガラスのくつを{name}の足《あし》にそっとはかせると――ぴったり！ {name}がエプロンのポケットからもうかたほうのくつを出《だ》すと、へやじゅうに光《ひかり》があふれて、{name}はあの夜《よる》のドレスすがたにもどっていました。「やっと会《あ》えた。ずっとさがしていたんです」 ままははとおねえさんたちは、口《くち》をぽかんとあけたまま、動《うご》けなくなってしまいました。"
+          ],
+          "withMom": false,
+          "withDad": false,
+          "withSidekick": true,
+          "camera": "Grand wide angle across the whole room, the child shining at the center in a burst of light in three-quarter view, the kneeling prince on one side and the frozen stepfamily on the other."
+        },
+        {
+          "label": "金のばしゃでお城へ。かねが鳴り、花びらがふる中、国じゅうの人がお祝い。人ごみのおくでまほうつかいのおばあさんがウインク",
+          "art": "on the sunny road up to the castle, the child in the magic dress and the prince ride in the open golden carriage waving, while flower petals rain down, bells ring from the castle towers and grown-up townspeople cheer along the road; the fairy godmother winks from the back of the crowd and Pipi flies above",
+          "text": [
+            "おしろで みんなが おいわい。",
+            "{name}は おうじさまと いっしょに おしろへ いきました。かねが なり、はなびらが まい、くにじゅうが おいわいです。{name}は ピピと かおを みあわせて わらいました。",
+            "{name}は王子《おうじ》さまといっしょに、金色《きんいろ》のばしゃでおしろへ向《む》かいました。おしろのかねが高《たか》らかに鳴《な》りひびき、空《そら》から花《はな》びらがふりそそぎます。国《くに》じゅうの人《ひと》たちが、手《て》をふってお祝《いわ》いしてくれました。まほうつかいのおばあさんも、人《ひと》ごみのおくで、そっとウインクしています。"
+          ],
+          "withMom": false,
+          "withDad": false,
+          "withSidekick": true,
+          "camera": "Dynamic tracking side shot of the open carriage rolling up the road, flower petals streaming through the frame, the child's happy waving face toward the viewer."
+        },
+        {
+          "label": "夜のお城のバルコニー。流れ星が主人公の手に小さな手紙を落とす。手紙には貝がらの絵",
+          "art": "on a castle balcony at night under a sky full of stars, the child in the magic dress and Pipi look up as a shooting star drops a small glowing letter into the child's open hands; a seashell is drawn on the letter",
+          "text": [
+            "よぞらから、ふしぎな てがみ。",
+            "その よる。おしろの バルコニーで、{name}と ピピが よぞらを みて いると、ながれぼしが ちいさな てがみを おとして いきました。「うみの おひめさまから だ！」 あたらしい ぼうけんの はじまりです。",
+            "その夜《よる》、{name}とピピは、おしろのバルコニーで星空《ほしぞら》をながめていました。「ゆめみたいだね」 そのとき、流《なが》れ星《ぼし》がすうっと一《ひと》つ、{name}の手《て》の上《うえ》に小《ちい》さな手紙《てがみ》を落《お》としていきました。貝《かい》がらの絵《え》がかいてあります。「海《うみ》のおひめさまから？」 ピピがうれしそうに歌《うた》いました。新《あたら》しいまほうの物語《ものがたり》が、もうすぐはじまります。"
+          ],
+          "withMom": false,
+          "withDad": false,
+          "withSidekick": true,
+          "camera": "Back view from behind the child and Pipi on the balcony, looking up past them at the starry sky and the falling star, the glowing letter in the child's raised hands."
+        }
+      ]
+    }
+  ]
+}

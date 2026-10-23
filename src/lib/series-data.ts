@@ -5,6 +5,8 @@ import birthday from "@/data/series/birthday.json";
 import sea from "@/data/series/sea.json";
 import dinosaur from "@/data/series/dinosaur.json";
 import number from "@/data/series/number.json";
+import hero from "@/data/series/hero.json";
+import princess from "@/data/series/princess.json";
 import type { CountRule } from "./count-check";
 import type { Combo, SeriesId } from "./story-key";
 
@@ -32,9 +34,34 @@ export type SeriesSceneData = SeriesVersion & {
 /** 話の中で絵をそろえる決まり。from〜to（表紙0、場面1〜12）のページにだけ付ける。省略時は全ページ */
 export type Continuity = { from?: number; to?: number; text: string };
 
+/**
+ * お客様が選ぶ服（ヒーロースーツ・ドレス）。形を選ぶと、その形の色が出る（2026-10-23 作道さん：形3種→色3色、お話を選んだ直後）。
+ * 絵の指示では、その話の outfits の {outfit} に、形の look の {color} を色の look に置き換えたものが入る
+ */
+export type OutfitChoices = {
+  /** 画面の見出し（例：ヒーロースーツ） */
+  label: string;
+  types: {
+    id: string;
+    name: string;
+    /** 選ぶ画面に出す短い説明 */
+    note: string;
+    /** 絵の指示（英語）。{color} に色の look が入る */
+    look: string;
+    colors: { id: string; name: string; swatch: string; look: string }[];
+  }[];
+};
+
 export type SeriesData = {
   id: SeriesId;
   name: string;
+  /** 絵のタッチ（英語）。あれば、お客様が選んだタッチの代わりにこれで描く（ヒーロー＝少年まんが風、プリンセス＝CGアニメ風） */
+  style?: string;
+  /** ママ・パパが出ないシリーズ（写真はお子さまだけ） */
+  noParents?: boolean;
+  /** 登場人物の決まり（英語）。あれば「人間の子どもは主人公だけ」の決まりの代わりに使う（プリンセスは王子さまとおねえさんも出る） */
+  castRules?: string;
+  outfitChoices?: OutfitChoices;
   sidekick: string;
   sidekickLabel: string;
   /** 相棒以外の名前のある登場人物の見た目（英語）。絵の指示に名前が出る場面で、見た目の説明を足す */
@@ -52,4 +79,13 @@ export type SeriesData = {
   }[];
 };
 
-export const SERIES_DATA = { forest, star, birthday, sea, dinosaur, number } as Record<SeriesId, SeriesData>;
+export const SERIES_DATA = { forest, star, birthday, sea, dinosaur, number, hero, princess } as Record<SeriesId, SeriesData>;
+
+/** 選んだ服（無ければ最初の形・最初の色）を、その話の服装の説明に入れる。服を選ばないシリーズはそのまま */
+export function resolveOutfits(data: SeriesData, outfits: string | null, pick?: { type: string; color: string } | null): string | null {
+  const choices = data.outfitChoices;
+  if (!outfits || !choices?.types.length) return outfits;
+  const type = choices.types.find((t) => t.id === pick?.type) ?? choices.types[0];
+  const color = type.colors.find((c) => c.id === pick?.color) ?? type.colors[0];
+  return outfits.replaceAll("{outfit}", type.look.replaceAll("{color}", color?.look ?? ""));
+}

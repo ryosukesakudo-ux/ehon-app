@@ -1,4 +1,4 @@
-import { getStudioSeries } from "@/lib/series-studio";
+import { getStudioSeriesLive } from "@/lib/series-studio";
 import { SAVED_NOTE_MAX, deleteSavedSet, listSavedSets, saveEpisodeSet, writeSavedNote } from "@/lib/series-saved";
 
 // 見本の保存版。
@@ -8,7 +8,7 @@ import { SAVED_NOTE_MAX, deleteSavedSet, listSavedSets, saveEpisodeSet, writeSav
 // kind=redrawn：そのメモで今の見本を作り直したことを残す（作り直し自体は絵スタジオと同じ /api/admin/series）
 export async function POST(request: Request) {
   const body = await request.json().catch(() => null);
-  const series = getStudioSeries(String(body?.series ?? ""));
+  const series = await getStudioSeriesLive(String(body?.series ?? ""));
   const episode = series?.episodes.find((e) => e.no === Number(body?.episode));
   if (!series || !episode) return Response.json({ error: "指定が正しくありません" }, { status: 400 });
   try {

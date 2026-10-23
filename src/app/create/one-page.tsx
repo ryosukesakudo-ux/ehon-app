@@ -1,26 +1,29 @@
 "use client";
 
 import { useEffect, useRef, useState, type ReactNode } from "react";
-import { SERIES_LIST, type SeriesId } from "@/lib/story-key";
+import { SERIES_LIST, getSeriesInfo, needsOutfit, parseSeriesKey, type SeriesId } from "@/lib/story-key";
 import { useFlow } from "./flow";
 import { StepHeader, StepTitle } from "./step";
 import { TasteSection } from "./sections/taste";
 import { ProfileSection, profileOk } from "./sections/profile";
 import { StorySection, storyChosen, type ReadyEpisodes } from "./sections/story";
 import { PhotoSection } from "./sections/photo";
+import { OutfitSection } from "./sections/outfit";
 
 // 作成の最初の部分（タッチ→主人公→お話→写真）を1ページで、下へ下へと進める（2026-10-13 作道さん、TaleCoco を参考に）。
 // 2026-10-14 作道さん：最初はタッチだけを出し、タッチを押す・主人公の「次へ」・お話の「決定」で次の項目を下に出して、
 // そこへゆっくりスクロールする。選んだ項目は開いたまま上に残す（その場で選び直せる）。上の段階の丸を押すとその項目へ戻り、
 // 選び直すと、いちばん下の項目（まだ選んでいない項目）へ戻る。写真を送ると見本のページへ移る。
 
-export type SectionId = "taste" | "profile" | "story" | "photo";
-const ORDER: SectionId[] = ["taste", "profile", "story", "photo"];
+// 服を選ぶお話（ヒーロー・プリンセス）は、お話と写真のあいだに服選び（outfit）が入る（2026-10-23 作道さん）
+export type SectionId = "taste" | "profile" | "story" | "outfit" | "photo";
+const ORDER: SectionId[] = ["taste", "profile", "story", "outfit", "photo"];
 
 const SECTIONS: Record<SectionId, { title: string; lead: string; step: number; path: string }> = {
   taste: { title: "絵のテイストを選んでください", lead: "絵本全体のタッチになります。", step: 1, path: "/create/taste" },
   profile: { title: "主人公のことを教えてください", lead: "名前は本文に入ります。", step: 2, path: "/create/story" },
   story: { title: "お話を選んでください", lead: "主人公はお子さまです。", step: 2, path: "/create/story" },
+  outfit: { title: "服をえらんでください", lead: "形を選ぶと、色が選べます。", step: 2, path: "/create/story" },
   photo: { title: "登場人物の写真をえらんでください", lead: "正面を向いた、明るい写真がおすすめです。", step: 3, path: "/create/photo" },
 };
 
@@ -43,18 +46,22 @@ export function OnePageFlow({ start }: { start: SectionId }) {
   const reachedAt = Math.max(ORDER.indexOf(state.reached as SectionId), ORDER.indexOf(start));
   const profileDone = profileOk(state.childName, state.childAge, state.childHonorific);
   const storyDone = profileDone && storyChosen(state.story, ready);
-  // 前の項目が済んでいて、そこまで進んだ項目だけを出す
+  const outfitLabel = getSeriesInfo(parseSeriesKey(state.story)?.series ?? "")?.outfitLabel;
+  const outfitDone = storyDone && !needsOutfit(state.story);
+  // 前の項目が済んでいて、そこまで進んだ項目だけを出す（服選びは、服を選ぶお話のときだけ）
   const shown: SectionId[] = [
     "taste",
     ...(reachedAt >= 1 ? (["profile"] as const) : []),
     ...(reachedAt >= 2 && profileDone ? (["story"] as const) : []),
-    ...(reachedAt >= 3 && storyDone ? (["photo"] as const) : []),
+    ...(reachedAt >= 3 && storyDone && outfitLabel ? (["outfit"] as const) : []),
+    ...(reachedAt >= (outfitLabel ? 4 : 3) && outfitDone ? (["photo"] as const) : []),
   ];
   const last = shown[shown.length - 1];
 
   // 次の項目を出して、いちばん下の項目へゆっくりスクロールする（選び直したときも、いちばん下の項目へ戻る）
   const scrollToLast = useRef(false);
   const advance = (from: SectionId) => {
+    // 服を選ばないお話は、reached が outfit になれば写真が出る（服選びの項目は出さない）
     const next = ORDER[ORDER.indexOf(from) + 1];
     if (next && ORDER.indexOf(next) > ORDER.indexOf(state.reached as SectionId)) update({ reached: next });
     scrollToLast.current = true;
@@ -128,6 +135,7 @@ export function OnePageFlow({ start }: { start: SectionId }) {
       </>
     ),
     story: <StorySection ready={ready} onDecide={() => advance("story")} />,
+    outfit: <OutfitSection onDecide={() => advance("outfit")} />,
     photo: <PhotoSection />,
   };
 
@@ -143,7 +151,13 @@ export function OnePageFlow({ start }: { start: SectionId }) {
         ))}
         {last !== "photo" && (
           <p className="flow-hint">
-            {last === "taste" ? "タッチを押すと、主人公の項目が出ます" : last === "profile" ? "名前・呼び方・年齢を入れて「次へ」を押すと、お話を選べます" : "お話を決めると、写真をえらべます"}
+            {last === "taste"
+              ? "タッチを押すと、主人公の項目が出ます"
+              : last === "profile"
+                ? "名前・呼び方・年齢を入れて「次へ」を押すと、お話を選べます"
+                : last === "outfit"
+                  ? `${outfitLabel ?? "服"}の形と色を選ぶと、写真をえらべます`
+                  : "お話を決めると、写真をえらべます"}
           </p>
         )}
       </main>

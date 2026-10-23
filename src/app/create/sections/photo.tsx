@@ -17,7 +17,7 @@ import { DrawingWait } from "../drawing-wait";
 import { loginHref, useAccount } from "../account";
 import { NextButton } from "../step";
 import { SiblingFields, siblingComplete } from "../sibling-fields";
-import { parseSeriesKey } from "@/lib/story-key";
+import { getSeriesInfo, parseSeriesKey } from "@/lib/story-key";
 
 // HEIC（iPhoneの写真）も選べるようにして、選んだあと JPEG に変換する
 const MAX_SIBLINGS = 2;
@@ -232,7 +232,9 @@ export function PhotoSection() {
   // オリジナルのお話の、ほかの登場人物（ペットなど）
   const cast = parseCustomKey(state.story)?.cast ?? [];
   // 台本のお話に足す兄弟姉妹（会員だけ・最大2人。写真はほかの登場人物と同じ欄 photos.guests に入れる）
-  const series = !!parseSeriesKey(state.story);
+  // ママ・パパが出ないお話（プリンセス）は、写真はお子さまだけ。兄弟姉妹も足さない（2026-10-23）
+  const noParents = !!getSeriesInfo(parseSeriesKey(state.story)?.series ?? "")?.noParents;
+  const series = !!parseSeriesKey(state.story) && !noParents;
   const sibs = series && account?.loggedIn ? state.siblings : [];
   const slots = cast.length ? cast.length : sibs.length;
   const each = <T,>(f: (j: number) => T) => Array.from({ length: slots }, (_, j) => f(j));
@@ -311,10 +313,13 @@ export function PhotoSection() {
       }
       if (photos.child) form.set("childPhoto", await shrink(photos.child));
       else if (savedIds.child) form.set("childPhotoId", savedIds.child);
-      if (photos.mom) form.set("momPhoto", await shrink(photos.mom));
-      else if (savedIds.mom) form.set("momPhotoId", savedIds.mom);
-      if (photos.dad) form.set("dadPhoto", await shrink(photos.dad));
-      else if (savedIds.dad) form.set("dadPhotoId", savedIds.dad);
+      // ママ・パパが出ないお話では、ママ・パパの写真は送らない
+      if (!noParents) {
+        if (photos.mom) form.set("momPhoto", await shrink(photos.mom));
+        else if (savedIds.mom) form.set("momPhotoId", savedIds.mom);
+        if (photos.dad) form.set("dadPhoto", await shrink(photos.dad));
+        else if (savedIds.dad) form.set("dadPhotoId", savedIds.dad);
+      }
       for (let i = 0; i < slots; i++) {
         const f = photos.guests?.[i];
         const face = photos.faces?.[`guest${i}`];
@@ -426,6 +431,8 @@ export function PhotoSection() {
         />
       ))}
       {series && member && sibs.length > 0 && addSibling}
+      {noParents && <p style={{ margin: 0, fontSize: 13, lineHeight: 1.6, color: "var(--sub)" }}>このお話にはママ・パパは出てきません。お子さまの写真だけで作ります。</p>}
+      {!noParents && (<>
       <PhotoSlot
         id="mom-photo"
         title="ママ"
@@ -458,6 +465,7 @@ export function PhotoSection() {
         taste={state.taste}
         onPickCharacter={(id) => { setCharacterIds((c) => ({ ...c, dad: id })); if (id) { setPhotos({ ...photos, dad: null }); setSavedIds((s) => ({ ...s, dad: null })); } }}
       />
+      </>)}
       {cast.map((c, i) => (
         <PhotoSlot
           key={i}

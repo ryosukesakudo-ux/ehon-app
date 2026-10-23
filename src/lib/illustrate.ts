@@ -91,9 +91,11 @@ const SERIES_CAST_RULES =
   "Everyone stands, sits or kneels on top of the ground; never draw a body sunk into the ground or a hole.";
 
 /** 台本のシリーズの決まり。兄弟姉妹（Companion 1, 2）を足した本では、その子たちも人間の子として描く */
-function seriesCastRules(siblings: number) {
-  if (!siblings) return SERIES_CAST_RULES;
+function seriesCastRules(siblings: number, rules = SERIES_CAST_RULES) {
+  if (!siblings) return rules;
   const names = siblings > 1 ? "Companion 1 and Companion 2 (the main character's siblings)" : "Companion 1 (the main character's sibling)";
+  // シリーズ独自の決まり（プリンセス）のときは、兄弟姉妹も人間の子として描くことを足す
+  if (rules !== SERIES_CAST_RULES) return `${rules} ${names} are also human children in this picture book and appear together with the main character.`;
   return SERIES_CAST_RULES.replace(
     "The main character is the only human child in this picture book: never draw any other human child,",
     `The main character and ${names} are the only human children in this picture book: never draw any other human child,`,
@@ -266,10 +268,12 @@ export function buildCharacterPrompt(taste: TasteId, who: Who, refs: { who: Who;
   const book = bookOverride ?? getBook(story);
   // 台本のシリーズは、キャラクターの絵もその話の服で描く（本文の絵の参考になるので、服がずれないように）
   const outfits = book?.series?.outfits;
+  // ヒーロー・プリンセスは、シリーズで決まったタッチで描く（選んだタッチは使わない）
+  const style = book?.series?.style ?? t.prompt;
   const hasPrevious = refs.some((r) => r.kind === "previous");
-  if (typeof who === "number") return guestCharacterPrompt(t.prompt, who, book?.cast?.[who], refs, redo, hasPrevious);
+  if (typeof who === "number") return guestCharacterPrompt(style, who, book?.cast?.[who], refs, redo, hasPrevious);
   return [
-    `${t.prompt}.`,
+    `${style}.`,
     describeRefs(refs),
     STYLE_ONLY_FROM_TEXT,
     PICTURE_BOOK_CHARACTERS,
@@ -363,7 +367,7 @@ export function buildPrompt(taste: TasteId, story: string, sceneIndex: number, r
     !scene.withDad && people.includes("dad") ? "the father" : null,
   ].filter(Boolean);
   return [
-    `${t.prompt}.`,
+    `${series?.style ?? t.prompt}.`,
     describeRefs(refs),
     STYLE_ONLY_FROM_TEXT,
     PICTURE_BOOK_CHARACTERS,
@@ -382,7 +386,7 @@ export function buildPrompt(taste: TasteId, story: string, sceneIndex: number, r
     `Scene: ${scene.art}.`,
     series ? lookPrompt(series.cast, series.props, scene.art, scene.camera) : "",
     countPrompt(scene.counts),
-    series ? seriesCastRules(book.cast?.length ?? 0) : "",
+    series ? seriesCastRules(book.cast?.length ?? 0, series.castRules) : "",
     !series && book.cast ? CUSTOM_CAST_RULES : "",
     guestsPrompt(book.cast, scene.guests),
     redoPrompt(redo, false),
@@ -494,6 +498,12 @@ const SAMPLE_CAST: Record<Person, string> = {
 
 // 作例とは別の家族で見本を描くシリーズ（名前は series.ts の seriesSampleChildName）。2026-10-12 作道さん：数のお勉強は3歳くらいの女の子、ママ・パパは今の家族とはっきり違う見た目に
 const SERIES_SAMPLE_CAST: Partial<Record<keyof typeof SAMPLE_OUTFITS, Record<Person, string>>> = {
+  // 2026-10-23 プリンセスは女の子向け（見本は5歳くらいの女の子。ママ・パパは出ない）
+  princess: {
+    child: "a cheerful five-year-old Japanese girl with long straight black hair reaching her shoulder blades, straight bangs, round rosy cheeks and big bright eyes",
+    mom: "a gentle Japanese woman in her thirties with shoulder-length dark brown hair",
+    dad: "a kind Japanese man in his thirties with short black hair",
+  },
   number: {
     child: "a cheerful three-year-old Japanese girl, small with a toddler's build, with chin-length dark brown hair in two short pigtails tied with plain yellow hair ties, straight bangs, round rosy cheeks and big bright eyes",
     mom: "a lively Japanese woman in her thirties with very short black pixie-cut hair and a wide warm smile, no glasses",
@@ -502,7 +512,7 @@ const SERIES_SAMPLE_CAST: Partial<Record<keyof typeof SAMPLE_OUTFITS, Record<Per
 };
 
 // お話ごとの服装（同じお話の中では変えない）
-const SAMPLE_OUTFITS: Record<StoryId | "sea" | "dinosaur" | "number", Record<Person, string>> = {
+const SAMPLE_OUTFITS: Record<StoryId | "sea" | "dinosaur" | "number" | "hero" | "princess", Record<Person, string>> = {
   forest: {
     child: "a mustard-yellow hooded jacket, navy shorts, white socks, red sneakers and a small green backpack",
     mom: "a light-green cardigan over a white T-shirt, beige wide pants and white sneakers",
@@ -528,6 +538,17 @@ const SAMPLE_OUTFITS: Record<StoryId | "sea" | "dinosaur" | "number", Record<Per
     child: "an orange T-shirt, olive-green shorts, a khaki explorer hat and brown boots",
     mom: "a mustard-yellow knit top, dark green pants and brown boots",
     dad: "a light-brown safari shirt, navy pants and hiking boots",
+  },
+  // ヒーロー・プリンセスは、場面の服をその話の outfits（選んだスーツ・ドレス）で決める。ここは設定画のふだんの服
+  hero: {
+    child: "a navy T-shirt with a small white star on the chest, light-gray shorts, white socks and red sneakers",
+    mom: "a coral knit sweater, navy pants and white sneakers",
+    dad: "a gray zip-up hoodie, dark jeans and brown sneakers",
+  },
+  princess: {
+    child: "a plain worn brown work dress with two patches, a faded cream apron and worn brown slip-on shoes",
+    mom: "a plain beige dress",
+    dad: "a plain brown vest and trousers",
   },
   number: {
     child: "a light-green zip-up hoodie, a white T-shirt, beige pants and yellow sneakers",
@@ -861,6 +882,11 @@ export async function makeSeriesFamilyPhoto(sheet: Uploadable, note?: string) {
   return b64;
 }
 
+/** 絵スタジオの見本のタッチ。ふつうは水彩、タッチが決まっているシリーズ（ヒーロー・プリンセス）はそのタッチ */
+function seriesStyle(series: Pick<StudioSeries, "style">) {
+  return series.style ?? getTaste("watercolor")!.prompt;
+}
+
 /** 絵スタジオで1枚ごとに書く追加の指示（日本語でよい）。ほかの指示より優先させるため最後に置く */
 function seriesNote(note?: string) {
   const n = note?.trim().slice(0, SERIES_NOTE_MAX);
@@ -869,7 +895,7 @@ function seriesNote(note?: string) {
 
 /** savedNote：見本の保存版のメモ（お客様の本と同じものを見本にも入れる。note より前に置く） */
 export function buildSeriesPrompt(series: StudioSeries, scene: SeriesScene, opts: { cover: boolean; page: number; outfits?: string; continuity?: Continuity[]; note?: string; savedNote?: string; withPhoto?: boolean; spread?: boolean; textSide?: "left" | "right"; ownPhotos?: Person[] }) {
-  const t = getTaste("watercolor")!;
+  const t = { prompt: seriesStyle(series) };
   const people: Person[] = ["child", ...(scene.withMom ? (["mom"] as const) : []), ...(scene.withDad ? (["dad"] as const) : [])];
   return [
     `${t.prompt}.`,
@@ -895,7 +921,7 @@ export function buildSeriesPrompt(series: StudioSeries, scene: SeriesScene, opts
     `Scene: ${scene.art}.`,
     lookPrompt(series.cast, series.props, scene.art, scene.camera),
     countPrompt(scene.counts),
-    SERIES_CAST_RULES,
+    series.castRules ?? SERIES_CAST_RULES,
     scene.withMom ? "" : "Do not include the mother in this scene.",
     scene.withDad ? "" : "Do not include the father in this scene.",
     "Do not copy the white background or the side-by-side layout of the character sheet.",
@@ -940,7 +966,7 @@ export async function illustrateSeries(opts: { series: StudioSeries; scene: Seri
  * お客様の本のキャラクターの絵と同じく、その話の服で、無地の明るい背景に1人だけ
  */
 export async function makeSeriesCharacter(opts: { series: StudioSeries; who: Person; outfits?: string; sheet: Uploadable; photo?: Uploadable | null; note?: string; ownPhoto?: Uploadable | null }) {
-  const t = getTaste("watercolor")!;
+  const t = { prompt: seriesStyle(opts.series) };
   const ai = getOpenAI();
   if (!ai) throw new Error("OPENAI_API_KEY が未設定です");
   const result = await ai.images.edit({
@@ -979,7 +1005,7 @@ export async function makeSeriesCharacter(opts: { series: StudioSeries; who: Per
  * 家族のキャラクターの絵（makeSeriesCharacter）と同じ水彩で、無地の明るい背景に相棒だけ
  */
 export async function makeSeriesSidekick(opts: { series: StudioSeries; sheet: Uploadable; note?: string }) {
-  const t = getTaste("watercolor")!;
+  const t = { prompt: seriesStyle(opts.series) };
   const ai = getOpenAI();
   if (!ai) throw new Error("OPENAI_API_KEY が未設定です");
   const result = await ai.images.edit({
