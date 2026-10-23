@@ -13,7 +13,7 @@ export async function GET(request: Request) {
         id: t.id,
         name: t.name,
         note: t.note,
-        colors: t.colors.map((c) => ({ id: c.id, name: c.name, swatch: c.swatch })),
+        colors: t.colors.map((c) => ({ id: c.id, name: c.name, note: c.note ?? "", swatch: c.swatch })),
       })),
     },
     { headers: { "Cache-Control": "public, max-age=60", "CDN-Cache-Control": "public, s-maxage=60, stale-while-revalidate=600" } },

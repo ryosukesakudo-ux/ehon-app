@@ -6,7 +6,8 @@ import type { Combo, SeriesId } from "@/lib/story-key";
 
 // 作り込み中のシリーズ（ヒーロー・プリンセス）の台本を、まるごと直す画面（2026-10-23 作道さん「作り込みやすいよう構造化して操作しやすく」）。
 // 場面（本文3段階・絵の説明・絵の指示・カメラ）、服の形と色、登場人物・物、タッチと決まりを、タブで分けて直す。
-// 上の目次（起承転結で色分け）を押すとその場面へ飛ぶ。「保存」で台本まるごとを保存し、お客様の本・絵スタジオにすぐ効く。
+// 上の目次（起承転結で色分け）を押すとその場面へ飛ぶ。服の色で話が変わる場面（ヒーローの腕輪の色）は、色を切り替えて色ごとの版を直す。
+// 「保存」で台本まるごとを保存し、お客様の本・絵スタジオにすぐ効く。
 
 type Tab = "scenes" | "outfits" | "cast" | "style";
 const TABS: { id: Tab; label: string }[] = [
@@ -33,6 +34,11 @@ export function StructuredEditor({ series, current, updatedAt }: { series: Serie
   const [edited, setEdited] = useState(updatedAt);
   const [tab, setTab] = useState<Tab>("scenes");
   const [episodeNo, setEpisodeNo] = useState(current.episodes[0]?.no ?? 1);
+  // 色ごとの版（byOutfit）を直すときに見ている色
+  const colors = draft.outfitChoices?.types.flatMap((t) => t.colors) ?? [];
+  const [color, setColor] = useState(colors[0]?.id ?? "");
+  const colorOf = (id: string) => colors.find((c) => c.id === id);
+  const hasSidekick = !!current.sidekick;
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const [done, setDone] = useState("");
@@ -99,11 +105,15 @@ export function StructuredEditor({ series, current, updatedAt }: { series: Serie
               return (
                 <a key={i} href={`#s-${i + 1}`} className="tag" style={{ background: p.color, textDecoration: "none", minWidth: 44, textAlign: "center" }}>
                   {p.name}{i + 1}
+                  {ep.scenes[i].byOutfit && <span title="色で変わる場面" style={{ marginLeft: 3 }}>◆</span>}
                 </a>
               );
             })}
             <a href="#s-rules" className="tag" style={{ background: "#EEE", textDecoration: "none" }}>服装・そろえる決まり</a>
           </nav>
+        )}
+        {tab === "scenes" && colors.length > 0 && (ep.cover.byOutfit || ep.scenes.some((x) => x.byOutfit)) && (
+          <ColorSwitch colors={colors} value={color} onChange={setColor} />
         )}
       </div>
 
@@ -111,10 +121,20 @@ export function StructuredEditor({ series, current, updatedAt }: { series: Serie
         <>
           <section id="s-cover" className="card" style={{ gap: 10, borderLeft: "6px solid #CCC" }}>
             <h2 className="display" style={{ margin: 0, fontSize: 17, color: "var(--navy)" }}>表紙</h2>
-            <Field label="絵の説明（画面に出す・日本語）" value={ep.cover.label} rows={2} onChange={(v) => edit((d) => { d.episodes[epIndex].cover.label = v; })} />
-            <Field label="絵の指示（AIに渡す・英語がおすすめ）" value={ep.cover.art} rows={3} mono onChange={(v) => edit((d) => { d.episodes[epIndex].cover.art = v; })} />
-            <Field label="カメラ・構図（AIに渡す）" value={ep.cover.camera ?? ""} rows={2} mono onChange={(v) => edit((d) => { d.episodes[epIndex].cover.camera = v; })} />
-            <Check label={`相棒（${draft.sidekickLabel}）が出る`} checked={ep.cover.withSidekick} onChange={(v) => edit((d) => { d.episodes[epIndex].cover.withSidekick = v; })} />
+            {(() => {
+              const byColor = !!ep.cover.byOutfit?.[color];
+              const cv = byColor ? ep.cover.byOutfit![color] : ep.cover;
+              const at = (d: SeriesData) => (byColor ? d.episodes[epIndex].cover.byOutfit![color] : d.episodes[epIndex].cover);
+              return (
+                <>
+                  {byColor && <ColorNote color={colorOf(color)} />}
+                  <Field label="絵の説明（画面に出す・日本語）" value={cv.label} rows={2} onChange={(v) => edit((d) => { at(d).label = v; })} />
+                  <Field label="絵の指示（AIに渡す・英語がおすすめ）" value={cv.art} rows={3} mono onChange={(v) => edit((d) => { at(d).art = v; })} />
+                  <Field label="カメラ・構図（AIに渡す）" value={cv.camera ?? ""} rows={2} mono onChange={(v) => edit((d) => { at(d).camera = v; })} />
+                  {hasSidekick && <Check label={`相棒（${draft.sidekickLabel}）が出る`} checked={cv.withSidekick} onChange={(v) => edit((d) => { at(d).withSidekick = v; })} />}
+                </>
+              );
+            })()}
           </section>
           {ep.scenes.map((sc, i) => {
             const p = phaseOf(i + 1);
@@ -125,11 +145,22 @@ export function StructuredEditor({ series, current, updatedAt }: { series: Serie
                   <span className="tag" style={{ background: p.color }}>{p.name}</span>場面{i + 1}
                   {i + 1 === 10 && <span style={{ fontSize: 12, color: "var(--sub)", fontWeight: 400 }}>いちばん大きな場面（見開き）</span>}
                 </h2>
-                <VersionFields
-                  version={sc}
-                  sidekickLabel={draft.sidekickLabel}
-                  onChange={(fn) => edit((d) => fn(d.episodes[epIndex].scenes[i]))}
-                />
+                {sc.byOutfit?.[color] ? (
+                  <>
+                    <ColorNote color={colorOf(color)} />
+                    <VersionFields
+                      version={sc.byOutfit[color]}
+                      sidekickLabel={hasSidekick ? draft.sidekickLabel : ""}
+                      onChange={(fn) => edit((d) => fn(d.episodes[epIndex].scenes[i].byOutfit![color]))}
+                    />
+                  </>
+                ) : (
+                  <VersionFields
+                    version={sc}
+                    sidekickLabel={hasSidekick ? draft.sidekickLabel : ""}
+                    onChange={(fn) => edit((d) => fn(d.episodes[epIndex].scenes[i]))}
+                  />
+                )}
                 {alts.length > 0 && (
                   <details style={{ borderTop: "1px solid #eee", paddingTop: 8 }}>
                     <summary style={{ cursor: "pointer", fontSize: 14, fontWeight: 700, color: "var(--navy)" }}>
@@ -143,7 +174,7 @@ export function StructuredEditor({ series, current, updatedAt }: { series: Serie
                         <strong style={{ fontSize: 13, color: "var(--navy)" }}>写真が「{COMBO_LABEL[c]}」のとき</strong>
                         <VersionFields
                           version={sc.alt![c]!}
-                          sidekickLabel={draft.sidekickLabel}
+                          sidekickLabel={hasSidekick ? draft.sidekickLabel : ""}
                           onChange={(fn) => edit((d) => fn(d.episodes[epIndex].scenes[i].alt![c]!))}
                         />
                       </div>
@@ -208,6 +239,7 @@ export function StructuredEditor({ series, current, updatedAt }: { series: Serie
                       <input type="color" value={c.swatch} aria-label="色見本" onChange={(e) => edit((d) => { d.outfitChoices!.types[i].colors[j].swatch = e.target.value; })} style={{ width: 40, height: 32, border: "none", background: "none" }} />
                       <Textarea value={c.name} rows={1} onChange={(v) => edit((d) => { d.outfitChoices!.types[i].colors[j].name = v; })} />
                     </div>
+                    <Field label="短い説明（画面に出す・なくてもよい）" value={c.note ?? ""} onChange={(v) => edit((d) => { d.outfitChoices!.types[i].colors[j].note = v; })} />
                     <Field label="色の絵の指示" value={c.look} rows={2} mono onChange={(v) => edit((d) => { d.outfitChoices!.types[i].colors[j].look = v; })} />
                   </div>
                 ))}
@@ -219,11 +251,13 @@ export function StructuredEditor({ series, current, updatedAt }: { series: Serie
 
       {tab === "cast" && (
         <>
-          <section className="card" style={{ gap: 10 }}>
-            <h2 className="display" style={{ margin: 0, fontSize: 17, color: "var(--navy)" }}>相棒</h2>
-            <Field label="画面での呼び方（例：相棒のロボット「ピカリ」）" value={draft.sidekickLabel} onChange={(v) => edit((d) => { d.sidekickLabel = v; })} />
-            <Field label="見た目（AIに渡す）" value={draft.sidekick} rows={3} mono onChange={(v) => edit((d) => { d.sidekick = v; })} />
-          </section>
+          {hasSidekick && (
+            <section className="card" style={{ gap: 10 }}>
+              <h2 className="display" style={{ margin: 0, fontSize: 17, color: "var(--navy)" }}>相棒</h2>
+              <Field label="画面での呼び方（例：相棒の小鳥「ピピ」）" value={draft.sidekickLabel} onChange={(v) => edit((d) => { d.sidekickLabel = v; })} />
+              <Field label="見た目（AIに渡す）" value={draft.sidekick} rows={3} mono onChange={(v) => edit((d) => { d.sidekick = v; })} />
+            </section>
+          )}
           <EntriesCard
             title="名前のある登場人物"
             hint="絵の指示（英語）にこの名前が出てくる場面で、見た目の説明を足します。名前は絵の指示と同じつづりにしてください。"
@@ -294,8 +328,36 @@ function VersionFields({ version, sidekickLabel, onChange }: { version: SeriesVe
       <Field label="絵の説明（画面に出す・日本語）" value={version.label} rows={2} onChange={(v) => onChange((x) => { x.label = v; })} />
       <Field label="絵の指示（AIに渡す・英語がおすすめ）" value={version.art} rows={3} mono onChange={(v) => onChange((x) => { x.art = v; })} />
       <Field label="カメラ・構図（AIに渡す）" value={version.camera ?? ""} rows={2} mono onChange={(v) => onChange((x) => { x.camera = v; })} />
-      <Check label={`相棒（${sidekickLabel}）が出る`} checked={version.withSidekick} onChange={(v) => onChange((x) => { x.withSidekick = v; })} />
+      {sidekickLabel && <Check label={`相棒（${sidekickLabel}）が出る`} checked={version.withSidekick} onChange={(v) => onChange((x) => { x.withSidekick = v; })} />}
     </>
+  );
+}
+
+type Color = { id: string; name: string; swatch: string };
+
+/** 色で変わる場面（◆）の、どの色の版を直すかの切り替え */
+function ColorSwitch({ colors, value, onChange }: { colors: Color[]; value: string; onChange: (id: string) => void }) {
+  return (
+    <div style={{ display: "flex", gap: 6, flexWrap: "wrap", alignItems: "center", fontSize: 13 }}>
+      <span>◆ 色で変わる場面を、どの色で直すか：</span>
+      <div role="radiogroup" aria-label="直す色" style={{ display: "flex", gap: 6 }}>
+        {colors.map((c) => (
+          <button key={c.id} type="button" role="radio" className="cast-kind" aria-checked={value === c.id} onClick={() => onChange(c.id)} style={{ borderColor: c.swatch }}>
+            <span aria-hidden="true" style={{ display: "inline-block", width: 12, height: 12, borderRadius: "50%", background: c.swatch, marginRight: 4, verticalAlign: -1 }} />
+            {c.name}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function ColorNote({ color }: { color?: Color }) {
+  if (!color) return null;
+  return (
+    <p style={{ margin: 0, padding: "6px 10px", borderRadius: 8, fontSize: 12, lineHeight: 1.6, background: `${color.swatch}22`, borderLeft: `4px solid ${color.swatch}` }}>
+      ◆ 色で変わる場面です。いま「{color.name}」を選んだときの版を表示しています（上の切り替えでほかの色へ）。最初の色の版は、見本・絵スタジオでも使います。
+    </p>
   );
 }
 

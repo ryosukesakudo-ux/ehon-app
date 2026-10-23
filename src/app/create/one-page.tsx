@@ -156,7 +156,7 @@ export function OnePageFlow({ start }: { start: SectionId }) {
               : last === "profile"
                 ? "名前・呼び方・年齢を入れて「次へ」を押すと、お話を選べます"
                 : last === "outfit"
-                  ? `${outfitLabel ?? "服"}の形と色を選ぶと、写真をえらべます`
+                  ? `${outfitLabel ?? "服"}を選ぶと、写真をえらべます`
                   : "お話を決めると、写真をえらべます"}
           </p>
         )}

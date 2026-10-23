@@ -1,409 +1,613 @@
 {
   "id": "hero",
   "name": "ひかりの ヒーロー",
-  "sidekick": "Pikari, a small round flying robot about the size of a soccer ball, with a glossy white egg-shaped body, a dark screen face with two big round glowing light-blue eyes, a short antenna topped with a little yellow star, two tiny stubby arms and no legs; small orange jet flames under its body keep it floating in the air beside the child's shoulder",
-  "sidekickLabel": "相棒のロボット「ピカリ」",
-  "cast": {
-    "Gorogon": "Gorogon, a huge but goofy rock monster taller than a three-story building, made of rounded purple-gray boulders, with one stubby horn on its head, small mischievous yellow eyes, a wide grinning mouth with flat square teeth, a round belly that glows yellow with the lights it has eaten and a thick rocky tail; it looks naughty and funny rather than truly scary, with no claws, no fangs, no blood and no fire",
-    "kitten": "a small fluffy orange tabby kitten with a white chest and big green eyes (an ordinary animal, not wearing clothes)"
-  },
+  "sidekick": "",
+  "sidekickLabel": "",
+  "cast": {},
   "props": {
-    "hero belt": "the hero belt: a chunky belt with a big round golden buckle that has a five-pointed star in the middle; the star glows white-gold when the belt is powered, and the belt is always worn around the child's waist over the hero suit",
-    "falling star": "a glowing white-gold capsule shaped like a small star, about the size of a watermelon, that opens like a shell"
+    "mecha soldier": "the enemy mecha soldiers, an army of identical mass-produced humanoid robots about twice as tall as a grown-up, with angular dark gunmetal-gray armor plates and rust-red trim, a flat wide visor face with a row of three small glowing red sensor lights (never one big round eye, no horns, no antennas), boxy shoulders without spikes, thick hydraulic legs and blocky hands; they are machines only, with no people inside; when destroyed they break into metal pieces, bolts and sparks, never blood",
+    "mecha soldiers": "the enemy mecha soldiers, an army of identical mass-produced humanoid robots about twice as tall as a grown-up, with angular dark gunmetal-gray armor plates and rust-red trim, a flat wide visor face with a row of three small glowing red sensor lights (never one big round eye, no horns, no antennas), boxy shoulders without spikes, thick hydraulic legs and blocky hands; they are machines only, with no people inside; when destroyed they break into metal pieces, bolts and sparks, never blood",
+    "glowing door": "an old rusty iron door at the end of a dim narrow alley between tall buildings, with dazzling white light pouring out from its edges and keyhole",
+    "three orbs": "three floating glowing orbs, each the size of a soccer ball: a red orb burning with swirling flames, a yellow orb shining with blinding golden light and crackling sparks, and a clear blue orb like ice with frost inside"
   },
   "outfitChoices": {
-    "label": "ヒーロースーツ",
+    "label": "ちからの いろ",
     "types": [
       {
-        "id": "cape",
-        "name": "マント",
-        "note": "空をとぶヒーローの、ながいマント",
-        "look": "a sleek one-piece hero bodysuit in {color}, with a big white five-pointed star emblem on the chest, a long flowing cape in the same main color that reaches the backs of the knees, short white gloves and white boots; no mask, the face fully visible",
+        "id": "power",
+        "name": "ひかりの うでわ",
+        "note": "えらんだ いろの ちからで たたかう",
+        "look": "{color}",
         "colors": [
           {
             "id": "red",
-            "name": "あか",
-            "swatch": "#E0463B",
-            "look": "bright red with gold trim"
+            "name": "ほのお",
+            "note": "ほのおで てきを もやす",
+            "swatch": "#E5462F",
+            "look": "THE FLAME POWER (red). The bracelet: a chunky mechanical bracelet of red and dark gunmetal plates on the child's own left wrist, with small glowing orange vents and a round core in the middle where a little flame burns. The hero suit (whenever the continuity notes say the power is on): the bracelet's metal plates spread over the whole body into a sleek armored hero suit, red with black joints and glowing orange lines, flame-shaped plates on the shoulders and forearms and a flame emblem on the chest, the bracelet still visible on the left wrist; no helmet and no mask, the face and hair fully visible. The power's effects: roaring orange-red fire, heat shimmer and flying sparks."
+          },
+          {
+            "id": "yellow",
+            "name": "ひかり",
+            "note": "ひかりの はやさで パンチ",
+            "swatch": "#F5C518",
+            "look": "THE LIGHT-SPEED POWER (yellow). The bracelet: a chunky mechanical bracelet of golden-yellow and white plates on the child's own left wrist, with thin glowing lightning-shaped lines and a bright white-gold core in the middle. The hero suit (whenever the continuity notes say the power is on): the bracelet's metal plates spread over the whole body into a sleek streamlined hero suit, golden yellow with white and black panels, glowing lightning-bolt lines down the arms and legs and a lightning emblem on the chest, the bracelet still visible on the left wrist; no helmet and no mask, the face and hair fully visible. The power's effects: blinding golden light, long light trails and afterimages showing super speed, crackling sparks."
           },
           {
             "id": "blue",
-            "name": "あお",
-            "swatch": "#2F6FD6",
-            "look": "royal blue with silver trim"
-          },
-          {
-            "id": "green",
-            "name": "みどり",
-            "swatch": "#2FA65A",
-            "look": "emerald green with gold trim"
-          }
-        ]
-      },
-      {
-        "id": "armor",
-        "name": "よろい",
-        "note": "つよそうな、ピカピカのよろい",
-        "look": "a light futuristic hero armor in {color}: a rounded chest plate with a glowing white star in the middle, round shoulder guards, chunky gauntlets and armored boots over a dark-gray bodysuit; no helmet and no mask, the face and hair fully visible",
-        "colors": [
-          {
-            "id": "red",
-            "name": "あか",
-            "swatch": "#E0463B",
-            "look": "glossy red with gold edges"
-          },
-          {
-            "id": "blue",
-            "name": "あお",
-            "swatch": "#2F6FD6",
-            "look": "glossy blue with silver edges"
-          },
-          {
-            "id": "green",
-            "name": "みどり",
-            "swatch": "#2FA65A",
-            "look": "glossy green with gold edges"
-          }
-        ]
-      },
-      {
-        "id": "pilot",
-        "name": "パイロット",
-        "note": "ゴーグルをつけた、そらのパイロット",
-        "look": "a hero pilot jumpsuit in {color}, with a zip front, white stripes down the sleeves, a white star patch on the chest, a short white scarf around the neck, flight goggles pushed up on the forehead (never over the eyes), fingerless white gloves and sturdy white boots",
-        "colors": [
-          {
-            "id": "red",
-            "name": "あか",
-            "swatch": "#E0463B",
-            "look": "bright red"
-          },
-          {
-            "id": "blue",
-            "name": "あお",
-            "swatch": "#2F6FD6",
-            "look": "royal blue"
-          },
-          {
-            "id": "green",
-            "name": "みどり",
-            "swatch": "#2FA65A",
-            "look": "emerald green"
+            "name": "こおり",
+            "note": "こおらせて キックで くだく",
+            "swatch": "#3FA9E0",
+            "look": "THE ICE POWER (blue). The bracelet: a chunky mechanical bracelet of icy-blue and silver plates on the child's own left wrist, with clear crystal panels that glow pale cyan and a snowflake-shaped core in the middle. The hero suit (whenever the continuity notes say the power is on): the bracelet's metal plates spread over the whole body into a sleek armored hero suit, icy blue and white with silver joints, clear crystal plates on the shoulders and shins and a snowflake emblem on the chest, the bracelet still visible on the left wrist; no helmet and no mask, the face and hair fully visible. The power's effects: freezing white-blue mist, sharp ice crystals, frost spreading across surfaces."
           }
         ]
       }
     ]
   },
-  "style": "ART STYLE: a full-color Japanese action manga illustration for young boys, like a page from a classic shonen adventure comic printed in color. Bold, confident black ink outlines with strong thick-and-thin brush line weight, dynamic poses with foreshortening, speed lines and radial focus lines behind the action, sharp cel shading with two clear tones, bright saturated primary colors, big expressive eyes with bold highlights, spiky energetic hair drawn with sharp strands, glowing energy effects with white cores, small impact stars and flashes; small manga screentone dots in the shadows of the background. Characters keep their own faces, hairstyles and clothes from the references; do not imitate any existing manga or anime character, costume or logo. It must NOT look like watercolor, crayon, a soft children's picture book or a 3D render",
+  "style": "ART STYLE: a full-color Japanese action manga illustration for young boys, like a dramatic color spread from a classic shonen battle comic. Bold, confident black ink outlines with strong thick-and-thin brush line weight, extremely dynamic poses with strong foreshortening and dutch angles, intense speed lines and radial focus lines, sharp cel shading with two clear tones, bright saturated colors, big expressive eyes with bold highlights, spiky energetic hair drawn with sharp strands, huge explosive energy effects with white-hot cores, impact flashes, debris and sparks flying toward the viewer, small manga screentone dots in the shadows. Characters keep their own faces, hairstyles and clothes from the references; do not imitate any existing manga, anime or robot design, character, costume or logo. It must NOT look like watercolor, crayon, a soft children's picture book or a 3D render",
+  "castRules": "The main character is the only child in this picture book: never draw any other child, and never draw a second child who looks or dresses like the main character. Townspeople are ordinary grown-ups in everyday clothes and appear only when this scene mentions them. Enemies are only the robot mecha soldiers; nobody human is ever hurt, and no blood is ever shown. Everyone stands, sits or kneels on top of the ground; never draw a body sunk into the ground or a hole.",
   "episodes": [
     {
       "no": 1,
-      "title": "はじめての へんしん",
-      "outfits": "the child, after transforming into a hero (on the cover, on the character design and on pages 3 to 10): {outfit}, with the hero belt around the waist; the child before transforming and after changing back (pages 1, 2 and 11): a navy T-shirt with a small white star on the chest, light-gray shorts, white socks and red sneakers; the mother: a coral knit sweater, navy pants and white sneakers; the father: a gray zip-up hoodie, dark jeans and brown sneakers.",
+      "title": "えらばれし ヒーロー",
+      "outfits": "the child's everyday clothes: a navy T-shirt with a small white star on the chest, a light-gray zip-up hoodie, beige shorts, white socks and red sneakers. The child's power, chosen by the family (it decides the bracelet, the hero suit and the power's effects in every picture): {outfit} On the cover and on the character design the child wears the hero suit. The mother: a mustard-yellow knit cardigan over a white T-shirt, navy pants and white sneakers; the father: a light-blue shirt, dark jeans and brown sneakers.",
       "continuity": [
         {
           "from": 1,
-          "to": 2,
-          "text": "The child has not transformed yet: the child wears the everyday clothes (a navy T-shirt with a small white star on the chest, light-gray shorts, white socks and red sneakers) and no hero suit, no cape, no armor and no belt."
+          "to": 4,
+          "text": "The child wears the everyday clothes (a navy T-shirt with a small white star on the chest, a light-gray zip-up hoodie, beige shorts, white socks and red sneakers) and has no bracelet and no hero suit yet."
         },
         {
-          "from": 3,
+          "from": 5,
+          "to": 5,
+          "text": "The child still wears the everyday clothes, and the bracelet of the chosen power has just appeared on the child's own left wrist; no hero suit yet."
+        },
+        {
+          "from": 6,
+          "to": 6,
+          "text": "The power turns on: the bracelet's metal plates are spreading from the child's left wrist over the whole body and forming the hero suit of the chosen power."
+        },
+        {
+          "from": 7,
+          "to": 9,
+          "text": "The power is on: the child wears the hero suit of the chosen power, exactly the same design and colors on every page, with the bracelet on the left wrist."
+        },
+        {
+          "from": 10,
           "to": 10,
-          "text": "The child is transformed: the child wears the hero suit described in the clothes list on this page, exactly the same type and color on every page, with the hero belt around the waist."
+          "text": "The child gives the power back: the hero suit and the bracelet are dissolving into a huge wave of light in the chosen power's color, revealing the everyday clothes underneath."
         },
         {
           "from": 11,
           "to": 11,
-          "text": "The child has changed back into the everyday clothes (a navy T-shirt with a small white star on the chest, light-gray shorts, white socks and red sneakers); no hero suit. The hero belt is hidden under the T-shirt and cannot be seen."
+          "text": "The child wears the everyday clothes (a navy T-shirt with a small white star on the chest, a light-gray zip-up hoodie, beige shorts, white socks and red sneakers); there is no bracelet and no hero suit."
         },
         {
           "from": 12,
           "to": 12,
-          "text": "On this page the child wears plain light-yellow pajamas instead of the usual clothes. The hero belt lies on the bedside table beside the pillow, its star softly glowing."
+          "text": "The child sleeps in plain light-gray pajamas; there is no bracelet, only a thin faint ring of light glowing around the child's own left wrist in the chosen power's color."
         },
         {
           "from": 1,
-          "to": 3,
-          "text": "The time is early evening in a park in a small modern Japanese town, with an orange sunset sky."
+          "to": 2,
+          "text": "Pages 1 and 2 take place on the main street of a modern Japanese city on a sunny morning."
         },
         {
-          "from": 4,
-          "to": 10,
-          "text": "The time is dusk turning into night in the streets of the small modern Japanese town, with a deep purple sky; townspeople are animals (cats, dogs, rabbits, bears) and never human."
+          "from": 6,
+          "to": 9,
+          "text": "The city is under attack in daylight: smoke, flames from wrecked cars, cracked roads and broken buildings everywhere, and many mecha soldiers."
         }
       ],
       "cover": {
-        "label": "夕方の町。光るベルトのヒーロー姿でポーズを決める主人公と、横にうかぶピカリ。遠くにゴロゴンのかげ",
-        "art": "on a rooftop above a small Japanese town at dusk, the transformed child strikes a bold heroic pose with one fist raised high, the star on the hero belt glowing, and Pikari the little robot floats beside the child's shoulder giving a thumbs-up; far behind, the big silhouette of Gorogon looms between the buildings under an orange-and-purple sky",
-        "withSidekick": true,
-        "camera": "Dramatic low angle from below the rooftop edge looking up at the child's heroic pose against the sky, the child's confident face clearly visible, radial speed lines behind."
+        "label": "こわれた町の中で、腕輪の力でヒーロースーツになった主人公が、メカの兵たいの軍団に立ち向かう",
+        "art": "in the middle of a city street wrecked by the mecha soldiers, the child in the hero suit of the chosen power stands in a bold fighting stance, the left fist raised high with the bracelet blazing with the power's effects, while a whole army of mecha soldiers advances through the smoke behind",
+        "withSidekick": false,
+        "camera": "Dramatic extreme low angle from the cracked road looking up at the child, the child's fierce determined face clearly visible, radial speed lines, the army of robots looming in the background.",
+        "byOutfit": {
+          "red": {
+            "label": "こわれた町で、ほのおのヒーロースーツの主人公が、メカの兵たいの軍団に立ち向かう",
+            "art": "in the middle of a city street wrecked by the mecha soldiers, the child in the hero suit of the chosen power stands in a bold fighting stance, the left fist raised high with the bracelet blazing with the power's effects, while a whole army of mecha soldiers advances through the smoke behind; flames swirl around the raised fist",
+            "withSidekick": false,
+            "camera": "Dramatic extreme low angle from the cracked road looking up at the child, the child's fierce determined face clearly visible, radial speed lines, the army of robots looming in the background."
+          },
+          "yellow": {
+            "label": "こわれた町で、ひかりのヒーロースーツの主人公が、メカの兵たいの軍団に立ち向かう",
+            "art": "in the middle of a city street wrecked by the mecha soldiers, the child in the hero suit of the chosen power stands in a bold fighting stance, the left fist raised high with the bracelet blazing with the power's effects, while a whole army of mecha soldiers advances through the smoke behind; golden lightning crackles around the raised fist",
+            "withSidekick": false,
+            "camera": "Dramatic extreme low angle from the cracked road looking up at the child, the child's fierce determined face clearly visible, radial speed lines, the army of robots looming in the background."
+          },
+          "blue": {
+            "label": "こわれた町で、こおりのヒーロースーツの主人公が、メカの兵たいの軍団に立ち向かう",
+            "art": "in the middle of a city street wrecked by the mecha soldiers, the child in the hero suit of the chosen power stands in a bold fighting stance, the left fist raised high with the bracelet blazing with the power's effects, while a whole army of mecha soldiers advances through the smoke behind; frost and ice crystals swirl around the raised fist",
+            "withSidekick": false,
+            "camera": "Dramatic extreme low angle from the cracked road looking up at the child, the child's fierce determined face clearly visible, radial speed lines, the army of robots looming in the background."
+          }
+        }
       },
       "scenes": [
         {
-          "label": "【ママ】夕方の公園で、ママとヒーローごっこ。すべり台の上でポーズを決める主人公",
-          "art": "an early-evening playground in a town park at sunset; the child stands on top of a slide striking a playful hero pose, and the mother stands below smiling and looking up, as if answering the child's question",
+          "label": "【ママ】晴れた日曜日の朝、町の大通りをママと手をつないでさんぽ",
+          "art": "a sunny Sunday morning on the lively main street of a modern Japanese city, with a bakery and a crosswalk; the child walks holding the mother's hand, both smiling and chatting",
           "text": [
-            "{name}は ママと こうえんで ヒーローごっこ。",
-            "ゆうがたの こうえん。{name}は ママと ヒーローごっこを して いました。「ほんとうの ヒーローって、どんな ひと？」 ママは いいました。「こまって いる ひとを、ぜったいに みすてない ひとよ」",
-            "夕方《ゆうがた》の公園《こうえん》。{name}はママと、ヒーローごっこをしていました。「ビーム！ とうっ！」 すべり台《だい》の上《うえ》で、とくいのポーズを決《き》めます。「ねえママ、本当《ほんとう》のヒーローって、どんな人《ひと》？」 ママは少《すこ》し考《かんが》えてから言《い》いました。「こまっている人《ひと》を、ぜったいに見《み》すてない人《ひと》よ」"
+            "{name}は ママと まちを おさんぽ。",
+            "にちようびの あさ。{name}は ママと いっしょに、まちを おさんぽして いました。そらは まっさお。まちは いつもどおり にぎやかです。",
+            "よく晴《は》れた日曜日《にちようび》の朝《あさ》。{name}はママと手《て》をつないで、町《まち》の大通《おおどお》りをさんぽしていました。パン屋《や》さんのいいにおい。ピヨピヨと鳴《な》る信号《しんごう》の音《おと》。「ねえママ、今日《きょう》はどこまで行《い》く？」 いつもと同《おな》じ、にぎやかな朝《あさ》でした。"
           ],
           "withMom": true,
           "withDad": false,
           "withSidekick": false,
-          "camera": "Low angle from the foot of the slide looking up at the child's playful pose against the orange sunset, the mother's smiling face in three-quarter view at the lower side of the frame.",
+          "camera": "Eye-level three-quarter view from the sidewalk, the child and the mother walking toward the viewer hand in hand, the busy street and tall buildings stretching behind them.",
           "alt": {
             "both": {
-              "label": "夕方の公園で、ママとパパとヒーローごっこ。ママが答え、パパが拍手",
-              "art": "an early-evening playground in a town park at sunset; the child stands on top of a slide striking a playful hero pose, the mother stands below smiling and looking up as if answering the child's question, and the father claps beside her",
+              "label": "晴れた日曜日の朝、町の大通りをママとパパとさんぽ",
+              "art": "a sunny Sunday morning on the lively main street of a modern Japanese city, with a bakery and a crosswalk; the child walks in the middle holding the mother's hand and the father's hand, all smiling and chatting",
               "text": [
-                "{name}は ママと パパと こうえんで ヒーローごっこ。",
-                "ゆうがたの こうえん。{name}は ママと パパと ヒーローごっこを して いました。「ほんとうの ヒーローって、どんな ひと？」 ママは いいました。「こまって いる ひとを、ぜったいに みすてない ひとよ」",
-                "夕方《ゆうがた》の公園《こうえん》。{name}はママとパパと、ヒーローごっこをしていました。「ビーム！ とうっ！」 すべり台《だい》の上《うえ》でとくいのポーズを決《き》めると、パパがはく手《しゅ》をしてくれます。「ねえママ、本当《ほんとう》のヒーローって、どんな人《ひと》？」 ママは少《すこ》し考《かんが》えてから言《い》いました。「こまっている人《ひと》を、ぜったいに見《み》すてない人《ひと》よ」"
+                "{name}は ママと パパと まちを おさんぽ。",
+                "にちようびの あさ。{name}は ママと パパと いっしょに、まちを おさんぽして いました。そらは まっさお。まちは いつもどおり にぎやかです。",
+                "よく晴《は》れた日曜日《にちようび》の朝《あさ》。{name}はママとパパと手《て》をつないで、町《まち》の大通《おおどお》りをさんぽしていました。パン屋《や》さんのいいにおい。ピヨピヨと鳴《な》る信号《しんごう》の音《おと》。「ねえ、今日《きょう》はどこまで行《い》く？」 いつもと同《おな》じ、にぎやかな朝《あさ》でした。"
               ],
               "withMom": true,
               "withDad": true,
               "withSidekick": false,
-              "camera": "Low angle from the foot of the slide looking up at the child's playful pose against the orange sunset, the mother and the father in three-quarter view at the lower side of the frame."
+              "camera": "Eye-level three-quarter view from the sidewalk, the three walking toward the viewer hand in hand, the busy street and tall buildings stretching behind them."
             },
             "dad": {
-              "label": "夕方の公園で、パパとヒーローごっこ。すべり台の上でポーズを決める主人公",
-              "art": "an early-evening playground in a town park at sunset; the child stands on top of a slide striking a playful hero pose, and the father stands below smiling and looking up, as if answering the child's question",
+              "label": "晴れた日曜日の朝、町の大通りをパパと手をつないでさんぽ",
+              "art": "a sunny Sunday morning on the lively main street of a modern Japanese city, with a bakery and a crosswalk; the child walks holding the father's hand, both smiling and chatting",
               "text": [
-                "{name}は パパと こうえんで ヒーローごっこ。",
-                "ゆうがたの こうえん。{name}は パパと ヒーローごっこを して いました。「ほんとうの ヒーローって、どんな ひと？」 パパは いいました。「こまって いる ひとを、ぜったいに みすてない ひとだよ」",
-                "夕方《ゆうがた》の公園《こうえん》。{name}はパパと、ヒーローごっこをしていました。「ビーム！ とうっ！」 すべり台《だい》の上《うえ》で、とくいのポーズを決《き》めます。「ねえパパ、本当《ほんとう》のヒーローって、どんな人《ひと》？」 パパは少《すこ》し考《かんが》えてから言《い》いました。「こまっている人《ひと》を、ぜったいに見《み》すてない人《ひと》だよ」"
+                "{name}は パパと まちを おさんぽ。",
+                "にちようびの あさ。{name}は パパと いっしょに、まちを おさんぽして いました。そらは まっさお。まちは いつもどおり にぎやかです。",
+                "よく晴《は》れた日曜日《にちようび》の朝《あさ》。{name}はパパと手《て》をつないで、町《まち》の大通《おおどお》りをさんぽしていました。パン屋《や》さんのいいにおい。ピヨピヨと鳴《な》る信号《しんごう》の音《おと》。「ねえパパ、今日《きょう》はどこまで行《い》く？」 いつもと同《おな》じ、にぎやかな朝《あさ》でした。"
               ],
               "withMom": false,
               "withDad": true,
               "withSidekick": false,
-              "camera": "Low angle from the foot of the slide looking up at the child's playful pose against the orange sunset, the father's smiling face in three-quarter view at the lower side of the frame."
+              "camera": "Eye-level three-quarter view from the sidewalk, the child and the father walking toward the viewer hand in hand, the busy street and tall buildings stretching behind them."
             },
             "none": {
-              "label": "夕方の公園で、ひとりでヒーローごっこ。手には大すきなヒーローの絵本",
-              "art": "an early-evening playground in a town park at sunset; the child stands alone on top of a slide striking a playful hero pose, holding an open picture book about heroes in one hand",
+              "label": "晴れた日曜日の朝、町の大通りをひとりでさんぽ",
+              "art": "a sunny Sunday morning on the lively main street of a modern Japanese city, with a bakery and a crosswalk; the child walks along happily alone, swinging both arms",
               "text": [
-                "{name}は こうえんで ヒーローごっこ。",
-                "ゆうがたの こうえん。{name}は ヒーローごっこを して いました。だいすきな えほんの ヒーローは いいます。「こまって いる ひとを、ぜったいに みすてない。それが ヒーローだ！」",
-                "夕方《ゆうがた》の公園《こうえん》。{name}は、ヒーローごっこをしていました。「ビーム！ とうっ！」 すべり台《だい》の上《うえ》で、とくいのポーズを決《き》めます。手《て》には、大《だい》すきなヒーローの絵本《えほん》。その中《なか》で、ヒーローはいつもこう言《い》うのです。「こまっている人《ひと》を、ぜったいに見《み》すてない。それがヒーローだ！」"
+                "{name}は まちを おさんぽ。",
+                "にちようびの あさ。{name}は まちを おさんぽして いました。そらは まっさお。まちは いつもどおり にぎやかです。",
+                "よく晴《は》れた日曜日《にちようび》の朝《あさ》。{name}は、町《まち》の大通《おおどお》りをさんぽしていました。パン屋《や》さんのいいにおい。ピヨピヨと鳴《な》る信号《しんごう》の音《おと》。「今日《きょう》は、どこまで行《い》こうかな」 いつもと同《おな》じ、にぎやかな朝《あさ》でした。"
               ],
               "withMom": false,
               "withDad": false,
               "withSidekick": false,
-              "camera": "Low angle from the foot of the slide looking up at the child's playful pose against the orange sunset, the picture book held up in one hand."
+              "camera": "Eye-level three-quarter view from the sidewalk, the child walking toward the viewer, the busy street and tall buildings stretching behind."
             }
           }
         },
         {
-          "label": "空から光る星が落ちてきて、中から小さなロボットのピカリがうかび上がる",
-          "art": "in the same park at sunset, a glowing falling star has just landed in the bushes and opened like a shell; Pikari the little robot floats up out of it and greets the child, who stares with wide surprised eyes",
+          "label": "ドカーン！ 大ばくはつ。けむりの中からメカの兵たいの軍団。にげる人たちにおされて、ママの手がはなれる",
+          "art": "a huge explosion bursts behind the buildings of the main street, a fireball and black smoke rising; out of the smoke march rows of mecha soldiers with glowing red sensor lights, and panicked grown-up townspeople run screaming toward the viewer; the child, swept along in the crowd, looks back over the shoulder in shock, one hand reaching out",
           "text": [
-            "そらから ひかる ほしが ひゅーん！",
-            "そのとき、そらから ひかる ほしが ひゅーんと おちて きました。なかから でて きたのは、ちいさな ロボット。「ぼく、ピカリ。ヒーローを さがして いるんだ」",
-            "そのとき、空《そら》から光《ひか》る星《ほし》がひゅーんと落《お》ちてきて、しげみの中《なか》にぽとん。そっとのぞくと、中《なか》から丸《まる》い小《ちい》さなロボットが、ふわりとうかび上《あ》がりました。「ぼく、ピカリ。星《ほし》の国《くに》から、ヒーローになれる子《こ》をさがしに来《き》たんだ」"
+            "ドカーン！ メカの てきが あらわれた！",
+            "そのとき、ドカーン！ ビルの むこうで だいばくはつ。けむりの なかから、メカの てきが つぎつぎと あらわれました。にげる ひとに おされて、{name}の てから ママの てが はなれて しまいました。",
+            "そのとき――ドカーン！！ ビルの向《む》こうで、大《だい》ばくはつが起《お》こりました。黒《くろ》いけむりの中《なか》から、赤《あか》い目《め》を光《ひか》らせたメカの兵《へい》たいが、何体《なんたい》も何体《なんたい》もあらわれます。「にげろー！」 町《まち》じゅうの人《ひと》がいっせいに走《はし》り出《だ》し、人《ひと》ごみにおされて、{name}の手《て》からママの手《て》がはなれてしまいました。「ママ！」"
           ],
           "withMom": false,
           "withDad": false,
-          "withSidekick": true,
-          "camera": "Close-up over the child's shoulder onto the opened glowing capsule, Pikari rising toward the camera, the child's astonished face lit by the glow."
-        },
-        {
-          "label": "ベルトをしめて「ひかれ！ ゆうきの ベルト！」と叫ぶと、光につつまれてヒーローに変身",
-          "art": "in the park at sunset, the child shouts with fists clenched as a blinding pillar of white-gold light bursts from the hero belt and swirls around the child's body, the hero suit appearing in the light; Pikari spins happily in the air nearby",
-          "text": [
-            "「ひかれ！ ゆうきの ベルト！」 へんしん！",
-            "ピカリは {name}に ひかる ベルトを わたしました。「この ベルトを まいて、こう さけんで」 {name}は おおきな こえで いいました。「ひかれ！ ゆうきの ベルト！」 ぴかーっ！ {name}は ヒーローに へんしんしました。",
-            "ピカリは、星《ほし》のマークがついたベルトを{name}にわたしました。「これは『ゆうきのベルト』。まいて、大《おお》きな声《こえ》でさけんでみて」 {name}はベルトをぎゅっとしめて、おなかの底《そこ》から声《こえ》を出《だ》しました。「ひかれ！ ゆうきの ベルト！」 ぴかーっ！ 光《ひかり》につつまれて、{name}は本物《ほんもの》のヒーローに変身《へんしん》しました。"
-          ],
-          "withMom": false,
-          "withDad": false,
-          "withSidekick": true,
-          "camera": "Front view at the child's eye level, the child centered in a spiraling column of light with radial speed lines, the face clearly visible and full of determination."
-        },
-        {
-          "label": "ずしーん！ 町に岩のかいじゅうゴロゴンがあらわれ、町の明かりを食べて町が暗くなる",
-          "art": "in the streets of the small town at dusk, Gorogon the rock monster stomps between the buildings, opening its wide mouth to gobble up glowing street lamps and lit windows one after another so the town grows dark; the transformed child and Pikari look up at it from the street",
-          "text": [
-            "まちに かいじゅう ゴロゴンが あらわれた！",
-            "ずしーん、ずしーん！ まちに いわの かいじゅう ゴロゴンが あらわれました。ゴロゴンは まちの あかりを ぱくぱく たべて、まちは どんどん くらく なって いきます。",
-            "ずしーん、ずしーん！ 地面《じめん》がゆれて、町《まち》に岩《いわ》のかいじゅう、ゴロゴンがあらわれました。ゴロゴンは大《おお》きな口《くち》をあけて、町《まち》の明《あ》かりをぱくぱく食《た》べていきます。ビルのまどが一《ひと》つ、また一《ひと》つと消《き》え、町《まち》はどんどん暗《くら》くなっていきました。"
-          ],
-          "withMom": false,
-          "withDad": false,
-          "withSidekick": true,
-          "camera": "Back view from behind the small child and Pikari in the foreground, looking up at the gigantic monster towering over the street, emphasizing its huge size."
-        },
-        {
-          "label": "ゴロゴンの足もとでふるえる子ねこを、ひとっとびでだき上げる。町のどうぶつたちが拍手",
-          "art": "on the dark street, the transformed child dashes in a flying leap and scoops up the little kitten just before Gorogon's giant rocky foot comes down; animal townspeople (cats, dogs and rabbits) peek out from behind a building and cheer",
-          "text": [
-            "こねこを たすけて、ひとっとび！",
-            "「たすけて！」 ゴロゴンの あしもとで、こねこが ないて います。{name}は ひとっとびで かけつけて、こねこを だきあげました。「やった！」",
-            "「たすけてえ！」 ゴロゴンの大《おお》きな足《あし》の下《した》で、子《こ》ねこがふるえています。「まかせて！」 {name}はぐっと足《あし》に力《ちから》をこめて、ひとっとび。ふみつぶされる前《まえ》に、子《こ》ねこをさっとだき上《あ》げました。「ヒーローだ！」 ビルのかげから、町《まち》のどうぶつたちが手《て》をたたきました。"
-          ],
-          "withMom": false,
-          "withDad": false,
-          "withSidekick": true,
-          "camera": "Dynamic side view of the child mid-leap with the kitten in arms, motion lines streaming behind, the huge foot coming down at the top of the frame, tilted diagonal composition."
-        },
-        {
-          "label": "「ヒーローパンチ！」 でもゴロゴンの岩の体はびくともせず、ゴロゴンはわらう",
-          "art": "the transformed child flies up and punches Gorogon's rocky belly with all their might, a small impact flash at the fist, but the monster does not budge at all and laughs with its belly shaking; Pikari watches worriedly",
-          "text": [
-            "ヒーロー パンチ！ でも、びくとも しない。",
-            "「こんどは おまえの ばんだ、ゴロゴン！ ヒーロー パンチ！」 ところが ゴロゴンの からだは かちかちの いわ。{name}の パンチでは、びくとも しません。",
-            "「町《まち》の明《あ》かりを返《かえ》せ！ ヒーローパンチ！」 {name}は思《おも》いきりとびかかりました。ところが、ゴロゴンの体《からだ》はかちかちの岩《いわ》。ごつん！と音《おと》がしただけで、びくともしません。「グフフ、くすぐったいぞ」 ゴロゴンはおなかをゆらして、わらいました。"
-          ],
-          "withMom": false,
-          "withDad": false,
-          "withSidekick": true,
-          "camera": "Low angle looking up past the child's punching fist at the laughing monster's face high above, the child's straining face in three-quarter view."
-        },
-        {
-          "label": "ゴロゴンの太いしっぽで、ばーん！ 公園のすなばまでふきとばされる",
-          "art": "Gorogon swings its thick rocky tail and sends the transformed child tumbling through the air back toward the park, a big comic impact burst where the tail hits; Pikari zooms after the child in a panic",
-          "text": [
-            "しっぽで ばーん！ ふきとばされた。",
-            "ゴロゴンが おおきな しっぽを ぶうんと ふりました。ばーん！ {name}は ふきとばされて、ごろごろと ころがりました。",
-            "「じゃまをするな！」 ゴロゴンが太《ふと》いしっぽを、ぶうんとふり回《まわ》しました。よけようとしたけれど、間《ま》に合《あ》いません。ばーん！ {name}はふきとばされて、公園《こうえん》のすなばまで、ごろごろところがっていきました。ピカリがあわてて、とんできます。"
-          ],
-          "withMom": false,
-          "withDad": false,
-          "withSidekick": true,
-          "camera": "Wide high-angle view from above the street, the tiny child flying in an arc through the dusky air with motion lines, the monster's tail sweeping across the bottom of the frame."
-        },
-        {
-          "label": "すなばにすわりこんで立ち上がれない主人公。ベルトの光が弱くなり、ピカリがはげます",
-          "art": "in the darkened park, the transformed child sits slumped in the sandbox with scraped knees and teary eyes, the star on the hero belt flickering weakly; Pikari floats close to the child's face and speaks gently",
-          "text": [
-            "ベルトの ひかりが、きえそう……。",
-            "{name}は なかなか たちあがれません。ベルトの ひかりも、ちか、ちかと よわく なって いきます。「やっぱり、むりだよ……」 すると ピカリが いいました。「ベルトは、きみの ゆうきで ひかるんだよ」",
-            "体《からだ》じゅうがいたくて、{name}は立《た》ち上《あ》がれません。ゆうきのベルトの光《ひかり》も、ちか……ちか……と弱《よわ》くなっていきます。「やっぱり、むりだよ。あんなに大《おお》きいんだもん」 なみだがこぼれそうになったとき、ピカリがそっと言《い》いました。「このベルトはね、きみのゆうきで光《ひか》るんだ。体《からだ》の大《おお》きさじゃないんだよ」"
-          ],
-          "withMom": false,
-          "withDad": false,
-          "withSidekick": true,
-          "camera": "Medium close-up at the child's eye level, the child's tearful face in three-quarter view and the weakly flickering belt buckle, Pikari close beside, the monster's dark silhouette far behind."
-        },
-        {
-          "label": "子ねこと町のどうぶつたちのおうえん。ママの言葉を思い出し、立ち上がって「ひかれ！」",
-          "art": "in the park at night, the kitten and the animal townspeople cheer from the edge of the park; the transformed child stands up tall with fists clenched and shouts toward the sky, the star on the hero belt blazing brighter than ever with rays of light",
-          "text": [
-            "「ひかれ！ ゆうきの ベルト！」",
-            "そのとき、こねこの こえが きこえました。「がんばれ、ヒーロー！」 {name}は ママの ことばを おもいだしました。こまって いる ひとを、ぜったいに みすてない。{name}は たちあがって、さけびました。「ひかれ！ ゆうきの ベルト！」",
-            "「がんばれー、ヒーロー！」 さっきの子《こ》ねこと町《まち》のどうぶつたちが、声《こえ》をそろえておうえんしています。{name}は、ママの言葉《ことば》を思《おも》い出《だ》しました。――こまっている人《ひと》を、ぜったいに見《み》すてない。{name}はぐっと歯《は》をくいしばって立《た》ち上《あ》がり、空《そら》に向《む》かってさけびました。「ひかれ！ ゆうきの ベルト！」 ベルトが、今《いま》までで一番《いちばん》強《つよ》く光《ひか》りました。"
-          ],
-          "withMom": false,
-          "withDad": false,
-          "withSidekick": true,
-          "camera": "Low angle from the ground looking up at the child standing tall against the night sky, the blazing belt at the center, radial focus lines, the cheering animals small at the bottom edge.",
-          "alt": {
-            "dad": {
-              "label": "子ねこと町のどうぶつたちのおうえん。パパの言葉を思い出し、立ち上がって「ひかれ！」",
-              "art": "in the park at night, the kitten and the animal townspeople cheer from the edge of the park; the transformed child stands up tall with fists clenched and shouts toward the sky, the star on the hero belt blazing brighter than ever with rays of light",
-              "text": [
-                "「ひかれ！ ゆうきの ベルト！」",
-                "そのとき、こねこの こえが きこえました。「がんばれ、ヒーロー！」 {name}は パパの ことばを おもいだしました。こまって いる ひとを、ぜったいに みすてない。{name}は たちあがって、さけびました。「ひかれ！ ゆうきの ベルト！」",
-                "「がんばれー、ヒーロー！」 さっきの子《こ》ねこと町《まち》のどうぶつたちが、声《こえ》をそろえておうえんしています。{name}は、パパの言葉《ことば》を思《おも》い出《だ》しました。――こまっている人《ひと》を、ぜったいに見《み》すてない。{name}はぐっと歯《は》をくいしばって立《た》ち上《あ》がり、空《そら》に向《む》かってさけびました。「ひかれ！ ゆうきの ベルト！」 ベルトが、今《いま》までで一番《いちばん》強《つよ》く光《ひか》りました。"
-              ],
-              "withMom": false,
-              "withDad": false,
-              "withSidekick": true,
-              "camera": "Low angle from the ground looking up at the child standing tall against the night sky, the blazing belt at the center, radial focus lines, the cheering animals small at the bottom edge."
-            },
-            "none": {
-              "label": "子ねこと町のどうぶつたちのおうえん。絵本のヒーローの言葉を思い出し、立ち上がって「ひかれ！」",
-              "art": "in the park at night, the kitten and the animal townspeople cheer from the edge of the park; the transformed child stands up tall with fists clenched and shouts toward the sky, the star on the hero belt blazing brighter than ever with rays of light",
-              "text": [
-                "「ひかれ！ ゆうきの ベルト！」",
-                "そのとき、こねこの こえが きこえました。「がんばれ、ヒーロー！」 {name}は えほんの ヒーローの ことばを おもいだしました。こまって いる ひとを、ぜったいに みすてない。{name}は たちあがって、さけびました。「ひかれ！ ゆうきの ベルト！」",
-                "「がんばれー、ヒーロー！」 さっきの子《こ》ねこと町《まち》のどうぶつたちが、声《こえ》をそろえておうえんしています。{name}は、絵本《えほん》のヒーローの言葉《ことば》を思《おも》い出《だ》しました。――こまっている人《ひと》を、ぜったいに見《み》すてない。{name}はぐっと歯《は》をくいしばって立《た》ち上《あ》がり、空《そら》に向《む》かってさけびました。「ひかれ！ ゆうきの ベルト！」 ベルトが、今《いま》までで一番《いちばん》強《つよ》く光《ひか》りました。"
-              ],
-              "withMom": false,
-              "withDad": false,
-              "withSidekick": true,
-              "camera": "Low angle from the ground looking up at the child standing tall against the night sky, the blazing belt at the center, radial focus lines, the cheering animals small at the bottom edge."
-            }
-          }
-        },
-        {
-          "label": "【見開き】ひっさつ「ゆうき ビーム」！ ゴロゴンのおなかから町の明かりがとび出し、ゴロゴンは小さくなってにげていく",
-          "art": "the climax over the night town: the transformed child thrusts both hands forward and fires a huge rainbow-colored energy beam that hits Gorogon's glowing belly; all the swallowed lights burst out of the monster like fireworks and fly back into the street lamps and windows, and Gorogon shrinks smaller and smaller, running away into the night sky; Pikari cheers beside the child",
-          "text": [
-            "ひっさつ！ ゆうき ビーム！",
-            "「ひっさつ！ ゆうき ビーーム！」 {name}の りょうてから、にじいろの ひかりが とびだしました。ビームが あたると、ゴロゴンの おなかから まちの あかりが いっせいに とびだし、ゴロゴンは しゅるしゅると ちいさく なりました。",
-            "「ひっさつ！ ゆうき ビーーム！」 {name}が両手《りょうて》をつき出《だ》すと、にじ色《いろ》の光《ひかり》が、まっすぐゴロゴンにとんでいきました。ずどーん！ ゴロゴンのおなかから、食《た》べられた町《まち》の明《あ》かりがいっせいにとび出《だ》して、ビルのまどに次《つぎ》つぎともどっていきます。光《ひかり》をなくしたゴロゴンは、しゅるしゅると小《ちい》さくなって、「おぼえてろー！」と夜空《よぞら》のむこうへにげていきました。"
-          ],
-          "withMom": false,
-          "withDad": false,
-          "withSidekick": true,
-          "camera": "Grand dynamic wide angle from just behind and beside the child, the child's determined face in three-quarter profile in the foreground, the rainbow beam streaking diagonally across the whole spread to the monster, sparks and lights exploding outward."
-        },
-        {
-          "label": "【パパ】変身をといて家に帰ると、パパがテレビのニュースにびっくり。主人公はひみつににっこり、パパがぎゅっ",
-          "art": "in the cozy living room at night, a TV shows a news picture of a hero's rainbow beam over the town; the father, amazed, turns from the TV and hugs the child, who smiles a secret proud smile, back in the everyday clothes",
-          "text": [
-            "おうちで パパが まって いたよ。",
-            "へんしんを といて おうちに かえると、パパが まって いました。「まちに ヒーローが でたって ニュースで いってたよ！」 {name}は にっこり。ヒーローの ことは、まだ ひみつです。",
-            "変身《へんしん》をといて家《いえ》に帰《かえ》ると、パパがテレビの前《まえ》で目《め》をまるくしていました。「見《み》て！ 町《まち》にヒーローがあらわれて、かいじゅうをやっつけたんだって！」 {name}はベルトを服《ふく》の下《した》にかくして、にっこりわらいました。ヒーローのことは、まだひみつです。パパは「なんだかうれしそうだな」と、{name}をぎゅっとだきしめました。"
-          ],
-          "withMom": false,
-          "withDad": true,
           "withSidekick": false,
-          "camera": "Eye-level medium shot in the living room, the father kneeling and hugging the child, the child's secretly smiling face toward the viewer, the TV glowing in the background.",
+          "camera": "Dynamic low tilted angle in the middle of the fleeing crowd, the child's shocked face in three-quarter view in the foreground, the explosion and the marching robots huge in the background, debris flying.",
           "alt": {
             "both": {
-              "label": "家に帰ると、ママとパパがテレビのニュースにびっくり。主人公はひみつににっこり",
-              "art": "in the cozy living room at night, a TV shows a news picture of a hero's rainbow beam over the town; the mother and the father, amazed, turn from the TV and hug the child together, and the child smiles a secret proud smile, back in the everyday clothes",
+              "label": "ドカーン！ 大ばくはつ。メカの兵たいの軍団。にげる人たちにおされて、ママとパパの手がはなれる",
+              "art": "a huge explosion bursts behind the buildings of the main street, a fireball and black smoke rising; out of the smoke march rows of mecha soldiers with glowing red sensor lights, and panicked grown-up townspeople run screaming toward the viewer; the child, swept along in the crowd, looks back over the shoulder in shock, one hand reaching out",
               "text": [
-                "おうちで ママと パパが まって いたよ。",
-                "へんしんを といて おうちに かえると、ママと パパが まって いました。「まちに ヒーローが でたって ニュースで いってたよ！」 {name}は にっこり。ヒーローの ことは、まだ ひみつです。",
-                "変身《へんしん》をといて家《いえ》に帰《かえ》ると、ママとパパがテレビの前《まえ》で目《め》をまるくしていました。「見《み》て！ 町《まち》にヒーローがあらわれて、かいじゅうをやっつけたんだって！」 {name}はベルトを服《ふく》の下《した》にかくして、にっこりわらいました。ヒーローのことは、まだひみつです。ママとパパは「なんだかうれしそうね」と、{name}をぎゅっとだきしめました。"
-              ],
-              "withMom": true,
-              "withDad": true,
-              "withSidekick": false,
-              "camera": "Eye-level medium shot in the living room, the mother and the father hugging the child between them, the child's secretly smiling face toward the viewer, the TV glowing in the background."
-            },
-            "mom": {
-              "label": "家に帰ると、ママがテレビのニュースにびっくり。主人公はひみつににっこり、ママがぎゅっ",
-              "art": "in the cozy living room at night, a TV shows a news picture of a hero's rainbow beam over the town; the mother, amazed, turns from the TV and hugs the child, who smiles a secret proud smile, back in the everyday clothes",
-              "text": [
-                "おうちで ママが まって いたよ。",
-                "へんしんを といて おうちに かえると、ママが まって いました。「まちに ヒーローが でたって ニュースで いってたよ！」 {name}は にっこり。ヒーローの ことは、まだ ひみつです。",
-                "変身《へんしん》をといて家《いえ》に帰《かえ》ると、ママがテレビの前《まえ》で目《め》をまるくしていました。「見《み》て！ 町《まち》にヒーローがあらわれて、かいじゅうをやっつけたんだって！」 {name}はベルトを服《ふく》の下《した》にかくして、にっこりわらいました。ヒーローのことは、まだひみつです。ママは「なんだかうれしそうね」と、{name}をぎゅっとだきしめました。"
-              ],
-              "withMom": true,
-              "withDad": false,
-              "withSidekick": false,
-              "camera": "Eye-level medium shot in the living room, the mother kneeling and hugging the child, the child's secretly smiling face toward the viewer, the TV glowing in the background."
-            },
-            "none": {
-              "label": "公園にもどると、子ねこと町のどうぶつたちがお祝い。主人公はピカリとハイタッチ",
-              "art": "back in the park at night under bright street lamps, the kitten and the animal townspeople (cats, dogs and rabbits) gather around and cheer, and the child, back in the everyday clothes, gives Pikari a high five",
-              "text": [
-                "こねこと みんなが ありがとうって。",
-                "へんしんを といて こうえんに もどると、こねこと まちの どうぶつたちが まって いました。「ありがとう、ヒーロー！」 {name}は ピカリと ハイタッチ。ヒーローの ことは、みんなの ひみつです。",
-                "変身《へんしん》をといて公園《こうえん》にもどると、あの子《こ》ねこと町《まち》のどうぶつたちが待《ま》っていました。「ありがとう、ヒーロー！」「町《まち》が明《あか》るくなったよ！」 {name}はベルトを服《ふく》の下《した》にかくして、ピカリとハイタッチしました。ヒーローのことは、ここにいるみんなだけのひみつです。"
+                "ドカーン！ メカの てきが あらわれた！",
+                "そのとき、ドカーン！ ビルの むこうで だいばくはつ。けむりの なかから、メカの てきが つぎつぎと あらわれました。にげる ひとに おされて、{name}の てから ママと パパの てが はなれて しまいました。",
+                "そのとき――ドカーン！！ ビルの向《む》こうで、大《だい》ばくはつが起《お》こりました。黒《くろ》いけむりの中《なか》から、赤《あか》い目《め》を光《ひか》らせたメカの兵《へい》たいが、何体《なんたい》も何体《なんたい》もあらわれます。「にげろー！」 町《まち》じゅうの人《ひと》がいっせいに走《はし》り出《だ》し、人《ひと》ごみにおされて、{name}の手《て》からママとパパの手《て》がはなれてしまいました。「ママ！ パパ！」"
               ],
               "withMom": false,
               "withDad": false,
-              "withSidekick": true,
-              "camera": "Eye-level medium shot in the lamp-lit park, the child and Pikari slapping a high five at the center, the cheering animals around them, the child's happy face toward the viewer."
+              "withSidekick": false,
+              "camera": "Dynamic low tilted angle in the middle of the fleeing crowd, the child's shocked face in three-quarter view in the foreground, the explosion and the marching robots huge in the background, debris flying."
+            },
+            "dad": {
+              "label": "ドカーン！ 大ばくはつ。メカの兵たいの軍団。にげる人たちにおされて、パパの手がはなれる",
+              "art": "a huge explosion bursts behind the buildings of the main street, a fireball and black smoke rising; out of the smoke march rows of mecha soldiers with glowing red sensor lights, and panicked grown-up townspeople run screaming toward the viewer; the child, swept along in the crowd, looks back over the shoulder in shock, one hand reaching out",
+              "text": [
+                "ドカーン！ メカの てきが あらわれた！",
+                "そのとき、ドカーン！ ビルの むこうで だいばくはつ。けむりの なかから、メカの てきが つぎつぎと あらわれました。にげる ひとに おされて、{name}の てから パパの てが はなれて しまいました。",
+                "そのとき――ドカーン！！ ビルの向《む》こうで、大《だい》ばくはつが起《お》こりました。黒《くろ》いけむりの中《なか》から、赤《あか》い目《め》を光《ひか》らせたメカの兵《へい》たいが、何体《なんたい》も何体《なんたい》もあらわれます。「にげろー！」 町《まち》じゅうの人《ひと》がいっせいに走《はし》り出《だ》し、人《ひと》ごみにおされて、{name}の手《て》からパパの手《て》がはなれてしまいました。「パパ！」"
+              ],
+              "withMom": false,
+              "withDad": false,
+              "withSidekick": false,
+              "camera": "Dynamic low tilted angle in the middle of the fleeing crowd, the child's shocked face in three-quarter view in the foreground, the explosion and the marching robots huge in the background, debris flying."
+            },
+            "none": {
+              "label": "ドカーン！ 大ばくはつ。メカの兵たいの軍団。にげる人たちの中を、主人公もむちゅうで走る",
+              "art": "a huge explosion bursts behind the buildings of the main street, a fireball and black smoke rising; out of the smoke march rows of mecha soldiers with glowing red sensor lights, and panicked grown-up townspeople run screaming toward the viewer; the child, swept along in the crowd, looks back over the shoulder in shock, one hand reaching out",
+              "text": [
+                "ドカーン！ メカの てきが あらわれた！",
+                "そのとき、ドカーン！ ビルの むこうで だいばくはつ。けむりの なかから、メカの てきが つぎつぎと あらわれました。まちの ひとたちは にげまどい、{name}も むちゅうで はしりだしました。",
+                "そのとき――ドカーン！！ ビルの向《む》こうで、大《だい》ばくはつが起《お》こりました。黒《くろ》いけむりの中《なか》から、赤《あか》い目《め》を光《ひか》らせたメカの兵《へい》たいが、何体《なんたい》も何体《なんたい》もあらわれます。「にげろー！」 町《まち》じゅうの人《ひと》がいっせいに走《はし》り出《だ》しました。{name}も人《ひと》ごみにおされながら、むちゅうで走《はし》りました。"
+              ],
+              "withMom": false,
+              "withDad": false,
+              "withSidekick": false,
+              "camera": "Dynamic low tilted angle in the middle of the fleeing crowd, the child's shocked face in three-quarter view in the foreground, the explosion and the marching robots huge in the background, debris flying."
             }
           }
         },
         {
-          "label": "夜の子ども部屋。まどの外にピカリ。目の画面に、海であばれる大きなかげ。まくらもとに光るベルト",
-          "art": "in the child's dark bedroom at night, the child sits up in bed in pajamas looking at the window, where Pikari floats outside; Pikari's screen face shows a small picture of a huge shadowy shape splashing in the sea; the hero belt glows softly on the bedside table",
+          "label": "ビルのすきまのうす暗いろじ。光がもれるドアの前に立つと、光の文字がうかび上がる",
+          "art": "in a dim narrow alley between tall buildings, the child stands alone in front of the glowing door, dazzling white light pouring from its edges onto the child's face; a glowing floating panel of light appears in the air above the door (shown as soft light only, with no readable letters)",
           "text": [
-            "まどの そとで、ピカリが てを ふって いるよ。",
-            "その よる。まどを とんとん たたく おと。ピカリです。「きょうは ありがとう。でも たいへん！ ゴロゴンの なかまが、うみで あばれて いるんだって」 {name}は まくらもとの ベルトを ぎゅっと にぎりました。",
-            "その夜《よる》、{name}がベッドに入《はい》ると、まどをとん、とん、とたたく音《おと》がしました。ピカリです。「今日《きょう》はありがとう、ヒーロー。でも、たいへんなんだ」 ピカリの顔《かお》の画面《がめん》に、海《うみ》で大《おお》あばれする大《おお》きなかげがうつりました。「次《つぎ》は海《うみ》だ。また、いっしょに戦《たたか》ってくれる？」 {name}はまくらもとのベルトをにぎって、力強《ちからづよ》くうなずきました。"
+            "ろじの おくに、ひかる ドア。",
+            "むちゅうで にげて いると、ビルの すきまの くらい ろじから、まぶしい ひかりが もれて いました。ドアの まえに たつと、ひかる もじが うかびあがりました。『えらばれし ものよ、せかいを すくいたまえ』",
+            "むちゅうで走《はし》っていると、ビルとビルのすきまの、うす暗《ぐら》いろじのおくから、まぶしい光《ひかり》がもれているのが見《み》えました。古《ふる》い鉄《てつ》のドアのすきまから、光《ひかり》があふれています。ドアの前《まえ》に立《た》つと、空中《くうちゅう》に光《ひかり》の文字《もじ》がうかび上《あ》がりました。『えらばれし者《もの》よ、世界《せかい》をすくいたまえ』 {name}はごくりとつばをのみこんで、ドアのとってをにぎりました。"
           ],
           "withMom": false,
           "withDad": false,
-          "withSidekick": true,
-          "camera": "High angle from the ceiling corner looking down on the bedroom, the child in bed turned toward the window where Pikari floats, the glowing belt on the bedside table in the foreground."
+          "withSidekick": false,
+          "camera": "Back view from behind the child standing small in the dark alley, the brilliant light of the door filling the frame ahead and casting a long shadow toward the viewer."
+        },
+        {
+          "label": "まっ白なへやに、赤（ほのお）・黄（ひかり）・青（こおり）の3つの光の玉がうかぶ",
+          "art": "inside an endless pure white room, the three orbs float in a row in front of the child, who gazes up at them in awe with one hand starting to reach out",
+          "text": [
+            "まっしろな へやに、ひかる たまが みっつ。",
+            "ドアを あけると、なかは まっしろな へや。メラメラ もえる あかい たま、ぴかぴか かがやく きいろい たま、こおりのように すきとおった あおい たま。みっつの たまが、ふわりと うかんで います。",
+            "勇気《ゆうき》を出《だ》してドアを開《あ》けると、中《なか》はどこまでもまっ白《しろ》なへやでした。そのまん中《なか》に、三《みっ》つの光《ひかり》の玉《たま》がうかんでいます。メラメラともえる赤《あか》い玉《たま》。目《め》がくらむほどかがやく黄色《きいろ》い玉《たま》。氷《こおり》のようにすきとおった青《あお》い玉《たま》。{name}は、すいよせられるように手《て》をのばしました。"
+          ],
+          "withMom": false,
+          "withDad": false,
+          "withSidekick": false,
+          "camera": "Low angle from behind and beside the child looking up at the three huge glowing orbs, the child's awed face in three-quarter profile lit by their three colors."
+        },
+        {
+          "label": "赤い玉をつかむと、ほのおのメカの腕輪に変形して左の手首にはまる",
+          "art": "in the white room, the child grabs the red flame orb with both hands and it splits apart with mechanical clicks and reassembles into the red flame bracelet, locking onto the child's own left wrist, a little whirl of fire curling around it",
+          "text": [
+            "あかい たまが、ほのおの うでわに！",
+            "{name}が あかい たまを つかむと、ガシャン！ たまは かたちを かえて、ひだりの てくびで あかい メカの うでわに なりました。うでわの なかで、ほのおが ごうごう もえて います。",
+            "{name}は赤《あか》い玉《たま》を、両手《りょうて》でぎゅっとつかみました。そのしゅん間《かん》――ガシャン、ガシャシャン！ 玉《たま》はばらばらに分《わ》かれて形《かたち》をかえ、{name}の左《ひだり》の手首《てくび》に、まっ赤《か》なメカのうでわになってカチリとはまりました。うでわの中《なか》で、ほのおがゴウゴウともえています。『ほのおの力《ちから》を、きみに』 うでわから、声《こえ》がひびきました。"
+          ],
+          "withMom": false,
+          "withDad": false,
+          "withSidekick": false,
+          "camera": "Close-up on the child's left wrist as the red bracelet locks on, mechanical parts flying into place with sparks, the child's amazed face lit orange behind it.",
+          "byOutfit": {
+            "red": {
+              "label": "赤い玉をつかむと、ほのおのメカの腕輪に変形して左の手首にはまる",
+              "art": "in the white room, the child grabs the red flame orb with both hands and it splits apart with mechanical clicks and reassembles into the red flame bracelet, locking onto the child's own left wrist, a little whirl of fire curling around it",
+              "text": [
+                "あかい たまが、ほのおの うでわに！",
+                "{name}が あかい たまを つかむと、ガシャン！ たまは かたちを かえて、ひだりの てくびで あかい メカの うでわに なりました。うでわの なかで、ほのおが ごうごう もえて います。",
+                "{name}は赤《あか》い玉《たま》を、両手《りょうて》でぎゅっとつかみました。そのしゅん間《かん》――ガシャン、ガシャシャン！ 玉《たま》はばらばらに分《わ》かれて形《かたち》をかえ、{name}の左《ひだり》の手首《てくび》に、まっ赤《か》なメカのうでわになってカチリとはまりました。うでわの中《なか》で、ほのおがゴウゴウともえています。『ほのおの力《ちから》を、きみに』 うでわから、声《こえ》がひびきました。"
+              ],
+              "withMom": false,
+              "withDad": false,
+              "withSidekick": false,
+              "camera": "Close-up on the child's left wrist as the red bracelet locks on, mechanical parts flying into place with sparks, the child's amazed face lit orange behind it."
+            },
+            "yellow": {
+              "label": "黄色い玉をつかむと、ひかりのメカの腕輪に変形して左の手首にはまる",
+              "art": "in the white room, the child grabs the yellow light orb with both hands and it splits apart with mechanical clicks and reassembles into the yellow light bracelet, locking onto the child's own left wrist, little lightning sparks crackling around it",
+              "text": [
+                "きいろい たまが、ひかりの うでわに！",
+                "{name}が きいろい たまを つかむと、ガシャン！ たまは かたちを かえて、ひだりの てくびで きいろい メカの うでわに なりました。うでわから、バチバチと ひかりが はじけて います。",
+                "{name}は黄色《きいろ》い玉《たま》を、両手《りょうて》でぎゅっとつかみました。そのしゅん間《かん》――ガシャン、ガシャシャン！ 玉《たま》はばらばらに分《わ》かれて形《かたち》をかえ、{name}の左《ひだり》の手首《てくび》に、金色《きんいろ》にかがやくメカのうでわになってカチリとはまりました。うでわから、バチバチと光《ひかり》がはじけています。『光《ひかり》の速《はや》さを、きみに』 うでわから、声《こえ》がひびきました。"
+              ],
+              "withMom": false,
+              "withDad": false,
+              "withSidekick": false,
+              "camera": "Close-up on the child's left wrist as the yellow bracelet locks on, mechanical parts flying into place with crackling sparks, the child's amazed face lit gold behind it."
+            },
+            "blue": {
+              "label": "青い玉をつかむと、こおりのメカの腕輪に変形して左の手首にはまる",
+              "art": "in the white room, the child grabs the blue ice orb with both hands and it splits apart with mechanical clicks and reassembles into the blue ice bracelet, locking onto the child's own left wrist, frosty mist and tiny ice crystals swirling around it",
+              "text": [
+                "あおい たまが、こおりの うでわに！",
+                "{name}が あおい たまを つかむと、ガシャン！ たまは かたちを かえて、ひだりの てくびで あおい メカの うでわに なりました。うでわの まわりで、こおりの つぶが きらきら まって います。",
+                "{name}は青《あお》い玉《たま》を、両手《りょうて》でぎゅっとつかみました。そのしゅん間《かん》――ガシャン、ガシャシャン！ 玉《たま》はばらばらに分《わ》かれて形《かたち》をかえ、{name}の左《ひだり》の手首《てくび》に、すきとおった青《あお》いメカのうでわになってカチリとはまりました。うでわのまわりで、氷《こおり》のつぶがきらきらまっています。『氷《こおり》の力《ちから》を、きみに』 うでわから、声《こえ》がひびきました。"
+              ],
+              "withMom": false,
+              "withDad": false,
+              "withSidekick": false,
+              "camera": "Close-up on the child's left wrist as the blue bracelet locks on, mechanical parts flying into place in a burst of frost, the child's amazed face lit pale blue behind it."
+            }
+          }
+        },
+        {
+          "label": "町はメカの兵たいだらけ。赤い腕輪が全身に広がって、ほのおのヒーロースーツに変身",
+          "art": "back on the main street, the city is overrun by mecha soldiers smashing buildings and flipping cars; the child shouts with clenched fists as the red bracelet's plates spread from the left wrist over the whole body into the red flame hero suit, a pillar of fire roaring up around the child",
+          "text": [
+            "うでわが ひろがって、ほのおの ヒーローに！",
+            "ドアを でると、まちは メカの てきで いっぱい。ビルが くずれ、くるまが ひっくりかえって います。「ゆるさない！」 {name}が さけぶと、うでわが からだじゅうに ひろがって、ほのおの ヒーロースーツに なりました。",
+            "ドアの外《そと》に出《で》ると、町《まち》はメカの兵《へい》たいでうめつくされていました。ビルはくずれ、車《くるま》はひっくり返《かえ》り、あちこちでけむりが上《あ》がっています。「これ以上《いじょう》、町《まち》をこわさせない！」 {name}がこぶしをにぎると、うでわから赤《あか》い光《ひかり》が体《からだ》じゅうに広《ひろ》がって――ゴオッ！ ほのおのヒーロースーツが、{name}をつつみこみました。"
+          ],
+          "withMom": false,
+          "withDad": false,
+          "withSidekick": false,
+          "camera": "Front view at the child's eye level, the child centered in a roaring pillar of fire with radial speed lines, the face clearly visible and full of determination, the robot army behind.",
+          "byOutfit": {
+            "red": {
+              "label": "町はメカの兵たいだらけ。赤い腕輪が全身に広がって、ほのおのヒーロースーツに変身",
+              "art": "back on the main street, the city is overrun by mecha soldiers smashing buildings and flipping cars; the child shouts with clenched fists as the red bracelet's plates spread from the left wrist over the whole body into the red flame hero suit, a pillar of fire roaring up around the child",
+              "text": [
+                "うでわが ひろがって、ほのおの ヒーローに！",
+                "ドアを でると、まちは メカの てきで いっぱい。ビルが くずれ、くるまが ひっくりかえって います。「ゆるさない！」 {name}が さけぶと、うでわが からだじゅうに ひろがって、ほのおの ヒーロースーツに なりました。",
+                "ドアの外《そと》に出《で》ると、町《まち》はメカの兵《へい》たいでうめつくされていました。ビルはくずれ、車《くるま》はひっくり返《かえ》り、あちこちでけむりが上《あ》がっています。「これ以上《いじょう》、町《まち》をこわさせない！」 {name}がこぶしをにぎると、うでわから赤《あか》い光《ひかり》が体《からだ》じゅうに広《ひろ》がって――ゴオッ！ ほのおのヒーロースーツが、{name}をつつみこみました。"
+              ],
+              "withMom": false,
+              "withDad": false,
+              "withSidekick": false,
+              "camera": "Front view at the child's eye level, the child centered in a roaring pillar of fire with radial speed lines, the face clearly visible and full of determination, the robot army behind."
+            },
+            "yellow": {
+              "label": "町はメカの兵たいだらけ。黄色い腕輪が全身に広がって、ひかりのヒーロースーツに変身",
+              "art": "back on the main street, the city is overrun by mecha soldiers smashing buildings and flipping cars; the child shouts with clenched fists as the yellow bracelet's plates spread from the left wrist over the whole body into the yellow light-speed hero suit, golden lightning crackling all around the child",
+              "text": [
+                "うでわが ひろがって、ひかりの ヒーローに！",
+                "ドアを でると、まちは メカの てきで いっぱい。ビルが くずれ、くるまが ひっくりかえって います。「ゆるさない！」 {name}が さけぶと、うでわが からだじゅうに ひろがって、ひかりの ヒーロースーツに なりました。",
+                "ドアの外《そと》に出《で》ると、町《まち》はメカの兵《へい》たいでうめつくされていました。ビルはくずれ、車《くるま》はひっくり返《かえ》り、あちこちでけむりが上《あ》がっています。「これ以上《いじょう》、町《まち》をこわさせない！」 {name}がこぶしをにぎると、うでわから金色《きんいろ》の光《ひかり》が体《からだ》じゅうに広《ひろ》がって――バチバチッ！ 光《ひかり》のヒーロースーツが、{name}をつつみこみました。"
+              ],
+              "withMom": false,
+              "withDad": false,
+              "withSidekick": false,
+              "camera": "Front view at the child's eye level, the child centered in a burst of golden lightning with radial speed lines, the face clearly visible and full of determination, the robot army behind."
+            },
+            "blue": {
+              "label": "町はメカの兵たいだらけ。青い腕輪が全身に広がって、こおりのヒーロースーツに変身",
+              "art": "back on the main street, the city is overrun by mecha soldiers smashing buildings and flipping cars; the child shouts with clenched fists as the blue bracelet's plates spread from the left wrist over the whole body into the blue ice hero suit, a whirlwind of frost and ice crystals swirling around the child",
+              "text": [
+                "うでわが ひろがって、こおりの ヒーローに！",
+                "ドアを でると、まちは メカの てきで いっぱい。ビルが くずれ、くるまが ひっくりかえって います。「ゆるさない！」 {name}が さけぶと、うでわが からだじゅうに ひろがって、こおりの ヒーロースーツに なりました。",
+                "ドアの外《そと》に出《で》ると、町《まち》はメカの兵《へい》たいでうめつくされていました。ビルはくずれ、車《くるま》はひっくり返《かえ》り、あちこちでけむりが上《あ》がっています。「これ以上《いじょう》、町《まち》をこわさせない！」 {name}がこぶしをにぎると、うでわから青《あお》い光《ひかり》が体《からだ》じゅうに広《ひろ》がって――ピキピキッ！ 氷《こおり》のヒーロースーツが、{name}をつつみこみました。"
+              ],
+              "withMom": false,
+              "withDad": false,
+              "withSidekick": false,
+              "camera": "Front view at the child's eye level, the child centered in a whirlwind of frost with radial speed lines, the face clearly visible and full of determination, the robot army behind."
+            }
+          }
+        },
+        {
+          "label": "「ほのおの パンチ！」 うずまくほのおがメカの兵たいをのみこみ、まっ赤にもえてくずれ落ちる",
+          "art": "the child in the flame hero suit thrusts a fist forward and a huge spiral of roaring fire blasts out, engulfing a charging mecha soldier, which glows red-hot and collapses into burning metal pieces with sparks flying everywhere",
+          "text": [
+            "ほのおの パンチで、てきが まっかに もえる！",
+            "「くらえ！ ほのおの パンチ！」 {name}の こぶしから ほのおが ふきだし、メカの てきは まっかに もえあがって、ガラガラと くずれおちました。",
+            "メカの兵《へい》たいが、ドスン、ドスンと{name}に向《む》かってきました。「くらえ！ ほのおの パンチ！」 こぶしをつき出《だ》すと、ゴオオッ！ うずまくほのおがふき出《だ》して、メカの兵《へい》たいをまるごとのみこみました。まっ赤《か》にもえ上《あ》がったメカは、火花《ひばな》をちらしながら、ガラガラとくずれ落《お》ちていきます。"
+          ],
+          "withMom": false,
+          "withDad": false,
+          "withSidekick": false,
+          "byOutfit": {
+            "red": {
+              "label": "「ほのおの パンチ！」 うずまくほのおがメカの兵たいをのみこみ、まっ赤にもえてくずれ落ちる",
+              "art": "the child in the flame hero suit thrusts a fist forward and a huge spiral of roaring fire blasts out, engulfing a charging mecha soldier, which glows red-hot and collapses into burning metal pieces with sparks flying everywhere",
+              "text": [
+                "ほのおの パンチで、てきが まっかに もえる！",
+                "「くらえ！ ほのおの パンチ！」 {name}の こぶしから ほのおが ふきだし、メカの てきは まっかに もえあがって、ガラガラと くずれおちました。",
+                "メカの兵《へい》たいが、ドスン、ドスンと{name}に向《む》かってきました。「くらえ！ ほのおの パンチ！」 こぶしをつき出《だ》すと、ゴオオッ！ うずまくほのおがふき出《だ》して、メカの兵《へい》たいをまるごとのみこみました。まっ赤《か》にもえ上《あ》がったメカは、火花《ひばな》をちらしながら、ガラガラとくずれ落《お》ちていきます。"
+              ],
+              "withMom": false,
+              "withDad": false,
+              "withSidekick": false,
+              "camera": "Dynamic side view of the child mid-punch, the fire blast streaking diagonally across the frame into the robot, tilted composition, motion lines and sparks."
+            },
+            "yellow": {
+              "label": "「ひかりの パンチ！」 光の速さのパンチが、メカの兵たいのどうたいをつらぬく",
+              "art": "the child in the light-speed hero suit flashes forward as a streak of golden light with afterimages trailing behind and punches straight through the torso of a mecha soldier, leaving a glowing hole as the robot breaks apart in an explosion of sparks and metal pieces",
+              "text": [
+                "ひかりの はやさで、パンチ！",
+                "シュンッ！ {name}の すがたが きえた しゅんかん、ひかりの はやさの パンチが、メカの てきの どうたいを つらぬきました。てきは バチバチと ひばなを ちらして、ばらばらに なりました。",
+                "メカの兵《へい》たいが、ドスン、ドスンと{name}に向《む》かってきました。シュンッ！ {name}のすがたが、金色《きんいろ》の光《ひかり》になって消《き》えたかと思《おも》うと――「ひかりの パンチ！」 光《ひかり》の速《はや》さのこぶしが、メカの兵《へい》たいのどうたいを、まっすぐつらぬきました。メカはバチバチと火花《ひばな》をちらして、ばらばらにふっとびました。"
+              ],
+              "withMom": false,
+              "withDad": false,
+              "withSidekick": false,
+              "camera": "Dynamic side view at the moment of impact, the child's fist through the robot's torso, long golden light trails and afterimages behind the child, tilted composition, sparks bursting."
+            },
+            "blue": {
+              "label": "「こおりの キック！」 メカの兵たいをこおらせて、キックでこなごなにする",
+              "art": "the child in the ice hero suit freezes a charging mecha soldier solid with a blast of white-blue frost, then smashes it with a flying kick so the frozen robot shatters into countless glittering ice shards and metal pieces",
+              "text": [
+                "こおらせて、キックで こなごな！",
+                "「こおりつけ！」 {name}の てから つめたい いきが ふきだし、メカの てきは カチコチに こおりました。「こおりの キック！」 てきは こなごなに くだけちりました。",
+                "メカの兵《へい》たいが、ドスン、ドスンと{name}に向《む》かってきました。「こおりつけ！」 手《て》をかざすと、白《しろ》い冷《つめ》たいいきがふき出《だ》して、メカはあっというまにカチコチにこおりつきました。「とどめだ！ こおりの キック！」 バリーン！ こおったメカは、きらきら光《ひか》る氷《こおり》のかけらになって、こなごなにくだけちりました。"
+              ],
+              "withMom": false,
+              "withDad": false,
+              "withSidekick": false,
+              "camera": "Dynamic side view of the child mid-flying-kick, the frozen robot shattering into glittering ice shards across the frame, tilted composition, motion lines."
+            }
+          },
+          "camera": "Dynamic side view of the child mid-punch, the fire blast streaking diagonally across the frame into the robot, tilted composition, motion lines and sparks."
+        },
+        {
+          "label": "空にとび上がり、ほのおのうずで町じゅうのメカの兵たいをやきつくす",
+          "art": "the child in the flame hero suit leaps high above the city street and unleashes a gigantic whirlwind of fire that sweeps down over the whole army of mecha soldiers below, the robots melting and exploding in a sea of flames and sparks",
+          "text": [
+            "ほのおの うずで、てきを ぜんぶ やっつけた！",
+            "「ぜんぶ まとめて、ほのおの うず！」 {name}が そらへ とびあがると、おおきな ほのおの うずが まちを かけぬけ、メカの てきを のこらず やきつくしました。",
+            "てきは、まだまだ何百体《なんびゃくたい》もいます。{name}は空《そら》へ高《たか》くとび上《あ》がり、両手《りょうて》を広《ひろ》げてさけびました。「ぜんぶまとめて――ほのおの うず！」 ゴオオオオッ！ 大《おお》きなほのおのたつまきが大通《おおどお》りをかけぬけ、メカの兵《へい》たいを一体《いったい》のこらずやきつくしました。あとには、ぷすぷすとけむりを上《あ》げるメカの山《やま》だけがのこりました。"
+          ],
+          "withMom": false,
+          "withDad": false,
+          "withSidekick": false,
+          "byOutfit": {
+            "red": {
+              "label": "空にとび上がり、ほのおのうずで町じゅうのメカの兵たいをやきつくす",
+              "art": "the child in the flame hero suit leaps high above the city street and unleashes a gigantic whirlwind of fire that sweeps down over the whole army of mecha soldiers below, the robots melting and exploding in a sea of flames and sparks",
+              "text": [
+                "ほのおの うずで、てきを ぜんぶ やっつけた！",
+                "「ぜんぶ まとめて、ほのおの うず！」 {name}が そらへ とびあがると、おおきな ほのおの うずが まちを かけぬけ、メカの てきを のこらず やきつくしました。",
+                "てきは、まだまだ何百体《なんびゃくたい》もいます。{name}は空《そら》へ高《たか》くとび上《あ》がり、両手《りょうて》を広《ひろ》げてさけびました。「ぜんぶまとめて――ほのおの うず！」 ゴオオオオッ！ 大《おお》きなほのおのたつまきが大通《おおどお》りをかけぬけ、メカの兵《へい》たいを一体《いったい》のこらずやきつくしました。あとには、ぷすぷすとけむりを上《あ》げるメカの山《やま》だけがのこりました。"
+              ],
+              "withMom": false,
+              "withDad": false,
+              "withSidekick": false,
+              "camera": "Grand high angle from above the child in mid-air, looking down at the fire whirlwind sweeping the street full of robots, the child's fierce face in three-quarter view at the top of the frame."
+            },
+            "yellow": {
+              "label": "光の速さで町じゅうをかけぬけ、すべてのメカの兵たいを一しゅんでたおす",
+              "art": "the child in the light-speed hero suit zigzags through the whole city street as a streak of golden light, leaving glowing trails everywhere, and every mecha soldier along the trail breaks apart at the same instant in a chain of explosions",
+              "text": [
+                "ひかりの はやさで、てきを ぜんぶ やっつけた！",
+                "「ぜんぶ まとめて、ひかりの ラッシュ！」 {name}は ひかりに なって まちを かけぬけ、まばたき ひとつの あいだに、メカの てきを のこらず たおしました。",
+                "てきは、まだまだ何百体《なんびゃくたい》もいます。「ぜんぶまとめて――ひかりの ラッシュ！」 {name}は金色《きんいろ》の光《ひかり》になって、大通《おおどお》りをジグザグにかけぬけました。まばたき一《ひと》つのあいだに、パンチ、パンチ、またパンチ！ {name}が足《あし》を止《と》めたしゅん間《かん》、町《まち》じゅうのメカの兵《へい》たいが、いっせいにドドドドーン！とばく発《はつ》しました。"
+              ],
+              "withMom": false,
+              "withDad": false,
+              "withSidekick": false,
+              "camera": "Wide dynamic view down the whole street, a zigzag golden light trail cutting through the robot army, the child landing in the foreground in three-quarter view as explosions erupt behind."
+            },
+            "blue": {
+              "label": "こおりのあらしで町じゅうのメカの兵たいをこおらせ、こなごなにくだく",
+              "art": "the child in the ice hero suit slams a fist onto the road and a blizzard of ice blasts outward across the whole street, freezing every mecha soldier solid in an instant, and then the frozen robots all shatter together into a glittering storm of ice shards",
+              "text": [
+                "こおりの あらしで、てきを ぜんぶ やっつけた！",
+                "「ぜんぶ まとめて、こおりの あらし！」 {name}が じめんを たたくと、こおりの あらしが まちを かけぬけ、メカの てきは のこらず こおって、こなごなに くだけました。",
+                "てきは、まだまだ何百体《なんびゃくたい》もいます。{name}はこぶしを高《たか》くふり上《あ》げました。「ぜんぶまとめて――こおりの あらし！」 ドン！と地面《じめん》をたたくと、ふぶきが大通《おおどお》りをかけぬけ、メカの兵《へい》たいは一体《いったい》のこらずカチコチにこおりつきました。そして――パリパリパリーン！ 町《まち》じゅうに、氷《こおり》のかけらがダイヤモンドのようにまいちりました。"
+              ],
+              "withMom": false,
+              "withDad": false,
+              "withSidekick": false,
+              "camera": "Grand low wide angle from the cracked road, the child's fist on the ground in the foreground, the blizzard racing away down the street and the frozen robots shattering into a storm of ice."
+            }
+          },
+          "camera": "Grand high angle from above the child in mid-air, looking down at the fire whirlwind sweeping the street full of robots, the child's fierce face in three-quarter view at the top of the frame."
+        },
+        {
+          "label": "「あの子はだれだ！」 町の人たちにたたえられるが、こわれた町を見て悲しくなる。腕輪が光ってといかける",
+          "art": "on the wrecked city street after the battle, grown-up townspeople peek out from behind rubble and cheer, pointing at the child; but the child in the hero suit stands still looking sadly at the broken buildings, and the bracelet on the left wrist glows brightly, projecting a floating panel of light in the air (soft light only, no readable letters)",
+          "text": [
+            "みんな ばんざい。でも まちは ぼろぼろ……。",
+            "「すごい！ あの こは だれだ！」 みんなが {name}を みつめます。でも、こわれた まちを みると、むねが ちくりと いたみました。そのとき、うでわが ひかりました。『まちを もとに もどしますか？ それとも、えいえんに この ちからを あなたの ものに しますか？』",
+            "「すごい！」「町《まち》をすくってくれたあの子《こ》は、だれだ！」 かくれていた人《ひと》たちが、目《め》をかがやかせて{name}を見《み》つめます。うれしい気持《きも》ちが、むねにあふれました。でも、ふり返《かえ》ると、くずれたビル、つぶれた車《くるま》、なきだしそうな人《ひと》たちの顔《かお》。{name}のむねは、ずきんといたみました。そのとき、うでわが光《ひか》り、声《こえ》がひびきました。『この力《ちから》で、町《まち》を元《もと》にもどしますか？ それとも、えいえんにこの力《ちから》を、あなたのものにしますか？』"
+          ],
+          "withMom": false,
+          "withDad": false,
+          "withSidekick": false,
+          "camera": "Medium shot at the child's eye level, the child's sad face in three-quarter view and the glowing bracelet in the foreground, the cheering townspeople and the ruined buildings behind."
+        },
+        {
+          "label": "【見開き】「町を元にもどして！」 腕輪とスーツが光の波になって町じゅうに広がり、町が元通りに。みんなの笑顔",
+          "art": "the climax across the whole city: the child raises the left arm high and the hero suit and the bracelet dissolve into a gigantic wave of light in the chosen power's color that sweeps over the city; broken buildings rebuild themselves, cracked roads close up and wrecked cars turn back to normal, and grown-up townspeople cheer with joy; the child is back in the everyday clothes, smiling",
+          "text": [
+            "「まちを もとに もどして！」",
+            "{name}は すこし まよいました。でも、かなしそうな みんなの かおを みて、きめました。「まちを もとに もどして！」 うでわから ひかりが あふれ、ビルも みちも、みるみる もとどおりに なりました。",
+            "ずっとヒーローでいられたら――{name}は少《すこ》しだけまよいました。でも、かなしそうなみんなの顔《かお》を見《み》て、心《こころ》を決《き》めました。「町《まち》を、元《もと》にもどして！」 うでわとスーツが光《ひかり》のなみになって、町《まち》じゅうに広《ひろ》がっていきます。くずれたビルが立《た》ち上《あ》がり、われた道《みち》がふさがり、ひっくり返《かえ》った車《くるま》がもどっていきます。「わあっ！」「ありがとう！」 町《まち》じゅうに、えがおがあふれました。"
+          ],
+          "withMom": false,
+          "withDad": false,
+          "withSidekick": false,
+          "camera": "Grand wide angle from behind and beside the child on a raised spot, the child's smiling face in three-quarter profile in the foreground, the wave of light sweeping across the whole city spread as it rebuilds."
+        },
+        {
+          "label": "【ママ】元通りになった町で、ママが走ってきて主人公をぎゅっとだきしめる。ヒーローのことはひみつ",
+          "art": "on the restored, sunny main street, the mother runs up and hugs the child tightly with tears of relief, and the child hugs back with a small secret smile; the street is normal again",
+          "text": [
+            "「{name}！」 ママが ぎゅうっ。",
+            "「{name}！ ぶじで よかった！」 ママが はしって きて、{name}を ぎゅうっと だきしめました。まちを すくった ヒーローの ことは、{name}だけの ひみつです。",
+            "「{name}！」 声《こえ》のほうをふり向《む》くと、ママが走《はし》ってきました。「どこに行《い》ってたの！ ぶじでよかった……」 ママは{name}を、ぎゅうっとだきしめました。ママの顔《かお》が、なみだでぬれています。{name}もぎゅっとだきしめ返《かえ》して、こっそりわらいました。町《まち》をすくったヒーローのことは、{name}だけのひみつです。"
+          ],
+          "withMom": true,
+          "withDad": false,
+          "withSidekick": false,
+          "camera": "Eye-level medium shot on the sunny street, the mother kneeling and hugging the child, the child's secretly smiling face toward the viewer.",
+          "alt": {
+            "both": {
+              "label": "元通りの町で、ママとパパが走ってきて主人公をぎゅっとだきしめる",
+              "art": "on the restored, sunny main street, the mother and the father run up and hug the child tightly together with relief, and the child smiles a small secret smile between them",
+              "text": [
+                "「{name}！」 ママと パパが ぎゅうっ。",
+                "「{name}！ ぶじで よかった！」 ママと パパが はしって きて、{name}を ぎゅうっと だきしめました。まちを すくった ヒーローの ことは、{name}だけの ひみつです。",
+                "「{name}！」 声《こえ》のほうをふり向《む》くと、ママとパパが走《はし》ってきました。「どこに行《い》ってたの！ ぶじでよかった……」 二人《ふたり》は{name}を、ぎゅうっとだきしめました。ママの顔《かお》も、パパの顔《かお》も、なみだでぬれています。{name}もぎゅっとだきしめ返《かえ》して、こっそりわらいました。町《まち》をすくったヒーローのことは、{name}だけのひみつです。"
+              ],
+              "withMom": true,
+              "withDad": true,
+              "withSidekick": false,
+              "camera": "Eye-level medium shot on the sunny street, the mother and the father kneeling and hugging the child between them, the child's secretly smiling face toward the viewer."
+            },
+            "dad": {
+              "label": "元通りの町で、パパが走ってきて主人公をぎゅっとだきしめる",
+              "art": "on the restored, sunny main street, the father runs up and hugs the child tightly with relief, and the child hugs back with a small secret smile",
+              "text": [
+                "「{name}！」 パパが ぎゅうっ。",
+                "「{name}！ ぶじで よかった！」 パパが はしって きて、{name}を ぎゅうっと だきしめました。まちを すくった ヒーローの ことは、{name}だけの ひみつです。",
+                "「{name}！」 声《こえ》のほうをふり向《む》くと、パパが走《はし》ってきました。「どこに行《い》ってたんだ！ ぶじでよかった……」 パパは{name}を、ぎゅうっとだきしめました。パパの顔《かお》が、なみだでぬれています。{name}もぎゅっとだきしめ返《かえ》して、こっそりわらいました。町《まち》をすくったヒーローのことは、{name}だけのひみつです。"
+              ],
+              "withMom": false,
+              "withDad": true,
+              "withSidekick": false,
+              "camera": "Eye-level medium shot on the sunny street, the father kneeling and hugging the child, the child's secretly smiling face toward the viewer."
+            },
+            "none": {
+              "label": "元通りの町を、主人公がひとりでこっそり歩いて帰る。町の人たちはヒーローのうわさ話",
+              "art": "on the restored, sunny main street, the child walks home alone with hands in pockets and a small secret smile, while grown-up townspeople in the background chat excitedly and point at the sky",
+              "text": [
+                "{name}は こっそり おうちへ。",
+                "まちの ひとたちは「あの ヒーローは だれだったんだろう」と はなして います。{name}は こっそり わらって、おうちへ かえりました。ヒーローの ことは、{name}だけの ひみつです。",
+                "元《もと》どおりになった大通《おおどお》りでは、町《まち》の人《ひと》たちが「さっきのヒーローは、どこへ行《い》ったんだろう」と話《はな》しています。{name}は、ポケットに手《て》を入《い》れて、こっそりわらいました。いつもの道《みち》を、いつものように歩《ある》いて帰《かえ》ります。町《まち》をすくったヒーローのことは、{name}だけのひみつです。"
+              ],
+              "withMom": false,
+              "withDad": false,
+              "withSidekick": false,
+              "camera": "Eye-level medium shot on the sunny street, the child walking toward the viewer with a secret smile, chatting townspeople small in the background."
+            }
+          }
+        },
+        {
+          "label": "夜、ぐっすりねむる主人公。左の手首に、赤の光の輪がうすく光る",
+          "art": "in the child's dark bedroom at night, the child sleeps soundly in bed with a peaceful face, the left arm resting on top of the blanket; around the child's own left wrist glows a thin faint ring of warm red-orange light, softly lighting the pillow",
+          "text": [
+            "てくびに、うっすら あかい ひかり。",
+            "その よる。{name}は つかれて ぐっすり ねむって いました。でも、よく みて ごらん。ひだりの てくびに、うっすら あかい ひかりの わが ひかって います。",
+            "その夜《よる》。{name}は、つかれてぐっすりねむっていました。うでわは、もうありません。でも――よく見《み》てごらん。{name}の左《ひだり》の手首《てくび》に、うっすらと赤《あか》い光《ひかり》の輪《わ》が光《ひか》っています。力《ちから》は、すべてなくなったわけでは、なかったのです。"
+          ],
+          "withMom": false,
+          "withDad": false,
+          "withSidekick": false,
+          "byOutfit": {
+            "red": {
+              "label": "夜、ぐっすりねむる主人公。左の手首に、赤の光の輪がうすく光る",
+              "art": "in the child's dark bedroom at night, the child sleeps soundly in bed with a peaceful face, the left arm resting on top of the blanket; around the child's own left wrist glows a thin faint ring of warm red-orange light, softly lighting the pillow",
+              "text": [
+                "てくびに、うっすら あかい ひかり。",
+                "その よる。{name}は つかれて ぐっすり ねむって いました。でも、よく みて ごらん。ひだりの てくびに、うっすら あかい ひかりの わが ひかって います。",
+                "その夜《よる》。{name}は、つかれてぐっすりねむっていました。うでわは、もうありません。でも――よく見《み》てごらん。{name}の左《ひだり》の手首《てくび》に、うっすらと赤《あか》い光《ひかり》の輪《わ》が光《ひか》っています。力《ちから》は、すべてなくなったわけでは、なかったのです。"
+              ],
+              "withMom": false,
+              "withDad": false,
+              "withSidekick": false,
+              "camera": "High angle from beside the bed looking down at the sleeping child, the faintly glowing wrist in the foreground lighting the dark room."
+            },
+            "yellow": {
+              "label": "夜、ぐっすりねむる主人公。左の手首に、黄の光の輪がうすく光る",
+              "art": "in the child's dark bedroom at night, the child sleeps soundly in bed with a peaceful face, the left arm resting on top of the blanket; around the child's own left wrist glows a thin faint ring of golden yellow light, softly lighting the pillow",
+              "text": [
+                "てくびに、うっすら きいろい ひかり。",
+                "その よる。{name}は つかれて ぐっすり ねむって いました。でも、よく みて ごらん。ひだりの てくびに、うっすら きいろい ひかりの わが ひかって います。",
+                "その夜《よる》。{name}は、つかれてぐっすりねむっていました。うでわは、もうありません。でも――よく見《み》てごらん。{name}の左《ひだり》の手首《てくび》に、うっすらと黄色《きいろ》い光《ひかり》の輪《わ》が光《ひか》っています。力《ちから》は、すべてなくなったわけでは、なかったのです。"
+              ],
+              "withMom": false,
+              "withDad": false,
+              "withSidekick": false,
+              "camera": "High angle from beside the bed looking down at the sleeping child, the faintly glowing wrist in the foreground lighting the dark room."
+            },
+            "blue": {
+              "label": "夜、ぐっすりねむる主人公。左の手首に、青の光の輪がうすく光る",
+              "art": "in the child's dark bedroom at night, the child sleeps soundly in bed with a peaceful face, the left arm resting on top of the blanket; around the child's own left wrist glows a thin faint ring of icy blue light, softly lighting the pillow",
+              "text": [
+                "てくびに、うっすら あおい ひかり。",
+                "その よる。{name}は つかれて ぐっすり ねむって いました。でも、よく みて ごらん。ひだりの てくびに、うっすら あおい ひかりの わが ひかって います。",
+                "その夜《よる》。{name}は、つかれてぐっすりねむっていました。うでわは、もうありません。でも――よく見《み》てごらん。{name}の左《ひだり》の手首《てくび》に、うっすらと青《あお》い光《ひかり》の輪《わ》が光《ひか》っています。力《ちから》は、すべてなくなったわけでは、なかったのです。"
+              ],
+              "withMom": false,
+              "withDad": false,
+              "withSidekick": false,
+              "camera": "High angle from beside the bed looking down at the sleeping child, the faintly glowing wrist in the foreground lighting the dark room."
+            }
+          },
+          "camera": "High angle from beside the bed looking down at the sleeping child, the faintly glowing wrist in the foreground lighting the dark room."
         }
       ]
     }

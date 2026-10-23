@@ -60,7 +60,7 @@ async function saveFile(db: SupabaseClient, draftId: string, f: SiblingFile) {
 /** 書き直しの元（文の量を除いたお話の番号）。文の量を変えても同じ書き直しを使う */
 function rewriteBase(story: string) {
   const k = parseSeriesKey(story);
-  return k ? `${k.series}:${k.episode}:${k.combo ?? "both"}:k${k.siblings}` : story;
+  return k ? `${k.series}:${k.episode}:${k.combo ?? "both"}:k${k.siblings}${k.outfit ? `:w${k.outfit.type}-${k.outfit.color}` : ""}` : story;
 }
 
 /** 絵の指示での見た目（例：a 5-year-old girl, the main character's younger sister） */
@@ -151,7 +151,7 @@ async function rewriteStory(story: string, siblings: Pick<Sibling, "name" | "age
   const k = parseSeriesKey(story);
   if (!ai || !k || !siblings.length) return null;
   const edits = await readScriptEdits();
-  const books = LEVELS.map((l) => getBook(seriesKey(k.series, k.episode, l.id, k.combo), null, edits));
+  const books = LEVELS.map((l) => getBook(seriesKey(k.series, k.episode, l.id, k.combo, 0, k.outfit), null, edits));
   if (books.some((b) => !b)) return null;
   const [s, n, l] = books as Book[];
   const labels = siblings.map((x, i) => `Companion ${i + 1}`);

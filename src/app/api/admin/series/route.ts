@@ -211,6 +211,7 @@ export async function POST(request: Request) {
 
     if (body?.kind === "bookChara" && body?.who === "sidekick") {
       // 相棒は写真に関係なく見本の設定画から描く（自分の写真の本でも同じ絵を使う）
+      if (!series.sidekick) return Response.json({ error: "このシリーズには相棒がいません" }, { status: 400 });
       const sheet = await load(seriesSheetPath(series.id), "characters.png");
       if (!sheet) return Response.json({ error: "先に登場人物の設定画（見本の家族）を作ってください" }, { status: 400 });
       const b64 = await makeSeriesSidekick({ series, sheet, note });

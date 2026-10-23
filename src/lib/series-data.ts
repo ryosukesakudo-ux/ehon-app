@@ -29,7 +29,14 @@ export type SeriesSceneData = SeriesVersion & {
   alt?: Partial<Record<Combo, SeriesVersion>>;
   /** 数を守りたい物（写真の組み合わせによらず同じ）。count-check.ts */
   counts?: CountRule[];
+  /**
+   * 選んだ服の色ごとの版（キーは色の id）。ヒーローは腕輪の色（赤＝炎・黄＝光・青＝氷）で戦い方が変わる。
+   * 上の label〜camera は最初の色の版と同じにしておく（見本・絵スタジオは最初の色で描く。台本管理で保存すると写す）
+   */
+  byOutfit?: Record<string, SeriesVersion>;
 };
+
+export type SeriesCover = { label: string; art: string; withSidekick: boolean; camera?: string };
 
 /** 話の中で絵をそろえる決まり。from〜to（表紙0、場面1〜12）のページにだけ付ける。省略時は全ページ */
 export type Continuity = { from?: number; to?: number; text: string };
@@ -48,7 +55,8 @@ export type OutfitChoices = {
     note: string;
     /** 絵の指示（英語）。{color} に色の look が入る */
     look: string;
-    colors: { id: string; name: string; swatch: string; look: string }[];
+    /** note は選ぶ画面に出す短い説明（ヒーローの力の色など。任意） */
+    colors: { id: string; name: string; note?: string; swatch: string; look: string }[];
   }[];
 };
 
@@ -74,12 +82,37 @@ export type SeriesData = {
     outfits: string | null;
     /** その話の中で変わらない（または途中で変わる）持ち物・身に着ける物。from〜to はページ（表紙0、場面1〜12） */
     continuity?: Continuity[];
-    cover: { label: string; art: string; withSidekick: boolean; camera?: string };
+    cover: SeriesCover & { byOutfit?: Record<string, SeriesCover> };
     scenes: SeriesSceneData[];
   }[];
 };
 
 export const SERIES_DATA = { forest, star, birthday, sea, dinosaur, number, hero, princess } as Record<SeriesId, SeriesData>;
+
+type Episode = SeriesData["episodes"][number];
+
+/** 選んだ服の色の id（無ければ最初の形・最初の色）。服を選ばないシリーズは undefined */
+export function outfitColorOf(data: SeriesData, pick?: { type: string; color: string } | null): string | undefined {
+  const types = data.outfitChoices?.types;
+  if (!types?.length) return undefined;
+  const type = types.find((t) => t.id === pick?.type) ?? types[0];
+  return (type.colors.find((c) => c.id === pick?.color) ?? type.colors[0])?.id;
+}
+
+/** 選んだ色の版（byOutfit）を表紙と場面に当てた話。色の版が無い場面はそのまま */
+export function episodeForOutfit(data: SeriesData, ep: Episode, pick?: { type: string; color: string } | null): Episode {
+  const color = outfitColorOf(data, pick);
+  if (!color) return ep;
+  const cover = ep.cover.byOutfit?.[color];
+  return {
+    ...ep,
+    cover: cover ? { ...ep.cover, ...cover } : ep.cover,
+    scenes: ep.scenes.map((s) => {
+      const v = s.byOutfit?.[color];
+      return v ? { ...s, ...v } : s;
+    }),
+  };
+}
 
 /** 選んだ服（無ければ最初の形・最初の色）を、その話の服装の説明に入れる。服を選ばないシリーズはそのまま */
 export function resolveOutfits(data: SeriesData, outfits: string | null, pick?: { type: string; color: string } | null): string | null {

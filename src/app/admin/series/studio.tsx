@@ -239,7 +239,7 @@ export function SeriesStudio({ list }: { list: StudioView[] }) {
     const cover = !urls[ownCoverPath(SERIES_ID, bookEpisode.no)];
     const sheet = !urls[ownSheetPath(SERIES_ID)];
     // 相棒の絵は見本と共用（見本の設定画から描く）
-    const sidekick = !(await exists(seriesSidekickPath(SERIES_ID)));
+    const sidekick = !!series.sidekickLabel && !(await exists(seriesSidekickPath(SERIES_ID)));
     if (sidekick) charas.push("sidekick");
     if (!spreads.length && !charas.length && !cover) return alert("この組み合わせの絵はすべてそろっています。気になる絵は1枚ずつ作り直してください。");
     const per = quality === "final" ? 30 : 15;
@@ -260,7 +260,7 @@ export function SeriesStudio({ list }: { list: StudioView[] }) {
     if (bookOwn) return makeOwnAll();
     const spreads = (await Promise.all(Array.from({ length: 12 }, async (_, i) => ((await exists(seriesBookSpreadPath(SERIES_ID, bookEpisode.no, bookCombo, i + 1))) ? null : i + 1)))).filter((p): p is number => p !== null);
     const charas: (Who | "sidekick")[] = (await Promise.all(bookWho.map(async (w) => ((await exists(seriesCharacterPath(SERIES_ID, bookEpisode.no, w))) ? null : w)))).filter((w): w is Who => w !== null);
-    if (!(await exists(seriesSidekickPath(SERIES_ID)))) charas.push("sidekick");
+    if (series.sidekickLabel && !(await exists(seriesSidekickPath(SERIES_ID)))) charas.push("sidekick");
     if (!spreads.length && !charas.length) return alert("この組み合わせの絵はすべてそろっています。気になる絵は1枚ずつ作り直してください。");
     const yen = spreads.length * (quality === "final" ? 45 : 23) + charas.length * 15;
     if (!confirm(`まだ無い絵を作ります（見開き${spreads.length}枚・登場人物${charas.length}人）。AI代は約${yen}円です。よろしいですか？`)) return;
@@ -282,7 +282,7 @@ export function SeriesStudio({ list }: { list: StudioView[] }) {
     <section className="card" style={{ gap: 12 }}>
       <h2 className="display" style={{ margin: 0, fontSize: 18, color: "var(--navy)" }}>登場人物の設定画</h2>
       <p style={{ margin: 0, fontSize: 13, lineHeight: 1.7 }}>
-        {photoFirst ? "上の家族写真の3人を写真そっくりに絵にして" : "作例スタジオの家族3人（無いシリーズは文章から描きます）に"}、{series.sidekickLabel}を加えた1枚です。すべての場面がこの絵をもとに描かれます。作り直したら、場面も作り直してください（1枚 約50円）。
+        {photoFirst ? "上の家族写真の3人を写真そっくりに絵にして" : "作例スタジオの家族3人（無いシリーズは文章から描きます）に"}{series.sidekickLabel ? `、${series.sidekickLabel}を加えた` : "の"}1枚です。すべての場面がこの絵をもとに描かれます。作り直したら、場面も作り直してください（1枚 約50円）。
       </p>
       <Tile
         path={seriesSheetPath(SERIES_ID)}
@@ -582,8 +582,8 @@ export function SeriesStudio({ list }: { list: StudioView[] }) {
                 {...noteProps(charaKey(w))}
               />
             ))}
-            {/* 相棒（シリーズに1枚。見本・自分の写真のどちらの本でも同じ絵） */}
-            <Tile
+            {/* 相棒（シリーズに1枚。見本・自分の写真のどちらの本でも同じ絵）。相棒のいないシリーズ（ヒーロー）は出さない */}
+            {series.sidekickLabel && <Tile
               key={`sidekick-${SERIES_ID}`}
               path={seriesSidekickPath(SERIES_ID)}
               version={version[charaKey("sidekick")]}
@@ -593,7 +593,7 @@ export function SeriesStudio({ list }: { list: StudioView[] }) {
               onMake={() => call(charaKey("sidekick"), { kind: "bookChara", who: "sidekick" })}
               disabled={anyBusy}
               {...noteProps(charaKey("sidekick"))}
-            />
+            />}
           </div>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))", gap: 12 }}>
             {bookEpisode.scenes.map((sc, i) => (
