@@ -1,7 +1,7 @@
 import "server-only";
 import { STORIES, type Scene } from "./catalog";
 import { LEVELS, getSeriesInfo, parseSeriesKey, type Combo, type SeriesId } from "./story-key";
-import { SERIES_DATA, resolveOutfits, type Continuity, type SeriesSceneData } from "./series-data";
+import { SERIES_DATA, episodeForOutfit, resolveOutfits, type Continuity, type SeriesSceneData } from "./series-data";
 import { parseCustomKey } from "./custom-story";
 import type { CountRule } from "./count-check";
 import { applyScriptEdits, type ScriptEdits } from "./script-edits";
@@ -108,8 +108,9 @@ export function getBook(key: string | null | undefined, siblings?: SiblingOverla
   if (!k) return null;
   const data = edits ? applyScriptEdits(SERIES_DATA[k.series], edits) : SERIES_DATA[k.series];
   const info = getSeriesInfo(k.series)!;
-  const ep = data.episodes.find((e) => e.no === k.episode);
-  if (!ep) return null;
+  const found = data.episodes.find((e) => e.no === k.episode);
+  if (!found) return null;
+  const ep = episodeForOutfit(data, found, k.outfit);
   const level = LEVELS.findIndex((l) => l.id === k.level);
   // 写真の組み合わせがまだ決まっていない（下書きを作る前）ときは、ママとパパの両方がいる形で読む
   const combo = k.combo ?? "both";

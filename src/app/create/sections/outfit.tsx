@@ -8,12 +8,12 @@ import { seriesOutfitPath } from "@/lib/series";
 import { getSeriesInfo, parseSeriesKey, seriesKey, type SeriesId } from "@/lib/story-key";
 import { useFlow } from "../flow";
 
-type Choices = { id: string; name: string; note: string; colors: { id: string; name: string; swatch: string }[] }[];
+type Choices = { id: string; name: string; note: string; colors: { id: string; name: string; note: string; swatch: string }[] }[];
 
 /**
  * 服を選ぶお話（ヒーロー・プリンセス）の服選び（2026-10-23 作道さん）。お話を選んだ直後・写真の前に出す。
  * 形が3つ横に並び、形を選ぶとその形の色が3つ横に並ぶ。色を選ぶと、お話の番号に服を足して（:w形-色）次の項目（写真）へ。
- * 絵はAIが、その形・色の服を着たお子さまを描く
+ * 絵はAIが、その形・色の服を着たお子さまを描く。形が1つだけ（ヒーロー＝ひかりの腕輪の力の色）のときは、形の列を出さずに色だけ選ぶ
  */
 export function OutfitSection({ onDecide }: { onDecide?: () => void }) {
   const { state, update } = useFlow();
@@ -34,7 +34,8 @@ export function OutfitSection({ onDecide }: { onDecide?: () => void }) {
   if (!k || !info?.outfitLabel) return null;
   if (types === null) return <p className="section-lead" style={{ margin: 0 }}>読み込んでいます…</p>;
   if (!types.length) return <p className="error">{info.outfitLabel}を読み込めませんでした。少しあとでもう一度お試しください。</p>;
-  const picked = types.find((t) => t.id === type);
+  const single = types.length === 1;
+  const picked = single ? types[0] : types.find((t) => t.id === type);
 
   const pickColor = (color: string) => {
     if (!picked) return;
@@ -45,7 +46,7 @@ export function OutfitSection({ onDecide }: { onDecide?: () => void }) {
 
   return (
     <>
-      <div className="field">
+      {!single && <div className="field">
         <span className="display" style={{ fontWeight: 800, color: "var(--navy)" }}>{info.outfitLabel}の形</span>
         <div className="level-row" role="radiogroup" aria-label={`${info.outfitLabel}の形`}>
           {types.map((t) => (
@@ -57,10 +58,11 @@ export function OutfitSection({ onDecide }: { onDecide?: () => void }) {
             </button>
           ))}
         </div>
-      </div>
+      </div>}
       {picked && (
         <div className="field">
-          <span className="display" style={{ fontWeight: 800, color: "var(--navy)" }}>{picked.name}の色</span>
+          <span className="display" style={{ fontWeight: 800, color: "var(--navy)" }}>{single ? info.outfitLabel : `${picked.name}の色`}</span>
+          {single && picked.note && <p className="section-lead" style={{ margin: 0 }}>{picked.name}：{picked.note}</p>}
           <div className="level-row" role="radiogroup" aria-label={`${picked.name}の色`}>
             {picked.colors.map((c) => {
               const on = k.outfit?.type === picked.id && k.outfit.color === c.id;
@@ -71,12 +73,13 @@ export function OutfitSection({ onDecide }: { onDecide?: () => void }) {
                     <span aria-hidden="true" style={{ width: 14, height: 14, borderRadius: "50%", background: c.swatch, border: "1px solid rgba(0,0,0,0.15)" }} />
                     {c.name}
                   </span>
+                  {c.note && <span className="choice-desc" style={{ fontSize: 12 }}>{c.note}</span>}
                   {on && <div className="check outfit-check"><Check /></div>}
                 </button>
               );
             })}
           </div>
-          <p style={{ margin: 0, fontSize: 12, lineHeight: 1.6, color: "var(--sub)" }}>写真をもとに、AIがこの{info.outfitLabel}を着たお子さまを描きます。</p>
+          <p style={{ margin: 0, fontSize: 12, lineHeight: 1.6, color: "var(--sub)" }}>{single ? `写真をもとに、AIがこの${info.outfitLabel}の${picked.name}をつけたお子さまを描きます。` : `写真をもとに、AIがこの${info.outfitLabel}を着たお子さまを描きます。`}</p>
         </div>
       )}
     </>

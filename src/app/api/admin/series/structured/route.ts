@@ -1,5 +1,5 @@
 import { revalidatePath } from "next/cache";
-import { SERIES_DATA, type SeriesData, type SeriesVersion } from "@/lib/series-data";
+import { SERIES_DATA, type SeriesCover, type SeriesData, type SeriesVersion } from "@/lib/series-data";
 import { isStructured, writeStructuredEdit } from "@/lib/script-edits";
 import type { Combo, SeriesId } from "@/lib/story-key";
 
@@ -30,10 +30,22 @@ function versionOk(v: SeriesVersion | undefined, base: SeriesVersion) {
   );
 }
 
+function coverOk(v: SeriesCover | undefined) {
+  return !!v && str(v.label, 300) && str(v.art, PROMPT_MAX) && optStr(v.camera, PROMPT_MAX) && typeof v.withSidekick === "boolean";
+}
+
+/** 色ごとの版（byOutfit）の色が、元の台本と同じか */
+function sameKeys(a: Record<string, unknown> | undefined, b: Record<string, unknown> | undefined) {
+  const x = Object.keys(a ?? {}).sort();
+  const y = Object.keys(b ?? {}).sort();
+  return x.length === y.length && x.every((k, i) => k === y[i]);
+}
+
 /** 直した台本が、元の台本と同じ形で、文や指示が空でないか。だめなら理由を返す */
 function check(data: SeriesData, base: SeriesData): string | null {
   if (data?.id !== base.id) return "シリーズが違います";
-  if (!str(data.sidekick, PROMPT_MAX) || !str(data.sidekickLabel, 100)) return "相棒の説明が空です";
+  // 相棒のいないシリーズ（ヒーロー）は空のまま
+  if (base.sidekick && (!str(data.sidekick, PROMPT_MAX) || !str(data.sidekickLabel, 100))) return "相棒の説明が空です";
   for (const [k, v] of [...Object.entries(data.cast ?? {}), ...Object.entries(data.props ?? {})]) {
     if (!str(k, 60) || !str(v, PROMPT_MAX)) return "登場人物・物の名前か説明が空です";
   }
@@ -49,7 +61,7 @@ function check(data: SeriesData, base: SeriesData): string | null {
       if (!str(t.name, 20) || !str(t.note, 60) || !str(t.look, PROMPT_MAX) || !t.look.includes("{color}")) return `服「${t.name || b.name}」の名前・説明・絵の指示（{color} を入れる）を確かめてください`;
       for (const [j, c] of t.colors.entries()) {
         if (c.id !== b.colors[j].id) return "色の id は変えられません";
-        if (!str(c.name, 20) || !str(c.look, 300) || !/^#[0-9a-fA-F]{6}$/.test(c.swatch)) return `色「${c.name || b.colors[j].name}」の名前・色見本・絵の指示を確かめてください`;
+        if (!str(c.name, 20) || !optStr(c.note, 60) || !str(c.look, 600) || !/^#[0-9a-fA-F]{6}$/.test(c.swatch)) return `色「${c.name || b.colors[j].name}」の名前・色見本・絵の指示を確かめてください`;
       }
     }
   }
@@ -61,13 +73,19 @@ function check(data: SeriesData, base: SeriesData): string | null {
     for (const c of ep.continuity ?? []) {
       if (!str(c.text, PROMPT_MAX) || (c.from !== undefined && !Number.isInteger(c.from)) || (c.to !== undefined && !Number.isInteger(c.to))) return "絵をそろえる決まりを確かめてください";
     }
-    if (!str(ep.cover?.label, 300) || !str(ep.cover?.art, PROMPT_MAX) || !optStr(ep.cover?.camera, PROMPT_MAX) || typeof ep.cover?.withSidekick !== "boolean") return "表紙の説明が空です";
+    if (!coverOk(ep.cover)) return "表紙の説明が空です";
+    if (!sameKeys(ep.cover.byOutfit, b.cover.byOutfit)) return "表紙の色ごとの版は増やしたり消したりできません";
+    for (const v of Object.values(ep.cover.byOutfit ?? {})) if (!coverOk(v)) return "表紙（色ごと）の説明が空です";
     for (const [j, sc] of ep.scenes.entries()) {
       const bs = b.scenes[j];
       if (!versionOk(sc, bs)) return `場面${j + 1}の文・絵の説明を確かめてください（空の欄があるか、長すぎます）`;
       for (const c of COMBOS) {
         if (!!sc.alt?.[c] !== !!bs.alt?.[c]) return `場面${j + 1}の写真の組み合わせの版は増やしたり消したりできません`;
         if (bs.alt?.[c] && !versionOk(sc.alt![c], bs.alt[c]!)) return `場面${j + 1}（写真の組み合わせ別）の文・絵の説明を確かめてください`;
+      }
+      if (!sameKeys(sc.byOutfit, bs.byOutfit)) return `場面${j + 1}の色ごとの版は増やしたり消したりできません`;
+      for (const [c, v] of Object.entries(bs.byOutfit ?? {})) {
+        if (!versionOk(sc.byOutfit![c], v)) return `場面${j + 1}（色ごと）の文・絵の説明を確かめてください`;
       }
     }
   }
@@ -85,11 +103,13 @@ function clean(data: SeriesData, base: SeriesData): SeriesData {
     withSidekick: v.withSidekick,
     ...(v.camera?.trim() && { camera: v.camera.trim() }),
   });
+  const cover = (v: SeriesCover) => ({ label: v.label.trim(), art: v.art.trim(), withSidekick: v.withSidekick, ...(v.camera?.trim() && { camera: v.camera.trim() }) });
+  const first = base.outfitChoices?.types[0]?.colors[0]?.id;
   return {
     ...base,
     name: base.name,
-    sidekick: data.sidekick.trim(),
-    sidekickLabel: data.sidekickLabel.trim(),
+    sidekick: base.sidekick ? data.sidekick.trim() : "",
+    sidekickLabel: base.sidekick ? data.sidekickLabel.trim() : "",
     cast: Object.fromEntries(Object.entries(data.cast ?? {}).map(([k, v]) => [k.trim(), v.trim()])),
     props: Object.fromEntries(Object.entries(data.props ?? {}).map(([k, v]) => [k.trim(), v.trim()])),
     ...(data.style?.trim() ? { style: data.style.trim() } : { style: undefined }),
@@ -102,7 +122,7 @@ function clean(data: SeriesData, base: SeriesData): SeriesData {
           name: t.name.trim(),
           note: t.note.trim(),
           look: t.look.trim(),
-          colors: t.colors.map((c) => ({ id: c.id, name: c.name.trim(), swatch: c.swatch, look: c.look.trim() })),
+          colors: t.colors.map((c) => ({ id: c.id, name: c.name.trim(), ...(c.note?.trim() && { note: c.note.trim() }), swatch: c.swatch, look: c.look.trim() })),
         })),
       },
     }),
@@ -112,11 +132,16 @@ function clean(data: SeriesData, base: SeriesData): SeriesData {
       title: base.episodes[i].title,
       outfits: ep.outfits?.trim() || base.episodes[i].outfits,
       continuity: (ep.continuity ?? []).map((c) => ({ ...(c.from !== undefined && { from: c.from }), ...(c.to !== undefined && { to: c.to }), text: c.text.trim() })),
-      cover: { label: ep.cover.label.trim(), art: ep.cover.art.trim(), withSidekick: ep.cover.withSidekick, ...(ep.cover.camera?.trim() && { camera: ep.cover.camera.trim() }) },
+      // 色ごとの版があるときは、ふだんの版（見本・絵スタジオで使う）を最初の色の版と同じにする
+      cover: {
+        ...cover(first ? (ep.cover.byOutfit?.[first] ?? ep.cover) : ep.cover),
+        ...(ep.cover.byOutfit && { byOutfit: Object.fromEntries(Object.entries(ep.cover.byOutfit).map(([c, v]) => [c, cover(v)])) }),
+      },
       scenes: ep.scenes.map((sc, j) => ({
-        ...version(sc),
+        ...version(first ? (sc.byOutfit?.[first] ?? sc) : sc),
         ...(base.episodes[i].scenes[j].counts && { counts: base.episodes[i].scenes[j].counts }),
         ...(sc.alt && { alt: Object.fromEntries(COMBOS.filter((c) => sc.alt![c]).map((c) => [c, version(sc.alt![c]!)])) }),
+        ...(sc.byOutfit && { byOutfit: Object.fromEntries(Object.entries(sc.byOutfit).map(([c, v]) => [c, version(v)])) }),
       })),
     })),
   };

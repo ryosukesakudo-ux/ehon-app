@@ -376,7 +376,8 @@ export function buildPrompt(taste: TasteId, story: string, sceneIndex: number, r
     BOOK_CONSISTENCY,
     series?.outfits ? outfitsPrompt(series.outfits) : "",
     series ? continuityPrompt(series.continuity, isCover ? 0 : sceneIndex + 1) : "",
-    series
+    // 相棒のいないシリーズ（ヒーロー）は何も足さない
+    series?.sidekick
       ? scene.withSidekick
         ? `The sidekick of this picture book series appears: ${series.sidekick}. Keep the sidekick looking the same on every page.`
         : `Do not include ${sidekickName(series.sidekick)} (the sidekick) in this scene.`
@@ -541,9 +542,9 @@ const SAMPLE_OUTFITS: Record<StoryId | "sea" | "dinosaur" | "number" | "hero" | 
   },
   // ヒーロー・プリンセスは、場面の服をその話の outfits（選んだスーツ・ドレス）で決める。ここは設定画のふだんの服
   hero: {
-    child: "a navy T-shirt with a small white star on the chest, light-gray shorts, white socks and red sneakers",
-    mom: "a coral knit sweater, navy pants and white sneakers",
-    dad: "a gray zip-up hoodie, dark jeans and brown sneakers",
+    child: "a navy T-shirt with a small white star on the chest, a light-gray zip-up hoodie, beige shorts, white socks and red sneakers",
+    mom: "a mustard-yellow knit cardigan over a white T-shirt, navy pants and white sneakers",
+    dad: "a light-blue shirt, dark jeans and brown sneakers",
   },
   princess: {
     child: "a plain worn brown work dress with two patches, a faded cream apron and worn brown slip-on shoes",
@@ -726,8 +727,8 @@ export async function makeSeriesSheet(series: StudioSeries, familySheet: Uploada
   const ai = getOpenAI();
   if (!ai) throw new Error("OPENAI_API_KEY が未設定です");
   const common = [
-    "Show all four characters side by side, full body, front view, on a plain white background, at heights that fit them.",
-    "Simple, warm picture-book character design with clear shapes and flat colors so the faces, hairstyles, outfits and the sidekick are easy to copy.",
+    `Show all ${series.sidekick ? "four" : "three"} characters side by side, full body, front view, on a plain white background, at heights that fit them.`,
+    `Simple, warm picture-book character design with clear shapes and flat colors so the faces, hairstyles${series.sidekick ? ", outfits and the sidekick" : " and outfits"} are easy to copy.`,
     "Do not draw any letters, words or text.",
     seriesNote(note),
   ];
@@ -740,7 +741,7 @@ export async function makeSeriesSheet(series: StudioSeries, familySheet: Uploada
           "The reference image is a photo of the real family: the mother on the left, the child in the middle and the father on the right. Draw these three people as picture-book characters.",
           PHOTO_LIKENESS,
           `Dress them for the book: the child wears ${SAMPLE_OUTFITS[series.id].child}; the mother wears ${SAMPLE_OUTFITS[series.id].mom}; the father wears ${SAMPLE_OUTFITS[series.id].dad}.`,
-          `Add the series sidekick standing next to the child: ${series.sidekick}.`,
+          series.sidekick ? `Add the series sidekick standing next to the child: ${series.sidekick}.` : "",
           ...common,
         ]
           .filter(Boolean)
@@ -756,7 +757,7 @@ export async function makeSeriesSheet(series: StudioSeries, familySheet: Uploada
         prompt: [
           "Character reference sheet for a children's picture book series.",
           "The reference image shows the family: keep the child, the mother and the father exactly the same (faces, hairstyles, body proportions, outfits and colors).",
-          `Add the series sidekick standing next to the child: ${series.sidekick}.`,
+          series.sidekick ? `Add the series sidekick standing next to the child: ${series.sidekick}.` : "",
           ...common,
         ]
           .filter(Boolean)
@@ -770,7 +771,7 @@ export async function makeSeriesSheet(series: StudioSeries, familySheet: Uploada
         prompt: [
           "Character reference sheet for a children's picture book series about a fictional Japanese family.",
           sampleCast(series.id, ["child", "mom", "dad"]),
-          `The series sidekick stands next to the child: ${series.sidekick}.`,
+          series.sidekick ? `The series sidekick stands next to the child: ${series.sidekick}.` : "",
           ...common,
         ]
           .filter(Boolean)
@@ -807,9 +808,9 @@ export async function makeOwnSeriesSheet(series: StudioSeries, photos: { who: Pe
       PHOTO_LIKENESS,
       "Take only faces, hairstyles, hair colors and body proportions from the photos, not their clothes, backgrounds or poses.",
       sampleOutfits(series.id, people),
-      `Add the series sidekick standing next to the child: ${series.sidekick}.`,
+      series.sidekick ? `Add the series sidekick standing next to the child: ${series.sidekick}.` : "",
       "Show all characters side by side, full body, front view, on a plain white background, at heights that fit them.",
-      "Simple, warm picture-book character design with clear shapes and flat colors so the faces, hairstyles, outfits and the sidekick are easy to copy.",
+      `Simple, warm picture-book character design with clear shapes and flat colors so the faces, hairstyles${series.sidekick ? ", outfits and the sidekick" : " and outfits"} are easy to copy.`,
       "Do not draw anyone who is not in the photos. Do not draw any letters, words or text.",
       seriesNote(note),
     ]
@@ -915,9 +916,11 @@ export function buildSeriesPrompt(series: StudioSeries, scene: SeriesScene, opts
     BOOK_CONSISTENCY,
     opts.outfits ? outfitsPrompt(opts.outfits) : "",
     continuityPrompt(opts.continuity, opts.page),
-    scene.withSidekick
-      ? `The sidekick appears: ${series.sidekick}. Keep the sidekick exactly as on the character sheet.`
-      : `Do not include ${sidekickName(series.sidekick)} (the sidekick) in this scene.`,
+    !series.sidekick
+      ? ""
+      : scene.withSidekick
+        ? `The sidekick appears: ${series.sidekick}. Keep the sidekick exactly as on the character sheet.`
+        : `Do not include ${sidekickName(series.sidekick)} (the sidekick) in this scene.`,
     `Scene: ${scene.art}.`,
     lookPrompt(series.cast, series.props, scene.art, scene.camera),
     countPrompt(scene.counts),
@@ -1094,7 +1097,11 @@ export async function illustrateTouch(opts: { touch: Touch; series: StudioSeries
       "Use the photo only to know who the people are. Keep the traits that make each person recognizable even in this simplified style: hairstyle and hair color, glasses, face shape and overall look.",
       "Ignore the photo's realism, lighting, background and texture and draw everything strictly in the ART STYLE above.",
       opts.outfits ? outfitsPrompt(opts.outfits) : "",
-      scene.withSidekick ? `The sidekick appears: ${opts.series.sidekick}.` : `Do not include ${sidekickName(opts.series.sidekick)} (the sidekick) in this scene.`,
+      !opts.series.sidekick
+        ? ""
+        : scene.withSidekick
+          ? `The sidekick appears: ${opts.series.sidekick}.`
+          : `Do not include ${sidekickName(opts.series.sidekick)} (the sidekick) in this scene.`,
       `Scene: ${scene.art}.`,
       SERIES_CAST_RULES,
       scene.withMom ? "" : "Do not include the mother in this scene.",
