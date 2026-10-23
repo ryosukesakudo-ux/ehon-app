@@ -23,6 +23,14 @@ const PICTURE_BOOK_CHARACTERS =
   "Turn everyone into hand-drawn picture-book characters, not realistic portraits: simplified rounded faces, soft rosy cheeks, a small simple nose, simplified hands and clothing folds, " +
   "no photographic skin texture, lighting or detail. Keep only the traits that make each person recognizable, such as hairstyle, hair color, glasses and overall look. " +
   "Draw expressive picture-book eyes with a visible colored iris, a dark pupil and a small white highlight, gently shaped eyelids and lashes where fitting. Never draw the eyes as plain black dots or simple lines.";
+/**
+ * シリーズでタッチが決まっているお話（ヒーロー・プリンセス）の人物の描き方。顔をまるく単純にせず、本人の顔立ちを残す
+ * （2026-10-23 作道さん「顔をもっと本人に寄せたい」）
+ */
+const STYLED_CHARACTERS =
+  "Turn everyone into illustrated characters in the ART STYLE above, not realistic portraits: no photographic skin texture, lighting or detail. " +
+  "Do not simplify or replace the faces: keep each person's own face shape, eye shape and size, eyebrows, nose, mouth, skin tone, hairstyle, hair length and hair color, plus glasses if any, " +
+  "so the family recognizes them at a glance. Draw the eyes with a visible colored iris, a dark pupil and a small white highlight. Never draw the eyes as plain black dots or simple lines.";
 export type Quality = "preview" | "final";
 /** AIの画質。管理画面の注文の絵づくりは中画質が標準（2026-10-11 作道さん）、高画質も選べる */
 export type Detail = "medium" | "high";
@@ -276,7 +284,7 @@ export function buildCharacterPrompt(taste: TasteId, who: Who, refs: { who: Who;
     `${style}.`,
     describeRefs(refs),
     STYLE_ONLY_FROM_TEXT,
-    PICTURE_BOOK_CHARACTERS,
+    book?.series?.style ? STYLED_CHARACTERS : PICTURE_BOOK_CHARACTERS,
     "Make them look friendly and natural, never caricatured.",
     who === "child" && childAge ? ageBody(childAge).replace(", at a height that fits that age next to the adults", "") : "",
     `Character design of ${LABEL[who]} only, for a children's picture book: one person standing alone, full body from head to toes, front view, relaxed natural pose, friendly expression, ${outfits ? "wearing this person's clothes from this list" : "simple everyday clothes"}.`,
@@ -370,7 +378,7 @@ export function buildPrompt(taste: TasteId, story: string, sceneIndex: number, r
     `${series?.style ?? t.prompt}.`,
     describeRefs(refs),
     STYLE_ONLY_FROM_TEXT,
-    PICTURE_BOOK_CHARACTERS,
+    series?.style ? STYLED_CHARACTERS : PICTURE_BOOK_CHARACTERS,
     "Make them look friendly and natural, never caricatured.",
     childAge ? ageBody(childAge) : "",
     BOOK_CONSISTENCY,
