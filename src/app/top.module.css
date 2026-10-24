@@ -179,21 +179,23 @@
 .promiseDesc { font-size: 13px; line-height: 1.6; color: var(--sub); }
 
 /* 最後のページはアルバムに */
-.album { display: grid; grid-template-columns: 1fr 1fr; padding: 10px; border-radius: 14px; background: #f3ece0; box-shadow: 0 6px 16px rgba(30, 47, 87, 0.15); }
+.album { container-type: inline-size; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); padding: 10px; border-radius: 14px; background: #f3ece0; box-shadow: 0 6px 16px rgba(30, 47, 87, 0.15); }
 .albumPage { aspect-ratio: 1 / 1; background: #fffdf8; padding: 8%; display: flex; flex-direction: column; justify-content: center; }
 .albumPage:first-child { border-radius: 6px 0 0 6px; box-shadow: inset -8px 0 10px -8px rgba(0, 0, 0, 0.18); }
-.albumGrid { display: grid; grid-template-columns: 1fr 1fr; gap: 8%; height: 100%; }
-.albumPhoto { overflow: hidden; border: 3px solid #fff; border-radius: 3px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.18); background: #e9e4dc; }
-.albumMessage { position: relative; border-radius: 0 6px 6px 0; box-shadow: inset 8px 0 10px -8px rgba(0, 0, 0, 0.18); gap: 6px; color: #4a4038; font-size: 11px; line-height: 1.8; }
+/* 写真の位置と大きさは album-sample.tsx で印刷と同じ計算をして % で置く。白い縁の太さも実物と同じ割合（1.6mm / 148mm） */
+.albumPhotoPage { position: relative; padding: 0; }
+.albumPhoto { position: absolute; padding: 1.08%; background: #fff; box-shadow: 0 1px 4px rgba(0, 0, 0, 0.16); }
+.albumPhoto img { display: block; width: 100%; height: 100%; object-fit: contain; }
+.albumMessage { position: relative; border-radius: 0 6px 6px 0; box-shadow: inset 8px 0 10px -8px rgba(0, 0, 0, 0.18); gap: 4px; color: #4a4038; font-size: min(11px, 3.1cqw); line-height: 1.6; }
 .albumMessage p { margin: 0; }
-.albumTo { font-size: 14px; font-weight: 900; color: #e0607e; }
-.albumFrom { align-self: flex-end; font-size: 11px; }
-.albumNo { position: absolute; right: 8%; bottom: 6%; font-size: 9px; color: #9a8f82; letter-spacing: 0.05em; }
+.albumTo { font-size: min(14px, 4.3cqw); font-weight: 900; color: #e0607e; }
+.albumFrom { align-self: flex-end; font-size: inherit; }
+.albumNo { align-self: flex-end; margin-top: -4px; font-size: 0.8em; color: #9a8f82; letter-spacing: 0.05em; }
 .albumList { margin: 0; padding-left: 1.3em; display: flex; flex-direction: column; gap: 6px; font-size: 14px; line-height: 1.7; color: var(--ink); }
 .albumList strong { color: #e0607e; }
 
 /* 最初の画面の「思い出の写真20枚まで」（2026-10-21） */
-.memoryCallout { display: flex; align-items: center; gap: 14px; padding: 14px 16px; border-radius: 20px; background: #fff; border: 3px solid #f07fa0; box-shadow: 0 5px 0 #f4b6c6; color: var(--navy); text-decoration: none; }
+.memoryCallout { width: 100%; font: inherit; text-align: left; cursor: pointer; display: flex; align-items: center; gap: 14px; padding: 14px 16px; border-radius: 20px; background: #fff; border: 3px solid #f07fa0; box-shadow: 0 5px 0 #f4b6c6; color: var(--navy); text-decoration: none; }
 .memoryStack { position: relative; flex: 0 0 96px; height: 96px; }
 .memoryPolaroid { position: absolute; width: 66px; height: 66px; padding: 4px 4px 10px; background: #fff; border-radius: 3px; box-shadow: 0 2px 6px rgba(30, 47, 87, 0.28); overflow: hidden; }
 .memoryPolaroid img { width: 100%; height: 100%; object-fit: cover; display: block; }
@@ -202,4 +204,5 @@
 .memoryLine { font-size: 16px; font-weight: 900; }
 .memoryBig { font-size: 19px; font-weight: 900; color: #e0607e; }
 .memoryNum { font-size: 44px; line-height: 1.05; margin-right: 2px; -webkit-text-stroke: 5px #fff; paint-order: stroke fill; filter: drop-shadow(0 2px 0 rgba(224, 96, 126, 0.3)); }
+.memoryMore { margin-top: 4px; font-size: 12px; font-weight: 800; color: #e0607e; }
 .memorySub { margin-top: 4px; font-size: 11px; font-weight: 700; color: var(--sub); }

@@ -4,6 +4,26 @@
 
 export type Rect = { x: number; y: number; w: number; h: number };
 
+/** 思い出の写真のページのふちの余白（mm）。しまうまで端が隠れる幅（約3.5%＝約5mm）より内側 */
+export const PHOTO_MARGIN_MM = 8;
+/** 写真のまわりの白い縁の太さ（mm） */
+export const PHOTO_BORDER_MM = 1.6;
+/** 白い縁の外側どうしのすき間（mm） */
+export const PHOTO_GAP_MM = 4;
+
+/**
+ * 1ページに写真を並べたときの、白い縁を含めた枠（左下が原点、単位は size と同じ）。
+ * 印刷（shimauma.ts）とトップの見本で同じ並びにするため、ここで計算する
+ */
+export function photoPageFrames(ratios: number[], size: number, mm: (v: number) => number): Rect[] {
+  const border = mm(PHOTO_BORDER_MM);
+  const margin = mm(PHOTO_MARGIN_MM);
+  // 白い縁の外側どうしが gap だけ空くよう、縁の分を差し引いた範囲に写真そのものを並べる
+  const inner = size - margin * 2 - border * 2;
+  const rects = layoutPhotos(ratios, { x: margin + border, y: margin + border, w: inner, h: inner }, mm(PHOTO_GAP_MM) + border * 2);
+  return rects.map((r) => ({ x: r.x - border, y: r.y - border, w: r.w + border * 2, h: r.h + border * 2 }));
+}
+
 /**
  * ratios：写真の縦横比（並べる順）。box：置ける範囲（左下が原点）。gap：写真どうしのすき間。
  * 返す枠は ratios と同じ順。各段（列）の中は同じ高さ（幅）にそろえて、段どうしは真ん中に寄せる

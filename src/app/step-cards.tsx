@@ -49,7 +49,7 @@ export function StepCards({ steps, details }: { steps: StepCardData[]; details: 
         ))}
       </div>
       {open !== null && (
-        <StepDialog step={open} title={`${open + 1}. ${steps[open].title}`} onClose={() => setOpen(null)}>
+        <StepDialog id={`step-dialog-${open}`} title={`${open + 1}. ${steps[open].title}`} onClose={() => setOpen(null)}>
           {open === 0 && <TasteAndStory d={details} />}
           {open === 1 && <Photo d={details} />}
           {open === 2 && <Finish d={details} />}
@@ -59,7 +59,8 @@ export function StepCards({ steps, details }: { steps: StepCardData[]; details: 
   );
 }
 
-function StepDialog({ step, title, onClose, children }: { step: number; title: string; onClose: () => void; children: ReactNode }) {
+// トップのほかの説明ポップアップ（思い出の写真など）も同じ形にそろえるので export する
+export function StepDialog({ id, title, onClose, children }: { id: string; title: string; onClose: () => void; children: ReactNode }) {
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
     window.addEventListener("keydown", onKey);
@@ -74,8 +75,8 @@ function StepDialog({ step, title, onClose, children }: { step: number; title: s
 
   return createPortal(
     <div className="story-dialog-backdrop" onClick={onClose}>
-      <div className="story-dialog" role="dialog" aria-modal="true" aria-labelledby={`step-dialog-${step}`} onClick={(e) => e.stopPropagation()}>
-        <h2 id={`step-dialog-${step}`} className="display" style={{ margin: 0, fontSize: 19, fontWeight: 900, color: "var(--navy)" }}>{title}</h2>
+      <div className="story-dialog" role="dialog" aria-modal="true" aria-labelledby={id} onClick={(e) => e.stopPropagation()}>
+        <h2 id={id} className="display" style={{ margin: 0, fontSize: 19, fontWeight: 900, color: "var(--navy)" }}>{title}</h2>
         {children}
         {/* 閉じる（グレー）と つくってみる を下に横並び（2026-10-15 作道さん）。長い手順でも下に固定（シリーズのポップアップと同じ） */}
         <div className="dialog-footer">
