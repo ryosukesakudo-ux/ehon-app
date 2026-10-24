@@ -740,6 +740,8 @@ export async function makeSeriesSheet(series: StudioSeries, familySheet: Uploada
     "Do not draw any letters, words or text.",
     seriesNote(note),
   ];
+  // お子さまだけのシリーズ（プリンセス）の写真から描くときは、主人公（と相棒）だけ
+  const photoCommon = [`Show the child${series.sidekick ? " and the sidekick" : ""} side by side, full body, front view, on a plain white background, at heights that fit them.`, ...common.slice(1)];
   const result = familyPhoto
     ? await ai.images.edit({
         model: process.env.OPENAI_IMAGE_MODEL ?? "gpt-image-2",
@@ -747,11 +749,13 @@ export async function makeSeriesSheet(series: StudioSeries, familySheet: Uploada
         prompt: [
           ...sheetStyle(series),
           "Character reference sheet for a children's picture book series.",
-          "The reference image is a photo of the real family: the mother on the left, the child in the middle and the father on the right. Draw these three people as picture-book characters.",
+          series.noParents
+            ? "The reference image is a photo of the real child (the main character). Draw this child as a picture-book character. Do not draw any other person."
+            : `The reference image is a photo of the real family: ${familyPhotoOrder(series)}. Draw these three people as picture-book characters.`,
           PHOTO_LIKENESS,
-          `Dress them for the book: the child wears ${SAMPLE_OUTFITS[series.id].child}; the mother wears ${SAMPLE_OUTFITS[series.id].mom}; the father wears ${SAMPLE_OUTFITS[series.id].dad}.`,
+          `Dress them for the book. ${sampleOutfits(series.id, photoCast(series))}`,
           series.sidekick ? `Add the series sidekick standing next to the child: ${series.sidekick}.` : "",
-          ...common,
+          ...(series.noParents ? photoCommon : common),
         ]
           .filter(Boolean)
           .join(" "),
@@ -842,6 +846,54 @@ const PHOTO_REALISM =
   "It must be indistinguishable from a real photograph: shot on a smartphone main camera at eye level, natural skin texture with pores and slight unevenness, individual hair strands and flyaways, " +
   "real fabric texture and wrinkles, real human proportions for each age (no big heads, no oversized eyes), natural slightly uneven daylight, a softly blurred real park background with depth of field, ordinary candid framing. " +
   "It must NOT look like an illustration, painting, 3D render, CGI, anime, a doll or an airbrushed advertisement: no smooth plastic skin, no glossy perfect lighting, no cartoon features.";
+
+/** 絵スタジオの家族写真に写っている人（プリンセスはお子さまだけ） */
+function photoCast(series: Pick<StudioSeries, "noParents">): Person[] {
+  return series.noParents ? ["child"] : ["child", "mom", "dad"];
+}
+
+/** 絵スタジオの家族写真の並び */
+function familyPhotoOrder(series: Pick<StudioSeries, "noParents">) {
+  return series.noParents ? "only the child (the main character)" : SHOWCASE_PHOTO_ORDER;
+}
+
+/**
+ * アップした写真（絵スタジオの「自分の写真」、ひとり1枚）の人をモチーフに、実写風の家族写真を1枚作る。
+ * サンプル集に出すので、本人と分からないよう顔立ちは別人に変える（性別・年ごろ・髪型・雰囲気は写真に寄せる）。
+ * 設定画と場面はこの写真に寄せて描く（2026-10-24 作道さん「家族写真を1枚作ってからアニメにしたい」）
+ */
+export async function makeSeriesFamilyPhotoFromPeople(series: StudioSeries, photos: { who: Person; file: Uploadable }[], note?: string) {
+  const ai = getOpenAI();
+  if (!ai) throw new Error("OPENAI_API_KEY が未設定です");
+  const solo = photos.length === 1;
+  const result = await ai.images.edit({
+    model: process.env.OPENAI_IMAGE_MODEL ?? "gpt-image-2",
+    image: photos.map((p) => p.file),
+    prompt: [
+      solo
+        ? "A natural, candid smartphone photo of a real Japanese child in a sunny park, as if taken by a parent."
+        : "A natural, candid smartphone photo of a real Japanese family of three in a sunny park, as if taken by a friend.",
+      ownPhotosPrompt(photos.map((p) => p.who), 1),
+      "Use the reference photos only as loose inspiration for who is in the new photo. Keep each person's gender, approximate age, hairstyle, hair length and hair color, glasses or no glasses, skin tone, body build and overall impression.",
+      "But give each person a different face: change the face shape, eyes, eyebrows, nose, mouth and other facial features enough that they are clearly a different, fictional person who could not be recognized as anyone in the reference photos.",
+      "Do not copy the clothes, backgrounds or poses of the reference photos. They wear everyday casual clothes.",
+      solo
+        ? "Only the child is in the photo, smiling at the camera, face clearly visible, upper body in the frame, soft daylight, realistic photo, no text."
+        : "They stand side by side in a row, evenly spaced across the frame, in this exact order from left to right: the mother on the left third, the child in the middle, the father on the right third. The child stands in front, between the parents. All three smile at the camera, faces clearly visible and not overlapping, upper bodies in the frame, soft daylight, realistic photo, no text.",
+      "Do not include any animal.",
+      PHOTO_REALISM,
+      seriesNote(note),
+    ]
+      .filter(Boolean)
+      .join(" "),
+    size: "1536x1024",
+    quality: "high",
+    output_format: "png",
+  });
+  const b64 = result.data?.[0]?.b64_json;
+  if (!b64) throw new Error("画像が生成されませんでした");
+  return b64;
+}
 
 /**
  * 写真が先のシリーズで、最初に作る架空の家族写真（文章の家族から）。設定画と場面はこの写真に寄せて描く。
@@ -939,7 +991,7 @@ export function buildSeriesPrompt(series: StudioSeries, scene: SeriesScene, opts
       ? "Draw exactly the same characters: the same faces, hairstyles and body proportions. Only the drawing style and the clothes change."
       : "Draw exactly the same characters: the same faces, hairstyles, body proportions and outfit colors. Only the drawing style changes.",
     opts.withPhoto
-      ? "The second reference image is a photo of the real family these characters were drawn from (the mother on the left, the child in the middle, the father on the right). Keep each person's face, hairstyle and hair color as close to that photo as possible, translated into the picture-book style; take only faces and hair from the photo, not its clothes, background or pose."
+      ? `The second reference image is a photo of the real family these characters were drawn from (${familyPhotoOrder(series)}). Keep each person's face, hairstyle and hair color as close to that photo as possible, translated into the picture-book style; take only faces and hair from the photo, not its clothes, background or pose.`
       : "",
     opts.ownPhotos?.length
       ? `${ownPhotosPrompt(opts.ownPhotos, 2)} Keep each person's face, hairstyle and hair color as close to their photo as possible, translated into the picture-book style; take only faces and hair from the photos, not their clothes, backgrounds or poses.`
@@ -1020,7 +1072,7 @@ export async function makeSeriesCharacter(opts: { series: StudioSeries; who: Per
         ? `${ownPhotosPrompt([opts.who], 2)} Keep the face, hairstyle and hair color as close to that photo as possible, translated into the picture-book style.`
         : "",
       opts.photo
-        ? "The second reference image is a photo of the real family these characters were drawn from (the mother on the left, the child in the middle, the father on the right). Keep the face, hairstyle and hair color as close to that photo as possible, translated into the picture-book style."
+        ? `The second reference image is a photo of the real family these characters were drawn from (${familyPhotoOrder(opts.series)}). Keep the face, hairstyle and hair color as close to that photo as possible, translated into the picture-book style.`
         : "",
       STYLE_ONLY_FROM_TEXT,
       opts.photo || opts.ownPhoto ? (opts.outfits || opts.outfitSample ? "" : sampleOutfits(opts.series.id, [opts.who])) : sampleCast(opts.series.id, [opts.who], !(opts.outfits || opts.outfitSample)),

@@ -66,6 +66,14 @@ export function usesShowcasePhoto(id: SeriesId) {
   return SHOWCASE_PHOTO_SERIES.includes(id);
 }
 
+/**
+ * アップした写真（絵スタジオの「自分の写真」）をモチーフに家族写真を作った印。これがあるシリーズは「写真が先」として、
+ * 設定画と場面をその家族写真に寄せて描く（2026-10-24 作道さん「家族写真を1枚作ってからアニメにしたい」）
+ */
+export function seriesPeoplePhotoMarkPath(id: SeriesId) {
+  return `series/${id}/family-photo-people.json`;
+}
+
 /** サンプル集に出す、シリーズの家族（設定画の3人）そっくりの架空の家族写真。左からママ・主人公・パパの順に並ぶ */
 export function seriesFamilyPhotoPath(id: SeriesId) {
   return usesShowcasePhoto(id) ? SHOWCASE_PHOTO : `series/${id}/family-photo.png`;

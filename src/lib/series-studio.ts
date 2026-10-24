@@ -2,7 +2,7 @@ import "server-only";
 import type { StoryId } from "./catalog";
 import { SERIES_DATA, resolveOutfits, type Continuity, type SeriesData } from "./series-data";
 import { SERIES_PAGES, isPhotoFirst, seriesImagePath, type SeriesScene } from "./series";
-import { SERIES_LIST, isOpenSeries, openEpisodes, type Combo, type SeriesId } from "./story-key";
+import { SERIES_LIST, getSeriesInfo, isOpenSeries, openEpisodes, type Combo, type SeriesId } from "./story-key";
 import { SAMPLE_BUCKET, getSupabase } from "./services";
 import { seriesDataWithEdits } from "./script-edits";
 
@@ -17,6 +17,8 @@ export type StudioSeries = {
   familyStory: StoryId | null;
   /** 家族写真が先（設定画・場面は写真に寄せて描く） */
   photoFirst: boolean;
+  /** ママ・パパが出ないシリーズ（プリンセス）。家族写真・設定画はお子さまだけ */
+  noParents: boolean;
   sidekick: string;
   sidekickLabel: string;
   cast: Record<string, string>;
@@ -42,6 +44,7 @@ export function getStudioSeries(id: string, edited?: SeriesData, outfit?: { type
     name: data.name,
     familyStory: FAMILY_STORY[data.id] ?? null,
     photoFirst: isPhotoFirst(data.id),
+    noParents: !!(data.noParents ?? getSeriesInfo(data.id)?.noParents),
     sidekick: data.sidekick,
     sidekickLabel: data.sidekickLabel,
     cast: data.cast,
