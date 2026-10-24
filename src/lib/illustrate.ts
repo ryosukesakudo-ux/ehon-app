@@ -1002,7 +1002,11 @@ export async function illustrateSeries(opts: { series: StudioSeries; scene: Seri
  * 見開き版の本の試作（登場人物しょうかいのページ）用に、シリーズの家族のひとりだけを全身で描く。
  * お客様の本のキャラクターの絵と同じく、その話の服で、無地の明るい背景に1人だけ
  */
-export async function makeSeriesCharacter(opts: { series: StudioSeries; who: Person; outfits?: string; sheet: Uploadable; photo?: Uploadable | null; note?: string; ownPhoto?: Uploadable | null }) {
+/**
+ * outfitSample：服選びの見本（選んだ形・色の服だけの説明）。あれば、その服を着た姿で描き、設定画のふだんの服はまねしない
+ * （2026-10-24 作道さん「ドレスが生成されない」：設定画のぼろの服がそのまま描かれていた）
+ */
+export async function makeSeriesCharacter(opts: { series: StudioSeries; who: Person; outfits?: string; outfitSample?: string; sheet: Uploadable; photo?: Uploadable | null; note?: string; ownPhoto?: Uploadable | null }) {
   const t = { prompt: seriesStyle(opts.series) };
   const ai = getOpenAI();
   if (!ai) throw new Error("OPENAI_API_KEY が未設定です");
@@ -1019,9 +1023,13 @@ export async function makeSeriesCharacter(opts: { series: StudioSeries; who: Per
         ? "The second reference image is a photo of the real family these characters were drawn from (the mother on the left, the child in the middle, the father on the right). Keep the face, hairstyle and hair color as close to that photo as possible, translated into the picture-book style."
         : "",
       STYLE_ONLY_FROM_TEXT,
-      opts.photo || opts.ownPhoto ? (opts.outfits ? "" : sampleOutfits(opts.series.id, [opts.who])) : sampleCast(opts.series.id, [opts.who], !opts.outfits),
+      opts.photo || opts.ownPhoto ? (opts.outfits || opts.outfitSample ? "" : sampleOutfits(opts.series.id, [opts.who])) : sampleCast(opts.series.id, [opts.who], !(opts.outfits || opts.outfitSample)),
       `Character design of ${LABEL[opts.who]} only, for a children's picture book: the same person as on the character sheet, standing alone, full body from head to toes, front view, relaxed natural pose, friendly expression.`,
-      opts.outfits ? `Clothes: ${opts.outfits} Draw exactly this person's clothes and colors from this list instead of the clothes in the reference images.` : "",
+      opts.outfitSample
+        ? `Clothes: the child is fully dressed in this special outfit: ${opts.outfitSample}. Draw exactly this outfit, its shape and its colors from head to toe, with matching shoes. Do NOT draw the everyday clothes shown on the character sheet or in any reference image (no work dress, apron, head scarf, T-shirt or hoodie): only the face, hairstyle and body come from the references.`
+        : opts.outfits
+          ? `Clothes: ${opts.outfits} Draw exactly this person's clothes and colors from this list instead of the clothes in the reference images.`
+          : "",
       "Plain soft light background with no scenery and no other people or animals. Leave a little space above the head and below the feet.",
       "Do not draw any letters, words or text in the image.",
       seriesNote(opts.note),
