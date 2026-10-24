@@ -1,5 +1,6 @@
 import "server-only";
 import type { Uploadable } from "openai/uploads";
+import type { ImageEditParamsNonStreaming } from "openai/resources/images";
 import sharp from "sharp";
 import { COVER_SCENE, COVER_SIZE, LIKENESS_LEVELS, REDO_OPTIONS, characterOf, getStory, guestOf, getTaste, type LikenessId, type Person, type RedoOptionId, type StoryId, type TasteId } from "./catalog";
 import { getBook, type Book, type BookScene } from "./book";
@@ -415,6 +416,33 @@ export function buildPrompt(taste: TasteId, story: string, sceneIndex: number, r
 }
 
 /** 参考写真（とキャラクター）から1場面の挿絵、またはキャラクターの絵を作り、PNG の base64 を返す。 */
+/**
+ * AIの安全チェックで断られたとき（"rejected by the safety system"。こわく見えない場面でもまれに起きる）に、
+ * 子ども向けの穏やかな場面だと念を押して1回だけ描き直す（2026-10-24 プリンセス場面4で発生）
+ */
+const SAFE_RETRY =
+  "This is a gentle, wholesome illustration for a young children's picture book. Everyone is safe, happy and fully clothed in modest everyday or fairy-tale clothes; nothing dangerous, scary or violent happens, and any fire or light stays calm and safely contained.";
+
+function isSafetyRejection(e: unknown) {
+  const err = e as { status?: number; code?: string; message?: string } | null;
+  return err?.status === 400 && (err.code === "moderation_blocked" || /safety system/i.test(err.message ?? ""));
+}
+
+async function editImage(ai: NonNullable<ReturnType<typeof getOpenAI>>, params: ImageEditParamsNonStreaming) {
+  try {
+    return await ai.images.edit(params);
+  } catch (e) {
+    if (!isSafetyRejection(e)) throw e;
+    console.warn("image edit rejected by safety system; retrying with a gentler prompt");
+    try {
+      return await ai.images.edit({ ...params, prompt: `${SAFE_RETRY} ${params.prompt}` });
+    } catch (e2) {
+      if (isSafetyRejection(e2)) throw new Error("AIの安全チェックで断られました（2回）。この絵の指示の言い回しを変えて、もう一度作ってください");
+      throw e2;
+    }
+  }
+}
+
 export async function illustrate(opts: {
   taste: TasteId;
   /** お話の番号（旧版のお話か、シリーズの "forest:2:n:mom" など） */
@@ -453,7 +481,7 @@ export async function illustrate(opts: {
   // 数のお勉強の数が大事な場面は、描いたあと数を確かめて、違えば描き直す（count-check.ts）
   const counts = isCover ? undefined : book?.scenes[opts.sceneIndex]?.counts;
   const { b64, warning } = await drawCounted(counts, async () => {
-    const result = await ai.images.edit({
+    const result = await editImage(ai, {
       model: process.env.OPENAI_IMAGE_MODEL ?? "gpt-image-2",
       image: opts.images.map((i) => i.file),
       prompt: standInPrompt(
@@ -1036,7 +1064,7 @@ export async function illustrateSeries(opts: { series: StudioSeries; scene: Seri
   const ai = getOpenAI();
   if (!ai) throw new Error("OPENAI_API_KEY が未設定です");
   return drawCounted(cover ? undefined : opts.scene.counts, async () => {
-    const result = await ai.images.edit({
+    const result = await editImage(ai, {
       model: process.env.OPENAI_IMAGE_MODEL ?? "gpt-image-2",
       image: [opts.sheet, ...(opts.photo ? [opts.photo] : []), ...(opts.ownPhotos ?? []).map((p) => p.file)],
       prompt: buildSeriesPrompt(opts.series, opts.scene, { cover, page: opts.page, outfits: opts.outfits, continuity: opts.continuity, note: opts.note, savedNote: opts.savedNote, withPhoto: !!opts.photo, spread: opts.spread && !cover, textSide: opts.textSide, ownPhotos: opts.ownPhotos?.map((p) => p.who) }),
