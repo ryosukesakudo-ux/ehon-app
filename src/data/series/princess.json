@@ -128,7 +128,7 @@
         },
         {
           "label": "お城から金色の手紙。よろこぶおねえさんたち、手紙をとり上げるままはは",
-          "art": "in the house's hallway, the stepmother holds a golden invitation letter high out of the child's reach with a cold look, while the two stepsisters squeal with delight and the child reaches up hopefully; Pipi flutters near the child",
+          "art": "in the house's hallway, the stepmother has just snatched the golden invitation letter out of the child's hands: she yanks it away sharply and holds it high out of reach with a cold, scornful look, while the child's empty hands are still raised where the letter was; the child looks up with a sad, hurt face, eyebrows drawn up, eyes teary and mouth turned down (not smiling); behind the stepmother the two stepsisters squeal with delight and point mockingly at the child; Pipi flutters near the child with a worried look",
           "text": [
             "おしろから ぶとうかいの しょうたいじょう！",
             "ある ひ、おしろから ぶとうかいの しょうたいじょうが とどきました。「{name}も いきたい！」 でも ままははは いいました。「あなたは おるすばんよ」",
@@ -137,7 +137,7 @@
           "withMom": false,
           "withDad": false,
           "withSidekick": true,
-          "camera": "Low angle from the child's height looking up past the child's reaching hand at the stepmother holding the golden letter high, the stepsisters' excited faces beside her."
+          "camera": "Medium shot at the child's height from the side, the stepmother's arm clearly pulling the golden letter away from the child's empty raised hands, the child's sad face in three-quarter view clearly visible in the foreground, the stepsisters' gleeful faces behind."
         },
         {
           "label": "みんなが出かけたあと、だんろのそばでひとりなく主人公。かたのピピがほっぺをなでる",
