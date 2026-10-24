@@ -11,7 +11,7 @@ import { Brand } from "@/components/brand";
 export const TOTAL_STEPS = 6;
 
 /** 進み具合の各ステップの名前（ヘッダーの丸の下に出す） */
-const STEP_LABELS = ["タッチ", "お話", "写真", "見本", "サイズ", "注文"];
+const STEP_LABELS = ["お話", "タッチ", "写真", "見本", "サイズ", "注文"];
 
 /**
  * 進み具合：丸と線でつないだステップ。今のステップの丸がぽんと大きくなり、線が前のステップから伸びる

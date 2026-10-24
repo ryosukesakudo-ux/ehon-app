@@ -159,7 +159,7 @@ function EpisodeDialog({ series, ready, onClose, onDecide }: { series: SeriesId;
             <p style={{ margin: 0, fontSize: 13, lineHeight: 1.6, color: "var(--sub)" }}>{s.description}</p>
             {(s.styleName || s.noParents) && (
               <p style={{ margin: 0, fontSize: 12, lineHeight: 1.6, color: "var(--sub)" }}>
-                {s.styleName && `このお話の絵は「${s.styleName}」で描きます（えらんだテイストは使いません）。`}
+                {s.styleName && `このお話の絵は「${s.styleName}」で描きます（タッチは選びません）。`}
                 {s.noParents && "ママ・パパは出てこないお話です（写真はお子さまだけ）。"}
               </p>
             )}

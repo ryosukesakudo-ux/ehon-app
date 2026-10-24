@@ -1,6 +1,6 @@
 import { OnePageFlow } from "../one-page";
 
-// タッチ・主人公・お話・写真は1ページ（one-page.tsx）。この URL から開くと「絵のタッチ」の項目から始まる
+// 主人公・お話・タッチ・写真は1ページ（one-page.tsx）。この URL がはじめ（主人公の項目から始まる）
 export default function Page() {
-  return <OnePageFlow start="taste" />;
+  return <OnePageFlow start="profile" />;
 }
