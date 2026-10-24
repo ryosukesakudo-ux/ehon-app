@@ -44,32 +44,6 @@
         ]
       },
       {
-        "id": "ribbon",
-        "name": "リボン",
-        "note": "大きなリボンがかわいいドレス",
-        "look": "a princess dress in {color} with a big satin bow at the back of the waist, smaller bows on both shoulders, a ruffled knee-length skirt layered over a long sheer underskirt, and a matching ribbon headband with a small bow",
-        "colors": [
-          {
-            "id": "pink",
-            "name": "ピンク",
-            "swatch": "#F4A6C1",
-            "look": "candy pink with white bows"
-          },
-          {
-            "id": "purple",
-            "name": "むらさき",
-            "swatch": "#A98BD8",
-            "look": "lavender purple with white bows"
-          },
-          {
-            "id": "yellow",
-            "name": "きいろ",
-            "swatch": "#F6CF5A",
-            "look": "lemon yellow with white bows"
-          }
-        ]
-      },
-      {
         "id": "flower",
         "name": "おはな",
         "note": "お花のかざりがたくさんのドレス",
