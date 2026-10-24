@@ -5,12 +5,12 @@ import s from "./top.module.css";
 
 // トップの「最後のページはアルバムに」と思い出の写真のポップアップで出す、アルバムページの見本。
 // 写真の大きさと並びは印刷（shimauma.ts）と同じ計算で出し、写真は切らずに枠へ収める（2026-10-24 作道さん）。
-// 写真はAIで作った架空の家族。
+// 写真はAIで作った架空の家族（作道さんが用意した、場面のちがう4枚。縦と横がまざる並びも見せる）。
 const PHOTOS = [
   { src: "/memory-sample.webp", w: 768, h: 512 },
-  { src: "/memory-sample.webp", w: 768, h: 512 },
-  { src: "/memory-sample.webp", w: 768, h: 512 },
-  { src: "/memory-sample.webp", w: 768, h: 512 },
+  { src: "/memory-shichigosan.webp", w: 600, h: 900 },
+  { src: "/memory-birthday.webp", w: 675, h: 900 },
+  { src: "/memory-beach.webp", w: 900, h: 675 },
 ];
 /** しまうま A5スクエア（148mm角）。見本では mm のまま計算して % にする */
 const PAGE_MM = 148;
