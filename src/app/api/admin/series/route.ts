@@ -34,7 +34,7 @@ import {
 } from "@/lib/series";
 import { buildSpreadBook } from "@/lib/spread-book";
 import { findSpreadTextSpot, isSpotDark } from "@/lib/spread-text";
-import { episodeArtComplete, getStudioSeries, getStudioSeriesLive, studioScenesFor } from "@/lib/series-studio";
+import { episodeArtComplete, getStudioSeriesLive, studioScenesFor } from "@/lib/series-studio";
 import { setPublished } from "@/lib/published-episodes";
 import { readScriptEdits, seriesDataWithEdits } from "@/lib/script-edits";
 import { savedArtNote } from "@/lib/saved-art-notes";
@@ -192,9 +192,11 @@ export async function POST(request: Request) {
       if (!data.outfitChoices?.types.find((t) => t.id === type)?.colors.some((c) => c.id === color)) return Response.json({ error: "指定が正しくありません" }, { status: 400 });
       const sheet = await load(seriesSheetPath(series.id), "characters.png");
       if (!sheet) return Response.json({ error: "先に登場人物の設定画を作ってください" }, { status: 400 });
-      const outfits = getStudioSeries(series.id, data, { type, color })?.episodes[0]?.outfits;
+      // 話の服装の説明（ふだんの服とドレスの両方）ではなく、選んだ形・色の服だけを渡す
+      const t = data.outfitChoices.types.find((x) => x.id === type)!;
+      const outfitSample = t.look.replaceAll("{color}", t.colors.find((c) => c.id === color)!.look);
       const photo = series.photoFirst ? await load(seriesFamilyPhotoPath(series.id), "family-photo.png") : null;
-      await save(seriesOutfitPath(series.id, type, color), await makeSeriesCharacter({ series, who: "child", outfits, sheet, photo, note }));
+      await save(seriesOutfitPath(series.id, type, color), await makeSeriesCharacter({ series, who: "child", outfitSample, sheet, photo, note }));
       return Response.json({ ok: true });
     }
 
