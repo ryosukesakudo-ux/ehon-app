@@ -4,7 +4,7 @@ import path from "node:path";
 import fontkit from "@pdf-lib/fontkit";
 import sharp, { type Sharp } from "sharp";
 import { CORAL, CREAM, INK, NAVY, SAFE_MM, drawCentered, drawCoverText, drawParagraph, fitSize, mm, type Color, type Surface, type TextFont } from "@/lib/print-pdf";
-import { layoutPhotos } from "@/lib/photo-layout";
+import { PHOTO_BORDER_MM, photoPageFrames } from "@/lib/photo-layout";
 import { buildZip } from "@/lib/zip";
 
 // しまうまプリントのフォトブックに入れる画像を、ZIPにまとめて作る。
@@ -66,8 +66,6 @@ export type ShimaumaExtras = {
 
 /** 思い出の写真を並べるページの数 */
 export const PHOTO_PAGES = 6;
-/** 思い出の写真のページのふちの余白（mm）。しまうまで端が隠れる幅（約3.5%＝約5mm）より内側 */
-const PHOTO_MARGIN_MM = 8;
 /** 特別ページの数（お話の前に登場人物しょうかい2ページ、後ろに写真6ページ・よんだ日・メッセージ） */
 const EXTRA_PAGES = 2 + PHOTO_PAGES + 2;
 
@@ -285,13 +283,11 @@ export class ExtraPages {
   /**
    * 写真1〜4枚を1ページに。顔が見切れないよう写真は切らず、縦横比のまま白い縁をつけて並べる。
    * 並べ方は写真の向きで決める（photo-layout.ts。縦の写真が多ければ横に、横の写真が多ければ縦に並ぶ）。
-   * 写真のページだけふちの余白を PHOTO_MARGIN_MM に詰めて大きくする（2026-10-19 作道さん）
+   * 写真のページだけふちの余白を PHOTO_MARGIN_MM（photo-layout.ts）に詰めて大きくする（2026-10-19 作道さん）
    */
   private async photoPage(photos: Buffer[]) {
     const { size, px } = this.o;
-    const border = mm(1.6);
-    const gap = mm(4);
-    const margin = mm(PHOTO_MARGIN_MM);
+    const border = mm(PHOTO_BORDER_MM);
     const imgs = await Promise.all(
       photos.map(async (p) => {
         // 向きを直した写真の縦横比で並べる
@@ -300,10 +296,7 @@ export class ExtraPages {
         return { img, ratio: (meta.width ?? 1) / (meta.height ?? 1) };
       }),
     );
-    // 白い縁の外側どうしが gap だけ空くよう、縁の分を差し引いた範囲に写真そのものを並べる
-    const inner = size - margin * 2 - border * 2;
-    const rects = layoutPhotos(imgs.map((i) => i.ratio), { x: margin + border, y: margin + border, w: inner, h: inner }, gap + border * 2);
-    const placed = rects.map((r, i) => ({ img: imgs[i].img, x: r.x - border, y: r.y - border, w: r.w + border * 2, h: r.h + border * 2 }));
+    const placed = photoPageFrames(imgs.map((i) => i.ratio), size, mm).map((f, i) => ({ img: imgs[i].img, ...f }));
     const page = this.page();
     for (const f of placed) page.drawFrame({ x: f.x, y: f.y, width: f.w, height: f.h, color: CREAM, lineWidth: 0, radius: 0 });
     const base = await this.render(page);

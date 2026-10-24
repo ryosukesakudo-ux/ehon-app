@@ -11,6 +11,7 @@ import { publishedEpisodes } from "@/lib/published-episodes";
 import { TopBook } from "./top-book";
 import { StepCards } from "./step-cards";
 import { MemoryCallout } from "./memory-callout";
+import { AlbumSample } from "./album-sample";
 import { SampleImage } from "@/components/sample-image";
 import { Brand, SITE_NAME } from "@/components/brand";
 import { Lottie } from "@/components/lottie";
@@ -422,23 +423,7 @@ export default async function Home() {
           <br />
           <span className="nowrap"><Pop color="#F07FA0">メッセージ</Pop>も1冊に。</span>
         </h2>
-        <div className={s.album} data-reveal="up">
-          <div className={s.albumPage}>
-            <div className={s.albumGrid}>
-              {["50% 30%", "20% 40%", "80% 35%", "50% 70%"].map((pos, i) => (
-                <div key={pos} className={s.albumPhoto} style={{ transform: `rotate(${[-2, 1.5, 1, -1.5][i]}deg)` }}>
-                  <SampleImage src={versioned(samplePublicUrl(SHOWCASE_PHOTO))} alt="" fallback={null} sizes="120px" style={{ objectPosition: pos, scale: i ? "1.6" : "1" }} />
-                </div>
-              ))}
-            </div>
-          </div>
-          <div className={`${s.albumPage} ${s.albumMessage}`}>
-            <div className={`${s.albumTo} display`}>{SAMPLE_CHILD_NAME}へ</div>
-            <p>うまれてきてくれて ありがとう。<br />これからも たくさん わらってね。</p>
-            <div className={s.albumFrom}>パパ・ママより</div>
-            <div className={s.albumNo}>No.001</div>
-          </div>
-        </div>
+        <AlbumSample reveal />
         <ul className={s.albumList}>
           <li>お好きな写真を<strong>{MEMORY_PHOTO_MAX}枚まで</strong>のせられます（写真ページは6ページ）</li>
           <li>家族からの<strong>メッセージページ</strong>と「この本をよんだ日」の記入ページつき</li>
