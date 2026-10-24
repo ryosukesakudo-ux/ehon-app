@@ -24,7 +24,7 @@ export default async function LoginPage({ searchParams }: PageProps<"/login">) {
         {nextPath.startsWith("/create") && (
           <p className="info-note">
             {nextPath.startsWith("/create/taste")
-              ? "ログイン・登録が終わると、そのまま絵本づくり（絵のテイスト選び）に進みます。"
+              ? "ログイン・登録が終わると、そのまま絵本づくり（主人公とお話選び）に進みます。"
               : "ログイン・登録が終わると、つくりかけの絵本の画面に戻ります。"}
           </p>
         )}

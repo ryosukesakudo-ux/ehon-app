@@ -61,7 +61,7 @@ export type FlowState = {
   deliveryDate: string;
   /** お届け時間帯（以前の保存データとの互換用。いまは選べない） */
   deliveryTime: string;
-  /** 作成画面（1ページ）で、どの項目まで出したか（taste / profile / story / outfit / photo）。選ぶ・「次へ」で1つずつ下に出す */
+  /** 作成画面（1ページ）で、どの項目まで出したか（profile / story / outfit / taste / photo の順）。選ぶ・「次へ」で1つずつ下に出す */
   reached: string;
   /** 最後に開いていた作成画面（ログイン後の「つづきから」で戻る先） */
   path: string;
@@ -98,7 +98,7 @@ const initial: FlowState = {
   deliveryDate: "",
   deliveryTime: "",
   path: "/create/taste",
-  reached: "taste",
+  reached: "profile",
 };
 
 export type Photos = {
@@ -172,7 +172,7 @@ export function FlowProvider({ children }: { children: ReactNode }) {
       restored.reused = Array.isArray(restored.reused) ? restored.reused.filter((n) => typeof n === "number") : [];
       restored.pageCount = [0, FIRST_PAGES, BOOK_SCENE_COUNT].includes(restored.pageCount) ? restored.pageCount : 0;
       // 2026-10-14 より前の保存（どこまで出したかの記録が無い）は、済んでいる項目をすべて出す
-      if (!["taste", "profile", "story", "outfit", "photo"].includes(restored.reached)) restored.reached = (saved as Partial<FlowState>).childName ? "photo" : "taste";
+      if (!["taste", "profile", "story", "outfit", "photo"].includes(restored.reached)) restored.reached = (saved as Partial<FlowState>).childName ? "photo" : "profile";
       // eslint-disable-next-line react-hooks/set-state-in-effect -- 保存済みの入力を一度だけ復元する
       setState(restored);
       // 作成済みの絵のURLは1時間で切れるので、下書きがあれば読み直す（ログイン後は会員の下書きとして読める）

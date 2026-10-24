@@ -37,7 +37,7 @@ export function clearLocalFlow() {
   void clearLocalPhotos();
 }
 
-/** テイスト選びより先に進んでいるか（ログイン後に「つくりかけ」として引き継ぐ価値があるか） */
+/** 作成画面のはじめ（主人公の入力）より先に進んでいるか（ログイン後に「つくりかけ」として引き継ぐ価値があるか） */
 export function hasProgress(v: Record<string, unknown> | null): v is Record<string, unknown> & { path: string } {
   return !!v && typeof v.path === "string" && v.path !== "/create/taste";
 }

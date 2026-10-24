@@ -9,7 +9,7 @@ import { createAuthClient } from "./auth";
 
 /** 再開できる画面（作成フローの各ステップ） */
 export const FLOW_STEPS = {
-  "/create/taste": "テイスト選び",
+  "/create/taste": "主人公の入力",
   "/create/story": "お話選び",
   "/create/photo": "写真えらび",
   "/create/preview": "できあがりの確認",
