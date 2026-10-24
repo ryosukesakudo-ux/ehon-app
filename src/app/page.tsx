@@ -10,6 +10,7 @@ import { OPEN_SERIES, SHOWN_SERIES_LIST, isOpenSeries, openEpisodes, type Series
 import { publishedEpisodes } from "@/lib/published-episodes";
 import { TopBook } from "./top-book";
 import { StepCards } from "./step-cards";
+import { MemoryCallout } from "./memory-callout";
 import { SampleImage } from "@/components/sample-image";
 import { Brand, SITE_NAME } from "@/components/brand";
 import { Lottie } from "@/components/lottie";
@@ -248,7 +249,7 @@ export default async function Home() {
           </span>
         </p>
         {/* 思い出の写真を入れられることは最初の画面で強調する（2026-10-21 作道さん：特に20枚まで入る点）。見本はAIで作った架空の家族 */}
-        <a href="#album" className={s.memoryCallout}>
+        <MemoryCallout>
           <div className={s.memoryStack} aria-hidden="true">
             {["50% 50%", "88% 30%", "52% 40%"].map((pos, i) => (
               <div key={pos} className={s.memoryPolaroid} style={{ transform: `rotate(${[-10, 7, -2][i]}deg)`, left: [0, 26, 12][i], top: [6, 0, 22][i] }}>
@@ -264,8 +265,9 @@ export default async function Home() {
             </span>
             <span className={`${s.memoryLine} display`}>絵本に入れられる！</span>
             <span className={s.memorySub}>お話のあとの<span className="nowrap">アルバムページ（6ページ）に</span></span>
+            <span className={s.memoryMore}>くわしく ›</span>
           </div>
-        </a>
+        </MemoryCallout>
         <div className={s.bookStage} aria-hidden="true">
           {/* 完成した絵本の表紙（作道さんが用意した画像、2026-10-16 こうちゃん森1話に差し替え）。ページの重なりと背の陰を少しだけ画像に描き込み済み */}
           <div className={s.sun} />
