@@ -19,6 +19,7 @@ import {
   seriesSampleChildName,
   seriesImagePath,
   seriesOutfitPath,
+  seriesPeoplePhotoMarkPath,
   seriesSceneTextSide,
   seriesSheetPath,
   seriesSidekickPath,
@@ -44,6 +45,8 @@ export type StudioView = {
   id: SeriesId;
   name: string;
   sidekickLabel: string;
+  /** ママ・パパが出ないシリーズ（プリンセス）。家族写真はお子さまだけ */
+  noParents: boolean;
   /** お話選びに出ているシリーズか（出ていないシリーズは、話を本番に出してもまだ「準備中」） */
   open: boolean;
   /** 本番に出している（お客様が注文できる）話 */
@@ -60,8 +63,22 @@ export function SeriesStudio({ list }: { list: StudioView[] }) {
   const series = list.find((s) => s.id === seriesId)!;
   const SERIES_ID = seriesId;
   const childName = seriesSampleChildName(seriesId);
+  // アップした写真をモチーフに家族写真を作ったシリーズ（あると写真が先として扱う。series.ts の seriesPeoplePhotoMarkPath）
+  const [peoplePhoto, setPeoplePhoto] = useState<Record<string, boolean>>({});
+  useEffect(() => {
+    if (peoplePhoto[seriesId] !== undefined) return;
+    const url = samplePublicUrl(seriesPeoplePhotoMarkPath(seriesId));
+    if (!url) return;
+    void fetch(url, { method: "HEAD", cache: "no-store" })
+      .then((r) => r.ok)
+      .catch(() => false)
+      .then((ok) => setPeoplePhoto((p) => ({ ...p, [seriesId]: ok })));
+  }, [seriesId, peoplePhoto]);
+  const fromPeople = !!peoplePhoto[seriesId];
   // 写真が先のシリーズ：家族写真 → 設定画（写真そっくり） → 場面（設定画＋写真）の順に作る
-  const photoFirst = isPhotoFirst(seriesId);
+  const photoFirst = isPhotoFirst(seriesId) || fromPeople;
+  // 家族写真に写る人（プリンセスはお子さまだけ）
+  const castWho: Who[] = series.noParents ? ["child"] : ["child", "mom", "dad"];
   // 森：家族写真はトップの写真（作例スタジオの①）と共用。ここでは作らない
   const sharedPhoto = usesShowcasePhoto(seriesId);
   const [quality, setQuality] = useState<"preview" | "final">("preview");
@@ -169,6 +186,7 @@ export function SeriesStudio({ list }: { list: StudioView[] }) {
   const charaKey = (who: string) => `bookChara/${bookOwn ? "own/" : ""}${bookEpisode?.no}/${who}`;
   const ownCoverKey = `ownCover/${bookEpisode?.no}`;
   const whoLabel = (w: Who) => (w === "child" ? shownName : w === "mom" ? "ママ" : "パパ");
+  const castLabel = (w: Who) => (w === "child" ? "お子さま" : w === "mom" ? "ママ" : "パパ");
 
   // 自分の写真と、その写真から描いた絵の期限付きURL（パス → URL）
   const [ownUrls, setOwnUrls] = useState<Record<string, string>>({});
@@ -184,9 +202,10 @@ export function SeriesStudio({ list }: { list: StudioView[] }) {
     setOwnUrls(urls);
     return urls;
   }, [SERIES_ID, bookEpisode, bookCombo]);
+  // 家族写真の「アップした写真をモチーフに作る」でも写真を使うので、いつも読む
   useEffect(() => {
-    if (bookOwn) void refreshOwn();
-  }, [bookOwn, refreshOwn]);
+    void refreshOwn();
+  }, [refreshOwn]);
 
   // 写真を選ぶ：「未作成」や「写真を選ぶ」を押すと、その人の写真を選ぶ画面を開く
   const fileInput = useRef<HTMLInputElement>(null);
@@ -229,6 +248,13 @@ export function SeriesStudio({ list }: { list: StudioView[] }) {
     bookOwn ? ownCall(charaKey(who), { kind: "bookChara", episode: bookEpisode.no, who }) : call(charaKey(who), { kind: "bookChara", episode: bookEpisode.no, who });
   const makeOwnCover = () => ownCall(ownCoverKey, { kind: "ownCover", episode: bookEpisode.no, quality });
   const makeOwnSheet = () => ownCall("ownSheet", { kind: "ownSheet" });
+  async function makePeoplePhoto() {
+    const lacking = castWho.filter((w) => !ownUrls[ownPhotoPath(w)]);
+    if (lacking.length) return alert(`先に写真を選んでください（${lacking.map(castLabel).join("・")}）`);
+    const has = await exists(seriesFamilyPhotoPath(SERIES_ID));
+    if (!confirm(`選んだ写真の人をモチーフに、顔を別人に変えた実写風の家族写真を作ります（約40円）。${has ? "今の家族写真は置き換わり、設定画と場面もすべて作り直しが必要になります。" : ""}この写真はサンプル集に出ます。よろしいですか？`)) return;
+    if (await call("photo", { kind: "photoFromPeople" })) setPeoplePhoto((p) => ({ ...p, [SERIES_ID]: true }));
+  }
 
   async function makeOwnAll() {
     const urls = await refreshOwn();
@@ -278,11 +304,38 @@ export function SeriesStudio({ list }: { list: StudioView[] }) {
   }
 
 
+  // 写真を選ぶ枠（押すとその人の写真を選ぶ）。写真は非公開の場所に保存し、家族写真の元と「自分の写真」で共通
+  const photoSlot = (w: Who, label: string) => {
+    const url = ownUrls[ownPhotoPath(w)];
+    return (
+      <div key={w} style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+        <button
+          type="button"
+          onClick={() => pickPhoto(w)}
+          disabled={anyBusy}
+          aria-label={`${label}の写真を選ぶ`}
+          style={{ aspectRatio: "1 / 1", borderRadius: 10, overflow: "hidden", background: "#eee", border: "2px dashed #bbb", padding: 0, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer" }}
+        >
+          {busy[`ownPhoto/${w}`] ? (
+            <div className="spinner" />
+          ) : url ? (
+            // eslint-disable-next-line @next/next/no-img-element -- 期限付きURLの写真なので、画像の最適化を通さない
+            <img src={url} alt={`${label}の写真`} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+          ) : (
+            <span style={{ color: "var(--navy)", fontWeight: 700 }}>写真を選ぶ</span>
+          )}
+        </button>
+        <span style={{ fontSize: 12, color: "var(--sub)" }}>写真：{label}{url ? "（押すと変えられます）" : ""}</span>
+        {errors[`ownPhoto/${w}`] && <span className="error">{errors[`ownPhoto/${w}`]}</span>}
+      </div>
+    );
+  };
+
   const sheetSection = (
     <section className="card" style={{ gap: 12 }}>
       <h2 className="display" style={{ margin: 0, fontSize: 18, color: "var(--navy)" }}>登場人物の設定画</h2>
       <p style={{ margin: 0, fontSize: 13, lineHeight: 1.7 }}>
-        {photoFirst ? "上の家族写真の3人を写真そっくりに絵にして" : "作例スタジオの家族3人（無いシリーズは文章から描きます）に"}{series.sidekickLabel ? `、${series.sidekickLabel}を加えた` : "の"}1枚です。すべての場面がこの絵をもとに描かれます。作り直したら、場面も作り直してください（1枚 約50円）。
+        {photoFirst ? `上の家族写真の${series.noParents ? "お子さま" : "3人"}を写真そっくりに絵にして` : "作例スタジオの家族3人（無いシリーズは文章から描きます）に"}{series.sidekickLabel ? `、${series.sidekickLabel}を加えた` : "の"}1枚です。すべての場面がこの絵をもとに描かれます。作り直したら、場面も作り直してください（1枚 約50円）。
       </p>
       <Tile
         path={seriesSheetPath(SERIES_ID)}
@@ -296,6 +349,25 @@ export function SeriesStudio({ list }: { list: StudioView[] }) {
         disabled={anyBusy}
         {...noteProps("sheet")}
       />
+      {fromPeople && (
+        <>
+          <p style={{ margin: 0, fontSize: 13, lineHeight: 1.7 }}>
+            比べる用：家族写真を通さず、アップした写真から直接描いた設定画です（お客様の注文と同じ流れ。非公開でサイトには出ません。1枚 約50円）。
+          </p>
+          <Tile
+            path={ownSheetPath(SERIES_ID)}
+            src={ownUrls[ownSheetPath(SERIES_ID)] ?? null}
+            busy={busy.ownSheet}
+            error={errors.ownSheet}
+            label="アップした写真から直接描いた設定画（比べる用）"
+            aspect="3 / 2"
+            width={420}
+            onMake={makeOwnSheet}
+            disabled={anyBusy}
+            {...noteProps("ownSheet")}
+          />
+        </>
+      )}
     </section>
   );
   const photoSection = (
@@ -305,6 +377,8 @@ export function SeriesStudio({ list }: { list: StudioView[] }) {
         サンプル集（/samples）の「この写真から → この登場人物に」に出す架空の家族写真です。左からママ・{childName}・パパの順に並べ、画面ではその順に名前を付けます。
         {sharedPhoto
           ? "このシリーズは、トップの「この写真から → この絵本に」と同じ写真（作例スタジオの①）を使い、この写真をもとに設定画と場面を描きます。写真を作り直すときは作例スタジオで作り、そのあと設定画と場面も作り直してください。"
+          : fromPeople
+          ? "この写真は、下で選んだ写真の人をモチーフに（顔は別人に変えて）作った写真です。設定画と場面はこの写真をもとに描きます。作り直したら、設定画と場面も作り直してください。"
           : photoFirst
           ? "このシリーズは、この写真をもとに設定画と場面を描きます。並びや雰囲気が違ったら、欄に指示を書いて作り直してください（1枚 約40円）。作り直したら、設定画と場面も作り直してください。"
           : "設定画の家族3人にそっくりに作ります。並びが違ったり似ていなかったりしたら、欄に指示を書いて作り直してください（1枚 約40円）。設定画を作り直したら、これも作り直してください。"}
@@ -314,7 +388,7 @@ export function SeriesStudio({ list }: { list: StudioView[] }) {
         version={version.photo}
         busy={busy.photo}
         error={errors.photo}
-        label="架空の家族写真（左からママ・主人公・パパ）"
+        label={series.noParents ? "架空のお子さまの写真" : "架空の家族写真（左からママ・主人公・パパ）"}
         aspect="3 / 2"
         width={420}
         onMake={makePhoto}
@@ -322,11 +396,27 @@ export function SeriesStudio({ list }: { list: StudioView[] }) {
         readOnly={sharedPhoto}
         {...noteProps("photo")}
       />
+      {!sharedPhoto && (
+        <>
+          <h3 style={{ margin: "8px 0 0", fontSize: 15, color: "var(--navy)" }}>ご家族の写真をモチーフに作る</h3>
+          <p style={{ margin: 0, fontSize: 13, lineHeight: 1.7 }}>
+            {series.noParents ? "お子さまの写真" : "ママ・お子さま・パパの写真を1枚ずつ"}選んでボタンを押すと、その人をモチーフに、本人と分からないよう顔を別人に変えた実写風の{series.noParents ? "写真" : "家族写真"}を作ります（約40円）。
+            そのあと設定画と場面はこの写真をもとに描くので、写真からどれくらい似た絵になるかを確かめられます。選んだ写真は非公開の場所に保存し、サイトには出ません（下の「見開き版の本」の「自分の写真」と共通）。できた写真はサンプル集に出ます。
+          </p>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(120px, 1fr))", gap: 12, maxWidth: 480 }}>
+            {castWho.map((w) => photoSlot(w, castLabel(w)))}
+          </div>
+          <button type="button" className="cta" style={{ width: "auto", alignSelf: "flex-start", height: 44, padding: "0 20px", fontSize: 15 }} disabled={anyBusy} onClick={makePeoplePhoto}>
+            この写真の人をモチーフに{series.noParents ? "写真" : "家族写真"}を作る
+          </button>
+        </>
+      )}
     </section>
   );
 
   return (
     <main style={{ maxWidth: 1100, margin: "0 auto", padding: "24px 16px 64px", display: "flex", flexDirection: "column", gap: 20 }}>
+      <input ref={fileInput} type="file" accept={PHOTO_ACCEPT} hidden onChange={(e) => { void onPhotoChosen(e.target.files?.[0]); e.target.value = ""; }} />
       <a href="/admin">← 注文管理へ</a>
       <a href="/admin/series/saved">見本の保存版（今の13枚をとっておく・見返す）→</a>
       <a href="/admin/series/script">台本の文を直す（各場面の本文）→</a>
@@ -510,33 +600,8 @@ export function SeriesStudio({ list }: { list: StudioView[] }) {
           </button>
           {bookOwn && (
             <>
-              <input ref={fileInput} type="file" accept={PHOTO_ACCEPT} hidden onChange={(e) => { void onPhotoChosen(e.target.files?.[0]); e.target.value = ""; }} />
               <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(140px, 1fr))", gap: 12 }}>
-                {bookWho.map((w) => {
-                  const url = ownUrls[ownPhotoPath(w)];
-                  return (
-                    <div key={w} style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-                      <button
-                        type="button"
-                        onClick={() => pickPhoto(w)}
-                        disabled={anyBusy}
-                        aria-label={`${whoLabel(w)}の写真を選ぶ`}
-                        style={{ aspectRatio: "1 / 1", borderRadius: 10, overflow: "hidden", background: "#eee", border: "2px dashed #bbb", padding: 0, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer" }}
-                      >
-                        {busy[`ownPhoto/${w}`] ? (
-                          <div className="spinner" />
-                        ) : url ? (
-                          // eslint-disable-next-line @next/next/no-img-element -- 期限付きURLの写真なので、画像の最適化を通さない
-                          <img src={url} alt={`${whoLabel(w)}の写真`} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-                        ) : (
-                          <span style={{ color: "var(--navy)", fontWeight: 700 }}>写真を選ぶ</span>
-                        )}
-                      </button>
-                      <span style={{ fontSize: 12, color: "var(--sub)" }}>写真：{whoLabel(w)}{url ? "（押すと変えられます）" : ""}</span>
-                      {errors[`ownPhoto/${w}`] && <span className="error">{errors[`ownPhoto/${w}`]}</span>}
-                    </div>
-                  );
-                })}
+                {bookWho.map((w) => photoSlot(w, whoLabel(w)))}
               </div>
               <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))", gap: 12 }}>
                 <Tile

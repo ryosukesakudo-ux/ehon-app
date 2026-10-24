@@ -24,6 +24,7 @@ export default async function SeriesPage() {
       id: s.id,
       name: s.name,
       sidekickLabel: s.sidekickLabel,
+      noParents: s.noParents,
       open: OPEN_SERIES.includes(s.id),
       published: published[s.id],
       outfits: data.outfitChoices?.types.map((t) => ({ id: t.id, name: t.name, colors: t.colors.map((c) => ({ id: c.id, name: c.name })) })),

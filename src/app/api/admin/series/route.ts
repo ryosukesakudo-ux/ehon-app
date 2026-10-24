@@ -1,7 +1,7 @@
 import { toFile } from "openai";
 import { calledName, isHonorificId, sceneText, type HonorificId } from "@/lib/catalog";
 import { getBook } from "@/lib/book";
-import { illustrateSeries, makeOwnSeriesSheet, makeSeriesCharacter, makeSeriesFamilyPhoto, makeSeriesFamilyPhotoFromText, makeSeriesSheet, makeSeriesSidekick } from "@/lib/illustrate";
+import { illustrateSeries, makeOwnSeriesSheet, makeSeriesCharacter, makeSeriesFamilyPhoto, makeSeriesFamilyPhotoFromPeople, makeSeriesFamilyPhotoFromText, makeSeriesSheet, makeSeriesSidekick } from "@/lib/illustrate";
 import { characterSheetPath, samplePublicUrl } from "@/lib/samples";
 import {
   SPREAD_TEXT_SPOTS,
@@ -19,6 +19,7 @@ import {
   seriesBookViewPath,
   seriesCharacterPath,
   seriesFamilyPhotoPath,
+  seriesPeoplePhotoMarkPath,
   seriesImagePath,
   seriesImageTextPath,
   seriesOutfitPath,
@@ -69,10 +70,15 @@ export const maxDuration = 300;
 export async function POST(request: Request) {
   if (request.headers.get("content-type")?.includes("multipart/form-data")) return saveOwnPhoto(request);
   const body = await request.json().catch(() => null);
-  const series = await getStudioSeriesLive(String(body?.series ?? ""));
-  if (!series) return Response.json({ error: "指定が正しくありません" }, { status: 400 });
+  const base = await getStudioSeriesLive(String(body?.series ?? ""));
+  if (!base) return Response.json({ error: "指定が正しくありません" }, { status: 400 });
   const db = getSupabase();
   if (!db) return Response.json({ error: "Supabase が未設定のため、絵を保存できません" }, { status: 503 });
+  // アップした写真をモチーフに家族写真を作ったシリーズは、写真が先（設定画と場面をその写真に寄せる）
+  const peoplePhoto = !base.photoFirst && !usesShowcasePhoto(base.id) && !(await db.storage.from(SAMPLE_BUCKET).download(seriesPeoplePhotoMarkPath(base.id))).error;
+  const series = peoplePhoto ? { ...base, photoFirst: true } : base;
+  // 家族写真・設定画に出る人（プリンセスはお子さまだけ）
+  const cast: readonly Who[] = series.noParents ? ["child"] : PEOPLE;
 
   const own = body?.own === true;
   // 自分の写真の絵は非公開の books、見本の家族の絵は公開の samples
@@ -116,7 +122,7 @@ export async function POST(request: Request) {
   const ownSheet = async () => {
     const existing = await load(ownSheetPath(series.id), "characters.png", BOOK_BUCKET);
     if (existing) return existing;
-    const photos = await ownPhotos(PEOPLE);
+    const photos = await ownPhotos(cast);
     if (!photos.some((p) => p.who === "child")) throw new Error("先に主人公の写真を選んでください");
     const b64 = await makeOwnSeriesSheet(series, photos);
     await save(ownSheetPath(series.id), b64);
@@ -140,7 +146,7 @@ export async function POST(request: Request) {
 
     if (own && body?.kind === "ownSheet") {
       // 写真から設定画を描き直す（写真を変えたときは自動で消えるので、ふつうは「まとめて作る」が先に作る）
-      const photos = await ownPhotos(PEOPLE);
+      const photos = await ownPhotos(cast);
       if (!photos.some((p) => p.who === "child")) return Response.json({ error: "先に主人公の写真を選んでください" }, { status: 400 });
       await save(ownSheetPath(series.id), await makeOwnSeriesSheet(series, photos, note));
       return Response.json({ ok: true });
@@ -155,6 +161,20 @@ export async function POST(request: Request) {
       const quality = body?.quality === "preview" ? "preview" : "final";
       const { b64 } = await illustrateSeries({ series, scene, page: 0, outfits: episode.outfits, continuity: episode.continuity, note, savedNote: await savedNote(episode.no, 0), quality, sheet: await ownSheet(), ownPhotos: await ownPhotos(people) });
       await save(ownCoverPath(series.id, episode.no), b64);
+      return Response.json({ ok: true });
+    }
+
+    if (body?.kind === "photoFromPeople") {
+      // アップした写真（自分の写真）の人をモチーフに、顔は別人に変えた実写風の家族写真を作る。サンプル集に出る
+      if (usesShowcasePhoto(series.id)) return Response.json({ error: "このシリーズの家族写真は、トップの写真と共用のためここでは作れません" }, { status: 400 });
+      const photos = await ownPhotos(cast);
+      const lacking = cast.filter((w) => !photos.some((p) => p.who === w));
+      if (lacking.length) return Response.json({ error: `先に写真を選んでください（${lacking.map((w) => ({ child: "主人公", mom: "ママ", dad: "パパ" })[w]).join("・")}）` }, { status: 400 });
+      await save(seriesFamilyPhotoPath(series.id), await makeSeriesFamilyPhotoFromPeople(series, photos, note));
+      const { error } = await db.storage
+        .from(SAMPLE_BUCKET)
+        .upload(seriesPeoplePhotoMarkPath(series.id), JSON.stringify({ madeAt: new Date().toISOString() }), { contentType: "application/json", upsert: true, cacheControl: "60" });
+      if (error) throw new Error(error.message);
       return Response.json({ ok: true });
     }
 
