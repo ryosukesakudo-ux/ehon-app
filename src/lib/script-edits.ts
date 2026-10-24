@@ -135,7 +135,12 @@ function baseVersion(id: SeriesId, episode: number, scene: number, variant: Scri
 export function applyScriptEdits(data: SeriesData, edits: ScriptEdits): SeriesData {
   // 台本まるごとを直したシリーズは、直した台本がそのまま正（文も中に入っている）
   const structured = structuredOf.get(edits)?.[data.id];
-  if (structured) return structured.data;
+  if (structured) {
+    // 台本（JSON）から外した服の形は、前に保存した直しに残っていても出さない（2026-10-24 プリンセスの「リボン」を削除）
+    const ids = new Set(data.outfitChoices?.types.map((t) => t.id));
+    const oc = structured.data.outfitChoices;
+    return oc ? { ...structured.data, outfitChoices: { ...oc, types: oc.types.filter((t) => ids.has(t.id)) } } : structured.data;
+  }
   const prefix = `${data.id}/`;
   if (!Object.keys(edits).some((k) => k.startsWith(prefix))) return data;
   const textOf = (no: number, scene: number, variant: ScriptVariant, text: string[]) => {
