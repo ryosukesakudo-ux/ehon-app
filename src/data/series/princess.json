@@ -7,11 +7,11 @@
     "stepmother": "the stepmother, a tall thin grown-up woman with a pointed nose, gray hair in a tall tight bun, a stiff high-collared dark-purple dress and a cold, haughty look (stern but not monstrous)",
     "stepsisters": "the two stepsisters, two grown-up teenage girls much taller than the child: the older one tall and thin with curly red hair, a green ruffled dress and too many ribbons; the younger one short and round with straight black hair cut in a bob, an orange ruffled dress and a big feather in her hair",
     "fairy godmother": "the fairy godmother, a small round kind old woman with white hair in a soft bun, round gold-rimmed glasses and rosy cheeks, wearing a moss-green hooded cloak covered with tiny gold stars, holding a thin wooden wand with a glowing gold star on its tip",
-    "prince": "the prince, a kind boy a few years older than the child, with short wavy chestnut-brown hair, warm brown eyes, a small simple gold crown, a deep-green velvet jacket with gold embroidery, a short burgundy cape, cream trousers and brown boots"
+    "prince": "the prince, a kind little boy of the same age and about the same height as the child (a small child, never a teenager or a grown-up), with short wavy chestnut-brown hair, warm brown eyes, a small simple gold crown, a deep-green velvet jacket with gold embroidery, a short burgundy cape, cream trousers and brown boots"
   },
   "props": {
     "carriage": "the magic carriage: a round golden pumpkin-shaped carriage with curling golden vines as its frame, round windows and four golden wheels shaped like flowers, pulled by white horses",
-    "glass slipper": "a clear sparkling glass slipper with a small low heel and a tiny glass bow on the toe, exactly the same design every time",
+    "glass slipper": "a clear sparkling glass slipper with a small low heel and a tiny glass bow on the toe, exactly the same design every time; it is a tiny child-size slipper made to fit the child's small foot exactly (about as long as the child's hand), never an adult-size shoe",
     "castle": "the royal castle on a hill: cream-white stone walls with rounded towers topped by rose-pink pointed roofs, golden flags and a big round clock on the front tower"
   },
   "outfitChoices": {
@@ -73,7 +73,7 @@
   },
   "style": "ART STYLE: a modern 3D computer-animated fairy-tale film still, like a frame from a feature-length family animation. Soft rounded stylized characters with big expressive eyes, smooth subsurface-scattered skin, soft volumetric lighting and gentle glow, rich saturated jewel colors, sparkling magical particles, detailed storybook European fairy-tale architecture and costumes with soft fabric folds and subtle shine, a shallow depth of field with a softly blurred background. Characters keep their own faces, hairstyles and clothes from the references; do not imitate any existing animated film character, costume, logo or famous castle. It must NOT look like a flat 2D drawing, watercolor, crayon, manga or a photograph",
   "noParents": true,
-  "castRules": "The main character is the only small child in this picture book; the only other young people are the prince and the two stepsisters, and they appear only when this scene mentions them. Never draw a second child who looks or dresses like the main character. Do not add people who are not mentioned in this scene; crowds of townspeople and guests are grown-ups, never children. Each animal character keeps exactly its own species and look on every page; never turn one into a person or into a different animal. Everyone stands, sits or kneels on top of the ground; never draw a body sunk into the ground or a hole.",
+  "castRules": "The main character and the prince (a little boy of the same age and height as the main character) are the only small children in this picture book; the only other young people are the two teenage stepsisters; the prince and the stepsisters appear only when this scene mentions them. Never draw a second child who looks or dresses like the main character. Do not add people who are not mentioned in this scene; crowds of townspeople and guests are grown-ups, never children. Each animal character keeps exactly its own species and look on every page; never turn one into a person or into a different animal. Everyone stands, sits or kneels on top of the ground; never draw a body sunk into the ground or a hole.",
   "episodes": [
     {
       "no": 1,
